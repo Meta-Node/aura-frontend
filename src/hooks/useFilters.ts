@@ -1,8 +1,7 @@
 import useBrightIdBackupWithAuraConnectionData from 'hooks/useBrightIdBackupWithAuraConnectionData';
 import { FilterOrSortCategory } from 'hooks/useFilterAndSort';
 import { getAuraVerificationLevel } from 'hooks/useParseBrightIdVerificationData';
-import { useOutboundConnections } from 'hooks/useSubjectConnections';
-import { useOutboundRatings } from 'hooks/useSubjectRatings';
+import { useOutboundEvaluations } from 'hooks/useSubjectEvaluations';
 import { useMemo } from 'react';
 import {
   AuraInboundConnectionAndRatingData,
@@ -67,7 +66,7 @@ export function useCategorizeAuraFilterOptions<T>(
 
 export function useSubjectFilters(filterIds: AuraFilterId[]) {
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
-  const { ratings: outboundRatings } = useOutboundRatings(
+  const { ratings: outboundRatings } = useOutboundEvaluations(
     brightIdBackup?.userData.id,
   );
   return useMemo(() => {
@@ -179,7 +178,7 @@ export function useInboundEvaluationFilters(
   subjectId?: string,
 ) {
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
-  const { connections } = useOutboundConnections(subjectId);
+  const { connections } = useOutboundEvaluations(subjectId);
   return useMemo(() => {
     const filters: AuraFilterOptions<AuraInboundConnectionAndRatingData> = [
       {
@@ -266,7 +265,7 @@ export function useOutboundEvaluationFilters(
   subjectId?: string,
 ) {
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
-  const { connections } = useOutboundConnections(subjectId);
+  const { connections } = useOutboundEvaluations(subjectId);
   return useMemo(() => {
     const filters: AuraFilterOptions<AuraOutboundConnectionAndRatingData> = [
       {

@@ -10,6 +10,15 @@ import {
 import stringify from 'fast-json-stable-stringify';
 import nacl from 'tweetnacl';
 
+import { EvaluationCategory, EvaluationValue } from '../../types/dashboard';
+import {
+  ConnectOp,
+  EvaluateOp,
+  NodeOps,
+  SpendSponsorshipOp,
+  SubmittedOp,
+} from './operation_types';
+
 const v = 6;
 
 export class NodeApi {
@@ -114,6 +123,42 @@ export class NodeApi {
     const message = stringify(op);
     const signed = nacl.sign.detached(strToUint8Array(message), sk);
     op.sig1 = uInt8ArrayToB64(signed);
+    return this.submitOp(op, message);
+  }
+
+  async evaluate(
+    evaluator: string,
+    evaluated: string,
+    evaluation: EvaluationValue,
+    confidence: number,
+    domain: 'BrightID',
+    category: EvaluationCategory,
+    timestamp: number,
+  ) {
+    console.log({
+      id: this.id,
+      secretKey: this.secretKey,
+    });
+    if (this.id === undefined || this.secretKey === undefined) {
+      throw new Error('Missing API credentials');
+    }
+    const sk = new Uint8Array(Object.values(this.secretKey));
+
+    const op: EvaluateOp = {
+      name: 'Evaluate',
+      evaluator,
+      evaluated,
+      evaluation,
+      confidence,
+      domain,
+      category,
+      timestamp,
+      v,
+    };
+
+    const message = stringify(op);
+    const signed = nacl.sign.detached(strToUint8Array(message), sk);
+    op.sig = uInt8ArrayToB64(signed);
     return this.submitOp(op, message);
   }
 

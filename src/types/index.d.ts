@@ -1,12 +1,9 @@
 import { Verifications } from 'api/auranode.service';
 
+import { EvaluationCategory, EvaluationValue } from './dashboard';
+
 export type AuthData = {
   brightId: string;
-  publicKey: string;
-  privateKey: string;
-};
-
-export type AuthDataWithPassword = AuthData & {
   password: string;
 };
 
@@ -24,7 +21,15 @@ export type BrightIdConnection = {
   timestamp: number;
 };
 
+export type AuraEvaluation = {
+  evaluation: EvaluationValue;
+  confidence: number;
+  domain: 'BrightID';
+  category: EvaluationCategory;
+};
+
 export type AuraNodeBrightIdConnection = BrightIdConnection & {
+  auraEvaluations?: AuraEvaluation[];
   verifications: Verifications;
 };
 
@@ -99,6 +104,7 @@ export type AuraRating = {
   rating: string;
   createdAt: string;
   updatedAt: string;
+  category: EvaluationCategory;
 };
 
 export type AuraInboundConnectionAndRatingData = {

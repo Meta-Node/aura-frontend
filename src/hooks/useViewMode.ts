@@ -4,15 +4,18 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'store/hooks';
 import { setPreferredView as setPreferredViewAction } from 'store/profile';
 import { selectPreferredView } from 'store/profile/selectors';
-import { PreferredView, ProfileViewAs } from 'types/dashboard';
+import { EvaluationCategory, PreferredView } from 'types/dashboard';
 
 export default function useViewMode() {
   const preferredViewMode = useSelector(selectPreferredView);
   const [query] = useSearchParams();
   const currentViewMode = useMemo(() => {
     const viewAs = query.get('viewas');
-    if (viewAs && (Object.values(ProfileViewAs) as string[]).includes(viewAs)) {
-      return viewAsToViewMode[viewAs as ProfileViewAs];
+    if (
+      viewAs &&
+      (Object.values(EvaluationCategory) as string[]).includes(viewAs)
+    ) {
+      return viewAsToViewMode[viewAs as EvaluationCategory];
     }
     return preferredViewMode;
   }, [preferredViewMode, query]);
@@ -37,7 +40,7 @@ export default function useViewMode() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const updateViewAs = (value: ProfileViewAs) => {
+  const updateViewAs = (value: EvaluationCategory) => {
     // Create a new URLSearchParams object based on the current query string
     const searchParams = new URLSearchParams(location.search);
 

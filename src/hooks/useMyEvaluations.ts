@@ -1,4 +1,4 @@
-import { useOutboundEvaluations } from 'hooks/useOutboundEvaluations';
+import { useOutboundEvaluations } from 'hooks/useSubjectEvaluations';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 

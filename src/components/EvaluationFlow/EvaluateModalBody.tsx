@@ -30,7 +30,16 @@ const EvaluateModalBody = ({
   }, [prevRating]);
 
   const name = useSubjectName(subjectId);
+
+  const [operationSubmitted, setOperationSubmitted] = useState(false);
   const { submitEvaluation, loading } = useEvaluateSubject();
+  useEffect(() => {
+    if (operationSubmitted && !loading) {
+      setOperationSubmitted(false);
+      const newRating = isYes ? confidence : -1 * confidence;
+      onSubmitted(newRating);
+    }
+  }, [confidence, isYes, loading, onSubmitted, operationSubmitted]);
 
   const submit = useCallback(async () => {
     if (loading || !authData?.brightId) return;
@@ -38,6 +47,8 @@ const EvaluateModalBody = ({
       const newRating = isYes ? confidence : -1 * confidence;
       if (newRating !== prevRating) {
         await submitEvaluation(subjectId, newRating);
+        setOperationSubmitted(true);
+        return;
       }
       onSubmitted(newRating);
     } catch (e) {
@@ -148,7 +159,11 @@ const EvaluateModalBody = ({
                   onDelete ? '!w-0 h-7 opacity-0' : 'w-44 opacity-100'
                 }`}
               >
-                {loading ? '...' : 'Update Evaluation'}
+                {loading
+                  ? operationSubmitted
+                    ? 'Applying Operation...'
+                    : 'Submitting Operation...'
+                  : 'Update Evaluation'}
               </p>
               {/*{loading && !isEdit ? '...' : 'Submit Evaluation'}*/}
             </button>
@@ -179,7 +194,11 @@ const EvaluateModalBody = ({
             className="btn btn--big w-full"
             onClick={submit}
           >
-            {loading ? '...' : 'Submit Evaluation'}
+            {loading
+              ? operationSubmitted
+                ? 'Applying Operation...'
+                : 'Submitting Operation...'
+              : 'Submit Evaluation'}
           </button>
         )}
       </div>

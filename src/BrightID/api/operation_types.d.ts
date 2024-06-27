@@ -1,6 +1,7 @@
 /**
  * Operation Types
  */
+import { EvaluationCategory, EvaluationValue } from '../../types/dashboard';
 
 type NodeOps =
   | AddAdminOp
@@ -15,7 +16,8 @@ type NodeOps =
   | RemoveMembershipOp
   | RemoveSigningKeyOp
   | SocialRecoveryOp
-  | SpendSponsorshipOp;
+  | SpendSponsorshipOp
+  | EvaluateOp;
 
 type SubmittedOp = NodeOps & {
   hash: string;
@@ -61,6 +63,18 @@ type ConnectOp = BaseOp & {
   reportReason?: string;
   replacedWith?: string;
   requestProof?: string;
+};
+
+type EvaluateOp = BaseOp & {
+  name: 'Evaluate';
+  evaluator: string;
+  evaluated: string;
+  evaluation: EvaluationValue;
+  confidence: number;
+  domain: 'BrightID';
+  category: EvaluationCategory;
+  timestamp: number;
+  sig?: string;
 };
 
 type DismissOp = BaseOp & {

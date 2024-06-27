@@ -8,11 +8,6 @@ export const selectAuthData = createSelector(
   (state: RootState) => state.profile,
   (profile) => profile.authData,
 );
-export const selectPrivateKey = createSelector(
-  (state: RootState) => state.profile,
-  (profile) => profile.authData?.privateKey,
-);
-
 export const selectIsLoggedIn = createSelector(
   (state: RootState) => state.profile,
   (profile) => !!profile.authData,

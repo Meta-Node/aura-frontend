@@ -2,15 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RESET_STORE } from 'BrightID/actions';
 import { PreferredView } from 'types/dashboard';
 
-import { AuthDataWithPassword } from '../../types';
-import {
-  getBrightIdBackupThunk,
-  loginByExplorerCodeThunk,
-  refreshKeyPairThunk,
-} from './actions';
+import { AuthData } from '../../types';
+import { getBrightIdBackupThunk, loginThunk } from './actions';
 
 export type ProfileState = {
-  authData: AuthDataWithPassword | null;
+  authData: AuthData | null;
   brightIdBackupEncrypted: string | null;
   splashScreenShown: boolean;
   playerOnboardingScreenShown: boolean;
@@ -50,13 +46,10 @@ export const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loginByExplorerCodeThunk.fulfilled, (state, action) => {
+      .addCase(loginThunk.fulfilled, (state, action) => {
         state.authData = action.payload;
-        console.log('loginByExplorerCodeThunk.fulfilled');
+        console.log('loginThunk.fulfilled');
         console.log(state);
-      })
-      .addCase(refreshKeyPairThunk.fulfilled, (state, action) => {
-        state.authData = action.payload;
       })
       .addCase(getBrightIdBackupThunk.fulfilled, (state, action) => {
         state.brightIdBackupEncrypted = action.payload;

@@ -31,14 +31,20 @@ export function ConnectionLevel({ subjectId }: { subjectId: string }) {
       connection.level === 'just met' ? 'already known' : 'just met';
     if (!level) return;
     console.log(`Setting connection level '${level}'`);
-    const op = await api.addConnection(
-      authData.brightId,
-      connection.id,
-      level,
-      Date.now(),
-    );
-    dispatch(addOperation(op));
-    setConnectionOpHash(op.hash);
+    try {
+      const op = await api.addConnection(
+        authData.brightId,
+        connection.id,
+        level,
+        Date.now(),
+      );
+      console.log({ op });
+      dispatch(addOperation(op));
+      setConnectionOpHash(op.hash);
+    } catch (e) {
+      setLoading(false);
+      alert(String(e));
+    }
   }, [api, authData, connection, dispatch]);
 
   useEffect(() => {

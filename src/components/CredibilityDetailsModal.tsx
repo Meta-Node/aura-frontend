@@ -2,7 +2,7 @@ import Modal from 'components/Shared/Modal';
 import { EchartsContext } from 'contexts/EchartsContext';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
-import { useOutboundConnections } from 'hooks/useSubjectConnections';
+import { useOutboundEvaluations } from 'hooks/useSubjectEvaluations';
 import { useSubjectInboundEvaluations } from 'hooks/useSubjectInboundEvaluations';
 import { useSubjectName } from 'hooks/useSubjectName';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
@@ -10,7 +10,7 @@ import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'store/hooks';
 import { selectAuthData } from 'store/profile/selectors';
-import { ProfileViewAs } from 'types/dashboard';
+import { EvaluationCategory } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
 
 import { HorizontalProgressBar } from './Shared/HorizontalProgressBar';
@@ -33,7 +33,7 @@ const CredibilityDetails = ({
     myConnectionToSubject,
     myConfidenceValueInThisSubjectRating,
   } = useMyEvaluationsContext(subjectId);
-  const { connections } = useOutboundConnections(subjectId);
+  const { connections } = useOutboundEvaluations(subjectId);
   const { options2 } = useContext(EchartsContext);
   const [isSubject, setIsSubject] = useState(true);
   const link = '/subject/' + subjectId;
@@ -82,12 +82,12 @@ const CredibilityDetails = ({
             className="body__chart w-full mb-5 mt-2"
           />
           <Link
-            to={link + '?viewas=' + ProfileViewAs.SUBJECT}
+            to={link + '?viewas=' + EvaluationCategory.SUBJECT}
             className="flex btn btn--bg-orange w-full justify-center mt-auto"
             onClick={(e) => {
               e.preventDefault();
               onClose();
-              navigate(link + '?viewas=' + ProfileViewAs.SUBJECT);
+              navigate(link + '?viewas=' + EvaluationCategory.SUBJECT);
             }}
           >
             View Subject Profile
@@ -161,12 +161,12 @@ const CredibilityDetails = ({
             className="body__chart w-full mb-5 mt-2"
           />
           <Link
-            to={link + '?viewas=' + ProfileViewAs.PLAYER}
+            to={link + '?viewas=' + EvaluationCategory.PLAYER}
             className="flex btn w-full mt-auto justify-center"
             onClick={(e) => {
               e.preventDefault();
               onClose();
-              navigate(link + '?viewas=' + ProfileViewAs.PLAYER);
+              navigate(link + '?viewas=' + EvaluationCategory.PLAYER);
             }}
           >
             View Player Profile

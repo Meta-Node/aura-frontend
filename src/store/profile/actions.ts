@@ -1,14 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { clearAllProfilePhotoCache } from 'api/profilePhoto.service';
-import { AuthDataWithPassword } from 'types';
+import { AuthData } from 'types';
 
-import {
-  loginByExplorerCode,
-  pullEncryptedUserData,
-} from '../../api/login.service';
-import { encryptData, hash } from '../../utils/crypto';
-import { RootState } from '../index';
-import { selectAuthData } from './selectors';
+import { pullEncryptedUserData } from '../../api/login.service';
+import { hash } from '../../utils/crypto';
 
 //TODO: add a way to reload brightId backup
 export const getBrightIdBackupThunk = createAsyncThunk<
@@ -25,36 +20,17 @@ export const getBrightIdBackupThunk = createAsyncThunk<
   }
 });
 
-export const loginByExplorerCodeThunk = createAsyncThunk<
-  AuthDataWithPassword,
-  { explorerCode: string; password: string }
->(
+export const loginThunk = createAsyncThunk<AuthData, AuthData>(
   'profile/loginByExplorerCode',
-  async ({ explorerCode, password }, { dispatch }) => {
-    const brightIdData = await loginByExplorerCode(explorerCode, password);
-    const authKey = hash(brightIdData.brightId + password);
+  async ({ brightId, password }, { dispatch }) => {
+    const authKey = hash(brightId + password);
     await dispatch(getBrightIdBackupThunk({ authKey }));
     return {
-      ...brightIdData,
+      brightId,
       password,
     };
   },
 );
-export const refreshKeyPairThunk = createAsyncThunk<
-  AuthDataWithPassword,
-  void,
-  { state: RootState }
->('profile/refreshKeyPair', async (_args, { getState }) => {
-  const authData = selectAuthData(getState());
-  if (!authData) throw new Error('Not Authenticated');
-  const password = authData.password;
-  const explorerCode = encryptData(authData.brightId, password);
-  const brightIdData = await loginByExplorerCode(explorerCode, password);
-  return {
-    ...brightIdData,
-    password,
-  };
-});
 
 export const SET_ = 'SET_';
 

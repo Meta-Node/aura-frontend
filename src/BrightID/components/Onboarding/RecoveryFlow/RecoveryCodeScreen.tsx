@@ -22,7 +22,6 @@ import {
   RecoveryCodeScreenAction,
   urlTypesOfActions,
 } from 'BrightID/utils/constants';
-import { getExplorerCode } from 'BrightID/utils/explorer';
 import { buildRecoveryChannelQrUrl } from 'BrightID/utils/recovery';
 import { LOCATION_ORIGIN } from 'constants/index';
 import { AURA_NODE_URL } from 'constants/urls';
@@ -31,7 +30,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { QRCode } from 'react-qrcode-logo';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'store/hooks';
-import { loginByExplorerCodeThunk } from 'store/profile/actions';
+import { loginThunk } from 'store/profile/actions';
 import { copyToClipboard } from 'utils/copyToClipboard';
 import { __DEV__ } from 'utils/env';
 
@@ -202,10 +201,8 @@ const RecoveryCodeScreen = () => {
         dispatch(setRecoveryKeys());
         dispatch(resetRecoveryData());
         dispatch(setUserId(recoveryData.id));
-        const explorerCode = getExplorerCode(recoveryData.id, user.password);
-        console.log({ explorerCode });
         dispatch(
-          loginByExplorerCodeThunk({ explorerCode, password: user.password }),
+          loginThunk({ brightId: recoveryData.id, password: user.password }),
         ).then(redirectAfterLogin);
       }
     } else if (action === RecoveryCodeScreenAction.SYNC && isScanned) {
@@ -274,9 +271,13 @@ const RecoveryCodeScreen = () => {
             </FadeIn>
           </section>
 
-          <a className="pl-8 pr-10 flex flex-col items-center gap-6 mb-3" href={universalLink}
-             target="_blank" rel="noreferrer"
-             data-testid={universalLink && 'import-universal-link'}>
+          <a
+            className="pl-8 pr-10 flex flex-col items-center gap-6 mb-3"
+            href={universalLink}
+            target="_blank"
+            rel="noreferrer"
+            data-testid={universalLink && 'import-universal-link'}
+          >
             {universalLink && (
               <FadeIn delay={0.2}>
                 <QRCode

@@ -1,5 +1,5 @@
 import { AuraRating, ConnectionLevel } from 'types';
-import { PreferredView, ProfileViewAs } from 'types/dashboard';
+import { EvaluationCategory, PreferredView } from 'types/dashboard';
 
 // eslint-disable-next-line no-restricted-globals
 export const LOCATION_ORIGIN = location.origin;
@@ -188,29 +188,33 @@ export const viewModeToSubjectViewMode: {
 };
 
 export const viewModeToViewAs: {
-  [key in PreferredView]: ProfileViewAs;
+  [key in PreferredView]: EvaluationCategory;
 } = {
-  [PreferredView.PLAYER]: ProfileViewAs.SUBJECT,
-  [PreferredView.TRAINER]: ProfileViewAs.PLAYER,
-  [PreferredView.MANAGER_EVALUATING_TRAINER]: ProfileViewAs.TRAINER,
-  [PreferredView.MANAGER_EVALUATING_MANAGER]: ProfileViewAs.MANAGER,
+  [PreferredView.PLAYER]: EvaluationCategory.SUBJECT,
+  [PreferredView.TRAINER]: EvaluationCategory.PLAYER,
+  [PreferredView.MANAGER_EVALUATING_TRAINER]: EvaluationCategory.TRAINER,
+  [PreferredView.MANAGER_EVALUATING_MANAGER]: EvaluationCategory.MANAGER,
 };
 export const viewAsToViewMode: {
-  [key in ProfileViewAs]: PreferredView;
+  [key in EvaluationCategory]: PreferredView;
 } = {
-  [ProfileViewAs.SUBJECT]: PreferredView.PLAYER,
-  [ProfileViewAs.PLAYER]: PreferredView.TRAINER,
-  [ProfileViewAs.TRAINER]: PreferredView.MANAGER_EVALUATING_TRAINER,
-  [ProfileViewAs.MANAGER]: PreferredView.MANAGER_EVALUATING_MANAGER,
+  [EvaluationCategory.SUBJECT]: PreferredView.PLAYER,
+  [EvaluationCategory.PLAYER]: PreferredView.TRAINER,
+  [EvaluationCategory.TRAINER]: PreferredView.MANAGER_EVALUATING_TRAINER,
+  [EvaluationCategory.MANAGER]: PreferredView.MANAGER_EVALUATING_MANAGER,
 };
 
 export const subjectViewAsIcon: {
-  [key in ProfileViewAs]: string;
+  [key in EvaluationCategory]: string;
 } = {
-  [ProfileViewAs.SUBJECT]: '/assets/images/Dashboard/brightid-icon-white.svg',
-  [ProfileViewAs.PLAYER]: '/assets/images/Dashboard/account-icon-white.svg',
-  [ProfileViewAs.TRAINER]: '/assets/images/Dashboard/trainer-icon-white.svg',
-  [ProfileViewAs.MANAGER]: '/assets/images/Dashboard/manager-icon-white.svg',
+  [EvaluationCategory.SUBJECT]:
+    '/assets/images/Dashboard/brightid-icon-white.svg',
+  [EvaluationCategory.PLAYER]:
+    '/assets/images/Dashboard/account-icon-white.svg',
+  [EvaluationCategory.TRAINER]:
+    '/assets/images/Dashboard/trainer-icon-white.svg',
+  [EvaluationCategory.MANAGER]:
+    '/assets/images/Dashboard/manager-icon-white.svg',
 };
 
 export const preferredViewIcon: {

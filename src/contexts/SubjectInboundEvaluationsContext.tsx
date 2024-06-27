@@ -9,7 +9,7 @@ import {
   AuraSortOptions,
   useInboundEvaluationSorts,
 } from 'hooks/useSorts';
-import { useSubjectConnections } from 'hooks/useSubjectConnections';
+import { useSubjectEvaluations } from 'hooks/useSubjectEvaluations';
 import { useSubjectInboundEvaluations } from 'hooks/useSubjectInboundEvaluations';
 import React, { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -64,7 +64,7 @@ export const SubjectInboundEvaluationsContextProvider: React.FC<
     AuraSortId.EvaluationPlayerScore,
   ]);
 
-  const subjectConnections = useSubjectConnections(subjectId);
+  const subjectConnections = useSubjectEvaluations(subjectId);
 
   const brightIdBackup = useSelector(selectBrightIdBackup);
 

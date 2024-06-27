@@ -8,17 +8,17 @@ import {
   viewModeToViewAs,
 } from '../../constants';
 import useViewMode from '../../hooks/useViewMode';
-import { PreferredView, ProfileViewAs } from '../../types/dashboard';
+import { EvaluationCategory, PreferredView } from '../../types/dashboard';
 
 export const HeaderPreferedView = {
   ProfileHeaderViews: () => {
     const { updateViewAs, currentViewMode } = useViewMode();
 
     const views = [
-      ProfileViewAs.SUBJECT,
-      ProfileViewAs.PLAYER,
-      ProfileViewAs.TRAINER,
-      ProfileViewAs.MANAGER,
+      EvaluationCategory.SUBJECT,
+      EvaluationCategory.PLAYER,
+      EvaluationCategory.TRAINER,
+      EvaluationCategory.MANAGER,
     ];
 
     return (

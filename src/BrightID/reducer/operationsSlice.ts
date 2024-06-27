@@ -10,6 +10,8 @@ import {
 } from 'BrightID/utils/constants';
 import { AppDispatch, GetState, RootState } from 'store';
 
+import { SubmittedOp } from '../api/operation_types';
+
 export type Operation = SubmittedOp & {
   state: (typeof operation_states)[keyof typeof operation_states];
 };

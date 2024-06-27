@@ -1,13 +1,5 @@
-import { useInboundConnections } from 'hooks/useSubjectConnections';
-import { useInboundRatings } from 'hooks/useSubjectRatings';
+import { useInboundEvaluations } from 'hooks/useSubjectEvaluations';
 
 export const useSubjectInboundEvaluations = (subjectId: string) => {
-  const useInboundRatingsData = useInboundRatings(subjectId);
-  const useInboundConnectionsData = useInboundConnections(subjectId);
-
-  return {
-    ...useInboundRatingsData,
-    ...useInboundConnectionsData,
-    loading: useInboundRatingsData.loading || useInboundConnectionsData.loading,
-  };
+  return useInboundEvaluations(subjectId);
 };

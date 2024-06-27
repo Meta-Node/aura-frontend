@@ -20,7 +20,7 @@ module.exports = function (app) {
     app.use(
       '/auranode',
       createProxyMiddleware({
-        target: 'https://aura-node.brightid.org',
+        target: process.env.REACT_APP_AURA_NODE_URL,
         changeOrigin: true,
         pathRewrite: {
           '^/auranode/?(.*)': '/$1',

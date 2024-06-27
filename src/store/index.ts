@@ -33,11 +33,25 @@ const migrations: MigrationManifest = {
       },
     };
   },
+  3: (oldState: any) => {
+    return {
+      ...oldState,
+      profile: {
+        ...oldState.profile,
+        authData: oldState.profile.authData
+          ? {
+              brightId: oldState.profile.authData.brightId,
+              password: oldState.profile.authData.password,
+            }
+          : null,
+      },
+    };
+  },
 };
 
 const persistConfig = {
   key: 'root',
-  version: 2,
+  version: 3,
   storage: localForage,
   blacklist: ['recoveryData'], // won't be persisted
   migrate: createMigrate(migrations, { debug: __DEV__ }),

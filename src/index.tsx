@@ -13,11 +13,9 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import { backendApi, isThereProblemWithEncryption } from './api';
 import App from './App';
 import { EchartsContextProvider } from './contexts/EchartsContext';
 import { persistor, store } from './store';
-import { refreshKeyPairThunk } from './store/profile/actions';
 
 Sentry.init({
   dsn: 'https://6294f4d2fd5ba93d12c1aa4a5029d36c@o4505929495150592.ingest.sentry.io/4505929496657920',
@@ -35,42 +33,22 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
 });
 
-backendApi.interceptors.response.use(
-  (response) => response,
-  (error) =>
-    new Promise((_resolve, reject) => {
-      if (isThereProblemWithEncryption(error.response?.data)) {
-        store
-          .dispatch(refreshKeyPairThunk())
-          .then(() => {
-            reject(new Error('retryRequest'));
-          })
-          .catch((_e) => {
-            console.log(_e);
-            reject(error);
-          });
-      } else {
-        reject(error);
-      }
-    }),
-);
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <EchartsContextProvider>
         <PersistGate persistor={persistor}>
-          <MyEvaluationsContextProvider>
-            <SubjectsListContextProvider>
-              <NodeApiGateContextProvider>
-                <BrowserRouter>
+          <BrowserRouter>
+            <MyEvaluationsContextProvider>
+              <SubjectsListContextProvider>
+                <NodeApiGateContextProvider>
                   <BrowserHistoryContextProvider>
                     <App />
                   </BrowserHistoryContextProvider>
-                </BrowserRouter>
-              </NodeApiGateContextProvider>
-            </SubjectsListContextProvider>
-          </MyEvaluationsContextProvider>
+                </NodeApiGateContextProvider>
+              </SubjectsListContextProvider>
+            </MyEvaluationsContextProvider>
+          </BrowserRouter>
         </PersistGate>
       </EchartsContextProvider>
     </Provider>

@@ -18,11 +18,16 @@ export enum EvidenceViewMode {
   OUTBOUND_ACTIVITY_ON_MANAGERS,
 }
 
-export enum ProfileViewAs {
+export enum EvaluationCategory {
   SUBJECT = 'subject',
   PLAYER = 'player',
   TRAINER = 'trainer',
   MANAGER = 'manager',
+}
+
+export enum EvaluationValue {
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
 }
 
 export enum EvidenceType {

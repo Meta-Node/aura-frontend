@@ -1,10 +1,6 @@
 import axios from 'axios';
 import { AURA_NODE_URL_PROXY } from 'constants/urls';
 
-export const backendApi = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-});
-
 export const recoveryApi = axios.create({
   baseURL: '/brightid',
   // @ts-ignore
@@ -16,12 +12,3 @@ export const auraBrightIdNodeApi = axios.create({
   // @ts-ignore
   mode: 'no-cors',
 });
-
-export const isThereProblemWithEncryption = (errorMessage?: string) => {
-  if (typeof errorMessage !== 'string') return false;
-  return (
-    errorMessage.includes('Could not decrypt using publicKey') ||
-    errorMessage.includes('TypeError [ERR_INVALID_ARG_TYPE]') ||
-    errorMessage.includes('Could not decode data')
-  );
-};

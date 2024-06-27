@@ -1,9 +1,10 @@
-import { useInboundRatings } from 'hooks/useSubjectRatings';
 import React, { createContext, ReactNode, useContext } from 'react';
+
+import { useInboundEvaluations } from '../hooks/useSubjectEvaluations';
 
 // Define the context
 const SubjectInboundRatingsContext = createContext<
-  | (ReturnType<typeof useInboundRatings> & {
+  | (ReturnType<typeof useInboundEvaluations> & {
       subjectId: string;
     })
   | null
@@ -21,7 +22,7 @@ export const SubjectInboundRatingsContextProvider: React.FC<ProviderProps> = ({
 }) => {
   return (
     <SubjectInboundRatingsContext.Provider
-      value={{ ...useInboundRatings(subjectId), subjectId }}
+      value={{ ...useInboundEvaluations(subjectId), subjectId }}
     >
       {children}
     </SubjectInboundRatingsContext.Provider>

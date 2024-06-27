@@ -8,6 +8,7 @@ import { useContext, useState } from 'react';
 import { PreferredView } from 'types/dashboard';
 import { connectionLevelIcons } from 'utils/connection';
 
+import { viewModeToString } from '../../../constants';
 import { EchartsContext } from '../../../contexts/EchartsContext';
 import { compactFormat } from '../../../utils/number';
 
@@ -59,7 +60,7 @@ const ProfileOverview = ({
       <div className="flex flex-col gap-1.5">
         {currentViewMode !== PreferredView.PLAYER && (
           <div className=" mt-4 font-semibold text-xl text-black">
-            {currentViewMode} Evaluations
+            {viewModeToString[currentViewMode]} Evaluations
           </div>
         )}
         {/*<ShowData*/}
