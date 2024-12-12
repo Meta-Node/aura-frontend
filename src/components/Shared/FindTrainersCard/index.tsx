@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { compactFormat } from 'utils/number';
 
 import {
   viewModeToEvaluatorViewMode,
@@ -18,6 +17,7 @@ import LinkCard from '../../../pages/Home/LinkCard';
 import { PreferredView } from '../../../types/dashboard';
 import { connectionLevelIcons } from '../../../utils/connection';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
+import Scorebar from '../Scorebar';
 
 const FindTrainersCard = ({ subjectId }: { subjectId: string }) => {
   return (
@@ -239,11 +239,14 @@ const PotentialEvaluatorBrief = ({
             Level {loading ? '...' : auraLevel !== null ? auraLevel : '-'}
           </span>{' '}
         </span>
-        <p className="text-gray10 dark:text-gray-300 text-xs mb-2">
-          Score:{' '}
-          <span className="font-medium text-black dark:text-white">
+        <p className="text-gray10 mt-2 dark:text-gray-300 text-xs mb-2">
+          {/* <span className="font-medium text-black dark:text-white">
             {auraScore ? compactFormat(auraScore) : '-'}
-          </span>
+          </span> */}
+          <Scorebar
+            category={viewModeToViewAs[evaluatorViewMode]}
+            score={auraScore ?? 0}
+          />
         </p>
         {/* <div className="text-gray20 text-[10px] font-normal">
           Connection Level
