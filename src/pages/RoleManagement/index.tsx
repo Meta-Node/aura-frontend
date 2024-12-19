@@ -121,7 +121,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
               <img src="/assets/images/RoleManagement/item.svg" alt="" />
 
               <p className="dark:text-white">Reach Player level 2 to unlock</p>
-              <span className="text-pastel-green font-bold"> Trainer </span>
+              <span className="dark:text-white font-bold"> Trainer </span>
             </div>
           </section>
         </>
@@ -196,7 +196,7 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
               <img src="/assets/images/RoleManagement/item.svg" alt="" />
 
               <p className="dark:text-white">Reach Trainer level 1 to unlock</p>
-              <span className="text-blue font-bold"> Manager </span>
+              <span className="dark:text-white font-bold"> Manager </span>
             </div>
           </section>
         </>
