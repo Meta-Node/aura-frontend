@@ -7,6 +7,7 @@ import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import { useMemo } from 'react';
+import { compactFormat } from 'utils/number';
 
 import { PreferredView } from '../../../types/dashboard';
 
@@ -21,7 +22,7 @@ const ProfileInfoPerformance = ({
 }) => {
   const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
     useViewMode();
-  const { auraLevel } = useSubjectVerifications(
+  const { auraLevel, auraScore } = useSubjectVerifications(
     subjectId,
     currentRoleEvaluatorEvaluationCategory,
   );
@@ -105,7 +106,13 @@ const ProfileInfoPerformance = ({
               </>
             )}
           </div>
-          <div className="w-full relative bg-gray30 dark:bg-button-primary rounded-full h-4">
+          <div className="w-full mb-3 relative bg-gray30 dark:bg-button-primary rounded-full h-4">
+            <small className="absolute top-full mt-1">
+              score:{' '}
+              <span className="font-semibold">
+                {compactFormat(auraScore ?? 0)}
+              </span>
+            </small>
             <div
               className={`absolute ${getViewModeBackgroundColorClass(
                 currentViewMode,

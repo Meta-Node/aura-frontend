@@ -16,6 +16,7 @@ const LevelProgress: FC<{
   subjectId: string;
 }> = ({ category, subjectId }) => {
   const { currentViewMode } = useViewMode();
+
   const { auraLevel, auraScore } = useSubjectVerifications(subjectId, category);
 
   const remainingScore = useMemo(
@@ -67,7 +68,7 @@ const LevelProgress: FC<{
           </div>
         )}
         <div className="flex flex-col w-full gap-3.5">
-          <div className="flex flex-row items-end gap-1">
+          <div className="flex flex-row items-center gap-1">
             {ratingsToBeDoneCount === undefined ? (
               '...'
             ) : (
@@ -93,7 +94,13 @@ const LevelProgress: FC<{
               </>
             )}
           </div>
-          <div className="w-full relative bg-gray30 dark:bg-button-primary rounded-full h-4">
+          <div className="w-full relative bg-gray30 dark:bg-button-primary mb-3 rounded-full h-4">
+            <small className="absolute top-full mt-1">
+              score:{' '}
+              <span className="font-semibold">
+                {compactFormat(auraScore ?? 0)}
+              </span>
+            </small>
             <div
               className={`absolute ${getViewModeBackgroundColorClass(
                 currentViewMode,
