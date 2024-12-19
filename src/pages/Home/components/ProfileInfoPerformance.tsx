@@ -9,7 +9,7 @@ import useViewMode from 'hooks/useViewMode';
 import { useMemo } from 'react';
 import { compactFormat } from 'utils/number';
 
-import { PreferredView } from '../../../types/dashboard';
+import { EvaluationCategory, PreferredView } from '../../../types/dashboard';
 
 const ProfileInfoPerformance = ({
   subjectId,
@@ -50,6 +50,13 @@ const ProfileInfoPerformance = ({
     }
     return 73;
   }, [ratingsToBeDoneCount]);
+
+  if (
+    currentRoleEvaluatorEvaluationCategory === EvaluationCategory.MANAGER ||
+    currentRoleEvaluatorEvaluationCategory === EvaluationCategory.TRAINER
+  ) {
+    return null;
+  }
 
   if (ratingsToBeDoneCount === 0) return null;
 
