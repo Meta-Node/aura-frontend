@@ -40,7 +40,7 @@ const ProfileHeaderCard: FC<{
               subjectId={subjectId}
             />
           </div>
-          <div className="evaluation__info flex flex-col">
+          <div className="evaluation__info flex flex-1 flex-col">
             <p className="text-black dark:text-white font-medium">{name}</p>
 
             <p className="text-gray10 dark:text-gray70">
