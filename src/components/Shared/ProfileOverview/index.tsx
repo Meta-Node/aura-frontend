@@ -83,13 +83,14 @@ const ProfileOverview = ({
       {hasHeader && (
         <div className=" mb-4 font-bold text-lg text-black">{title}</div>
       )}
-      {viewMode !== PreferredView.PLAYER && (
-        <ActivitiesCard
-          subjectId={subjectId}
-          onLastEvaluationClick={setCredibilityDetailsProps}
-          viewMode={viewMode}
-        />
-      )}
+      {viewMode !== PreferredView.PLAYER &&
+        viewMode !== PreferredView.TRAINER && (
+          <ActivitiesCard
+            subjectId={subjectId}
+            onLastEvaluationClick={setCredibilityDetailsProps}
+            viewMode={viewMode}
+          />
+        )}
 
       <div className="flex flex-col gap-1.5">
         {viewMode !== PreferredView.PLAYER && (
