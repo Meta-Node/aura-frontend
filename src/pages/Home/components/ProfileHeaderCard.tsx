@@ -18,11 +18,10 @@ const ProfileHeaderCard: FC<{
   const { myConnectionToSubject: inboundConnectionInfo } =
     useMyEvaluationsContext({ subjectId });
 
-  const { auraLevel, auraScore, auraImpacts } =
-    useParseBrightIdVerificationData(
-      inboundConnectionInfo?.verifications,
-      currentEvaluationCategory,
-    );
+  const { auraLevel, auraScore } = useParseBrightIdVerificationData(
+    inboundConnectionInfo?.verifications,
+    currentEvaluationCategory,
+  );
 
   const progress = calculateUserScorePercentage(
     currentEvaluationCategory,
