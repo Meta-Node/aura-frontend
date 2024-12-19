@@ -1,6 +1,6 @@
 import { EvaluationCategory } from 'types/dashboard';
 
-export const subjectLevelPoints = [0, 1000000, 5000000, 10000000, 15000000];
+export const subjectLevelPoints = [0, 1000000, 5000000, 10000000, 150000000];
 
 export const playerLevelPoints = [0, 1000000, 2000000, 3000000];
 
