@@ -21,8 +21,9 @@ export const connectionLevelMap: {
   reported: 0,
   suspicious: 1,
   'just met': 2,
-  'already known': 3,
-  recovery: 4,
+  'already known': 4,
+  'aura only': 3,
+  recovery: 5,
 };
 
 export function getTextClassNameOfAuraRatingNumber(

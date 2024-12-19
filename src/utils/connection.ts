@@ -8,4 +8,5 @@ export const connectionLevelIcons: {
   'just met': 'just-met-icon',
   'already known': 'already-known-icon',
   recovery: 'recovery-icon',
+  'aura only': 'aura-only',
 };

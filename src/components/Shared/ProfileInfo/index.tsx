@@ -84,6 +84,7 @@ export const ProfileInfo = ({
                     connectionLevelIcons[myConnectionToSubject.level]
                   }.svg`}
                   alt=""
+                  className="w-5"
                 />
               )}
               <strong>{auraLevel}</strong>
