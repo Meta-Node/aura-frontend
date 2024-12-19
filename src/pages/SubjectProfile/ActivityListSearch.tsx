@@ -173,7 +173,27 @@ export const ActivityListSearch = ({
           />
         </div>
       </div>
-      <div className="text-lg text-white mb-3 mt-3 flex items-center">
+      <div className="text-right font-semibold text-sm">
+        <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
+          {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER &&
+            (selectedTab === ProfileTab.ACTIVITY ? (
+              <p
+                className="font-medium cursor-pointer text-white"
+                onClick={() => setSelectedTab(ProfileTab.ACTIVITY_ON_MANAGERS)}
+              >
+                View Managers
+              </p>
+            ) : (
+              <p
+                className="font-medium cursor-pointer text-white"
+                onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
+              >
+                View Trainers
+              </p>
+            ))}
+        </button>
+      </div>
+      <div className="text-lg text-white -mt-3 flex items-center">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -202,22 +222,6 @@ export const ActivityListSearch = ({
             : ''}
           )
         </span>
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER &&
-          (selectedTab === ProfileTab.ACTIVITY ? (
-            <p
-              className="ml-auto font-medium cursor-pointer text-white"
-              onClick={() => setSelectedTab(ProfileTab.ACTIVITY_ON_MANAGERS)}
-            >
-              View Managers
-            </p>
-          ) : (
-            <p
-              className="ml-auto font-medium cursor-pointer text-white"
-              onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
-            >
-              View Trainers
-            </p>
-          ))}
       </div>
     </>
   );
