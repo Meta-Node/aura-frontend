@@ -6,25 +6,23 @@ import {
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import { useMemo } from 'react';
+import { FC, useMemo } from 'react';
+import { EvaluationCategory, PreferredView } from 'types/dashboard';
+import { compactFormat } from 'utils/number';
+import { calculateRemainingScoreToNextLevel } from 'utils/score';
 
-import { PreferredView } from '../../../types/dashboard';
-
-const ProfileInfoPerformance = ({
-  subjectId,
-  isPerformance,
-  color = 'pastel-green',
-}: {
+const LevelProgress: FC<{
+  category: EvaluationCategory;
   subjectId: string;
-  isPerformance: boolean;
-  color: string;
-}) => {
-  const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
-    useViewMode();
-  const { auraLevel } = useSubjectVerifications(
-    subjectId,
-    currentRoleEvaluatorEvaluationCategory,
+}> = ({ category, subjectId }) => {
+  const { currentViewMode } = useViewMode();
+  const { auraLevel, auraScore } = useSubjectVerifications(subjectId, category);
+
+  const remainingScore = useMemo(
+    () => calculateRemainingScoreToNextLevel(category, auraScore ?? 0),
+    [auraScore, category],
   );
+
   const { myRatings } = useMyEvaluationsContext();
   const ratingsToBeDoneCount = useMemo(
     () =>
@@ -50,8 +48,6 @@ const ProfileInfoPerformance = ({
     return 73;
   }, [ratingsToBeDoneCount]);
 
-  if (ratingsToBeDoneCount === 0) return null;
-
   return (
     <div className="card relative">
       <div className="absolute top-0 right-0">
@@ -74,19 +70,11 @@ const ProfileInfoPerformance = ({
           <div className="flex flex-row items-end gap-1">
             {ratingsToBeDoneCount === undefined ? (
               '...'
-            ) : ratingsToBeDoneCount > 0 ? (
-              <>
-                <span className="text-2xl font-black">
-                  {ratingsToBeDoneCount}
-                </span>
-                <span className="text-lg font-medium">
-                  more evaluation{ratingsToBeDoneCount > 1 ? `s` : ''} to unlock
-                  Level Up
-                </span>
-              </>
             ) : (
               <>
-                <span className="text-xl font-black">25,234</span>
+                <span className="text-xl font-black">
+                  {remainingScore < 0 ? '' : compactFormat(remainingScore)}
+                </span>
                 <span className="text-lg font-medium">to</span>
                 <span
                   className={`text-lg font-semibold ${
@@ -100,7 +88,7 @@ const ProfileInfoPerformance = ({
                       : 'text-gray100'
                   }`}
                 >
-                  Level 3
+                  Level {(auraLevel ?? 0) + 1}
                 </span>
               </>
             )}
@@ -119,4 +107,4 @@ const ProfileInfoPerformance = ({
   );
 };
 
-export default ProfileInfoPerformance;
+export default LevelProgress;

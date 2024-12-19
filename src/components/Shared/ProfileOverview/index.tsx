@@ -7,8 +7,8 @@ import {
   useSubjectVerifications,
   useTotalImpact,
 } from 'hooks/useSubjectVerifications';
-import * as React from 'react';
-import { useState } from 'react';
+import useViewMode from 'hooks/useViewMode';
+import LevelProgress from 'pages/Home/components/LevelProgress';
 import { Link } from 'react-router-dom';
 import { PreferredView, ProfileTab } from 'types/dashboard';
 
@@ -57,7 +57,7 @@ const ProfileOverview = ({
     useTotalImpact(auraImpacts);
   const { impactChartOption } = useImpactEChartOption(auraImpacts);
 
-  const [selectedLevel, setSelectedLevel] = useState(1);
+  const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
   const { toggleFiltersById } = useSubjectInboundEvaluationsContext({
     subjectId,
@@ -78,118 +78,128 @@ const ProfileOverview = ({
       });
     }
   };
+
   return (
-    <div className="card">
-      {hasHeader && (
-        <div className=" mb-4 font-bold text-lg text-black">{title}</div>
-      )}
-      {viewMode !== PreferredView.PLAYER &&
-        viewMode !== PreferredView.TRAINER && (
-          <ActivitiesCard
-            subjectId={subjectId}
-            onLastEvaluationClick={setCredibilityDetailsProps}
-            viewMode={viewMode}
-          />
+    <>
+      <LevelProgress
+        category={currentRoleEvaluatorEvaluationCategory}
+        subjectId={subjectId}
+      />
+      <div className="card">
+        {hasHeader && (
+          <div className=" mb-4 font-bold text-lg text-black">{title}</div>
         )}
-
-      <div className="flex flex-col gap-1.5">
-        {viewMode !== PreferredView.PLAYER && (
-          <div className=" mt-4 font-semibold text-xl">
-            {viewModeToString[viewMode]} Evaluations
-          </div>
-        )}
-        {/*<ShowData*/}
-        {/*  title="Connections"*/}
-        {/*  value={inboundConnections?.length ?? '...'}*/}
-        {/*  details={null}*/}
-        {/*/>*/}
-        <div className="header__info flex flex-col gap-1">
-          <ShowData
-            title="Evaluations"
-            value={inboundRatings?.filter((r) => Number(r.rating)).length}
-            details={
-              inboundRatingsStatsString
-                ? `(${inboundRatingsStatsString})`
-                : undefined
-            }
-          />
-          <ShowData
-            title="Calculated Score"
-            value={auraScore ? compactFormat(auraScore) : '-'}
-            details={`(${
-              totalPositiveImpact !== null
-                ? `+${compactFormat(totalPositiveImpact)}`
-                : '-'
-            } / ${
-              totalNegativeImpact !== null
-                ? `-${compactFormat(totalNegativeImpact)}`
-                : '-'
-            })`}
-          />
-        </div>
-        <div className="body__info flex justify-between w-full">
-          <div className="font-medium">Evaluation Impact:</div>
-          <div className="underline text-sm text-gray00 dark:text-gray-400">
-            What&apos;s this?
-          </div>
-        </div>
-        <ReactECharts
-          option={impactChartOption}
-          onEvents={{
-            click: onChartClick, // Attach click event
-          }}
-          className="body__chart w-full mb-3"
-        />
-        <div className="chart-info flex flex-wrap gap-y-2.5 mb-5">
-          <div className="chart-info__item flex items-center gap-1 w-1/2">
-            <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#E2E2E2]"></div>
-            <div className="chart-info__item__text text-xs font-bold">
-              Low Confidence
-            </div>
-          </div>
-          <div className="chart-info__item flex items-center gap-1 w-1/2">
-            <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#B5B5B5]"></div>
-            <div className="chart-info__item__text text-xs font-bold">
-              Medium Confidence
-            </div>
-          </div>
-          <div className="chart-info__item flex items-center gap-1 w-1/2">
-            <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#7A7A7A]"></div>
-            <div className="chart-info__item__text text-xs font-bold">
-              High Confidence
-            </div>
-          </div>
-          <div className="chart-info__item flex items-center gap-1 w-1/2">
-            <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#404040]"></div>
-            <div className="chart-info__item__text text-xs font-bold">
-              Very High Confidence
-            </div>
-          </div>
-        </div>
-        {/*<p className="font-medium italic text-sm text-black">*/}
-        {/*  *This chart displays the top 10 impacts players have on the subject*/}
-        {/*  score*/}
-        {/*</p>*/}
-      </div>
-
-      {isMyPerformance && (
-        <>
-          <Link
-            to={`/subject/${subjectId}?viewas=${viewModeToViewAs[viewMode]}&tab=${ProfileTab.EVALUATIONS}`}
-            className="w-full"
-          >
-            <button className="btn--outlined btn--medium mt-4 w-full">
-              View All Evaluations
-            </button>
-          </Link>
-          {viewMode === PreferredView.TRAINER && (
-            <button onClick={onFindEvaluatorsButtonClick} className="btn mt-3">
-              Find New Trainer
-            </button>
+        {viewMode !== PreferredView.PLAYER &&
+          viewMode !== PreferredView.TRAINER && (
+            <ActivitiesCard
+              subjectId={subjectId}
+              onLastEvaluationClick={setCredibilityDetailsProps}
+              viewMode={viewMode}
+            />
           )}
-        </>
-      )}
-    </div>
+
+        <div className="flex flex-col gap-1.5">
+          {viewMode !== PreferredView.PLAYER && (
+            <div className=" mt-4 font-semibold text-xl">
+              {viewModeToString[viewMode]} Evaluations
+            </div>
+          )}
+          {/*<ShowData*/}
+          {/*  title="Connections"*/}
+          {/*  value={inboundConnections?.length ?? '...'}*/}
+          {/*  details={null}*/}
+          {/*/>*/}
+          <div className="header__info flex flex-col gap-1">
+            <ShowData
+              title="Evaluations"
+              value={inboundRatings?.filter((r) => Number(r.rating)).length}
+              details={
+                inboundRatingsStatsString
+                  ? `(${inboundRatingsStatsString})`
+                  : undefined
+              }
+            />
+            <ShowData
+              title="Calculated Score"
+              value={auraScore ? compactFormat(auraScore) : '-'}
+              details={`(${
+                totalPositiveImpact !== null
+                  ? `+${compactFormat(totalPositiveImpact)}`
+                  : '-'
+              } / ${
+                totalNegativeImpact !== null
+                  ? `-${compactFormat(totalNegativeImpact)}`
+                  : '-'
+              })`}
+            />
+          </div>
+          <div className="body__info flex justify-between w-full">
+            <div className="font-medium">Evaluation Impact:</div>
+            <div className="underline text-sm text-gray00 dark:text-gray-400">
+              What&apos;s this?
+            </div>
+          </div>
+          <ReactECharts
+            option={impactChartOption}
+            onEvents={{
+              click: onChartClick, // Attach click event
+            }}
+            className="body__chart w-full mb-3"
+          />
+          <div className="chart-info flex flex-wrap gap-y-2.5 mb-5">
+            <div className="chart-info__item flex items-center gap-1 w-1/2">
+              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#E2E2E2]"></div>
+              <div className="chart-info__item__text text-xs font-bold">
+                Low Confidence
+              </div>
+            </div>
+            <div className="chart-info__item flex items-center gap-1 w-1/2">
+              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#B5B5B5]"></div>
+              <div className="chart-info__item__text text-xs font-bold">
+                Medium Confidence
+              </div>
+            </div>
+            <div className="chart-info__item flex items-center gap-1 w-1/2">
+              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#7A7A7A]"></div>
+              <div className="chart-info__item__text text-xs font-bold">
+                High Confidence
+              </div>
+            </div>
+            <div className="chart-info__item flex items-center gap-1 w-1/2">
+              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#404040]"></div>
+              <div className="chart-info__item__text text-xs font-bold">
+                Very High Confidence
+              </div>
+            </div>
+          </div>
+          {/*<p className="font-medium italic text-sm text-black">*/}
+          {/*  *This chart displays the top 10 impacts players have on the subject*/}
+          {/*  score*/}
+          {/*</p>*/}
+        </div>
+
+        {isMyPerformance && (
+          <>
+            <Link
+              to={`/subject/${subjectId}?viewas=${viewModeToViewAs[viewMode]}&tab=${ProfileTab.EVALUATIONS}`}
+              className="w-full"
+            >
+              <button className="btn--outlined btn--medium mt-4 w-full">
+                View All Evaluations
+              </button>
+            </Link>
+            {viewMode === PreferredView.TRAINER && (
+              <button
+                onClick={onFindEvaluatorsButtonClick}
+                className="btn mt-3"
+              >
+                Find New Trainer
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
