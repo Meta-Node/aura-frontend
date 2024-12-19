@@ -13,18 +13,19 @@ const ProfileHeaderCard: FC<{
   subjectId: string;
 }> = ({ subjectId }) => {
   const name = useSubjectName(subjectId);
-  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+  const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
+    useViewMode();
 
   const { myConnectionToSubject: inboundConnectionInfo } =
     useMyEvaluationsContext({ subjectId });
 
   const { auraLevel, auraScore } = useParseBrightIdVerificationData(
     inboundConnectionInfo?.verifications,
-    currentEvaluationCategory,
+    currentRoleEvaluatorEvaluationCategory,
   );
 
   const progress = calculateUserScorePercentage(
-    currentEvaluationCategory,
+    currentRoleEvaluatorEvaluationCategory,
     auraScore ?? 0,
   );
 
