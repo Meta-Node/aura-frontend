@@ -40,7 +40,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "test": "vite test",
     "lint": "eslint .",
@@ -79,7 +79,7 @@
     "@testing-library/user-event": "^13.2.1",
     "@types/crypto-js": "^4.1.1",
     "@types/jest": "^27.0.1",
-    "@types/node": "^20.2.5",
+    "@types/node": "^22.10.2",
     "@types/qrcode": "^1.5.1",
     "@types/ramda": "^0.29.3",
     "@types/react": "^18.0.0",

@@ -11,11 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -32,13 +28,8 @@
     "target": "ESNext",
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo/build",
     // avoid clobbering the cypress tsbuildinfo
-    "types": [
-      "jest"
-    ],
+    "types": ["jest", "@types/node"],
     "useUnknownInCatchVariables": false
   },
-  "include": [
-    "src/**/*",
-    "src/**/*.json"
-  ]
+  "include": ["src/**/*", "src/**/*.json"]
 }
