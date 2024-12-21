@@ -9,7 +9,7 @@ export default defineConfig(() => {
       outDir: 'build',
     },
     define: {
-      'process.env': {},
+      'process.env': process.env,
     },
     plugins: [tsconfigPaths(), react()],
     server: {
