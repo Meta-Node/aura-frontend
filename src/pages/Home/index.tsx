@@ -109,7 +109,7 @@ const Home = () => {
         />
 
         <ToggleInput
-          option1={'Activity'}
+          option1={'Evaluate'}
           option2={'Level Up'}
           isChecked={isEvaluate}
           disabledHelpText={`${ratingsToBeDoneCount} more evaluation ${
