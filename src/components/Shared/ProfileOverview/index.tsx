@@ -9,7 +9,9 @@ import {
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import LevelProgress from 'pages/Home/components/LevelProgress';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { selectAuthData } from 'store/profile/selectors';
 import { PreferredView, ProfileTab } from 'types/dashboard';
 
 import {
@@ -63,6 +65,8 @@ const ProfileOverview = ({
     subjectId,
   });
 
+  const authData = useSelector(selectAuthData);
+
   const setEvidenceListFilter = (filterId: AuraFilterId) => {
     toggleFiltersById([filterId], true);
     showEvidenceList?.();
@@ -81,10 +85,12 @@ const ProfileOverview = ({
 
   return (
     <>
-      <LevelProgress
-        category={currentRoleEvaluatorEvaluationCategory}
-        subjectId={subjectId}
-      />
+      {authData?.brightId === subjectId && (
+        <LevelProgress
+          category={currentRoleEvaluatorEvaluationCategory}
+          subjectId={subjectId}
+        />
+      )}
       <div className="card">
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>

@@ -9,7 +9,10 @@ import useViewMode from 'hooks/useViewMode';
 import { FC, useMemo } from 'react';
 import { EvaluationCategory, PreferredView } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
-import { calculateRemainingScoreToNextLevel } from 'utils/score';
+import {
+  calculateRemainingScoreToNextLevel,
+  calculateUserScorePercentage,
+} from 'utils/score';
 
 const LevelProgress: FC<{
   category: EvaluationCategory;
@@ -49,6 +52,11 @@ const LevelProgress: FC<{
     return 73;
   }, [ratingsToBeDoneCount]);
 
+  const levelPercentage = useMemo(
+    () => calculateUserScorePercentage(category, auraScore ?? 0),
+    [auraScore, category],
+  );
+
   return (
     <div className="card relative">
       <div className="absolute top-0 right-0">
@@ -73,24 +81,32 @@ const LevelProgress: FC<{
               '...'
             ) : (
               <>
-                <span className="text-xl font-black">
-                  {remainingScore < 0 ? '' : compactFormat(remainingScore)}
-                </span>
-                <span className="text-lg font-medium">to</span>
-                <span
-                  className={`text-lg font-semibold ${
-                    currentViewMode === PreferredView.PLAYER
-                      ? 'text-primary-d1'
-                      : currentViewMode === PreferredView.TRAINER
-                      ? 'text-pl2'
-                      : currentViewMode ===
-                        PreferredView.MANAGER_EVALUATING_TRAINER
-                      ? 'text-blue'
-                      : 'text-gray100'
-                  }`}
-                >
-                  Level {(auraLevel ?? 0) + 1}
-                </span>
+                {remainingScore > 0 ? (
+                  <>
+                    <span className="text-xl font-black">
+                      {compactFormat(remainingScore)}
+                    </span>
+                    <span className="text-lg font-medium">to</span>
+                    <span
+                      className={`text-lg font-semibold ${
+                        currentViewMode === PreferredView.PLAYER
+                          ? 'text-primary-d1'
+                          : currentViewMode === PreferredView.TRAINER
+                          ? 'text-pl2'
+                          : currentViewMode ===
+                            PreferredView.MANAGER_EVALUATING_TRAINER
+                          ? 'text-blue'
+                          : 'text-gray100'
+                      }`}
+                    >
+                      Level {(auraLevel ?? 0) + 1}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-semibold">
+                    {"You've reached the maximum level! 🎉"}
+                  </span>
+                )}
               </>
             )}
           </div>
@@ -105,7 +121,11 @@ const LevelProgress: FC<{
               className={`absolute ${getViewModeBackgroundColorClass(
                 currentViewMode,
               )} rounded-full h-full`}
-              style={{ width: progressPercentage + '%' }}
+              style={{
+                width:
+                  (remainingScore > 0 ? progressPercentage : levelPercentage) +
+                  '%',
+              }}
             ></div>
           </div>
         </div>
