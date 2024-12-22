@@ -15,10 +15,12 @@ import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory, ProfileTab } from 'types/dashboard';
 import { connectionLevelIcons } from 'utils/connection';
 import { compactFormat } from 'utils/number';
+import { calculateUserScorePercentage } from 'utils/score';
 
 import NewEvaluationCard from '../../../pages/SubjectProfile/NewEvaluationCard';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
 import { YourEvaluationInfo } from '../EvaluationInfo/YourEvaluationInfo';
+import { HorizontalProgressBar } from '../HorizontalProgressBar';
 
 export const ProfileInfo = ({
   isPerformance = false,
@@ -49,16 +51,11 @@ export const ProfileInfo = ({
       evaluationCategory: currentEvaluationCategory,
     });
 
-  const {
-    clearSortAndFilter,
-    toggleFiltersById,
-    selectedFilterIds,
-    selectedFilters,
-    setSelectedSort,
-  } = useSubjectInboundConnectionsContext({
-    subjectId,
-    evaluationCategory: currentEvaluationCategory,
-  });
+  const { toggleFiltersById, setSelectedSort } =
+    useSubjectInboundConnectionsContext({
+      subjectId,
+      evaluationCategory: currentEvaluationCategory,
+    });
 
   const { connections: outboundConnections, ratings: outboundRatings } =
     useOutboundEvaluationsContext({ subjectId });
@@ -78,6 +75,11 @@ export const ProfileInfo = ({
     return '...';
   }, [outboundConnections, outboundRatings]);
 
+  const progress = calculateUserScorePercentage(
+    currentEvaluationCategory,
+    auraScore ?? 0,
+  );
+
   const isVisitingYourPage = authData?.brightId === subjectId;
 
   return (
@@ -93,24 +95,25 @@ export const ProfileInfo = ({
           <div className="card--header__left__info flex flex-col justify-center">
             <h3 className="text-lg font-medium leading-5 truncate">{name}</h3>
             <div className="flex gap-1">
+              <span className="text-sm">
+                Level: <strong>{auraLevel}</strong>
+              </span>{' '}
               {myConnectionToSubject && (
                 <img
                   src={`/assets/images/Shared/${
                     connectionLevelIcons[myConnectionToSubject.level]
                   }.svg`}
                   alt=""
-                  className="w-5"
+                  className="w-5 ml-2"
                 />
               )}
-              <span className="text-sm">
-                Level: <strong>{auraLevel}</strong>
-              </span>
             </div>
             <div className="text-sm">
               Score: <strong>{compactFormat(auraScore ?? 0)}</strong>
             </div>
           </div>
         </div>
+
         <div className="flex flex-col gap-1.5 items-end text-sm dark:text-white text-black min-w-[90px]">
           {userHasRecovery !== null && (
             <div
@@ -145,6 +148,11 @@ export const ProfileInfo = ({
           </p>
         </div>
       </div>
+      {progress < 0 ? (
+        '😈'
+      ) : (
+        <HorizontalProgressBar className="w-full" percentage={progress} />
+      )}
       {isVisitingYourPage ||
         (!loading && !myRatingNumberToSubject ? (
           <NewEvaluationCard
