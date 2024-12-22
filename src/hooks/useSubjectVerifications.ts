@@ -172,6 +172,19 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
           barMaxWidth: 30,
         },
       ],
+      graphic:
+        auraTopImpacts.length > 5
+          ? undefined
+          : auraTopImpacts.map((item, index) => ({
+              type: 'image',
+              style: {
+                image: '/assets/images/avatar-thumb.jpg',
+                width: 30,
+                height: 30,
+              },
+              position: [33 + index * 96, 170],
+              z: 100,
+            })),
     };
   }, [auraSumImpacts, auraTopImpacts, authData?.brightId]);
 
