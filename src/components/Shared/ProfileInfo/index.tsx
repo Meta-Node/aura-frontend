@@ -1,8 +1,10 @@
 import { getViewModeSubjectBorderColorClass } from 'constants/index';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
+import { useSubjectInboundConnectionsContext } from 'contexts/SubjectInboundConnectionsContext';
 import { SubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
 import { AuraFilterId } from 'hooks/useFilters';
+import { AuraSortId } from 'hooks/useSorts';
 import { useSubjectName } from 'hooks/useSubjectName';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
@@ -10,7 +12,7 @@ import moment from 'moment';
 import { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
-import { ProfileTab } from 'types/dashboard';
+import { EvaluationCategory, ProfileTab } from 'types/dashboard';
 import { connectionLevelIcons } from 'utils/connection';
 
 import NewEvaluationCard from '../../../pages/SubjectProfile/NewEvaluationCard';
@@ -28,7 +30,8 @@ export const ProfileInfo = ({
   setShowEvaluationFlow: (value: boolean) => void;
   setSelectedTab?: (value: ProfileTab) => void;
 }) => {
-  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+  const { currentViewMode, currentEvaluationCategory, updateViewAs } =
+    useViewMode();
   const authData = useSelector(selectAuthData);
 
   const { userHasRecovery, auraLevel } = useSubjectVerifications(
@@ -44,6 +47,17 @@ export const ProfileInfo = ({
       subjectId,
       evaluationCategory: currentEvaluationCategory,
     });
+
+  const {
+    clearSortAndFilter,
+    toggleFiltersById,
+    selectedFilterIds,
+    selectedFilters,
+    setSelectedSort,
+  } = useSubjectInboundConnectionsContext({
+    subjectId,
+    evaluationCategory: currentEvaluationCategory,
+  });
 
   const { connections: outboundConnections, ratings: outboundRatings } =
     useOutboundEvaluationsContext({ subjectId });
@@ -96,11 +110,13 @@ export const ProfileInfo = ({
             <div
               onClick={() => {
                 if (userHasRecovery) {
-                  inboundEvaluationsContext?.toggleFiltersById(
-                    [AuraFilterId.TheirRecovery],
+                  updateViewAs(EvaluationCategory.SUBJECT);
+                  setSelectedTab?.(ProfileTab.CONNECTIONS);
+                  toggleFiltersById(
+                    [AuraFilterId.ConnectionTypeRecovery],
                     true,
                   );
-                  setSelectedTab?.(ProfileTab.EVALUATIONS);
+                  setSelectedSort(AuraSortId.ConnectionLastUpdated);
                 }
               }}
               className={`${
