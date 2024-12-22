@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 import { ProfileTab } from 'types/dashboard';
 import { connectionLevelIcons } from 'utils/connection';
+import { compactFormat } from 'utils/number';
 
 import NewEvaluationCard from '../../../pages/SubjectProfile/NewEvaluationCard';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
@@ -31,7 +32,7 @@ export const ProfileInfo = ({
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
   const authData = useSelector(selectAuthData);
 
-  const { userHasRecovery, auraLevel } = useSubjectVerifications(
+  const { userHasRecovery, auraLevel, auraScore } = useSubjectVerifications(
     subjectId,
     currentEvaluationCategory,
   );
@@ -87,7 +88,12 @@ export const ProfileInfo = ({
                   className="w-5"
                 />
               )}
-              <strong>{auraLevel}</strong>
+              <span className="text-sm">
+                Level: <strong>{auraLevel}</strong>
+              </span>
+            </div>
+            <div className="text-sm">
+              Score: <strong>{compactFormat(auraScore ?? 0)}</strong>
             </div>
           </div>
         </div>
