@@ -85,6 +85,12 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
         .slice(0, 20) ?? [],
     [auraImpacts],
   );
+
+  const auraSumImpacts = useMemo(
+    () => auraTopImpacts.reduce((prev, curr) => prev + curr.impact, 0),
+    [auraTopImpacts],
+  );
+
   const impactChartOption: EChartsOption = useMemo(() => {
     const maxImpact = auraTopImpacts
       ? Math.max(...auraTopImpacts.map((item) => Math.abs(item.impact)))
@@ -129,7 +135,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
 
           // Adjust tooltip position to prevent overflow
           let xPos = point[0];
-          const yPos = point[1];
+          const yPos = point[1] - 45;
 
           // If the tooltip is too close to the right edge, shift it to the left
           if (xPos + tooltipWidth > chartWidth) {
@@ -145,7 +151,10 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
           color: '#ABCAAE',
           data: auraTopImpacts.map((item) => ({
             value: item.impact,
-            label: item.evaluatorName,
+            label: `${item.evaluatorName} ${(
+              (item.impact / auraSumImpacts) *
+              100
+            ).toFixed(2)}%`,
             evaluator: item.evaluator,
             itemStyle: {
               color:
@@ -164,7 +173,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
         },
       ],
     };
-  }, [auraTopImpacts, authData]);
+  }, [auraSumImpacts, auraTopImpacts, authData?.brightId]);
 
   const impactChartSmallOption = useMemo(
     () => ({
