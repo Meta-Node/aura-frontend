@@ -130,6 +130,7 @@ export const SubjectInboundConnectionsContextProvider: React.FC<
     sorts,
     useMemo(() => ['fromSubjectId', 'name'], []),
     // 'evaluationsList',
+    'evaluationList|' + subjectId,
   );
 
   const { refreshCounter } = useRefreshEvaluationsContext();
