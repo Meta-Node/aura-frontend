@@ -111,7 +111,7 @@ export const SubjectOutboundEvaluationsContextProvider: React.FC<
     filters,
     sorts,
     useMemo(() => ['toSubjectId', 'name'], []),
-    // 'activityList',
+    'activityList|' + subjectId,
   );
 
   const { refreshCounter } = useRefreshEvaluationsContext();

@@ -15,7 +15,8 @@ export type ConnectionLevel =
   | 'suspicious'
   | 'just met'
   | 'already known'
-  | 'recovery';
+  | 'recovery'
+  | 'aura only';
 
 export type BrightIdConnection = {
   id: string;

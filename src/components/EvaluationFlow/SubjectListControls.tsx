@@ -170,7 +170,31 @@ export const SubjectListControls = ({
           />
         </div>
       </div>
-      <div className="text-lg text-white mb-3 mt-3 flex items-center">
+      <div className="text-right text-sm mb-2 mt-2">
+        <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
+          {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
+            <p
+              className="ml-auto font-medium cursor-pointer text-white"
+              onClick={() =>
+                setPreferredView(PreferredView.MANAGER_EVALUATING_MANAGER)
+              }
+            >
+              View Managers
+            </p>
+          )}
+          {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
+            <p
+              className="ml-auto font-medium cursor-pointer text-white"
+              onClick={() =>
+                setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
+              }
+            >
+              View Trainers
+            </p>
+          )}
+        </button>
+      </div>
+      <div className="text-lg text-white flex mb-3 items-center">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -207,26 +231,6 @@ export const SubjectListControls = ({
           className="w-7 h-7 ml-1 mt-0.5 cursor-pointer"
           onClick={refreshBrightIdBackup}
         />
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
-          <p
-            className="ml-auto font-medium cursor-pointer text-white"
-            onClick={() =>
-              setPreferredView(PreferredView.MANAGER_EVALUATING_MANAGER)
-            }
-          >
-            View Managers
-          </p>
-        )}
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
-          <p
-            className="ml-auto font-medium cursor-pointer text-white"
-            onClick={() =>
-              setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
-            }
-          >
-            View Trainers
-          </p>
-        )}
       </div>
     </>
   );

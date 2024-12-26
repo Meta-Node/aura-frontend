@@ -8,6 +8,8 @@ export const apiSlice = createApi({
     mode: 'no-cors',
   }),
   endpoints: () => ({}),
+  refetchOnReconnect: true,
+  keepUnusedDataFor: 10,
 });
 
-export const {} = apiSlice;
+export const { reducer } = apiSlice;

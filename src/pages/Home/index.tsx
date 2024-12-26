@@ -25,6 +25,7 @@ import {
   selectPlayerOnboardingScreenShown,
 } from '../../store/profile/selectors';
 import { hash } from '../../utils/crypto';
+import ProfileHeaderCard from './components/ProfileHeaderCard';
 import ProfileInfoPerformance from './components/ProfileInfoPerformance';
 
 const Home = () => {
@@ -93,17 +94,18 @@ const Home = () => {
     return <div>Not logged in</div>;
   }
 
-  return myRatings?.length === 0 && !playerOnboardingScreenShown ? (
+  return !playerOnboardingScreenShown ? (
     <Onboarding />
   ) : loadingMyEvaluations ? (
     <LoadingList />
   ) : (
     <SubjectInboundEvaluationsContextProvider subjectId={authData.brightId}>
       <div id="scrollable-div" className="page flex flex-col gap-4">
+        <ProfileHeaderCard subjectId={authData.brightId} />
         <ProfileInfoPerformance
           subjectId={authData.brightId}
           isPerformance={true}
-          color={color.Player} // this color should be based on role
+          color={color.Player}
         />
 
         <ToggleInput

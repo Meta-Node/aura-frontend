@@ -98,6 +98,7 @@ export const connection_levels = {
   JUST_MET: 'just met',
   ALREADY_KNOWN: 'already known',
   RECOVERY: 'recovery',
+  AURA_ONLY: 'aura only',
 } as const;
 
 export const report_reasons = {

@@ -6,26 +6,27 @@ import {
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import { useMemo } from 'react';
+import { FC, useMemo } from 'react';
+import { EvaluationCategory, PreferredView } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
+import {
+  calculateRemainingScoreToNextLevel,
+  calculateUserScorePercentage,
+} from 'utils/score';
 
-import { EvaluationCategory, PreferredView } from '../../../types/dashboard';
-
-const ProfileInfoPerformance = ({
-  subjectId,
-  isPerformance,
-  color = 'pastel-green',
-}: {
+const LevelProgress: FC<{
+  category: EvaluationCategory;
   subjectId: string;
-  isPerformance: boolean;
-  color: string;
-}) => {
-  const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
-    useViewMode();
-  const { auraLevel, auraScore } = useSubjectVerifications(
-    subjectId,
-    currentRoleEvaluatorEvaluationCategory,
+}> = ({ category, subjectId }) => {
+  const { currentViewMode } = useViewMode();
+
+  const { auraLevel, auraScore } = useSubjectVerifications(subjectId, category);
+
+  const remainingScore = useMemo(
+    () => calculateRemainingScoreToNextLevel(category, auraScore ?? 0),
+    [auraScore, category],
   );
+
   const { myRatings } = useMyEvaluationsContext();
   const ratingsToBeDoneCount = useMemo(
     () =>
@@ -51,14 +52,10 @@ const ProfileInfoPerformance = ({
     return 73;
   }, [ratingsToBeDoneCount]);
 
-  if (
-    currentRoleEvaluatorEvaluationCategory === EvaluationCategory.MANAGER ||
-    currentRoleEvaluatorEvaluationCategory === EvaluationCategory.TRAINER
-  ) {
-    return null;
-  }
-
-  if (ratingsToBeDoneCount === 0) return null;
+  const levelPercentage = useMemo(
+    () => calculateUserScorePercentage(category, auraScore ?? 0),
+    [auraScore, category],
+  );
 
   return (
     <div className="card relative">
@@ -79,41 +76,41 @@ const ProfileInfoPerformance = ({
           </div>
         )}
         <div className="flex flex-col w-full gap-3.5">
-          <div className="flex flex-row items-end gap-1">
+          <div className="flex flex-row items-center gap-1">
             {ratingsToBeDoneCount === undefined ? (
               '...'
-            ) : ratingsToBeDoneCount > 0 ? (
-              <>
-                <span className="text-2xl font-black">
-                  {ratingsToBeDoneCount}
-                </span>
-                <span className="text-lg font-medium">
-                  more evaluation{ratingsToBeDoneCount > 1 ? `s` : ''} to unlock
-                  Level Up
-                </span>
-              </>
             ) : (
               <>
-                <span className="text-xl font-black">25,234</span>
-                <span className="text-lg font-medium">to</span>
-                <span
-                  className={`text-lg font-semibold ${
-                    currentViewMode === PreferredView.PLAYER
-                      ? 'text-primary-d1'
-                      : currentViewMode === PreferredView.TRAINER
-                      ? 'text-pl2'
-                      : currentViewMode ===
-                        PreferredView.MANAGER_EVALUATING_TRAINER
-                      ? 'text-blue'
-                      : 'text-gray100'
-                  }`}
-                >
-                  Level 3
-                </span>
+                {remainingScore > 0 ? (
+                  <>
+                    <span className="text-xl font-black">
+                      {compactFormat(remainingScore)}
+                    </span>
+                    <span className="text-lg font-medium">to</span>
+                    <span
+                      className={`text-lg font-semibold ${
+                        currentViewMode === PreferredView.PLAYER
+                          ? 'text-primary-d1'
+                          : currentViewMode === PreferredView.TRAINER
+                          ? 'text-pl2'
+                          : currentViewMode ===
+                            PreferredView.MANAGER_EVALUATING_TRAINER
+                          ? 'text-blue'
+                          : 'text-gray100'
+                      }`}
+                    >
+                      Level {(auraLevel ?? 0) + 1}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-semibold">
+                    {"You've reached the maximum level! 🎉"}
+                  </span>
+                )}
               </>
             )}
           </div>
-          <div className="w-full mb-3 relative bg-gray30 dark:bg-button-primary rounded-full h-4">
+          <div className="w-full relative bg-gray30 dark:bg-button-primary mb-3 rounded-full h-4">
             <small className="absolute top-full mt-1">
               score:{' '}
               <span className="font-semibold">
@@ -124,7 +121,11 @@ const ProfileInfoPerformance = ({
               className={`absolute ${getViewModeBackgroundColorClass(
                 currentViewMode,
               )} rounded-full h-full`}
-              style={{ width: progressPercentage + '%' }}
+              style={{
+                width:
+                  (remainingScore > 0 ? progressPercentage : levelPercentage) +
+                  '%',
+              }}
             ></div>
           </div>
         </div>
@@ -133,4 +134,4 @@ const ProfileInfoPerformance = ({
   );
 };
 
-export default ProfileInfoPerformance;
+export default LevelProgress;
