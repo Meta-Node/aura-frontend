@@ -94,7 +94,7 @@ const Home = () => {
     return <div>Not logged in</div>;
   }
 
-  return myRatings?.length === 0 && !playerOnboardingScreenShown ? (
+  return !playerOnboardingScreenShown ? (
     <Onboarding />
   ) : loadingMyEvaluations ? (
     <LoadingList />
