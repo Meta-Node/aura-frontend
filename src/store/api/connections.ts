@@ -13,6 +13,7 @@ export const connectionsApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (res: AuraNodeConnectionsResponse) =>
         res.data.connections,
+      keepUnusedDataFor: 0,
     }),
     getInboundConnections: build.query<
       AuraNodeBrightIdConnection[],
@@ -23,6 +24,7 @@ export const connectionsApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (res: AuraNodeConnectionsResponse) =>
         res.data.connections,
+      keepUnusedDataFor: 0,
     }),
   }),
 });
