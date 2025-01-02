@@ -25,10 +25,10 @@ export const subjectRatingColorMap = {
   '-3': '#F8C471', // Lighter
   '-2': '#F5B041', // Slightly muted
   '-1': '#F39C12', // Base color, softened
-  '1': '#E67E22', // Base color
-  '2': '#CA6A1A', // Slightly darker
-  '3': '#AF5714', // Bold and dark
-  '4': '#91450F', // Darkest, very bold
+  '1': '#91450F', // Darkest, very bold
+  '3': '#CA6A1A', // Slightly darker
+  '2': '#AF5714', // Bold and dark
+  '4': '#E67E22', // Base color
 };
 
 export const findNearestColor = (value: any, colorMap: any) => {

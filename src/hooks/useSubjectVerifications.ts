@@ -6,6 +6,7 @@ import { EChartsOption } from 'echarts-for-react/src/types';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
@@ -81,10 +82,10 @@ export const useSubjectVerifications = (
   };
 };
 
-export const useImpactEChartOption = (
-  auraImpacts: AuraImpact[] | null,
-  focusedSubjectId?: string,
-) => {
+export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
+  const params = useParams();
+  const focusedSubjectId = params.subjectIdProp;
+
   const authData = useSelector(selectAuthData);
 
   const auraTopImpacts = useMemo(
@@ -145,8 +146,8 @@ export const useImpactEChartOption = (
     isPositive = true,
   ) => {
     const mappings: Record<number, [number, number]> = {
-      1: [100, 0], // Centered, no spacing
-      2: [75, 150], // Spaced wider apart
+      1: [177, 0], // Centered, no spacing
+      2: [88, 150], // Spaced wider apart
       3: [50, 127], // Given
       4: [40, 110], // Interpolated between 3 and 5
       5: [33, 96], // Given
@@ -311,7 +312,11 @@ export const useImpactEChartOption = (
                   ? '#8341DE'
                   : findNearestColor(
                       item.confidence * (item.impact >= 0 ? 1 : -1),
-                      valueColorMap,
+                      authData?.brightId === item.evaluator
+                        ? userRatingColorMap
+                        : item.evaluator === focusedSubjectId
+                        ? subjectRatingColorMap
+                        : valueColorMap,
                     ),
               borderRadius: item.impact >= 0 ? [2, 2, 0, 0] : [0, 0, 2, 2],
             },
