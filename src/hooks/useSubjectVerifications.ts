@@ -142,6 +142,7 @@ export const useImpactEChartOption = (
     index: number,
     chartHeight: number,
     photosLength: number,
+    isPositive = true,
   ) => {
     const mappings: Record<number, [number, number]> = {
       1: [100, 0], // Centered, no spacing
@@ -152,7 +153,7 @@ export const useImpactEChartOption = (
     };
 
     const baseX = mappings[photosLength][0] + index * mappings[photosLength][1];
-    const baseY = chartHeight + 20; // Vertical spacing below the chart
+    const baseY = chartHeight + (isPositive ? 30 : -30);
     return [baseX, baseY];
   };
 
@@ -262,8 +263,9 @@ export const useImpactEChartOption = (
               // position: [50 + index * 127, 170],
               position: calculateImagePosition(
                 index,
-                150,
+                140,
                 auraTopImpacts.length,
+                item.impact >= 0,
               ),
               z: 100,
               clipPath: {
