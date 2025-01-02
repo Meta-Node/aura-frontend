@@ -54,7 +54,7 @@ const persistConfig = {
   key: 'root',
   version: 3,
   storage: localForage,
-  blacklist: ['recoveryData'], // won't be persisted
+  blacklist: ['recoveryData', apiSlice.reducerPath], // won't be persisted
   migrate: createMigrate(migrations, { debug: __DEV__ }),
 };
 

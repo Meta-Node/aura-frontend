@@ -1,6 +1,7 @@
 import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useSubjectsListContext } from 'contexts/SubjectsListContext';
+import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -60,6 +61,7 @@ export const SubjectListControls = ({
     toggleFiltersById,
     setSelectedSort,
   } = useSubjectsListContext();
+  const { refreshOutboundRatings } = useMyEvaluations();
 
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
 
@@ -171,8 +173,9 @@ export const SubjectListControls = ({
         </div>
       </div>
       <div className="text-right text-sm mb-2 mt-2">
-        <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
-          {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
+        {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
+          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
+            {' '}
             <p
               className="ml-auto font-medium cursor-pointer text-white"
               onClick={() =>
@@ -181,8 +184,10 @@ export const SubjectListControls = ({
             >
               View Managers
             </p>
-          )}
-          {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
+          </button>
+        )}
+        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
+          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
             <p
               className="ml-auto font-medium cursor-pointer text-white"
               onClick={() =>
@@ -191,8 +196,8 @@ export const SubjectListControls = ({
             >
               View Trainers
             </p>
-          )}
-        </button>
+          </button>
+        )}
       </div>
       <div className="text-lg text-white flex mb-3 items-center">
         <Dropdown
@@ -229,7 +234,10 @@ export const SubjectListControls = ({
           src="/assets/images/Shared/refresh.svg"
           alt="refresh"
           className="w-7 h-7 ml-1 mt-0.5 cursor-pointer"
-          onClick={refreshBrightIdBackup}
+          onClick={() => {
+            refreshBrightIdBackup();
+            refreshOutboundRatings();
+          }}
         />
       </div>
     </>
