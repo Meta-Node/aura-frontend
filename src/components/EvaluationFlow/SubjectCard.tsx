@@ -31,7 +31,10 @@ export const SubjectCard = ({
       inboundConnectionInfo?.verifications,
       currentEvaluationCategory,
     );
-  const { impactChartSmallOption } = useImpactEChartOption(auraImpacts);
+  const { impactChartSmallOption } = useImpactEChartOption(
+    auraImpacts,
+    subjectId,
+  );
 
   const progress = calculateUserScorePercentage(
     currentEvaluationCategory,
