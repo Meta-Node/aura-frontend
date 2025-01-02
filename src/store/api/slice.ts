@@ -9,7 +9,7 @@ export const apiSlice = createApi({
   }),
   endpoints: () => ({}),
   refetchOnReconnect: true,
-  keepUnusedDataFor: 10,
+  keepUnusedDataFor: 0,
 });
 
 export const { reducer } = apiSlice;

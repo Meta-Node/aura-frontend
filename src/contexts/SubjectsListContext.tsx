@@ -72,24 +72,25 @@ export const SubjectsListContextProvider: React.FC<ProviderProps> = ({
     const connections = [...brightIdBackup.connections].sort(
       (a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0),
     );
-    return connections
-      .reduce(
-        (acc, c) => {
-          const ratingIndex = myRatings.findIndex((r) => r.toBrightId === c.id);
-          if (
-            ratingIndex === -1 &&
-            (c.level === 'already known' || c.level === 'recovery')
-          )
-            acc[0].push(c);
-          else acc[1].push(c);
-          return acc;
-        },
-        [[], []] as [
-          AuraNodeBrightIdConnectionWithBackupData[],
-          AuraNodeBrightIdConnectionWithBackupData[],
-        ],
-      )
-      .flat();
+
+    const result = connections.reduce(
+      (acc, c) => {
+        const ratingIndex = myRatings.findIndex((r) => r.toBrightId === c.id);
+        if (
+          ratingIndex === -1 &&
+          (c.level === 'already known' || c.level === 'recovery')
+        )
+          acc[0].push(c);
+        else acc[1].push(c);
+        return acc;
+      },
+      [[], []] as [
+        AuraNodeBrightIdConnectionWithBackupData[],
+        AuraNodeBrightIdConnectionWithBackupData[],
+      ],
+    );
+
+    return result.flat();
   }, [brightIdBackup, loading, myRatings]);
 
   const filterAndSortHookData = useFilterAndSort(

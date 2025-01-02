@@ -1,6 +1,7 @@
 import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useSubjectsListContext } from 'contexts/SubjectsListContext';
+import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -60,6 +61,7 @@ export const SubjectListControls = ({
     toggleFiltersById,
     setSelectedSort,
   } = useSubjectsListContext();
+  const { refreshOutboundRatings } = useMyEvaluations();
 
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
 
@@ -229,7 +231,10 @@ export const SubjectListControls = ({
           src="/assets/images/Shared/refresh.svg"
           alt="refresh"
           className="w-7 h-7 ml-1 mt-0.5 cursor-pointer"
-          onClick={refreshBrightIdBackup}
+          onClick={() => {
+            refreshBrightIdBackup();
+            refreshOutboundRatings();
+          }}
         />
       </div>
     </>
