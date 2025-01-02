@@ -138,6 +138,24 @@ export const useImpactEChartOption = (
     fetchUserImages();
   }, [auraTopImpacts, authData, brightIdBackup]);
 
+  const calculateImagePosition = (
+    index: number,
+    chartHeight: number,
+    photosLength: number,
+  ) => {
+    const mappings: Record<number, [number, number]> = {
+      1: [100, 0], // Centered, no spacing
+      2: [75, 150], // Spaced wider apart
+      3: [50, 127], // Given
+      4: [40, 110], // Interpolated between 3 and 5
+      5: [33, 96], // Given
+    };
+
+    const baseX = mappings[photosLength][0] + index * mappings[photosLength][1];
+    const baseY = chartHeight + 20; // Vertical spacing below the chart
+    return [baseX, baseY];
+  };
+
   const impactChartOption: EChartsOption = useMemo(() => {
     const maxImpact = auraTopImpacts
       ? Math.max(...auraTopImpacts.map((item) => Math.abs(item.impact)))
@@ -237,8 +255,16 @@ export const useImpactEChartOption = (
                   },
                   position: [0, 0], // Position inside the group
                 },
-              ],
-              position: [33 + index * 96, 170],
+              ], // 3 = 50
+
+              // 5 = 33
+
+              // position: [50 + index * 127, 170],
+              position: calculateImagePosition(
+                index,
+                150,
+                auraTopImpacts.length,
+              ),
               z: 100,
               clipPath: {
                 type: 'rect',
@@ -252,7 +278,13 @@ export const useImpactEChartOption = (
               },
             })),
     };
-  }, [auraSumImpacts, auraTopImpacts, authData?.brightId]);
+  }, [
+    auraSumImpacts,
+    auraTopImpacts,
+    authData?.brightId,
+    focusedSubjectId,
+    profileImages,
+  ]);
 
   const impactChartSmallOption = useMemo(
     () => ({
