@@ -121,10 +121,7 @@ export const ProfileInfo = ({
                 if (userHasRecovery) {
                   updateViewAs(EvaluationCategory.SUBJECT);
                   setSelectedTab?.(ProfileTab.CONNECTIONS);
-                  toggleFiltersById(
-                    [AuraFilterId.ConnectionTypeRecovery],
-                    true,
-                  );
+                  toggleFiltersById([AuraFilterId.TheirRecovery], true);
                   setSelectedSort(AuraSortId.ConnectionLastUpdated);
                 }
               }}
