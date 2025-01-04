@@ -73,7 +73,10 @@ const tailwindConfig = {
     },
   },
   darkMode: 'class',
-  plugins: [require('tailwindcss-animation-delay')],
+  plugins: [
+    require('tailwindcss-animation-delay'),
+    require('@tailwindcss/typography'),
+  ],
 };
 
 export default tailwindConfig;
