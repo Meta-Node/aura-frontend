@@ -3,6 +3,7 @@ import { pullProfilePhoto } from 'api/profilePhoto.service';
 import { MyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { SubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { EChartsOption } from 'echarts-for-react/src/types';
+import blockies from 'ethereum-blockies';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
+import { renderImageCover } from 'utils/image';
 
 import {
   AuraImpact,
@@ -126,9 +128,19 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
               impact.evaluator,
               authData.password,
             );
-            images[impact.evaluator] = profilePhoto;
+            images[impact.evaluator] = await renderImageCover(
+              profilePhoto,
+              30,
+              30,
+            );
           } catch (e) {
-            images[impact.evaluator] = null;
+            images[impact.evaluator] = blockies
+              .create({
+                seed: impact.evaluator,
+                size: 10,
+                scale: 3,
+              })
+              .toDataURL();
           }
         }),
       );
@@ -149,8 +161,8 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
       1: [177, 0], // Centered, no spacing
       2: [88, 150], // Spaced wider apart
       3: [50, 127], // Given
-      4: [40, 110], // Interpolated between 3 and 5
-      5: [33, 96], // Given
+      4: [38, 110], // Interpolated between 3 and 5
+      5: [24, 77], // Given
     };
 
     const baseX = mappings[photosLength][0] + index * mappings[photosLength][1];
@@ -249,19 +261,18 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
                 {
                   type: 'image',
                   style: {
+                    data: item, // Add your custom data here
                     image:
                       profileImages[item.evaluator] ??
                       '/assets/images/avatar-thumb.jpg',
                     width: 30,
                     height: 30,
                   },
-                  position: [0, 0], // Position inside the group
+                  position: [0, 0],
+                  bounding: 'raw',
                 },
               ], // 3 = 50
 
-              // 5 = 33
-
-              // position: [50 + index * 127, 170],
               position: calculateImagePosition(
                 index,
                 140,
@@ -329,7 +340,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
         },
       ],
     }),
-    [auraTopImpacts, authData, impactChartOption],
+    [auraTopImpacts, authData?.brightId, focusedSubjectId, impactChartOption],
   );
 
   return {

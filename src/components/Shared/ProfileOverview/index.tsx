@@ -73,6 +73,17 @@ const ProfileOverview = ({
   };
 
   const onChartClick = (params: any) => {
+    if (params.componentType === 'graphic') {
+      console.log(
+        'Profile image clicked:',
+        params.event.target.style.data.evaluator,
+      );
+      setCredibilityDetailsProps({
+        subjectId: params.event.target.style.data.evaluator,
+        evaluationCategory:
+          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+      });
+    }
     if (params.componentType === 'series') {
       console.log('Bar clicked:', params.data.evaluator);
       setCredibilityDetailsProps({
