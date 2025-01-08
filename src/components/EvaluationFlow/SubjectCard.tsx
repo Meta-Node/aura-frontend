@@ -1,16 +1,17 @@
 import BrightIdProfilePicture from 'components/BrightIdProfilePicture';
 import { ConnectionAndEvaluationStatus } from 'components/ConnectionAndEvaluationStatus';
 import { getViewModeSubjectBorderColorClass } from 'constants/index';
-import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
-import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useSubjectName } from 'hooks/useSubjectName';
 import useViewMode from 'hooks/useViewMode';
 import { Link } from 'react-router-dom';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
-import { useImpactEChartOption } from '../../hooks/useSubjectVerifications';
+import {
+  useImpactEChartOption,
+  useSubjectVerifications,
+} from '../../hooks/useSubjectVerifications';
 import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';
 
 export const SubjectCard = ({
@@ -22,15 +23,13 @@ export const SubjectCard = ({
 }) => {
   const name = useSubjectName(subjectId);
 
-  const { myConnectionToSubject: inboundConnectionInfo } =
-    useMyEvaluationsContext({ subjectId });
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
 
-  const { auraLevel, auraScore, auraImpacts } =
-    useParseBrightIdVerificationData(
-      inboundConnectionInfo?.verifications,
-      currentEvaluationCategory,
-    );
+  const { auraLevel, auraScore, auraImpacts } = useSubjectVerifications(
+    subjectId,
+    currentEvaluationCategory,
+  );
+
   const { impactChartSmallOption } = useImpactEChartOption(auraImpacts);
 
   const progress = calculateUserScorePercentage(

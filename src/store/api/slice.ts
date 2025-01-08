@@ -10,6 +10,7 @@ export const apiSlice = createApi({
   endpoints: () => ({}),
   refetchOnReconnect: true,
   keepUnusedDataFor: 0,
+  refetchOnMountOrArgChange: true,
 });
 
 export const { reducer } = apiSlice;

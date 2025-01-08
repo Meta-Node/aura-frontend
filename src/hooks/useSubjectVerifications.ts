@@ -1,11 +1,9 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { pullProfilePhoto } from 'api/profilePhoto.service';
-import { MyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import { SubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { EChartsOption } from 'echarts-for-react/src/types';
 import blockies from 'ethereum-blockies';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
@@ -13,11 +11,7 @@ import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
 import { renderImageCover } from 'utils/image';
 
-import {
-  AuraImpact,
-  AuraImpactRaw,
-  Verifications,
-} from '../api/auranode.service';
+import { AuraImpact, AuraImpactRaw } from '../api/auranode.service';
 import {
   findNearestColor,
   subjectRatingColorMap,
@@ -30,47 +24,11 @@ export const useSubjectVerifications = (
   subjectId: string | null | undefined,
   evaluationCategory: EvaluationCategory,
 ) => {
-  const [verifications, setVerifications] = useState<Verifications | undefined>(
-    undefined,
-  );
-
   const profileFetch = useGetBrightIDProfileQuery(
     subjectId ? { id: subjectId } : skipToken,
   );
 
-  const myEvaluationsContext = useContext(MyEvaluationsContext);
-  const subjectInboundEvaluationsContext = useContext(
-    SubjectInboundEvaluationsContext,
-  );
-
-  useEffect(() => {
-    if (
-      (myEvaluationsContext !== null &&
-        myEvaluationsContext.myConnections === null) ||
-      (subjectInboundEvaluationsContext !== null &&
-        subjectInboundEvaluationsContext.connections === null)
-    )
-      return;
-    const verificationDataFromConnectionsEndpoint =
-      myEvaluationsContext?.myConnections?.find((c) => c.id === subjectId)
-        ?.verifications ||
-      subjectInboundEvaluationsContext?.connections?.find(
-        (c) => c.id === subjectId,
-      )?.verifications;
-    if (verificationDataFromConnectionsEndpoint) {
-      setVerifications(verificationDataFromConnectionsEndpoint);
-      return;
-    }
-    setVerifications(undefined);
-    if (subjectId && profileFetch.data) {
-      setVerifications(profileFetch.data.verifications);
-    }
-  }, [
-    myEvaluationsContext,
-    subjectId,
-    profileFetch,
-    subjectInboundEvaluationsContext,
-  ]);
+  const verifications = profileFetch.data?.verifications;
 
   const { auraLevel, userHasRecovery, auraScore, auraImpacts } =
     useParseBrightIdVerificationData(verifications, evaluationCategory);
@@ -118,6 +76,8 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
   useEffect(() => {
     if (!authData || !brightIdBackup) return;
     const fetchUserImages = async () => {
+      if (auraTopImpacts.length > 5) return;
+
       const images: Record<string, string | null> = {};
 
       await Promise.all(

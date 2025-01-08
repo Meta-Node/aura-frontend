@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 import reducers from 'BrightID/reducer';
 import localForage from 'localforage';
 import { combineReducers } from 'redux';
@@ -54,7 +55,7 @@ const persistConfig = {
   key: 'root',
   version: 3,
   storage: localForage,
-  blacklist: ['recoveryData', apiSlice.reducerPath], // won't be persisted
+  blacklist: ['recoveryData'], // won't be persisted
   migrate: createMigrate(migrations, { debug: __DEV__ }),
 };
 
@@ -67,7 +68,6 @@ const persistedReducer = persistReducer(
   }),
 );
 
-// Define the store
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -79,12 +79,15 @@ export const store = configureStore({
           'persist/REHYDRATE',
           'recoveryData/setRecoveryChannel',
           'recoveryData/init',
+          apiSlice.reducerPath,
         ],
         ignoredPaths: ['recoveryData'],
       },
       immutableCheck: false,
     }).concat(apiSlice.middleware),
 });
+
+setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
 

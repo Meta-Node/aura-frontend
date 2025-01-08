@@ -52,6 +52,7 @@ export const useMyEvaluationsContext = (props?: {
   evaluationCategory?: EvaluationCategory;
 }) => {
   const context = useContext(MyEvaluationsContext);
+
   if (context === null) {
     throw new Error(
       'MyEvaluationsContext must be used within a MyEvaluationsContextProvider',
