@@ -82,7 +82,7 @@ export const useLevelupProgress = ({
   if (evaluationCategory === EvaluationCategory.PLAYER) {
     return {
       isUnlocked: (ratingsToBeDoneCount ?? 0) <= 0,
-      reason: `${ratingsToBeDoneCount} more evaluation ${
+      reason: `${ratingsToBeDoneCount} more evaluation${
         (ratingsToBeDoneCount ?? 0) > 1 ? `s` : ''
       } to unlock Level Up`,
       percent:
