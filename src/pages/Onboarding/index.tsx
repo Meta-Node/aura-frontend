@@ -31,7 +31,7 @@ const Onboarding = () => {
 
   return (
     <div
-      className="page page__splash !pt-[90px] !px-[22px] pb-4 flex flex-col"
+      className="page page__splash !pt-[30px] !px-[22px] pb-4 flex flex-col"
       data-testid="subjects-evaluation-onboarding-guide"
     >
       <section
