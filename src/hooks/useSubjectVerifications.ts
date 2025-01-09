@@ -42,7 +42,10 @@ export const useSubjectVerifications = (
   };
 };
 
-export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
+export const useImpactEChartOption = (
+  auraImpacts: AuraImpact[] | null,
+  shouldFetchImages?: boolean,
+) => {
   const params = useParams();
   const focusedSubjectId = params.subjectIdProp;
 
@@ -74,7 +77,8 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
   const brightIdBackup = useSelector(selectBrightIdBackup);
 
   useEffect(() => {
-    if (!authData || !brightIdBackup) return;
+    if (!shouldFetchImages || !authData || !brightIdBackup) return;
+
     const fetchUserImages = async () => {
       if (auraTopImpacts.length > 5) return;
 
@@ -90,8 +94,8 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
             );
             images[impact.evaluator] = await renderImageCover(
               profilePhoto,
-              30,
-              30,
+              50,
+              50,
             );
           } catch (e) {
             images[impact.evaluator] = blockies
@@ -109,7 +113,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
     };
 
     fetchUserImages();
-  }, [auraTopImpacts, authData, brightIdBackup]);
+  }, [auraTopImpacts, authData, brightIdBackup, shouldFetchImages]);
 
   const calculateImagePosition = (
     index: number,
@@ -124,6 +128,10 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
       4: [38, 110], // Interpolated between 3 and 5
       5: [24, 77], // Given
     };
+
+    if (photosLength === 0 || !mappings[photosLength]) {
+      return [0, 0];
+    }
 
     const baseX = mappings[photosLength][0] + index * mappings[photosLength][1];
     const baseY = chartHeight + (isPositive ? 30 : -30);
@@ -213,7 +221,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
         },
       ],
       graphic:
-        auraTopImpacts.length > 5
+        !shouldFetchImages || auraTopImpacts.length > 5
           ? undefined
           : auraTopImpacts.map((item, index) => ({
               type: 'group',
@@ -258,6 +266,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
     authData?.brightId,
     focusedSubjectId,
     profileImages,
+    shouldFetchImages,
   ]);
 
   const impactChartSmallOption = useMemo(

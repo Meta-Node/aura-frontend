@@ -73,7 +73,6 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore these action types
         ignoredActions: [
           'persist/PERSIST',
           'persist/REHYDRATE',
@@ -84,10 +83,10 @@ export const store = configureStore({
         ignoredPaths: ['recoveryData'],
       },
       immutableCheck: false,
-    }).concat(apiSlice.middleware),
+    })
+      .concat(apiSlice.middleware)
+      .concat(),
 });
-
-setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
 
@@ -95,3 +94,5 @@ export type AppStore = typeof store;
 export type AppDispatch = AppStore['dispatch'];
 export type GetState = typeof store.getState;
 export type RootState = ReturnType<GetState>;
+
+setupListeners(store.dispatch);

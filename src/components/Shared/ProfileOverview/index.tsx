@@ -57,7 +57,7 @@ const ProfileOverview = ({
   );
   const { totalPositiveImpact, totalNegativeImpact } =
     useTotalImpact(auraImpacts);
-  const { impactChartOption } = useImpactEChartOption(auraImpacts);
+  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
 
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
