@@ -133,45 +133,45 @@ export const HeaderPreferedView = {
       EvaluationCategory.TRAINER,
     );
 
-    // React.useEffect(() => {
-    //   if (
-    //     currentViewMode === PreferredView.TRAINER &&
-    //     !trainerEvaluation.loading
-    //   ) {
-    //     if (
-    //       !playerEvaluation.auraLevel ||
-    //       playerEvaluation.auraLevel < 2 ||
-    //       !hasTrainerRole ||
-    //       !trainerActivity ||
-    //       trainerActivity.length === 0
-    //     ) {
-    //       setPreferredView(PreferredView.PLAYER);
-    //     }
-    //   } else if (
-    //     currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
-    //     PreferredView.MANAGER_EVALUATING_MANAGER
-    //   ) {
-    //     if (
-    //       !trainerEvaluation.auraLevel ||
-    //       trainerEvaluation.auraLevel < 1 ||
-    //       !hasManagerRole ||
-    //       !managerActivity ||
-    //       managerActivity.length === 0
-    //     ) {
-    //       setPreferredView(PreferredView.PLAYER);
-    //     }
-    //   }
-    // }, [
-    //   currentViewMode,
-    //   hasManagerRole,
-    //   hasTrainerRole,
-    //   managerActivity,
-    //   playerEvaluation.auraLevel,
-    //   setPreferredView,
-    //   trainerActivity,
-    //   trainerEvaluation.auraLevel,
-    //   trainerEvaluation.loading,
-    // ]);
+    React.useEffect(() => {
+      if (
+        currentViewMode === PreferredView.TRAINER &&
+        !trainerEvaluation.loading
+      ) {
+        if (
+          !playerEvaluation.auraLevel ||
+          playerEvaluation.auraLevel < 2 ||
+          !hasTrainerRole ||
+          !trainerActivity ||
+          trainerActivity.length === 0
+        ) {
+          setPreferredView(PreferredView.PLAYER);
+        }
+      } else if (
+        currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
+        PreferredView.MANAGER_EVALUATING_MANAGER
+      ) {
+        if (
+          !trainerEvaluation.auraLevel ||
+          trainerEvaluation.auraLevel < 1 ||
+          !hasManagerRole ||
+          !managerActivity ||
+          managerActivity.length === 0
+        ) {
+          setPreferredView(PreferredView.PLAYER);
+        }
+      }
+    }, [
+      currentViewMode,
+      hasManagerRole,
+      hasTrainerRole,
+      managerActivity,
+      playerEvaluation.auraLevel,
+      setPreferredView,
+      trainerActivity,
+      trainerEvaluation.auraLevel,
+      trainerEvaluation.loading,
+    ]);
 
     return (
       <>
@@ -190,51 +190,53 @@ export const HeaderPreferedView = {
             alt=""
           />
         </Tooltip>
-        {/* {!!playerEvaluation.auraLevel &&
+        {!!playerEvaluation.auraLevel &&
           playerEvaluation.auraLevel >= 2 &&
           hasTrainerRole &&
           trainerActivity &&
-          trainerActivity.length > 0 && ( */}
-        <Tooltip
-          content="Trainer"
-          className={`p-1 rounded ${
-            currentViewMode === PreferredView.TRAINER
-              ? getViewModeBackgroundColorClass(currentViewMode)
-              : 'bg-gray100'
-          } ml-2 cursor-pointer`}
-          onClick={() => setPreferredView(PreferredView.TRAINER)}
-        >
-          <img
-            className="w-4 h-4"
-            src={preferredViewIcon[PreferredView.TRAINER]}
-            alt=""
-          />
-        </Tooltip>
-        {/* )} */}
-        {/* {!!trainerEvaluation.auraLevel &&
+          trainerActivity.length > 0 && (
+            <Tooltip
+              content="Trainer"
+              className={`p-1 rounded ${
+                currentViewMode === PreferredView.TRAINER
+                  ? getViewModeBackgroundColorClass(currentViewMode)
+                  : 'bg-gray100'
+              } ml-2 cursor-pointer`}
+              onClick={() => setPreferredView(PreferredView.TRAINER)}
+            >
+              <img
+                className="w-4 h-4"
+                src={preferredViewIcon[PreferredView.TRAINER]}
+                alt=""
+              />
+            </Tooltip>
+          )}
+        {!!trainerEvaluation.auraLevel &&
           trainerEvaluation.auraLevel >= 1 &&
           hasManagerRole &&
           managerActivity &&
-          managerActivity.length > 0 && ( */}
-        <Tooltip
-          content="Manager"
-          className={`p-1 rounded ${
-            currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
-            currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER
-              ? getViewModeBackgroundColorClass(currentViewMode)
-              : 'bg-gray100'
-          } ml-2 cursor-pointer`}
-          onClick={() =>
-            setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
-          }
-        >
-          <img
-            className="w-4 h-4"
-            src={preferredViewIcon[PreferredView.MANAGER_EVALUATING_TRAINER]}
-            alt=""
-          />
-        </Tooltip>
-        {/* )} */}
+          managerActivity.length > 0 && (
+            <Tooltip
+              content="Manager"
+              className={`p-1 rounded ${
+                currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
+                currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER
+                  ? getViewModeBackgroundColorClass(currentViewMode)
+                  : 'bg-gray100'
+              } ml-2 cursor-pointer`}
+              onClick={() =>
+                setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
+              }
+            >
+              <img
+                className="w-4 h-4"
+                src={
+                  preferredViewIcon[PreferredView.MANAGER_EVALUATING_TRAINER]
+                }
+                alt=""
+              />
+            </Tooltip>
+          )}
       </>
     );
   },
