@@ -92,9 +92,30 @@ export const SubjectListControls = ({
     }),
     [clearSortAndFilter],
   );
-  const dropdownOptions: AuraFilterDropdownOption[] = useMemo(
-    () => [
-      defaultOption,
+  const dropdownOptions: AuraFilterDropdownOption[] = useMemo(() => {
+    if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER) {
+      return [
+        defaultOption,
+        ...[
+          {
+            value: 2,
+            label: <p>Recently evaluated</p>,
+            filterIds: null,
+            sortId: AuraSortId.ConnectionRecentEvaluation,
+            ascending: false,
+          },
+        ].map((item) => ({
+          ...item,
+          onClick: () => {
+            toggleFiltersById(item.filterIds, true);
+            setSelectedSort(item.sortId, item.ascending);
+          },
+        })),
+        customViewOption,
+      ];
+    }
+
+    return [
       ...[
         {
           value: 2,
@@ -111,13 +132,32 @@ export const SubjectListControls = ({
         },
       })),
       customViewOption,
-    ],
-    [customViewOption, defaultOption, setSelectedSort, toggleFiltersById],
-  );
+    ];
+  }, [
+    currentViewMode,
+    customViewOption,
+    defaultOption,
+    params,
+    setSelectedSort,
+    toggleFiltersById,
+  ]);
 
   const selectedItem: AuraFilterDropdownOption = useMemo(() => {
     if (!selectedFilters && !selectedSort) {
-      return defaultOption;
+      if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER)
+        return defaultOption;
+
+      return {
+        value: 2,
+        label: <p>Recently evaluated</p>,
+        filterIds: null,
+        sortId: AuraSortId.ConnectionRecentEvaluation,
+        ascending: false,
+        onClick: () => {
+          toggleFiltersById(null, true);
+          setSelectedSort(AuraSortId.ConnectionRecentEvaluation, false);
+        },
+      };
     }
     const selectedItem = dropdownOptions.find((item) => {
       const isSelectedSort =
@@ -136,11 +176,15 @@ export const SubjectListControls = ({
     });
     return selectedItem ?? customViewOption;
   }, [
+    currentViewMode,
     customViewOption,
     defaultOption,
     dropdownOptions,
+    params,
     selectedFilters,
     selectedSort,
+    setSelectedSort,
+    toggleFiltersById,
   ]);
 
   useEffect(() => {
