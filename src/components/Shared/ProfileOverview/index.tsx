@@ -21,6 +21,7 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { compactFormat } from '../../../utils/number';
+import Tooltip from '../Tooltip';
 
 const ProfileOverview = ({
   subjectId,
@@ -154,9 +155,15 @@ const ProfileOverview = ({
           </div>
           <div className="body__info flex justify-between w-full">
             <div className="font-medium">Evaluation Impact:</div>
-            <div className="underline text-sm text-gray00 dark:text-gray-400">
-              What&apos;s this?
-            </div>
+            <Tooltip
+              tooltipClassName="w-72 z-10 !whitespace-normal"
+              position="left"
+              content="The Overview tab provides a summary of the user's evaluation performance and impact. It offers a quick glance at key metrics, making it easier for viewers to understand the user's contributions and credibility."
+            >
+              <button className="underline text-sm text-gray00 dark:text-gray-400">
+                What&apos;s this?
+              </button>
+            </Tooltip>
           </div>
           <ReactECharts
             option={impactChartOption}

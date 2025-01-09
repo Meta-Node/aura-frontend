@@ -4,9 +4,17 @@ const Tooltip: FC<
   PropsWithChildren &
     HTMLProps<HTMLDivElement> & {
       content?: ReactNode;
+      tooltipClassName?: string;
       position?: 'bottom' | 'top' | 'left' | 'right';
     }
-> = ({ children, content, position = 'top', className = '', ...rest }) => {
+> = ({
+  children,
+  content,
+  position = 'top',
+  className = '',
+  tooltipClassName = '',
+  ...rest
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const showTooltip = () => setIsVisible(true);
@@ -31,7 +39,7 @@ const Tooltip: FC<
       <div
         className={`absolute whitespace-nowrap text-black bg-gray-200 dark:bg-gray-800 dark:text-white text-sm rounded px-2 py-1 shadow-lg transition-opacity duration-300 transform ${
           isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-        } ${positionClasses[position]}`}
+        } ${positionClasses[position]} ${tooltipClassName}`}
       >
         {content}
       </div>

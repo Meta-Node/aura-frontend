@@ -8,6 +8,7 @@ import { useSubjectInboundConnectionsContext } from '../../contexts/SubjectInbou
 import { AuraFilterId } from '../../hooks/useFilters';
 import { AuraSortId } from '../../hooks/useSorts';
 import { AuraFilterDropdownOption } from '../../types';
+import SubjectConnectionsHelpBody from './SubjectConnectionsHelpModal';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -57,6 +58,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const customViewOption = useMemo(
@@ -163,7 +165,21 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
         >
           <FilterAndSortModalBody subjectId={subjectId} />
         </Modal>
-        <span className="ml-auto">
+
+        <Modal
+          title="Understanding Connections"
+          isOpen={isHelpModalOpen}
+          closeModalHandler={() => setIsHelpModalOpen(false)}
+        >
+          <SubjectConnectionsHelpBody />
+        </Modal>
+        <img
+          className="cursor-pointer ml-3 w-5 h-5"
+          src="/assets/images/SubjectProfile/evidence-info-icon.svg"
+          alt="help"
+          onClick={() => setIsHelpModalOpen(true)}
+        />
+        <span className="ml-auto flex items-center">
           (
           {filteredSubjects?.filter((e) => e.inboundConnection).length ??
             itemsOriginal?.length ??

@@ -2,6 +2,7 @@ import CredibilityDetailsModal from 'components/CredibilityDetailsModal';
 import EvaluateOverlayCard from 'components/EvaluationFlow/EvaluateOverlayCard';
 import EvaluationFlow from 'components/EvaluationFlow/EvaluationFlow';
 import InfiniteScrollLocal from 'components/InfiniteScrollLocal';
+import Modal from 'components/Shared/Modal';
 import ProfileEvaluation from 'components/Shared/ProfileEvaluation/ProfileEvaluation';
 import {
   SubjectInboundEvaluationsContextProvider,
@@ -48,6 +49,7 @@ import {
 import { selectAuthData } from '../../store/profile/selectors';
 import { CredibilityDetailsProps } from '../../types';
 import { ConnectionListSearch } from './ConnectionListSearch';
+import EvidenceHelpModal from './EvidenceHelpModal';
 
 const ProfileTabs = ({
   selectedTab,
@@ -159,6 +161,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
     }
   }, [query, navigate]);
 
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [showEvaluateOverlayCard, setShowEvaluateOverlayCard] = useState(false);
   const [credibilityDetailsProps, setCredibilityDetailsProps] =
     useState<CredibilityDetailsProps | null>(null);
@@ -346,15 +349,24 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       {/*  />*/}
       {/*)}*/}
       {/* if role is not player then show activities card */}
-
-      <div className="flex gap-1 -mb-1 items-center">
+      <Modal
+        title="Help: Understanding the Evidence Section"
+        isOpen={isHelpModalOpen}
+        closeModalHandler={() => setIsHelpModalOpen(false)}
+      >
+        <EvidenceHelpModal />
+      </Modal>
+      <button
+        onClick={() => setIsHelpModalOpen(true)}
+        className="flex gap-1 -mb-1 justify-between items-center"
+      >
         <p className="font-bold text-lg text-white">Evidence</p>
         <img
-          className="cursor-pointer w-4 h-4"
+          className="cursor-pointer w-5 h-5"
           src="/assets/images/SubjectProfile/evidence-info-icon.svg"
           alt=""
         />
-      </div>
+      </button>
       <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       {selectedTab === ProfileTab.OVERVIEW ? (
         <ProfileOverview
