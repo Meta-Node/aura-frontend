@@ -8,8 +8,7 @@ import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import { useMemo } from 'react';
 import { compactFormat } from 'utils/number';
-
-import { EvaluationCategory, PreferredView } from '../../../types/dashboard';
+import { useLevelupProgress } from 'utils/score';
 
 const ProfileInfoPerformance = ({
   subjectId,
@@ -26,6 +25,10 @@ const ProfileInfoPerformance = ({
     subjectId,
     currentRoleEvaluatorEvaluationCategory,
   );
+  const { isUnlocked, reason, percent } = useLevelupProgress({
+    evaluationCategory: currentRoleEvaluatorEvaluationCategory,
+  });
+
   const { myRatings } = useMyEvaluationsContext();
   const ratingsToBeDoneCount = useMemo(
     () =>
@@ -48,17 +51,10 @@ const ProfileInfoPerformance = ({
           PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING,
       );
     }
-    return 73;
-  }, [ratingsToBeDoneCount]);
+    return percent;
+  }, [percent, ratingsToBeDoneCount]);
 
-  if (
-    currentRoleEvaluatorEvaluationCategory === EvaluationCategory.MANAGER ||
-    currentRoleEvaluatorEvaluationCategory === EvaluationCategory.TRAINER
-  ) {
-    return null;
-  }
-
-  if (ratingsToBeDoneCount === 0) return null;
+  if (isUnlocked) return null;
 
   return (
     <div className="card relative">
@@ -80,36 +76,11 @@ const ProfileInfoPerformance = ({
         )}
         <div className="flex flex-col w-full gap-3.5">
           <div className="flex flex-row items-end gap-1">
-            {ratingsToBeDoneCount === undefined ? (
+            {reason === undefined ? (
               '...'
-            ) : ratingsToBeDoneCount > 0 ? (
-              <>
-                <span className="text-2xl font-black">
-                  {ratingsToBeDoneCount}
-                </span>
-                <span className="text-lg font-medium">
-                  more evaluation{ratingsToBeDoneCount > 1 ? `s` : ''} to unlock
-                  Level Up
-                </span>
-              </>
             ) : (
               <>
-                <span className="text-xl font-black">25,234</span>
-                <span className="text-lg font-medium">to</span>
-                <span
-                  className={`text-lg font-semibold ${
-                    currentViewMode === PreferredView.PLAYER
-                      ? 'text-primary-d1'
-                      : currentViewMode === PreferredView.TRAINER
-                      ? 'text-pl2'
-                      : currentViewMode ===
-                        PreferredView.MANAGER_EVALUATING_TRAINER
-                      ? 'text-blue'
-                      : 'text-gray100'
-                  }`}
-                >
-                  Level 3
-                </span>
+                <span className="text-lg font-medium">{reason}</span>
               </>
             )}
           </div>

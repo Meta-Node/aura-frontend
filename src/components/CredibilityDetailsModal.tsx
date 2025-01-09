@@ -1,10 +1,7 @@
 import Modal from 'components/Shared/Modal';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
-import {
-  useInboundEvaluations,
-  useOutboundEvaluations,
-} from 'hooks/useSubjectEvaluations';
+import { useInboundEvaluations } from 'hooks/useSubjectEvaluations';
 import { useSubjectName } from 'hooks/useSubjectName';
 import {
   useImpactEChartOption,
@@ -53,17 +50,12 @@ const CredibilityDetailsForRole = ({
     evaluationCategory: roleEvaluationCategory,
   });
   const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
-  const {
-    loading,
-    myRatingToSubject,
-    myConnectionToSubject,
-    myConfidenceValueInThisSubjectRating,
-  } = useMyEvaluationsContext({
-    subjectId,
-    evaluationCategory: roleEvaluationCategory,
-  });
-  const { connections } = useOutboundEvaluations({ subjectId });
-  const { impactChartOption } = useImpactEChartOption(auraImpacts);
+  const { loading, myRatingToSubject, myConfidenceValueInThisSubjectRating } =
+    useMyEvaluationsContext({
+      subjectId,
+      evaluationCategory: roleEvaluationCategory,
+    });
+  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
   const link = '/subject/' + subjectId;
   const navigate = useNavigate();
 

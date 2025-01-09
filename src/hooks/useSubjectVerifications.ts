@@ -1,21 +1,17 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { pullProfilePhoto } from 'api/profilePhoto.service';
-import { MyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import { SubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { EChartsOption } from 'echarts-for-react/src/types';
+import blockies from 'ethereum-blockies';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
+import { renderImageCover } from 'utils/image';
 
-import {
-  AuraImpact,
-  AuraImpactRaw,
-  Verifications,
-} from '../api/auranode.service';
+import { AuraImpact, AuraImpactRaw } from '../api/auranode.service';
 import {
   findNearestColor,
   subjectRatingColorMap,
@@ -28,47 +24,11 @@ export const useSubjectVerifications = (
   subjectId: string | null | undefined,
   evaluationCategory: EvaluationCategory,
 ) => {
-  const [verifications, setVerifications] = useState<Verifications | undefined>(
-    undefined,
-  );
-
   const profileFetch = useGetBrightIDProfileQuery(
     subjectId ? { id: subjectId } : skipToken,
   );
 
-  const myEvaluationsContext = useContext(MyEvaluationsContext);
-  const subjectInboundEvaluationsContext = useContext(
-    SubjectInboundEvaluationsContext,
-  );
-
-  useEffect(() => {
-    if (
-      (myEvaluationsContext !== null &&
-        myEvaluationsContext.myConnections === null) ||
-      (subjectInboundEvaluationsContext !== null &&
-        subjectInboundEvaluationsContext.connections === null)
-    )
-      return;
-    const verificationDataFromConnectionsEndpoint =
-      myEvaluationsContext?.myConnections?.find((c) => c.id === subjectId)
-        ?.verifications ||
-      subjectInboundEvaluationsContext?.connections?.find(
-        (c) => c.id === subjectId,
-      )?.verifications;
-    if (verificationDataFromConnectionsEndpoint) {
-      setVerifications(verificationDataFromConnectionsEndpoint);
-      return;
-    }
-    setVerifications(undefined);
-    if (subjectId && profileFetch.data) {
-      setVerifications(profileFetch.data.verifications);
-    }
-  }, [
-    myEvaluationsContext,
-    subjectId,
-    profileFetch,
-    subjectInboundEvaluationsContext,
-  ]);
+  const verifications = profileFetch.data?.verifications;
 
   const { auraLevel, userHasRecovery, auraScore, auraImpacts } =
     useParseBrightIdVerificationData(verifications, evaluationCategory);
@@ -82,7 +42,10 @@ export const useSubjectVerifications = (
   };
 };
 
-export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
+export const useImpactEChartOption = (
+  auraImpacts: AuraImpact[] | null,
+  shouldFetchImages?: boolean,
+) => {
   const params = useParams();
   const focusedSubjectId = params.subjectIdProp;
 
@@ -114,8 +77,11 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
   const brightIdBackup = useSelector(selectBrightIdBackup);
 
   useEffect(() => {
-    if (!authData || !brightIdBackup) return;
+    if (!shouldFetchImages || !authData || !brightIdBackup) return;
+
     const fetchUserImages = async () => {
+      if (auraTopImpacts.length > 5) return;
+
       const images: Record<string, string | null> = {};
 
       await Promise.all(
@@ -126,9 +92,19 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
               impact.evaluator,
               authData.password,
             );
-            images[impact.evaluator] = profilePhoto;
+            images[impact.evaluator] = await renderImageCover(
+              profilePhoto,
+              50,
+              50,
+            );
           } catch (e) {
-            images[impact.evaluator] = null;
+            images[impact.evaluator] = blockies
+              .create({
+                seed: impact.evaluator,
+                size: 10,
+                scale: 3,
+              })
+              .toDataURL();
           }
         }),
       );
@@ -137,7 +113,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
     };
 
     fetchUserImages();
-  }, [auraTopImpacts, authData, brightIdBackup]);
+  }, [auraTopImpacts, authData, brightIdBackup, shouldFetchImages]);
 
   const calculateImagePosition = (
     index: number,
@@ -149,9 +125,13 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
       1: [177, 0], // Centered, no spacing
       2: [88, 150], // Spaced wider apart
       3: [50, 127], // Given
-      4: [40, 110], // Interpolated between 3 and 5
-      5: [33, 96], // Given
+      4: [38, 110], // Interpolated between 3 and 5
+      5: [24, 77], // Given
     };
+
+    if (photosLength === 0 || !mappings[photosLength]) {
+      return [0, 0];
+    }
 
     const baseX = mappings[photosLength][0] + index * mappings[photosLength][1];
     const baseY = chartHeight + (isPositive ? 30 : -30);
@@ -241,7 +221,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
         },
       ],
       graphic:
-        auraTopImpacts.length > 5
+        !shouldFetchImages || auraTopImpacts.length > 5
           ? undefined
           : auraTopImpacts.map((item, index) => ({
               type: 'group',
@@ -249,19 +229,18 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
                 {
                   type: 'image',
                   style: {
+                    data: item, // Add your custom data here
                     image:
                       profileImages[item.evaluator] ??
                       '/assets/images/avatar-thumb.jpg',
                     width: 30,
                     height: 30,
                   },
-                  position: [0, 0], // Position inside the group
+                  position: [0, 0],
+                  bounding: 'raw',
                 },
               ], // 3 = 50
 
-              // 5 = 33
-
-              // position: [50 + index * 127, 170],
               position: calculateImagePosition(
                 index,
                 140,
@@ -287,6 +266,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
     authData?.brightId,
     focusedSubjectId,
     profileImages,
+    shouldFetchImages,
   ]);
 
   const impactChartSmallOption = useMemo(
@@ -329,7 +309,7 @@ export const useImpactEChartOption = (auraImpacts: AuraImpact[] | null) => {
         },
       ],
     }),
-    [auraTopImpacts, authData, impactChartOption],
+    [auraTopImpacts, authData?.brightId, focusedSubjectId, impactChartOption],
   );
 
   return {

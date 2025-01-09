@@ -26,7 +26,7 @@ export class NodeApi {
 
   baseUrlInternal: string;
 
-  secretKey: Uint8Array | undefined;
+  secretKey: Uint8Array | string | undefined;
 
   id: string | undefined;
 
@@ -37,7 +37,7 @@ export class NodeApi {
     monitor,
   }: {
     url: string;
-    secretKey: Uint8Array | undefined;
+    secretKey: Uint8Array | string | undefined;
     id: string | undefined;
     monitor?: (response: ApiResponse<any>) => void;
   }) {

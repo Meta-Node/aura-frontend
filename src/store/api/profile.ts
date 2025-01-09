@@ -1,4 +1,4 @@
-import {} from '@reduxjs/toolkit';
+import { decryptData } from 'utils/crypto';
 
 import { apiSlice } from './slice';
 
@@ -9,6 +9,17 @@ export const profileApi = apiSlice.injectEndpoints({
         url: `/brightid/v6/users/${id}/profile`,
       }),
       transformResponse: (res: UserProfileRes) => res.data,
+    }),
+
+    getProfilePhoto: build.query<
+      string,
+      { key: string; brightId: string; password: string }
+    >({
+      query: ({ brightId, key }) => ({
+        url: `/backups/${key}/${brightId}`,
+      }),
+      transformResponse: (response: string, meta, args) =>
+        decryptData(response, args.password),
     }),
     getConnections: build.query<
       ConnectionInfo[],
@@ -23,5 +34,9 @@ export const profileApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetConnectionsQuery, useGetBrightIDProfileQuery } =
-  profileApi;
+export const {
+  useGetConnectionsQuery,
+  useGetBrightIDProfileQuery,
+  useGetProfilePhotoQuery,
+  useLazyGetProfilePhotoQuery,
+} = profileApi;

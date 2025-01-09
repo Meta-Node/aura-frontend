@@ -12,6 +12,7 @@ import { compactFormat } from 'utils/number';
 import {
   calculateRemainingScoreToNextLevel,
   calculateUserScorePercentage,
+  useLevelupProgress,
 } from 'utils/score';
 
 const LevelProgress: FC<{
@@ -26,6 +27,10 @@ const LevelProgress: FC<{
     () => calculateRemainingScoreToNextLevel(category, auraScore ?? 0),
     [auraScore, category],
   );
+
+  const { isUnlocked, reason } = useLevelupProgress({
+    evaluationCategory: category,
+  });
 
   const { myRatings } = useMyEvaluationsContext();
   const ratingsToBeDoneCount = useMemo(

@@ -1,15 +1,16 @@
 import { SubjectCard } from 'components/EvaluationFlow/SubjectCard';
 import { SubjectListControls } from 'components/EvaluationFlow/SubjectListControls';
-import { PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING } from 'constants/index';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { SubjectInboundConnectionsContextProvider } from 'contexts/SubjectInboundConnectionsContext';
 import { SubjectInboundEvaluationsContextProvider } from 'contexts/SubjectInboundEvaluationsContext';
 import { SubjectOutboundEvaluationsContextProvider } from 'contexts/SubjectOutboundEvaluationsContext';
+import useViewMode from 'hooks/useViewMode';
 import Onboarding from 'pages/Onboarding';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { RoutePath } from 'types/router';
+import { useLevelupProgress } from 'utils/score';
 
 import InfiniteScrollLocal from '../../components/InfiniteScrollLocal';
 import LevelUp from '../../components/LevelUp';
@@ -48,6 +49,8 @@ const Home = () => {
   }, [query, navigate]);
 
   const authData = useSelector(selectAuthData);
+  const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
+
   const {
     itemsFiltered: filteredSubjects,
     selectedFilterIds,
@@ -64,27 +67,11 @@ const Home = () => {
     setLoading(false);
   }, [authData, dispatch]);
 
-  const { myRatings, loading: loadingMyEvaluations } =
-    useMyEvaluationsContext();
-  const isLocked = useMemo(
-    () =>
-      !myRatings ||
-      myRatings.filter((r) => Number(r.rating)).length <
-        PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING,
-    [myRatings],
-  );
+  const { loading: loadingMyEvaluations } = useMyEvaluationsContext();
 
-  const ratingsToBeDoneCount = useMemo(
-    () =>
-      myRatings
-        ? Math.max(
-            PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING -
-              myRatings.filter((r) => Number(r.rating)).length,
-            0,
-          )
-        : 0,
-    [myRatings],
-  );
+  const { isUnlocked, reason } = useLevelupProgress({
+    evaluationCategory: currentRoleEvaluatorEvaluationCategory,
+  });
 
   const playerOnboardingScreenShown = useSelector(
     selectPlayerOnboardingScreenShown,
@@ -112,15 +99,13 @@ const Home = () => {
           option1={'Evaluate'}
           option2={'Level Up'}
           isChecked={isEvaluate}
-          disabledHelpText={`${ratingsToBeDoneCount} more evaluation ${
-            ratingsToBeDoneCount > 1 ? `s` : ''
-          } to unlock Level Up`}
+          disabledHelpText={reason}
           setIsChecked={(isEvaluate) => {
             navigate(
               RoutePath.HOME + `?tab=${isEvaluate ? 'evaluate' : 'levelup'}`,
             );
           }}
-          option2Disabled={isLocked}
+          option2Disabled={!isUnlocked}
         />
         {isEvaluate ? (
           <div>

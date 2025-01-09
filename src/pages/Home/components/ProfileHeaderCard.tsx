@@ -1,9 +1,8 @@
 import BrightIdProfilePicture from 'components/BrightIdProfilePicture';
 import { HorizontalProgressBar } from 'components/Shared/HorizontalProgressBar';
 import { getViewModeSubjectBorderColorClass } from 'constants/index';
-import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useSubjectName } from 'hooks/useSubjectName';
+import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import { FC } from 'react';
 import { compactFormat } from 'utils/number';
@@ -16,11 +15,8 @@ const ProfileHeaderCard: FC<{
   const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
     useViewMode();
 
-  const { myConnectionToSubject: inboundConnectionInfo } =
-    useMyEvaluationsContext({ subjectId });
-
-  const { auraLevel, auraScore } = useParseBrightIdVerificationData(
-    inboundConnectionInfo?.verifications,
+  const { auraLevel, auraScore } = useSubjectVerifications(
+    subjectId,
     currentRoleEvaluatorEvaluationCategory,
   );
 

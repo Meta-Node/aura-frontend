@@ -10,7 +10,7 @@ import {
 import useViewMode from 'hooks/useViewMode';
 import LevelProgress from 'pages/Home/components/LevelProgress';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { selectAuthData } from 'store/profile/selectors';
 import { PreferredView, ProfileTab } from 'types/dashboard';
 
@@ -43,6 +43,7 @@ const ProfileOverview = ({
   viewMode: PreferredView;
   isMyPerformance?: boolean;
 }) => {
+  const location = useLocation();
   const {
     ratings: inboundRatings,
     inboundRatingsStatsString,
@@ -57,7 +58,7 @@ const ProfileOverview = ({
   );
   const { totalPositiveImpact, totalNegativeImpact } =
     useTotalImpact(auraImpacts);
-  const { impactChartOption } = useImpactEChartOption(auraImpacts);
+  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
 
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
@@ -73,6 +74,17 @@ const ProfileOverview = ({
   };
 
   const onChartClick = (params: any) => {
+    if (params.componentType === 'graphic') {
+      console.log(
+        'Profile image clicked:',
+        params.event.target.style.data.evaluator,
+      );
+      setCredibilityDetailsProps({
+        subjectId: params.event.target.style.data.evaluator,
+        evaluationCategory:
+          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+      });
+    }
     if (params.componentType === 'series') {
       console.log('Bar clicked:', params.data.evaluator);
       setCredibilityDetailsProps({
@@ -85,12 +97,13 @@ const ProfileOverview = ({
 
   return (
     <>
-      {authData?.brightId === subjectId && (
-        <LevelProgress
-          category={currentRoleEvaluatorEvaluationCategory}
-          subjectId={subjectId}
-        />
-      )}
+      {authData?.brightId === subjectId &&
+        !location.pathname.startsWith('/subject/') && (
+          <LevelProgress
+            category={currentRoleEvaluatorEvaluationCategory}
+            subjectId={subjectId}
+          />
+        )}
       <div className="card">
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>
