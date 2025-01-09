@@ -125,7 +125,7 @@ export const useImpactEChartOption = (
       1: [177, 0], // Centered, no spacing
       2: [88, 150], // Spaced wider apart
       3: [50, 127], // Given
-      4: [38, 110], // Interpolated between 3 and 5
+      4: [34, 95.5], // Interpolated between 3 and 5
       5: [24, 77], // Given
     };
 
