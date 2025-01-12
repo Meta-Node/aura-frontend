@@ -29,13 +29,10 @@ const Tooltip: FC<
   };
 
   return (
-    <div
-      className={`relative inline-block ${className}`}
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-      {...rest}
-    >
-      {children}
+    <div className={`relative inline-block ${className}`} {...rest}>
+      <span onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
+        {children}
+      </span>
       <div
         className={`absolute whitespace-nowrap text-black bg-gray-200 dark:bg-gray-800 dark:text-white text-sm rounded px-2 py-1 shadow-lg transition-opacity duration-300 transform ${
           isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
