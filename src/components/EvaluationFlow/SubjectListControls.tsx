@@ -200,7 +200,7 @@ export const SubjectListControls = ({
 
   return (
     <>
-      <div className="bg-gray40 text-black2 dark:text-white dark:bg-button-primary rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+      <div className="bg-card text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
             className="w-4 h-4"
@@ -208,7 +208,7 @@ export const SubjectListControls = ({
             alt=""
           />
           <input
-            className="bg-gray40 w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 dark:bg-button-primary text-sm h-11 focus:outline-none"
+            className="w-full font-medium bg-card text-card-foreground dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
             type="text"
             placeholder="Subject name or ID ..."
             value={searchString}

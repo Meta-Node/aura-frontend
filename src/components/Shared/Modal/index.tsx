@@ -30,7 +30,7 @@ export const Modal: FC<{
           data-testid="modal-wrapper"
         >
           <div
-            className={`modal-content bg-gray40 dark:bg-neutral-950 text-black2 dark:text-gray-100 max-w-[400px] w-[90%] px-5 pt-5 pb-5 relative max-h-screen overflow-auto styled-scroll -z-10 ${
+            className={`modal-content bg-card text-card-foreground max-w-[400px] w-[90%] px-5 pt-5 pb-5 relative max-h-screen overflow-auto styled-scroll -z-10 ${
               size === 'sm' ? '' : ''
             } ${noButtonPadding ? 'pb-0' : ''} rounded-3xl`}
             onClick={(e) => e.stopPropagation()}

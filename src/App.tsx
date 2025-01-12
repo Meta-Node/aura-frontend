@@ -67,11 +67,11 @@ function App() {
 
   return (
     <div
-      className={`app_container ${
+      className={`app_container bg-background ${
         hasDarkBackground && 'app_container__dark'
       } relative ${
         prefferedTheme !== 'light'
-          ? 'bg-black dark app_container_dark_bg'
+          ? 'dark app_container_dark_bg'
           : 'app_container'
       }`}
     >

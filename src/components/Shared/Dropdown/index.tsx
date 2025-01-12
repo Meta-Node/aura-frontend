@@ -26,7 +26,7 @@ export default function Dropdown<T extends DropdownItem>({
       <div
         data-testid="confidence-dropdown-button"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className={`flex text-black dark:text-white relative items-center bg-white dark:bg-button-primary justify-between rounded-t-lg text-lg pl-5 md:pl-5 pr-3 cursor-pointer border border-gray10 ${
+        className={`flex relative items-center bg-card text-card-foreground justify-between rounded-t-lg text-lg pl-5 md:pl-5 pr-3 cursor-pointer border border-gray10 ${
           !isDropdownOpen && 'rounded-b-lg'
         } ${className}`}
       >

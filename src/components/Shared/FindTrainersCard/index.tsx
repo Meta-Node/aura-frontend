@@ -80,7 +80,7 @@ const PotentialEvaluatorsListBrief = ({
       <div className="text-black2 dark:text-gray-300 font-medium">
         {description}
       </div>
-      <div className="flex flex-col gap-2 dark:bg-dark-primary bg-white rounded-[8px] p-3">
+      <div className="flex flex-col gap-2 dark:bg-card bg-white rounded-[8px] p-3">
         <div className="flex flex-row justify-between">
           <div className="flex flex-row gap-2.5">
             {!isExpanded && (
