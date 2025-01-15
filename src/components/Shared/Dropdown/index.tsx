@@ -1,6 +1,15 @@
 import { JSX } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 
+// import {} from "@/components/ui/"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 interface DropdownItem {
   label: JSX.Element;
   value: string | number;
@@ -21,6 +30,25 @@ export default function Dropdown<T extends DropdownItem>({
   onItemClick: (item: T) => void;
   className?: string;
 }) {
+  return (
+    <Select defaultValue={selectedItem.value.toString()}>
+      <SelectTrigger className={className}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {items.map((item) => (
+          <SelectItem
+            data-testid={`dropdown-option-${item.value}`}
+            key={item.value}
+            onClick={() => onItemClick(item)}
+            value={item.value.toString()}
+          >
+            {item.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
   return (
     <div className="dropdown cursor-pointer">
       <div
