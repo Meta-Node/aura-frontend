@@ -96,6 +96,7 @@ export const SubjectListControls = ({
     }),
     [clearSortAndFilter],
   );
+
   const dropdownOptions: AuraFilterDropdownOption[] = useMemo(() => {
     if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER) {
       return [
@@ -123,7 +124,7 @@ export const SubjectListControls = ({
       ...[
         {
           value: 2,
-          label: <p>Recently evaluated</p>,
+          label: <p>Recently evaluated (default)</p>,
           filterIds: null,
           sortId: AuraSortId.ConnectionRecentEvaluation,
           ascending: false,
@@ -153,7 +154,7 @@ export const SubjectListControls = ({
 
       return {
         value: 2,
-        label: <p>Recently evaluated</p>,
+        label: <p>Recently evaluated (default)</p>,
         filterIds: null,
         sortId: AuraSortId.ConnectionRecentEvaluation,
         ascending: false,
@@ -163,6 +164,7 @@ export const SubjectListControls = ({
         },
       };
     }
+
     const selectedItem = dropdownOptions.find((item) => {
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
@@ -190,6 +192,17 @@ export const SubjectListControls = ({
     setSelectedSort,
     toggleFiltersById,
   ]);
+
+  useEffect(() => {
+    if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER) {
+      // if (selectedSort?.id === AuraSortId.ConnectionRecentEvaluation)
+      //   setSelectedSort(null);
+      return;
+    }
+
+    if (!selectedSort?.id)
+      setSelectedSort(AuraSortId.ConnectionRecentEvaluation);
+  }, [currentViewMode, selectedSort, params, setSelectedSort]);
 
   useEffect(() => {
     if (!params.get('search')) {
