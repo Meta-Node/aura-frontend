@@ -1,6 +1,5 @@
 import EvaluateModalBody from 'components/EvaluationFlow/EvaluateModalBody';
 import NewPlayerGuideAfterEvaluation from 'components/EvaluationFlow/NewPlayerGuideAfterEvaluation';
-import Modal from 'components/Shared/Modal';
 import { PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING } from 'constants/index';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
@@ -9,6 +8,7 @@ import { useCallback, useState } from 'react';
 
 import useViewMode from '../../hooks/useViewMode';
 import { PreferredView } from '../../types/dashboard';
+import { Dialog, DialogContent, DialogHeader } from '../ui/dialog';
 
 const EvaluationFlow = ({
   showEvaluationFlow,
@@ -62,23 +62,27 @@ const EvaluationFlow = ({
   );
 
   return (
-    <Modal
-      isOpen={showEvaluationFlow}
-      closeModalHandler={() => {
-        setShowEvaluationFlow(false);
-        setMyNewRatingCount(null);
+    <Dialog
+      open={showEvaluationFlow}
+      onOpenChange={(e) => {
+        setShowEvaluationFlow(e);
+        if (!e) setMyNewRatingCount(null);
       }}
-      title={myNewRatingCount === null ? `Evaluating ${name}` : undefined}
     >
-      {myNewRatingCount !== null ? (
-        <NewPlayerGuideAfterEvaluation
-          closeModalHandler={() => {}}
-          ratingsDoneCount={myNewRatingCount}
-        />
-      ) : (
-        <EvaluateModalBody subjectId={subjectId} onSubmitted={onSubmitted} />
-      )}
-    </Modal>
+      <DialogContent>
+        <DialogHeader>
+          {myNewRatingCount === null ? `Evaluating ${name}` : undefined}
+        </DialogHeader>
+        {myNewRatingCount !== null ? (
+          <NewPlayerGuideAfterEvaluation
+            closeModalHandler={() => {}}
+            ratingsDoneCount={myNewRatingCount}
+          />
+        ) : (
+          <EvaluateModalBody subjectId={subjectId} onSubmitted={onSubmitted} />
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
 

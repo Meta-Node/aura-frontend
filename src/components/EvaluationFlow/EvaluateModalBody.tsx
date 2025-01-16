@@ -135,7 +135,7 @@ const EvaluateModalBody = ({
           }`}
         />
       </p>
-      <div className="mt-36">
+      <div className="mt-12">
         {prevRating ? (
           <div className="flex gap-3">
             <button

@@ -240,7 +240,7 @@ const CredibilityDetails = ({
   return (
     <div className="min-h-[450px] flex flex-col w-full">
       <div
-        className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-button-primary p-1 mb-5`}
+        className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary p-1 mb-5`}
       >
         <div
           className={`flex flex-row min-w-full overflow-x-auto overflow-y-hidden h-full pb-1`}

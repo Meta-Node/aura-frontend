@@ -42,7 +42,7 @@ const LinkCard = () => {
   };
 
   return (
-    <div className="card flex flex-col gap-3 w-full">
+    <div className="card flex dark:bg-dark-primary flex-col gap-3 w-full">
       <p className="text-gray00 dark:text-gray-300 leading-4 font-medium">
         Share this link with a trainer to become their player
       </p>
