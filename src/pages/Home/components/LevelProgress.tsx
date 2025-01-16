@@ -63,7 +63,7 @@ const LevelProgress: FC<{
   );
 
   return (
-    <div className="card relative">
+    <div className="card dark:bg-dark-primary relative">
       <div className="absolute top-0 right-0">
         <img src={getViewModeUpArrowIcon(currentViewMode)} alt="" />
       </div>
