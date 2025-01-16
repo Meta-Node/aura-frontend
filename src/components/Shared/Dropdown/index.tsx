@@ -32,7 +32,7 @@ export default function Dropdown<T extends DropdownItem>({
 }) {
   return (
     <Select defaultValue={selectedItem.value.toString()}>
-      <SelectTrigger className={className}>
+      <SelectTrigger className={`${className} w-auto bg-background`}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
