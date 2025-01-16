@@ -17,10 +17,10 @@ export const ToggleInput = ({
   disabledHelpText?: string;
 }) => {
   return (
-    <div className="px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-button-primary">
+    <div className="px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-card/90 dark:bg-dark-primary">
       <div className={'flex flex-wrap relative h-full'}>
         <p
-          className={`background bg-button-primary dark:bg-slate-200 absolute w-1/2 top-0 bottom-0 rounded-md transition-all duration-300 ease-in-out ${
+          className={`bg-button-primary dark:bg-stone-300 absolute w-1/2 top-0 bottom-0 rounded-md transition-all duration-300 ease-in-out ${
             isChecked ? 'left-0 right-1/2' : 'right-0 left-1/2'
           }`}
         ></p>

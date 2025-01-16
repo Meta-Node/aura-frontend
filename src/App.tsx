@@ -5,7 +5,7 @@ import {
 } from 'BrightID/actions';
 import GlobalSearchModal from 'components/GlobalSearchModal';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import routes from 'Routes';
@@ -65,13 +65,21 @@ function App() {
 
   const noHeader = currentRouteObject?.noHeader || isPlayerOnboarding;
 
+  useEffect(() => {
+    if (prefferedTheme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [prefferedTheme]);
+
   return (
     <div
-      className={`app_container ${
+      className={`app_container bg-background ${
         hasDarkBackground && 'app_container__dark'
       } relative ${
         prefferedTheme !== 'light'
-          ? 'bg-black dark app_container_dark_bg'
+          ? 'dark app_container_dark_bg'
           : 'app_container'
       }`}
     >

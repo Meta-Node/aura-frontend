@@ -5,6 +5,8 @@ import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { cn } from '@/lib/utils';
+
 import useBrightIdBackupWithAuraConnectionData from '../../hooks/useBrightIdBackupWithAuraConnectionData';
 import { AuraSortId } from '../../hooks/useSorts';
 import useViewMode from '../../hooks/useViewMode';
@@ -49,8 +51,10 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
 
 export const SubjectListControls = ({
   refreshBrightIdBackup,
+  loading: contextLoading,
 }: {
   refreshBrightIdBackup: () => void;
+  loading?: boolean;
 }) => {
   const {
     searchString,
@@ -61,7 +65,7 @@ export const SubjectListControls = ({
     toggleFiltersById,
     setSelectedSort,
   } = useSubjectsListContext();
-  const { refreshOutboundRatings } = useMyEvaluations();
+  const { refreshOutboundRatings, loading } = useMyEvaluations();
 
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
 
@@ -200,7 +204,7 @@ export const SubjectListControls = ({
 
   return (
     <>
-      <div className="bg-gray40 text-black2 dark:text-white dark:bg-button-primary rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+      <div className="bg-card dark:bg-dark-primary text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
             className="w-4 h-4"
@@ -208,7 +212,7 @@ export const SubjectListControls = ({
             alt=""
           />
           <input
-            className="bg-gray40 w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 dark:bg-button-primary text-sm h-11 focus:outline-none"
+            className="w-full font-medium bg-transparent text-card-foreground dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
             type="text"
             placeholder="Subject name or ID ..."
             value={searchString}
@@ -277,7 +281,10 @@ export const SubjectListControls = ({
         <img
           src="/assets/images/Shared/refresh.svg"
           alt="refresh"
-          className="w-7 h-7 ml-1 mt-0.5 cursor-pointer"
+          className={cn(
+            'w-7 h-7 ml-1 mt-0.5 cursor-pointer',
+            (loading || contextLoading) && 'animate-spin',
+          )}
           onClick={() => {
             refreshBrightIdBackup();
             refreshOutboundRatings();

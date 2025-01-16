@@ -1,7 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { pullProfilePhoto } from 'api/profilePhoto.service';
 import { EChartsOption } from 'echarts-for-react/src/types';
-import blockies from 'ethereum-blockies';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -9,7 +8,8 @@ import { useParams } from 'react-router-dom';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
-import { renderImageCover } from 'utils/image';
+
+import { createBlockiesImage, renderImageCover } from '@/utils/image';
 
 import { AuraImpact, AuraImpactRaw } from '../api/auranode.service';
 import {
@@ -64,7 +64,7 @@ export const useImpactEChartOption = (
     if (auraTopImpacts.length > 5) return {} as Record<string, string | null>;
 
     return auraTopImpacts.reduce((prev, curr) => {
-      prev[curr.evaluator] = null;
+      prev[curr.evaluator] = createBlockiesImage(curr.evaluator).toDataURL();
 
       return prev;
     }, {} as Record<string, string | null>);
@@ -98,45 +98,19 @@ export const useImpactEChartOption = (
               50,
             );
           } catch (e) {
-            images[impact.evaluator] = blockies
-              .create({
-                seed: impact.evaluator,
-                size: 10,
-                scale: 3,
-              })
-              .toDataURL();
+            images[impact.evaluator] = await renderImageCover(
+              createBlockiesImage(impact.evaluator).toDataURL(),
+              30,
+              30,
+            );
           }
         }),
       );
-
       setProfileImages(images);
     };
 
     fetchUserImages();
   }, [auraTopImpacts, authData, brightIdBackup, shouldFetchImages]);
-
-  const calculateImagePosition = (
-    index: number,
-    chartHeight: number,
-    photosLength: number,
-    isPositive = true,
-  ) => {
-    const mappings: Record<number, [number, number]> = {
-      1: [177, 0], // Centered, no spacing
-      2: [88, 150], // Spaced wider apart
-      3: [50, 127], // Given
-      4: [34, 95.5], // Interpolated between 3 and 5
-      5: [24, 77], // Given
-    };
-
-    if (photosLength === 0 || !mappings[photosLength]) {
-      return [0, 0];
-    }
-
-    const baseX = mappings[photosLength][0] + index * mappings[photosLength][1];
-    const baseY = chartHeight + (isPositive ? 30 : -30);
-    return [baseX, baseY];
-  };
 
   const impactChartOption: EChartsOption = useMemo(() => {
     const maxImpact = auraTopImpacts
@@ -196,6 +170,34 @@ export const useImpactEChartOption = (
       series: [
         {
           color: '#ABCAAE',
+          label:
+            !shouldFetchImages || auraTopImpacts.length > 5
+              ? undefined
+              : {
+                  show: true,
+                  position: 'bottom',
+                  distance: 10,
+                  formatter: (params: any) => {
+                    return `{img${params.dataIndex}|}`;
+                  },
+                  rich: auraTopImpacts.reduce((prev, curr, index) => {
+                    prev[`img${index}`] = {
+                      height: 35,
+                      width: 35,
+                      align: 'center',
+                      backgroundColor: {
+                        image: profileImages[curr.evaluator],
+                      },
+                      borderRadius: 12,
+                      style: {
+                        'border-radius': '12px',
+                        overflow: 'hidden',
+                      },
+                    };
+
+                    return prev;
+                  }, {} as Record<string, any>),
+                },
           data: auraTopImpacts.map((item) => ({
             value: item.impact,
             label: `${item.evaluatorName} ${(
@@ -220,45 +222,45 @@ export const useImpactEChartOption = (
           barMaxWidth: 30,
         },
       ],
-      graphic:
-        !shouldFetchImages || auraTopImpacts.length > 5
-          ? undefined
-          : auraTopImpacts.map((item, index) => ({
-              type: 'group',
-              children: [
-                {
-                  type: 'image',
-                  style: {
-                    data: item, // Add your custom data here
-                    image:
-                      profileImages[item.evaluator] ??
-                      '/assets/images/avatar-thumb.jpg',
-                    width: 30,
-                    height: 30,
-                  },
-                  position: [0, 0],
-                  bounding: 'raw',
-                },
-              ], // 3 = 50
+      // graphic:
+      //   !shouldFetchImages || auraTopImpacts.length > 5
+      //     ? undefined
+      //     : auraTopImpacts.map((item, index) => ({
+      //         type: 'group',
+      //         children: [
+      //           {
+      //             type: 'image',
+      //             style: {
+      //               data: item, // Add your custom data here
+      //               image:
+      //                 profileImages[item.evaluator] ??
+      //                 '/assets/images/avatar-thumb.jpg',
+      //               width: 30,
+      //               height: 30,
+      //             },
+      //             position: [0, 0],
+      //             bounding: 'raw',
+      //           },
+      //         ], // 3 = 50
 
-              position: calculateImagePosition(
-                index,
-                140,
-                auraTopImpacts.length,
-                item.impact >= 0,
-              ),
-              z: 100,
-              clipPath: {
-                type: 'rect',
-                shape: {
-                  x: 0,
-                  y: 0,
-                  width: 30,
-                  height: 30,
-                  r: [5, 5, 5, 5],
-                },
-              },
-            })),
+      //         position: calculateImagePosition(
+      //           index,
+      //           140,
+      //           auraTopImpacts.length,
+      //           item.impact >= 0,
+      //         ),
+      //         z: 100,
+      //         clipPath: {
+      //           type: 'rect',
+      //           shape: {
+      //             x: 0,
+      //             y: 0,
+      //             width: 30,
+      //             height: 30,
+      //             r: [5, 5, 5, 5],
+      //           },
+      //         },
+      //       })),
     };
   }, [
     auraSumImpacts,

@@ -59,7 +59,7 @@ export function ConnectionLevel({ subjectId }: { subjectId: string }) {
   }, [authData, connectionOp?.state, dispatch]);
 
   return (
-    <div className="card flex flex-col gap-2.5">
+    <div className="card dark:bg-dark-primary flex flex-col gap-2.5">
       [Only shown in DEV mode]{' '}
       {loading ? (
         <div>Loading...</div>

@@ -110,6 +110,7 @@ const Home = () => {
         {isEvaluate ? (
           <div>
             <SubjectListControls
+              loading={loading}
               refreshBrightIdBackup={refreshBrightIdBackup}
             />
             {filteredSubjects && !loading ? (

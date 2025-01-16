@@ -12,7 +12,6 @@ import { compactFormat } from 'utils/number';
 import {
   calculateRemainingScoreToNextLevel,
   calculateUserScorePercentage,
-  useLevelupProgress,
 } from 'utils/score';
 
 const LevelProgress: FC<{
@@ -21,16 +20,44 @@ const LevelProgress: FC<{
 }> = ({ category, subjectId }) => {
   const { currentViewMode } = useViewMode();
 
-  const { auraLevel, auraScore } = useSubjectVerifications(subjectId, category);
+  const { auraLevel, auraScore, auraImpacts } = useSubjectVerifications(
+    subjectId,
+    category,
+  );
 
   const remainingScore = useMemo(
     () => calculateRemainingScoreToNextLevel(category, auraScore ?? 0),
     [auraScore, category],
   );
 
-  const { isUnlocked, reason } = useLevelupProgress({
-    evaluationCategory: category,
-  });
+  const isValidatedForNextLevel = useMemo(() => {
+    if (category === EvaluationCategory.PLAYER) {
+      if (auraLevel === 1) {
+        return {
+          isPassed:
+            (auraImpacts?.filter((item) => item.confidence > 1).length ?? 0) >
+            0,
+          reason: '1 Medium+ confidence evaluation from one level 1+ trainer',
+        };
+      } else if (auraLevel === 2) {
+        return {
+          isPassed:
+            (auraImpacts?.filter(
+              (item) => item.confidence > 2 && (item.level ?? 0) >= 2,
+            ).length ?? 0) > 1 ||
+            (auraImpacts?.filter(
+              (item) => item.confidence > 1 && (item.level ?? 0) >= 2,
+            ).length ?? 0) > 2,
+          reason: '2 Medium+ confidence evaluation from level 2+ trainers',
+        };
+      }
+    }
+
+    return {
+      isPassed: true,
+      reason: '',
+    };
+  }, [category, auraLevel, auraImpacts]);
 
   const { myRatings } = useMyEvaluationsContext();
   const ratingsToBeDoneCount = useMemo(
@@ -63,7 +90,7 @@ const LevelProgress: FC<{
   );
 
   return (
-    <div className="card relative">
+    <div className="card dark:bg-dark-primary relative">
       <div className="absolute top-0 right-0">
         <img src={getViewModeUpArrowIcon(currentViewMode)} alt="" />
       </div>
@@ -84,6 +111,27 @@ const LevelProgress: FC<{
           <div className="flex flex-row items-center gap-1">
             {ratingsToBeDoneCount === undefined ? (
               '...'
+            ) : (auraLevel ?? 0) < 0 ? (
+              <>
+                <span className="text-xl font-black">
+                  {compactFormat(Math.abs(auraScore ?? 0))}
+                </span>
+                <span className="text-lg font-medium">to</span>
+                <span
+                  className={`text-lg font-semibold ${
+                    currentViewMode === PreferredView.PLAYER
+                      ? 'text-primary-d1'
+                      : currentViewMode === PreferredView.TRAINER
+                      ? 'text-pl2'
+                      : currentViewMode ===
+                        PreferredView.MANAGER_EVALUATING_TRAINER
+                      ? 'text-blue'
+                      : 'text-gray100'
+                  }`}
+                >
+                  Level 1
+                </span>
+              </>
             ) : (
               <>
                 {remainingScore > 0 ? (
@@ -107,10 +155,31 @@ const LevelProgress: FC<{
                       Level {(auraLevel ?? 0) + 1}
                     </span>
                   </>
-                ) : (
+                ) : isValidatedForNextLevel.isPassed ? (
                   <span className="font-semibold">
                     {"You've reached the maximum level! 🎉"}
                   </span>
+                ) : (
+                  <>
+                    <p className="text-sm break-words">
+                      {isValidatedForNextLevel.reason}
+                    </p>
+                    <span className="text-lg font-medium">to</span>
+                    <span
+                      className={`text-lg w-24 font-semibold ${
+                        currentViewMode === PreferredView.PLAYER
+                          ? 'text-primary-d1'
+                          : currentViewMode === PreferredView.TRAINER
+                          ? 'text-pl2'
+                          : currentViewMode ===
+                            PreferredView.MANAGER_EVALUATING_TRAINER
+                          ? 'text-blue'
+                          : 'text-gray100'
+                      }`}
+                    >
+                      Level {(auraLevel ?? 0) + 1}
+                    </span>
+                  </>
                 )}
               </>
             )}

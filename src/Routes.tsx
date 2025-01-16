@@ -12,7 +12,6 @@ import SubjectProfile, { SubjectProfileHeader } from './pages/SubjectProfile';
 
 const routes = [
   {
-    // Only used for demo
     path: RoutePath.SPLASH,
     pathRegex: new RegExp(/^\/splash/),
     element: <Splash />,
@@ -20,7 +19,6 @@ const routes = [
     requireAuth: false,
   },
   {
-    // Only used for demo
     path: RoutePath.ONBOARDING,
     pathRegex: new RegExp(/^\/onboard/),
     element: <Onboarding />,

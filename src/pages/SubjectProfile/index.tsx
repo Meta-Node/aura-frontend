@@ -61,7 +61,7 @@ const ProfileTabs = ({
   const { currentViewMode } = useViewMode();
   return (
     <div
-      className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-button-primary`}
+      className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary`}
     >
       <div
         className={`flex flex-row min-w-full gap-1.5 overflow-x-auto overflow-y-hidden h-full`}

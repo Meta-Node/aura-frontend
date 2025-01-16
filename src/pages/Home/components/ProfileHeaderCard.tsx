@@ -8,6 +8,8 @@ import { FC } from 'react';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
+import { Card } from '@/components/ui/card';
+
 const ProfileHeaderCard: FC<{
   subjectId: string;
 }> = ({ subjectId }) => {
@@ -26,7 +28,7 @@ const ProfileHeaderCard: FC<{
   );
 
   return (
-    <div className="relative card">
+    <Card className="relative p-4">
       <div className="flex justify-center flex-col gap-2">
         <div className="evaluation-left__top flex flex-1 gap-3">
           <div className="evaluation__profile">
@@ -62,7 +64,7 @@ const ProfileHeaderCard: FC<{
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
