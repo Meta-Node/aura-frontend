@@ -31,7 +31,7 @@ export const apiSlice = createApi({
   },
 
   endpoints: () => ({}),
-  keepUnusedDataFor: 30,
+  keepUnusedDataFor: 150,
 });
 
 export const { reducer } = apiSlice;

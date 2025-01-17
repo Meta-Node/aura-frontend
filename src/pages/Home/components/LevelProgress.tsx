@@ -15,6 +15,7 @@ import {
 } from 'utils/score';
 
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { playerLevelPoints } from '@/constants/levels';
 import { LevelRequirements } from '@/types/requirement';
 
 import RequirementsChecklist from './RequirementsChecklist';
@@ -53,6 +54,19 @@ const LevelProgress: FC<{
           mediumConfidenceImpacts.filter((item) => (item.level ?? 0) >= 1)
             .length > 0,
         reason: '1 Medium+ confidence evaluation from one level 1+ trainer',
+        checklists: [
+          {
+            title: 'Score: 2M+',
+            requirement: playerLevelPoints[2] - (auraScore ?? 0),
+          },
+          {
+            title: '1 Medium+ confidence evaluation from one level 1+ trainer',
+            requirement:
+              1 -
+              mediumConfidenceImpacts.filter((item) => (item.level ?? 0) >= 1)
+                .length,
+          },
+        ],
       };
     }
 
@@ -71,6 +85,10 @@ const LevelProgress: FC<{
           (mediumConfidenceImpacts.length + highConfidenceImpacts.length) / 3,
         checklists: [
           {
+            title: 'Score: 3M+',
+            requirement: playerLevelPoints[3] - (auraScore ?? 0),
+          },
+          {
             OR: [
               {
                 title: '2 Medium+ confidence evaluation from level 2+ trainers',
@@ -88,7 +106,7 @@ const LevelProgress: FC<{
     }
 
     return { isPassed: true, reason: '' };
-  }, [category, auraLevel, auraImpacts]);
+  }, [category, auraImpacts, auraLevel, auraScore]);
 
   const { myRatings } = useMyEvaluationsContext();
   const ratingsToBeDoneCount = useMemo(
@@ -191,7 +209,7 @@ const LevelProgress: FC<{
                 open={isRequirementsModalOpen}
                 onOpenChange={setIsRequirementsModalOpen}
               >
-                <DialogContent>
+                <DialogContent aria-describedby="Levelup requirements">
                   <DialogTitle>Requirements for the next level</DialogTitle>
                   <RequirementsChecklist
                     checklists={isValidatedForNextLevel.checklists}
