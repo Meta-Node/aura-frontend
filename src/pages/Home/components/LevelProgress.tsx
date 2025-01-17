@@ -48,6 +48,7 @@ const LevelProgress: FC<{
 
     if (auraLevel === 1) {
       return {
+        progress: 0,
         isPassed:
           mediumConfidenceImpacts.filter((item) => (item.level ?? 0) >= 1)
             .length > 0,
@@ -66,6 +67,8 @@ const LevelProgress: FC<{
       return {
         isPassed: hasOneHighConfidence || hasTwoMediumConfidence,
         reason: '2 Medium+ confidence evaluation from level 2+ trainers',
+        progress:
+          (mediumConfidenceImpacts.length + highConfidenceImpacts.length) / 3,
         checklists: [
           {
             OR: [
@@ -101,14 +104,17 @@ const LevelProgress: FC<{
   );
 
   const progressPercentage = useMemo(() => {
-    if (!ratingsToBeDoneCount) return 73;
+    if (isValidatedForNextLevel.progress) {
+      return Math.floor(isValidatedForNextLevel.progress * 100);
+    }
+    if (!ratingsToBeDoneCount) return 0;
     return Math.floor(
       ((PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING -
         ratingsToBeDoneCount) *
         100) /
         PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING,
     );
-  }, [ratingsToBeDoneCount]);
+  }, [isValidatedForNextLevel.progress, ratingsToBeDoneCount]);
 
   const levelPercentage = useMemo(
     () => calculateUserScorePercentage(category, auraScore ?? 0),
@@ -238,7 +244,9 @@ const LevelProgress: FC<{
               )} rounded-full h-full`}
               style={{
                 width: `${
-                  remainingScore > 0 ? progressPercentage : levelPercentage
+                  remainingScore > 0 || isValidatedForNextLevel.progress
+                    ? progressPercentage
+                    : levelPercentage
                 }%`,
               }}
             ></div>
