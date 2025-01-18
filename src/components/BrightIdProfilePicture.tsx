@@ -18,9 +18,7 @@ const BrightIdProfilePicture = ({
   subjectId: string | undefined;
 }) => {
   const [imgSrc, setImgSrc] = useState(
-    subjectId
-      ? createBlockiesImage(subjectId).toDataURL()
-      : DEFAULT_PROFILE_PICTURE,
+    subjectId ? createBlockiesImage(subjectId) : DEFAULT_PROFILE_PICTURE,
   );
   const authData = useSelector(selectAuthData);
   const brightIdBackup = useSelector(selectBrightIdBackup);
@@ -43,7 +41,7 @@ const BrightIdProfilePicture = ({
         if (mounted) setImgSrc(profilePhoto);
       } catch (e) {
         // console.log(e);
-        setImgSrc(createBlockiesImage(subjectId).toDataURL());
+        setImgSrc(createBlockiesImage(subjectId));
       }
     }
 

@@ -1,4 +1,4 @@
-import blockies from 'ethereum-blockies';
+import makeBlockie from 'ethereum-blockies-base64';
 
 export function drawImageCover(
   ctx: CanvasRenderingContext2D,
@@ -39,14 +39,7 @@ export function drawImageCover(
 }
 
 export const createBlockiesImage = (seed: string) => {
-  return blockies.create({
-    seed,
-    size: 10,
-    scale: 3,
-    color: '#5B9969',
-    bgcolor: '#D5ECDA',
-    spotcolor: 128,
-  });
+  return makeBlockie(seed);
 };
 
 export async function renderImageCover(

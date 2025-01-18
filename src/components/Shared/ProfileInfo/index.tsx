@@ -87,6 +87,7 @@ export const ProfileInfo = ({
       <div className="card--header flex justify-between w-full items-center">
         <div className="card--header__left flex gap-4">
           <BrightIdProfilePicture
+            key={subjectId}
             className={`card--header__left__avatar rounded-full border-[3px] ${getViewModeSubjectBorderColorClass(
               currentViewMode,
             )} h-[51px] w-[51px]`}

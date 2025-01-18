@@ -141,9 +141,10 @@ export const HeaderPreferedView = {
         if (
           !playerEvaluation.auraLevel ||
           playerEvaluation.auraLevel < 2 ||
-          !hasTrainerRole ||
-          !trainerActivity ||
-          trainerActivity.length === 0
+          !hasTrainerRole
+          // ||
+          // !trainerActivity ||
+          // trainerActivity.length === 0
         ) {
           setPreferredView(PreferredView.PLAYER);
         }
@@ -154,9 +155,10 @@ export const HeaderPreferedView = {
         if (
           !trainerEvaluation.auraLevel ||
           trainerEvaluation.auraLevel < 1 ||
-          !hasManagerRole ||
-          !managerActivity ||
-          managerActivity.length === 0
+          !hasManagerRole
+          // ||
+          // !managerActivity ||
+          // managerActivity.length === 0
         ) {
           setPreferredView(PreferredView.PLAYER);
         }
@@ -192,9 +194,7 @@ export const HeaderPreferedView = {
         </Tooltip>
         {!!playerEvaluation.auraLevel &&
           playerEvaluation.auraLevel >= 2 &&
-          hasTrainerRole &&
-          trainerActivity &&
-          trainerActivity.length > 0 && (
+          hasTrainerRole && (
             <Tooltip
               content="Trainer"
               className={`p-1 rounded ${
@@ -213,9 +213,7 @@ export const HeaderPreferedView = {
           )}
         {!!trainerEvaluation.auraLevel &&
           trainerEvaluation.auraLevel >= 1 &&
-          hasManagerRole &&
-          managerActivity &&
-          managerActivity.length > 0 && (
+          hasManagerRole && (
             <Tooltip
               content="Manager"
               className={`p-1 rounded ${

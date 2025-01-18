@@ -64,7 +64,7 @@ export const useImpactEChartOption = (
     if (auraTopImpacts.length > 5) return {} as Record<string, string | null>;
 
     return auraTopImpacts.reduce((prev, curr) => {
-      prev[curr.evaluator] = createBlockiesImage(curr.evaluator).toDataURL();
+      prev[curr.evaluator] = createBlockiesImage(curr.evaluator);
 
       return prev;
     }, {} as Record<string, string | null>);
@@ -99,7 +99,7 @@ export const useImpactEChartOption = (
             );
           } catch (e) {
             images[impact.evaluator] = await renderImageCover(
-              createBlockiesImage(impact.evaluator).toDataURL(),
+              createBlockiesImage(impact.evaluator),
               30,
               30,
             );
@@ -176,7 +176,7 @@ export const useImpactEChartOption = (
               : {
                   show: true,
                   position: 'bottom',
-                  distance: 10,
+                  distance: 2,
                   formatter: (params: any) => {
                     return `{img${params.dataIndex}|}`;
                   },
