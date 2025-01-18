@@ -176,7 +176,7 @@ export const useImpactEChartOption = (
               : {
                   show: true,
                   position: 'bottom',
-                  distance: 10,
+                  distance: 2,
                   formatter: (params: any) => {
                     return `{img${params.dataIndex}|}`;
                   },
