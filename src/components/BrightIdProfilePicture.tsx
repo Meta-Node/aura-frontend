@@ -28,7 +28,6 @@ const BrightIdProfilePicture = ({
     let mounted = true;
 
     async function f() {
-      // setImgSrc(DEFAULT_PROFILE_PICTURE);
       if (!authData || !subjectId || !brightIdBackup) return;
       if (
         subjectId !== authData.brightId &&
