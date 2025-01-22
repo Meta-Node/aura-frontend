@@ -20,5 +20,9 @@ export const useSubjectName = (
     [brightIdBackup, subjectId, authData],
   );
 
-  return profileInfo?.name ?? profileInfo?.id ?? 'Unknown User';
+  return (
+    profileInfo?.name ??
+    profileInfo?.id ??
+    subjectId?.slice(0, 4) + '...' + subjectId?.slice(-3)
+  );
 };
