@@ -5,12 +5,12 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 import { SUBJECTS_EVALUATION_ONBOARDING_GUIDE_STEP_COUNT } from 'constants/index';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'store/hooks';
 import { setPlayerOnboardingScreenShown } from 'store/profile';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 import { RoutePath } from 'types/router';
 
 import FirstStep from './components/firstStep';
@@ -23,6 +23,8 @@ const Onboarding = () => {
   const stepNumber = Number(searchParams.get('step')) || 1;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const swiperRef = useRef<SwiperRef>(null);
 
   useEffect(() => {
     if (!stepNumber) {
@@ -53,6 +55,7 @@ const Onboarding = () => {
           spaceBetween={50}
           slidesPerView={1}
           onSlideChange={handleSlideChange}
+          ref={swiperRef}
           initialSlide={stepNumber - 1}
         >
           <SwiperSlide>
@@ -75,7 +78,10 @@ const Onboarding = () => {
           {[1, 2, 3, 4].map((step) => (
             <span
               key={step}
-              onClick={() => setSearchParams({ step: step.toString() })}
+              onClick={() => {
+                setSearchParams({ step: step.toString() });
+                swiperRef.current?.swiper.slideTo(step - 1);
+              }}
               className={`transition-all w-2.5 h-2.5 rounded-full cursor-pointer bg-white ${
                 stepNumber === step && '!w-10 !bg-pastel-purple'
               }`}
@@ -86,6 +92,7 @@ const Onboarding = () => {
           onClick={() => {
             if (stepNumber < SUBJECTS_EVALUATION_ONBOARDING_GUIDE_STEP_COUNT) {
               setSearchParams({ step: (stepNumber + 1).toString() });
+              swiperRef.current?.swiper.slideNext();
             } else {
               handleFinish();
             }
