@@ -7,9 +7,21 @@ export function drawImageCover(
   canvasHeight: number,
   borderRadius?: number,
 ) {
-  // Get the dimensions of the image
-  const imgWidth = img.width;
-  const imgHeight = img.height;
+  const originalWidth = img.width;
+  const originalHeight = img.height;
+
+  const scale = Math.min(
+    canvasWidth / originalWidth,
+    canvasHeight / originalHeight,
+  );
+  const scaledWidth = Math.round(originalWidth * scale);
+  const scaledHeight = Math.round(originalHeight * scale);
+
+  const horizontalPadding = (canvasWidth - scaledWidth) / 2;
+  const verticalPadding = (canvasHeight - scaledHeight) / 2;
+
+  ctx.fillStyle = '#18181b';
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   if (borderRadius) {
     const x = 0,
@@ -33,8 +45,13 @@ export function drawImageCover(
     ctx.clip();
   }
 
-  // Draw the image to the canvas
-  ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+  ctx.drawImage(
+    img,
+    horizontalPadding,
+    verticalPadding,
+    scaledWidth,
+    scaledHeight,
+  );
   ctx.restore();
 }
 
