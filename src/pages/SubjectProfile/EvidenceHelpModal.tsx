@@ -1,4 +1,4 @@
-import { AnimatedNodeConnections } from '@/components/AnimatedNodeConnections';
+import AnimatedNodeCircles from '@/components/AnimatedNodeCircles';
 
 // export const textContent = `The **Evidence** section provides a comprehensive view of user activities, their evaluations, and how others perceive them. It helps users gauge the credibility and performance of other evaluators while offering transparency into evaluation data.
 
@@ -54,7 +54,17 @@ import { AnimatedNodeConnections } from '@/components/AnimatedNodeConnections';
 export default function EvidenceHelpModal() {
   return (
     <div className="leading-loose no-scrollbar text-base max-h-96 overflow-y-auto">
-      <AnimatedNodeConnections />
+      <h3 className="font-semibold my-4">Connections</h3>
+      <AnimatedNodeCircles />
+
+      <p className="mt-5 text-sm leading-loose">
+        {`BrightID Connections are trusted relationships built by scanning QR
+        codes with users you meet or know, establishing verification levels like
+        "Just Met" or "Already Known." These connections expand your network,
+        enhance authenticity, and unlock features such as recovery or Aura-based
+        interactions. Each level reflects your real-world trust, securing your
+        digital identity through a decentralized community.`}
+      </p>
     </div>
   );
 }
