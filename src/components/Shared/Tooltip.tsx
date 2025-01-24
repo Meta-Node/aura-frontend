@@ -46,7 +46,7 @@ const Tooltip: FC<
         {children}
       </span>
       <div
-        className={`absolute whitespace-nowrap text-black bg-gray-200 dark:bg-gray-800 dark:text-white text-sm rounded px-2 py-1 shadow-lg transition-opacity duration-300 transform ${
+        className={`absolute z-10 whitespace-nowrap text-black bg-gray-200 dark:bg-gray-800 dark:text-white text-sm rounded px-2 py-1 shadow-lg transition-opacity duration-300 transform ${
           isVisible
             ? 'opacity-100 scale-100'
             : 'opacity-0 scale-95 pointer-events-none'
