@@ -15,6 +15,10 @@ export default defineConfig(() => {
       tsconfigPaths(),
       react(),
       VitePWA({
+        workbox: {
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+        },
+
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
