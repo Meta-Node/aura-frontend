@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(() => {
@@ -10,7 +11,47 @@ export default defineConfig(() => {
     define: {
       'process.env': process.env,
     },
-    plugins: [tsconfigPaths(), react()],
+    plugins: [
+      tsconfigPaths(),
+      react(),
+      VitePWA({
+        workbox: {
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+        },
+
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+        manifest: {
+          name: 'Aura',
+          short_name: 'aura',
+          description: 'Aura web app',
+          theme_color: '#0c0a09',
+          icons: [
+            {
+              src: '/assets/images/pwa/aura-image-256x256.png',
+              sizes: '256x256',
+              type: 'image/png',
+              purpose: 'any maskable',
+            },
+            {
+              src: '/assets/images/pwa/aura-image-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: '/assets/images/pwa/aura-image-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+            {
+              src: '/assets/images/pwa/aura-image-256x256.png',
+              sizes: '256x256',
+              type: 'image/png',
+            },
+          ],
+        },
+      }),
+    ],
     server: {
       port: 3000,
 
