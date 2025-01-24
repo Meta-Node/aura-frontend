@@ -429,21 +429,23 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             <InfiniteScrollLocal
               className={'flex flex-col gap-2.5 w-full -mb-5 pb-5 h-full'}
               items={evaluators}
-              renderItem={(evaluator) => (
-                <ProfileEvaluation
-                  evidenceViewMode={EvidenceViewMode.INBOUND_EVALUATION}
-                  onClick={() =>
-                    setCredibilityDetailsProps({
-                      subjectId: evaluator,
-                      evaluationCategory:
-                        currentRoleEvaluatorEvaluationCategory,
-                    })
-                  }
-                  key={evaluator}
-                  fromSubjectId={evaluator}
-                  toSubjectId={subjectId}
-                />
-              )}
+              renderItem={(evaluator) => {
+                return (
+                  <ProfileEvaluation
+                    evidenceViewMode={EvidenceViewMode.INBOUND_EVALUATION}
+                    onClick={() =>
+                      setCredibilityDetailsProps({
+                        subjectId: evaluator,
+                        evaluationCategory:
+                          currentRoleEvaluatorEvaluationCategory,
+                      })
+                    }
+                    key={evaluator}
+                    fromSubjectId={evaluator}
+                    toSubjectId={subjectId}
+                  />
+                );
+              }}
             />
           ) : (
             <EmptyEvaluationsList

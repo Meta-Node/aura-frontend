@@ -80,7 +80,7 @@ const AnimatedNodeCircles = () => {
 
   return (
     <div
-      className="relative rounded-lg shadow-sm"
+      className="relative mx-auto rounded-lg shadow-sm"
       style={{ width: 220, height: 150 }}
     >
       <svg className="absolute w-full h-full">
