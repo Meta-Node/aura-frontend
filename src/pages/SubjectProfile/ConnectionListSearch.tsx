@@ -2,8 +2,14 @@ import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useMemo, useState } from 'react';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
 import Dropdown from '../../components/Shared/Dropdown';
-import Modal from '../../components/Shared/Modal';
 import { useSubjectInboundConnectionsContext } from '../../contexts/SubjectInboundConnectionsContext';
 import { AuraFilterId } from '../../hooks/useFilters';
 import { AuraSortId } from '../../hooks/useSorts';
@@ -155,24 +161,31 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
           items={dropdownOptions}
           selectedItem={selectedItem}
           onItemClick={(item) => item.onClick()}
-          className="h-10"
+          className="h-10 w-full"
         />
-        <Modal
-          title="Custom View"
-          isOpen={isModalOpen}
-          closeModalHandler={() => setIsModalOpen(false)}
-          className="select-button-with-modal__modal"
+        <Dialog
+          open={isModalOpen}
+          onOpenChange={(value) => setIsModalOpen(value)}
         >
-          <FilterAndSortModalBody subjectId={subjectId} />
-        </Modal>
+          <DialogContent>
+            <DialogHeader className="font-semibold">
+              <DialogTitle>Custom View</DialogTitle>
+            </DialogHeader>
+            <FilterAndSortModalBody subjectId={subjectId} />
+          </DialogContent>
+        </Dialog>
 
-        <Modal
-          title="Understanding Connections"
-          isOpen={isHelpModalOpen}
-          closeModalHandler={() => setIsHelpModalOpen(false)}
+        <Dialog
+          open={isHelpModalOpen}
+          onOpenChange={(value) => setIsHelpModalOpen(value)}
         >
-          <SubjectConnectionsHelpBody />
-        </Modal>
+          <DialogContent>
+            <DialogHeader className="font-semibold">
+              <DialogTitle>Understanding Connections</DialogTitle>
+            </DialogHeader>
+            <SubjectConnectionsHelpBody />
+          </DialogContent>
+        </Dialog>
         <img
           className="cursor-pointer ml-3 w-5 h-5"
           src="/assets/images/SubjectProfile/evidence-info-icon.svg"

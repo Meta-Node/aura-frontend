@@ -34,6 +34,8 @@ import {
 } from 'types/dashboard';
 import { __DEV__ } from 'utils/env';
 
+import Tooltip from '@/components/Shared/Tooltip';
+
 import { EmptyActivitiesList } from '../../components/Shared/EmptyAndLoadingStates/EmptyActivitiesList';
 import { EmptyEvaluationsList } from '../../components/Shared/EmptyAndLoadingStates/EmptyEvaluationsList';
 import { EmptySubjectList } from '../../components/Shared/EmptyAndLoadingStates/EmptySubjectList';
@@ -64,7 +66,7 @@ const ProfileTabs = ({
       className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary`}
     >
       <div
-        className={`flex flex-row min-w-full gap-1.5 overflow-x-auto overflow-y-hidden h-full`}
+        className={`flex flex-row min-w-full gap-1.5 h-full`}
         // TODO: refactor this to tailwindcss class and values
         style={{
           scrollbarWidth: 'thin',
@@ -85,19 +87,23 @@ const ProfileTabs = ({
         {/*>*/}
         {/*  {option1}*/}
         {/*</p>*/}
-        <p
+        <Tooltip
+          onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
+          data-testid="table-view-switch-option-one"
+          position="top"
+          content="overall performance"
           className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.OVERVIEW
               ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
               : 'bg-transparent dark:text-white text-black font-medium'
           }`}
-          onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
-          data-testid="table-view-switch-option-one"
+          tooltipClassName="font-normal"
         >
           Overview
-        </p>
+        </Tooltip>
         {currentViewMode === PreferredView.PLAYER ? (
-          <p
+          <Tooltip
+            content="user's community"
             className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.CONNECTIONS
                 ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
@@ -105,11 +111,14 @@ const ProfileTabs = ({
             }`}
             onClick={() => setSelectedTab(ProfileTab.CONNECTIONS)}
             data-testid="table-view-switch-option-one"
+            tooltipClassName="font-normal"
           >
             Connections
-          </p>
+          </Tooltip>
         ) : (
-          <p
+          <Tooltip
+            tooltipClassName="font-normal"
+            content="rating history"
             className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.ACTIVITY ||
               selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
@@ -120,9 +129,11 @@ const ProfileTabs = ({
             data-testid="table-view-switch-option-one"
           >
             Activity
-          </p>
+          </Tooltip>
         )}
-        <p
+        <Tooltip
+          tooltipClassName="font-normal"
+          content="others opinion"
           className={`rounded-md min-w-[100px] w-full cursor-pointer flex justify-center items-center h-full transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.EVALUATIONS
               ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
@@ -132,7 +143,7 @@ const ProfileTabs = ({
           data-testid="table-view-switch-option-two"
         >
           Evaluations
-        </p>
+        </Tooltip>
       </div>
     </div>
   );
