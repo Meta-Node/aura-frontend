@@ -13,6 +13,7 @@ import {
   useSubjectVerifications,
 } from '../../hooks/useSubjectVerifications';
 import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';
+import Tooltip from '../Shared/Tooltip';
 import { Card } from '../ui/card';
 
 export const SubjectCard = ({
@@ -94,12 +95,17 @@ export const SubjectCard = ({
           </div>
         </div>
         <div className="evaluation-right flex flex-col gap-2 items-end">
-          <div className="evaluation-right__bottom">
+          <Tooltip
+            tooltipClassName="text-sm translate-x-1/2"
+            position="top-left"
+            content={'All evaluations of ' + name}
+            className="evaluation-right__bottom"
+          >
             <ReactECharts
               style={{ height: '48px', width: '100%' }}
               option={impactChartSmallOption}
             />
-          </div>
+          </Tooltip>
         </div>
       </Card>
     </Link>

@@ -96,6 +96,8 @@ const Home = () => {
         />
 
         <ToggleInput
+          tooltipFirstTab="Find users to rate"
+          tooltipSecondTab="Advance your score"
           option1={'Evaluate'}
           option2={'Level Up'}
           isChecked={isEvaluate}

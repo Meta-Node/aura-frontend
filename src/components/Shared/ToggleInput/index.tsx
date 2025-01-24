@@ -8,6 +8,8 @@ export const ToggleInput = ({
   setIsChecked,
   option2Disabled = false,
   disabledHelpText = '',
+  tooltipFirstTab,
+  tooltipSecondTab,
 }: {
   option1: string;
   option2: string;
@@ -15,6 +17,8 @@ export const ToggleInput = ({
   setIsChecked: (isChecked: boolean) => void;
   option2Disabled?: boolean;
   disabledHelpText?: string;
+  tooltipFirstTab?: string;
+  tooltipSecondTab?: string;
 }) => {
   return (
     <div className="px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-card/90 dark:bg-dark-primary">
@@ -24,7 +28,9 @@ export const ToggleInput = ({
             isChecked ? 'left-0 right-1/2' : 'right-0 left-1/2'
           }`}
         ></p>
-        <p
+        <Tooltip
+          tooltipClassName="font-normal"
+          content={tooltipFirstTab ?? option1}
           className={`bg-transparent absolute cursor-pointer w-1/2 h-full flex items-center justify-center left-0 top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
             isChecked
               ? 'text-primary text-white dark:text-black font-bold'
@@ -34,7 +40,7 @@ export const ToggleInput = ({
           data-testid="table-view-switch-option-one"
         >
           {option1}
-        </p>
+        </Tooltip>
 
         {option2Disabled ? (
           <Tooltip
@@ -54,7 +60,9 @@ export const ToggleInput = ({
             {option2}
           </Tooltip>
         ) : (
-          <p
+          <Tooltip
+            tooltipClassName="font-normal"
+            content={tooltipSecondTab ?? option2}
             className={`bg-transparent absolute cursor-pointer flex justify-center items-center w-1/2 h-full right-0 top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
               isChecked
                 ? 'text-black dark:text-white font-medium'
@@ -69,7 +77,7 @@ export const ToggleInput = ({
           >
             {option2Disabled && <FaLock className="mr-1" />}
             {option2}
-          </p>
+          </Tooltip>
         )}
       </div>
     </div>

@@ -18,8 +18,8 @@ export default function StepsPagination({
             onClick={() => {
               setPageNumber(step);
             }}
-            className={`transition-all w-2.5 h-2.5 rounded-full cursor-pointer bg-white ${
-              activePage === step && '!w-10 !bg-pastel-purple'
+            className={`transition-all w-2.5 h-2.5 rounded-full cursor-pointer bg-white dark:bg-stone-700 ${
+              activePage === step && '!w-10 !bg-pastel-purple dark:!bg-purple'
             }`}
           ></span>
         ))}
@@ -31,7 +31,7 @@ export default function StepsPagination({
             setPageNumber(activePage + 1);
           }
         }}
-        className={`bg-pastel-purple disabled:opacity-60 p-3 w-10 h-10 rounded-3xl transition-all duration-400 `}
+        className={`bg-pastel-purple dark:!bg-purple disabled:opacity-60 p-3 w-10 h-10 rounded-3xl transition-all duration-400 `}
       >
         <img
           src="/assets/images/Shared/next-page.svg"
