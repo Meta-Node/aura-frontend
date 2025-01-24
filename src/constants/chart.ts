@@ -20,15 +20,26 @@ export const userRatingColorMap = {
   '4': '#451F6D',
 };
 
+export const ratingToText: Record<string, string> = {
+  '-4': 'Very High (Negative)',
+  '-3': 'High (Negative)',
+  '-2': 'Medium (Negative)',
+  '-1': 'Low (Negative)',
+  '1': 'Low',
+  '2': 'Medium',
+  '3': 'High',
+  '4': 'Very High',
+};
+
 export const subjectRatingColorMap = {
   '-4': '#FAD7A0',
   '-3': '#F8C471',
   '-2': '#F5B041',
   '-1': '#F39C12',
-  '1': '#91450F',
-  '3': '#CA6A1A',
-  '2': '#AF5714',
-  '4': '#E67E22',
+  '1': '#E67E22',
+  '2': '#CA6A1A',
+  '3': '#AF5714',
+  '4': '#91450F',
 };
 
 export const findNearestColor = (value: any, colorMap: any) => {

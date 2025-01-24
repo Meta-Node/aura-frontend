@@ -9,10 +9,19 @@ import {
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import LevelProgress from 'pages/Home/components/LevelProgress';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { selectAuthData } from 'store/profile/selectors';
 import { PreferredView, ProfileTab } from 'types/dashboard';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import ChartViewHelpModal from '@/pages/SubjectProfile/ChartViewHelpModal';
 
 import {
   viewModeToEvaluatorViewMode,
@@ -21,7 +30,6 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { compactFormat } from '../../../utils/number';
-import Tooltip from '../Tooltip';
 
 const ProfileOverview = ({
   subjectId,
@@ -44,6 +52,7 @@ const ProfileOverview = ({
   viewMode: PreferredView;
   isMyPerformance?: boolean;
 }) => {
+  const [isChartHelpModalOpen, setIsChartHelpModalOpen] = useState(false);
   const location = useLocation();
   const {
     ratings: inboundRatings,
@@ -153,17 +162,25 @@ const ProfileOverview = ({
               })`}
             />
           </div>
+          <Dialog
+            open={isChartHelpModalOpen}
+            onOpenChange={(value) => setIsChartHelpModalOpen(value)}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Understanding Overview Tab</DialogTitle>
+              </DialogHeader>
+              <ChartViewHelpModal />
+            </DialogContent>
+          </Dialog>
           <div className="body__info flex justify-between w-full">
             <div className="font-medium">Evaluation Impact:</div>
-            <Tooltip
-              tooltipClassName="w-72 z-10 !whitespace-normal"
-              position="left"
-              content="The Overview tab provides a summary of the user's evaluation performance and impact. It offers a quick glance at key metrics, making it easier for viewers to understand the user's contributions and credibility."
+            <button
+              onClick={() => setIsChartHelpModalOpen(true)}
+              className="underline text-sm text-gray00 dark:text-gray-400"
             >
-              <button className="underline text-sm text-gray00 dark:text-gray-400">
-                What&apos;s this?
-              </button>
-            </Tooltip>
+              What&apos;s this?
+            </button>
           </div>
           <ReactECharts
             option={impactChartOption}
