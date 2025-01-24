@@ -10,6 +10,7 @@ import {
   INBOUND_EVIDENCE_VIEW_MODES,
   preferredViewIconColored,
   subjectViewAsIconColored,
+  viewModeSubjectString,
   viewModeToString,
   viewModeToSubjectViewMode,
   viewModeToViewAs,
@@ -635,6 +636,9 @@ const ConnectedCardBody = ({
         : toSubjectId,
     [evidenceViewMode, fromSubjectId, toSubjectId],
   );
+
+  const name = useSubjectName(leftCardSide);
+
   const rightCardSide = useMemo(
     () =>
       INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
@@ -661,7 +665,17 @@ const ConnectedCardBody = ({
             evidenceViewMode={evidenceViewMode}
             subjectId={leftCardSide}
           />
-          <Graph subjectId={leftCardSide} evidenceViewMode={evidenceViewMode} />
+          <Tooltip
+            // className="z-10"
+            content={`All of ${name}'s evaluations as a ${viewModeSubjectString[evidenceViewMode]}`}
+          >
+            <div>
+              <Graph
+                subjectId={leftCardSide}
+                evidenceViewMode={evidenceViewMode}
+              />
+            </div>
+          </Tooltip>
         </div>
         <span className="divider border-r border-dashed border-gray00 pl-.5 mr-1.5 h-full"></span>
       </div>
