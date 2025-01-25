@@ -183,7 +183,9 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
             <DialogHeader className="font-semibold">
               <DialogTitle>Understanding Connections</DialogTitle>
             </DialogHeader>
-            <SubjectConnectionsHelpBody />
+            <SubjectConnectionsHelpBody
+              selectedItemIndex={selectedItem.value}
+            />
           </DialogContent>
         </Dialog>
         <img

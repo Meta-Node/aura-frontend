@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SiGitbook } from 'react-icons/si';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router';
@@ -93,9 +93,23 @@ const dropdownOptions = [
     },
   ],
 ];
-export default function SubjectConnectionsHelpBody() {
+export default function SubjectConnectionsHelpBody({
+  selectedItemIndex = 0,
+}: {
+  selectedItemIndex?: number;
+}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(dropdownOptions[0]);
+  const [selectedItem, setSelectedItem] = useState(
+    dropdownOptions.find((item) => item.value === selectedItemIndex) ??
+      dropdownOptions[0],
+  );
+
+  useEffect(() => {
+    setSelectedItem(
+      dropdownOptions.find((item) => item.value === selectedItemIndex) ??
+        dropdownOptions[0],
+    );
+  }, [selectedItemIndex]);
 
   return (
     <div className="leading-loose no-scrollbar text-base max-h-96 overflow-y-auto">

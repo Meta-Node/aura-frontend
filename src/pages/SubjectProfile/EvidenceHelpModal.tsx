@@ -1,5 +1,5 @@
 import ReactECharts from 'echarts-for-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SiGitbook } from 'react-icons/si';
 import { Link } from 'react-router';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
@@ -260,6 +260,27 @@ export default function EvidenceHelpModal() {
   const handleSlideChange = (swiper: any) => {
     setActivePage(swiper.activeIndex);
   };
+
+  useEffect(() => {
+    if (swiperRef.current) {
+      const swiperInstance: any = swiperRef.current.swiper;
+
+      // Move the Swiper slightly to the right (e.g., 20% of the slide width)
+      const tickleDistance = -swiperInstance.width * 0.3; // Adjust this value for the desired distance
+      swiperInstance.setTransition(300); // Set transition duration for smooth animation
+      swiperInstance.setTranslate(tickleDistance);
+
+      // After a short delay, snap back to the first slide
+      const timer = setTimeout(() => {
+        swiperInstance.setTransition(300); // Set transition duration for smooth animation
+        swiperInstance.setTranslate(0); // Reset to the first slide
+      }, 600); // Adjust the delay as needed
+
+      // Cleanup the timer if the component unmounts
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, []);
 
   return (
     <div className="leading-loose no-scrollbar text-base overflow-y-auto">

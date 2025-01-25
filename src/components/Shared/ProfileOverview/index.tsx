@@ -179,7 +179,11 @@ const ProfileOverview = ({
               onClick={() => setIsChartHelpModalOpen(true)}
               className="underline text-sm text-gray00 dark:text-gray-400"
             >
-              What&apos;s this?
+              <img
+                className="cursor-pointer w-5 h-5"
+                src="/assets/images/SubjectProfile/evidence-info-icon.svg"
+                alt="help"
+              />
             </button>
           </div>
           <ReactECharts
