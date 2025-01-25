@@ -12,7 +12,6 @@ import SubjectProfile, { SubjectProfileHeader } from './pages/SubjectProfile';
 
 const routes = [
   {
-    // Only used for demo
     path: RoutePath.SPLASH,
     pathRegex: new RegExp(/^\/splash/),
     element: <Splash />,
@@ -20,7 +19,6 @@ const routes = [
     requireAuth: false,
   },
   {
-    // Only used for demo
     path: RoutePath.ONBOARDING,
     pathRegex: new RegExp(/^\/onboard/),
     element: <Onboarding />,
@@ -52,7 +50,7 @@ const routes = [
     pathRegex: new RegExp(/^\/domain-overview/),
     element: <DomainOverview />,
     header: {
-      title: 'Domain overview',
+      title: () => 'Domain overview',
       icon: '/assets/images/Header/home.svg',
       iconClickedHandler: (navigate: NavigateFunction) => {
         navigate(RoutePath.HOME);
@@ -65,7 +63,7 @@ const routes = [
     pathRegex: new RegExp(/^\/subject\/[a-zA-Z0-9_-]+/),
     element: <SubjectProfile />,
     header: {
-      title: <SubjectProfileHeader />,
+      title: SubjectProfileHeader,
       icon: '/assets/images/Header/home.svg',
       iconClickedHandler: (navigate: NavigateFunction) => {
         navigate(RoutePath.HOME);
@@ -78,7 +76,7 @@ const routes = [
     pathRegex: new RegExp(/^\/home/),
     element: <Home />,
     header: {
-      title: <HomeHeader />,
+      title: HomeHeader,
       icon: '/assets/images/Header/home.svg',
       iconClickedHandler: (navigate: NavigateFunction) => {
         navigate(RoutePath.HOME + '?tab=evaluate');
@@ -91,7 +89,7 @@ const routes = [
     pathRegex: new RegExp(/^\/settings/),
     element: <Settings />,
     header: {
-      title: 'Settings',
+      title: () => 'Settings',
       icon: '/assets/images/Header/home.svg',
       iconClickedHandler: (navigate: NavigateFunction) => {
         navigate(RoutePath.HOME);
@@ -104,7 +102,7 @@ const routes = [
     pathRegex: new RegExp(/^\/role-management/),
     element: <RoleManagement />,
     header: {
-      title: 'Role Management',
+      title: () => 'Role Management',
       icon: '/assets/images/Header/back.svg',
       iconClickedHandler: (navigate: NavigateFunction) => {
         navigate(-1);

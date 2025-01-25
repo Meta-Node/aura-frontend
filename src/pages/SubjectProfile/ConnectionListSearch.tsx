@@ -2,12 +2,19 @@ import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useMemo, useState } from 'react';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
 import Dropdown from '../../components/Shared/Dropdown';
-import Modal from '../../components/Shared/Modal';
 import { useSubjectInboundConnectionsContext } from '../../contexts/SubjectInboundConnectionsContext';
 import { AuraFilterId } from '../../hooks/useFilters';
 import { AuraSortId } from '../../hooks/useSorts';
 import { AuraFilterDropdownOption } from '../../types';
+import SubjectConnectionsHelpBody from './SubjectConnectionsHelpModal';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -57,6 +64,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const customViewOption = useMemo(
@@ -153,17 +161,40 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
           items={dropdownOptions}
           selectedItem={selectedItem}
           onItemClick={(item) => item.onClick()}
-          className="h-10"
+          className="h-10 w-full"
         />
-        <Modal
-          title="Custom View"
-          isOpen={isModalOpen}
-          closeModalHandler={() => setIsModalOpen(false)}
-          className="select-button-with-modal__modal"
+        <Dialog
+          open={isModalOpen}
+          onOpenChange={(value) => setIsModalOpen(value)}
         >
-          <FilterAndSortModalBody subjectId={subjectId} />
-        </Modal>
-        <span className="ml-auto">
+          <DialogContent>
+            <DialogHeader className="font-semibold">
+              <DialogTitle>Custom View</DialogTitle>
+            </DialogHeader>
+            <FilterAndSortModalBody subjectId={subjectId} />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={isHelpModalOpen}
+          onOpenChange={(value) => setIsHelpModalOpen(value)}
+        >
+          <DialogContent>
+            <DialogHeader className="font-semibold">
+              <DialogTitle>Understanding Connections</DialogTitle>
+            </DialogHeader>
+            <SubjectConnectionsHelpBody
+              selectedItemIndex={selectedItem.value}
+            />
+          </DialogContent>
+        </Dialog>
+        <img
+          className="cursor-pointer ml-3 w-5 h-5"
+          src="/assets/images/SubjectProfile/evidence-info-icon.svg"
+          alt="help"
+          onClick={() => setIsHelpModalOpen(true)}
+        />
+        <span className="ml-auto flex items-center">
           (
           {filteredSubjects?.filter((e) => e.inboundConnection).length ??
             itemsOriginal?.length ??
@@ -176,7 +207,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
           )
         </span>
       </div>
-      <div className="bg-gray40 text-black2 dark:text-white dark:bg-button-primary rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+      <div className="bg-card text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
             className="w-4 h-4"
@@ -184,7 +215,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
             alt=""
           />
           <input
-            className="bg-gray40 w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 dark:bg-button-primary text-sm h-11 focus:outline-none"
+            className="bg-card text-card-foreground w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
             type="text"
             placeholder="Search in these results"
             value={searchString}

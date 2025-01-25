@@ -9,10 +9,19 @@ import {
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import LevelProgress from 'pages/Home/components/LevelProgress';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { selectAuthData } from 'store/profile/selectors';
 import { PreferredView, ProfileTab } from 'types/dashboard';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import ChartViewHelpModal from '@/pages/SubjectProfile/ChartViewHelpModal';
 
 import {
   viewModeToEvaluatorViewMode,
@@ -43,6 +52,8 @@ const ProfileOverview = ({
   viewMode: PreferredView;
   isMyPerformance?: boolean;
 }) => {
+  const [isChartHelpModalOpen, setIsChartHelpModalOpen] = useState(false);
+  const location = useLocation();
   const {
     ratings: inboundRatings,
     inboundRatingsStatsString,
@@ -57,7 +68,7 @@ const ProfileOverview = ({
   );
   const { totalPositiveImpact, totalNegativeImpact } =
     useTotalImpact(auraImpacts);
-  const { impactChartOption } = useImpactEChartOption(auraImpacts);
+  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
 
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
@@ -73,6 +84,17 @@ const ProfileOverview = ({
   };
 
   const onChartClick = (params: any) => {
+    if (params.componentType === 'graphic') {
+      console.log(
+        'Profile image clicked:',
+        params.event.target.style.data.evaluator,
+      );
+      setCredibilityDetailsProps({
+        subjectId: params.event.target.style.data.evaluator,
+        evaluationCategory:
+          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+      });
+    }
     if (params.componentType === 'series') {
       console.log('Bar clicked:', params.data.evaluator);
       setCredibilityDetailsProps({
@@ -85,13 +107,14 @@ const ProfileOverview = ({
 
   return (
     <>
-      {authData?.brightId === subjectId && (
-        <LevelProgress
-          category={currentRoleEvaluatorEvaluationCategory}
-          subjectId={subjectId}
-        />
-      )}
-      <div className="card">
+      {authData?.brightId === subjectId &&
+        !location.pathname.startsWith('/subject/') && (
+          <LevelProgress
+            category={currentRoleEvaluatorEvaluationCategory}
+            subjectId={subjectId}
+          />
+        )}
+      <div className="card dark:bg-dark-primary">
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>
         )}
@@ -139,11 +162,29 @@ const ProfileOverview = ({
               })`}
             />
           </div>
+          <Dialog
+            open={isChartHelpModalOpen}
+            onOpenChange={(value) => setIsChartHelpModalOpen(value)}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Understanding Overview Tab</DialogTitle>
+              </DialogHeader>
+              <ChartViewHelpModal />
+            </DialogContent>
+          </Dialog>
           <div className="body__info flex justify-between w-full">
             <div className="font-medium">Evaluation Impact:</div>
-            <div className="underline text-sm text-gray00 dark:text-gray-400">
-              What&apos;s this?
-            </div>
+            <button
+              onClick={() => setIsChartHelpModalOpen(true)}
+              className="underline text-sm text-gray00 dark:text-gray-400"
+            >
+              <img
+                className="cursor-pointer w-5 h-5"
+                src="/assets/images/SubjectProfile/evidence-info-icon.svg"
+                alt="help"
+              />
+            </button>
           </div>
           <ReactECharts
             option={impactChartOption}

@@ -127,7 +127,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
         </>
       ) : null}
 
-      {!!playerEvaluation.auraLevel && playerEvaluation.auraLevel > 2 && (
+      {!!playerEvaluation.auraLevel && playerEvaluation.auraLevel >= 2 && (
         <section className="flex justify-end dark:text-white text-black mt-auto">
           {hasTrainerRole ? (
             <button
@@ -141,7 +141,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
               className="btn !bg-pl2 btn--small"
               onClick={() => dispatch(toggleTrainerRole())}
             >
-              Join
+              Show
             </button>
           )}
         </section>
@@ -215,7 +215,7 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
               className="btn !bg-pl2 btn--small"
               onClick={() => dispatch(toggleManagerRole())}
             >
-              Join
+              Show
             </button>
           )}
         </section>

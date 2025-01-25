@@ -25,15 +25,15 @@ const GlobalSearchBody: FC = () => {
           onSearch();
         }}
       >
-        <div className="bg-gray40 text-black2 dark:text-white dark:bg-button-primary rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
-          <div className="card__input flex gap-2 items-center rounded px-3.5">
+        <div className="bg-card text-card-foreground rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+          <div className="card__input flex gap-2 items-center rounded-lg px-3.5">
             <img
               className="w-4 h-4"
               src="/assets/images/Shared/search-icon.svg"
               alt=""
             />
             <input
-              className="bg-gray40 font-medium dark:placeholder:text-gray-50 placeholder-black2 dark:bg-button-primary w-full text-sm h-11 focus:outline-none"
+              className="bg-card font-medium dark:placeholder:text-gray-50 placeholder-black2 w-full text-sm h-11 focus:outline-none"
               type="text"
               placeholder="Subject name or ID ..."
               value={searchString}

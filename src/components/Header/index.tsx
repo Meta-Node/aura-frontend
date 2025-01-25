@@ -68,12 +68,12 @@ const Header = () => {
     });
   }, [currentEvaluationCategory, pathname]);
 
-  let headerComponent: any;
+  let HeaderComponent: any;
 
   if (currentRouteObject) {
-    headerComponent = currentRouteObject.header;
+    HeaderComponent = currentRouteObject.header;
   } else {
-    headerComponent = {
+    HeaderComponent = {
       title: <></>,
       icon: '/assets/images/Header/home.svg',
       iconClickedHandler: () => {
@@ -82,6 +82,8 @@ const Header = () => {
     };
   }
 
+  const HeaderTitle = HeaderComponent.title ?? (() => <></>);
+
   return (
     <div className="flex flex-col gap-2.5 px-6 pt-9">
       {isSequenceOpen && (
@@ -89,19 +91,19 @@ const Header = () => {
       )}
       <header className="header pb-4 flex justify-between">
         <div className="header-left items-center flex gap-1.5">
-          {headerComponent.icon && (
+          {HeaderComponent.icon && (
             <span
-              key={headerComponent.icon}
+              key={HeaderComponent.icon}
               onClick={() =>
-                headerComponent && headerComponent.iconClickedHandler(navigate)
+                HeaderComponent && HeaderComponent.iconClickedHandler(navigate)
               }
               className="header-icon !cursor-pointer mr-0.5"
               data-testid="nav-button"
             >
               <img
-                key={headerComponent.icon}
+                key={HeaderComponent.icon}
                 className="w-6 h-6"
-                src={headerComponent.icon}
+                src={HeaderComponent.icon}
                 alt={''}
               />
             </span>
@@ -119,7 +121,7 @@ const Header = () => {
             />
           )}
           <div className="header-title font-medium text-2xl text-white whitespace-nowrap flex items-center">
-            {headerComponent.title}
+            <HeaderTitle />
           </div>
         </div>
         <span className="header-right flex items-center">

@@ -3,11 +3,14 @@ import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { FC } from 'react';
 import { connectionLevelIcons } from 'utils/connection';
 
+import { useSubjectName } from '@/hooks/useSubjectName';
+
 import {
   getBgClassNameOfAuraRatingNumber,
   getTextClassNameOfAuraRatingNumber,
 } from '../constants';
 import LoadingSpinner from './Shared/LoadingSpinner';
+import Tooltip from './Shared/Tooltip';
 
 export type SubjectIdProps = {
   subjectId: string;
@@ -98,52 +101,62 @@ export const ConnectionAndEvaluationStatus = ({
     myConfidenceValueInThisSubjectRating: confidenceValue,
   } = useMyEvaluationsContext({ subjectId });
 
+  const name = useSubjectName(subjectId);
+
   return (
-    <div className="w-full flex gap-1">
-      <div className="flex gap-1 p-2 rounded-md bg-soft-bright dark:bg-dark-bright">
-        {inboundConnectionInfo &&
-          connectionLevelIcons[inboundConnectionInfo.level] && (
-            <img
-              src={`/assets/images/Shared/${
-                connectionLevelIcons[inboundConnectionInfo.level]
-              }.svg`}
-              alt=""
-              width="20px"
-              height="20px"
-            />
-          )}
-        {!ratingNumber && (
-          <p className="font-medium text-black text-sm">
-            {inboundConnectionInfo?.level}
-          </p>
-        )}
-      </div>
-      {ratingNumber ? (
-        <div
-          className={`flex gap-1 items-center rounded-md ${getBgClassNameOfAuraRatingNumber(
-            ratingNumber,
-          )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} py-2.5 px-3`}
-        >
-          {ratingNumber}
-          <EvaluationThumb
-            width="18px"
-            height="18px"
-            rating={rating && Number(rating?.rating)}
-          />
-          <p className="font-bold text-sm leading-4">
-            {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
-          </p>
-          {rating?.isPending && (
-            <LoadingSpinner
-              className="w-[18px] h-[18px] ml-1"
-              spinnerClassName={
-                Math.abs(Number(rating.rating)) > 2
-                  ? 'border-white'
-                  : 'border-gray-950'
-              }
-            />
+    <div className="w-full items-center flex gap-1">
+      <Tooltip
+        tooltipClassName="text-sm"
+        position="right"
+        content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+      >
+        <div className="flex gap-1 p-2 rounded-md bg-soft-bright dark:bg-dark-bright">
+          {inboundConnectionInfo &&
+            connectionLevelIcons[inboundConnectionInfo.level] && (
+              <img
+                src={`/assets/images/Shared/${
+                  connectionLevelIcons[inboundConnectionInfo.level]
+                }.svg`}
+                alt=""
+                width="20px"
+                height="20px"
+              />
+            )}
+          {!ratingNumber && (
+            <p className="font-medium text-black text-sm">
+              {inboundConnectionInfo?.level}
+            </p>
           )}
         </div>
+      </Tooltip>
+      {ratingNumber ? (
+        <Tooltip content={`Your evaluation of ${name}`}>
+          <div
+            className={`flex gap-1 items-center rounded-md ${getBgClassNameOfAuraRatingNumber(
+              ratingNumber,
+            )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} py-2.5 px-3`}
+          >
+            {ratingNumber}
+            <EvaluationThumb
+              width="18px"
+              height="18px"
+              rating={rating && Number(rating?.rating)}
+            />
+            <p className="font-bold text-sm leading-4">
+              {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
+            </p>
+            {rating?.isPending && (
+              <LoadingSpinner
+                className="w-[18px] h-[18px] ml-1"
+                spinnerClassName={
+                  Math.abs(Number(rating.rating)) > 2
+                    ? 'border-white'
+                    : 'border-gray-950'
+                }
+              />
+            )}
+          </div>
+        </Tooltip>
       ) : (
         <></>
       )}

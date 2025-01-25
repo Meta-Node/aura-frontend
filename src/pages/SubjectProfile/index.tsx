@@ -2,6 +2,7 @@ import CredibilityDetailsModal from 'components/CredibilityDetailsModal';
 import EvaluateOverlayCard from 'components/EvaluationFlow/EvaluateOverlayCard';
 import EvaluationFlow from 'components/EvaluationFlow/EvaluationFlow';
 import InfiniteScrollLocal from 'components/InfiniteScrollLocal';
+import Modal from 'components/Shared/Modal';
 import ProfileEvaluation from 'components/Shared/ProfileEvaluation/ProfileEvaluation';
 import {
   SubjectInboundEvaluationsContextProvider,
@@ -33,6 +34,8 @@ import {
 } from 'types/dashboard';
 import { __DEV__ } from 'utils/env';
 
+import Tooltip from '@/components/Shared/Tooltip';
+
 import { EmptyActivitiesList } from '../../components/Shared/EmptyAndLoadingStates/EmptyActivitiesList';
 import { EmptyEvaluationsList } from '../../components/Shared/EmptyAndLoadingStates/EmptyEvaluationsList';
 import { EmptySubjectList } from '../../components/Shared/EmptyAndLoadingStates/EmptySubjectList';
@@ -48,6 +51,7 @@ import {
 import { selectAuthData } from '../../store/profile/selectors';
 import { CredibilityDetailsProps } from '../../types';
 import { ConnectionListSearch } from './ConnectionListSearch';
+import EvidenceHelpModal from './EvidenceHelpModal';
 
 const ProfileTabs = ({
   selectedTab,
@@ -59,10 +63,10 @@ const ProfileTabs = ({
   const { currentViewMode } = useViewMode();
   return (
     <div
-      className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-button-primary`}
+      className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary`}
     >
       <div
-        className={`flex flex-row min-w-full gap-1.5 overflow-x-auto overflow-y-hidden h-full`}
+        className={`flex flex-row min-w-full gap-1.5 h-full`}
         // TODO: refactor this to tailwindcss class and values
         style={{
           scrollbarWidth: 'thin',
@@ -83,19 +87,23 @@ const ProfileTabs = ({
         {/*>*/}
         {/*  {option1}*/}
         {/*</p>*/}
-        <p
+        <Tooltip
+          onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
+          data-testid="table-view-switch-option-one"
+          position="top"
+          content="overall performance"
           className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.OVERVIEW
               ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
               : 'bg-transparent dark:text-white text-black font-medium'
           }`}
-          onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
-          data-testid="table-view-switch-option-one"
+          tooltipClassName="font-normal"
         >
           Overview
-        </p>
+        </Tooltip>
         {currentViewMode === PreferredView.PLAYER ? (
-          <p
+          <Tooltip
+            content="user's community"
             className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.CONNECTIONS
                 ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
@@ -103,11 +111,14 @@ const ProfileTabs = ({
             }`}
             onClick={() => setSelectedTab(ProfileTab.CONNECTIONS)}
             data-testid="table-view-switch-option-one"
+            tooltipClassName="font-normal"
           >
             Connections
-          </p>
+          </Tooltip>
         ) : (
-          <p
+          <Tooltip
+            tooltipClassName="font-normal"
+            content="rating history"
             className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.ACTIVITY ||
               selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
@@ -118,9 +129,11 @@ const ProfileTabs = ({
             data-testid="table-view-switch-option-one"
           >
             Activity
-          </p>
+          </Tooltip>
         )}
-        <p
+        <Tooltip
+          tooltipClassName="font-normal"
+          content="others opinion"
           className={`rounded-md min-w-[100px] w-full cursor-pointer flex justify-center items-center h-full transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.EVALUATIONS
               ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
@@ -130,7 +143,7 @@ const ProfileTabs = ({
           data-testid="table-view-switch-option-two"
         >
           Evaluations
-        </p>
+        </Tooltip>
       </div>
     </div>
   );
@@ -159,6 +172,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
     }
   }, [query, navigate]);
 
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [showEvaluateOverlayCard, setShowEvaluateOverlayCard] = useState(false);
   const [credibilityDetailsProps, setCredibilityDetailsProps] =
     useState<CredibilityDetailsProps | null>(null);
@@ -318,7 +332,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
     <div className="page page__dashboard flex flex-col gap-4">
       {selectedTab !== ProfileTab.OVERVIEW && showEvaluateOverlayCard && (
         <EvaluateOverlayCard
-          className={`absolute top-24 z-10 min-h-[89px] w-[calc(100vw-40px)] max-w-[420px]`}
+          className={`absolute z-20 top-24 min-h-[89px] w-[calc(100vw-40px)] max-w-[420px]`}
           subjectId={subjectId}
           setShowEvaluationFlow={setShowEvaluationFlow}
         />
@@ -346,15 +360,24 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       {/*  />*/}
       {/*)}*/}
       {/* if role is not player then show activities card */}
-
-      <div className="flex gap-1 -mb-1 items-center">
+      <Modal
+        title="Help: Understanding the Evidence Section"
+        isOpen={isHelpModalOpen}
+        closeModalHandler={() => setIsHelpModalOpen(false)}
+      >
+        <EvidenceHelpModal />
+      </Modal>
+      <button
+        onClick={() => setIsHelpModalOpen(true)}
+        className="flex gap-1 -mb-1 justify-between items-center"
+      >
         <p className="font-bold text-lg text-white">Evidence</p>
         <img
-          className="cursor-pointer w-4 h-4"
+          className="cursor-pointer w-5 h-5"
           src="/assets/images/SubjectProfile/evidence-info-icon.svg"
           alt=""
         />
-      </div>
+      </button>
       <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       {selectedTab === ProfileTab.OVERVIEW ? (
         <ProfileOverview
@@ -417,21 +440,23 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             <InfiniteScrollLocal
               className={'flex flex-col gap-2.5 w-full -mb-5 pb-5 h-full'}
               items={evaluators}
-              renderItem={(evaluator) => (
-                <ProfileEvaluation
-                  evidenceViewMode={EvidenceViewMode.INBOUND_EVALUATION}
-                  onClick={() =>
-                    setCredibilityDetailsProps({
-                      subjectId: evaluator,
-                      evaluationCategory:
-                        currentRoleEvaluatorEvaluationCategory,
-                    })
-                  }
-                  key={evaluator}
-                  fromSubjectId={evaluator}
-                  toSubjectId={subjectId}
-                />
-              )}
+              renderItem={(evaluator) => {
+                return (
+                  <ProfileEvaluation
+                    evidenceViewMode={EvidenceViewMode.INBOUND_EVALUATION}
+                    onClick={() =>
+                      setCredibilityDetailsProps({
+                        subjectId: evaluator,
+                        evaluationCategory:
+                          currentRoleEvaluatorEvaluationCategory,
+                      })
+                    }
+                    key={evaluator}
+                    fromSubjectId={evaluator}
+                    toSubjectId={subjectId}
+                  />
+                );
+              }}
             />
           ) : (
             <EmptyEvaluationsList

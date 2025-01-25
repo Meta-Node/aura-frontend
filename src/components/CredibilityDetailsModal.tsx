@@ -1,10 +1,7 @@
 import Modal from 'components/Shared/Modal';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
-import {
-  useInboundEvaluations,
-  useOutboundEvaluations,
-} from 'hooks/useSubjectEvaluations';
+import { useInboundEvaluations } from 'hooks/useSubjectEvaluations';
 import { useSubjectName } from 'hooks/useSubjectName';
 import {
   useImpactEChartOption,
@@ -53,17 +50,12 @@ const CredibilityDetailsForRole = ({
     evaluationCategory: roleEvaluationCategory,
   });
   const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
-  const {
-    loading,
-    myRatingToSubject,
-    myConnectionToSubject,
-    myConfidenceValueInThisSubjectRating,
-  } = useMyEvaluationsContext({
-    subjectId,
-    evaluationCategory: roleEvaluationCategory,
-  });
-  const { connections } = useOutboundEvaluations({ subjectId });
-  const { impactChartOption } = useImpactEChartOption(auraImpacts);
+  const { loading, myRatingToSubject, myConfidenceValueInThisSubjectRating } =
+    useMyEvaluationsContext({
+      subjectId,
+      evaluationCategory: roleEvaluationCategory,
+    });
+  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
   const link = '/subject/' + subjectId;
   const navigate = useNavigate();
 
@@ -248,7 +240,7 @@ const CredibilityDetails = ({
   return (
     <div className="min-h-[450px] flex flex-col w-full">
       <div
-        className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-button-primary p-1 mb-5`}
+        className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary p-1 mb-5`}
       >
         <div
           className={`flex flex-row min-w-full overflow-x-auto overflow-y-hidden h-full pb-1`}

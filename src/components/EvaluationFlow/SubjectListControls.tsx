@@ -5,6 +5,8 @@ import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { cn } from '@/lib/utils';
+
 import useBrightIdBackupWithAuraConnectionData from '../../hooks/useBrightIdBackupWithAuraConnectionData';
 import { AuraSortId } from '../../hooks/useSorts';
 import useViewMode from '../../hooks/useViewMode';
@@ -49,8 +51,10 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
 
 export const SubjectListControls = ({
   refreshBrightIdBackup,
+  loading: contextLoading,
 }: {
   refreshBrightIdBackup: () => void;
+  loading?: boolean;
 }) => {
   const {
     searchString,
@@ -61,7 +65,7 @@ export const SubjectListControls = ({
     toggleFiltersById,
     setSelectedSort,
   } = useSubjectsListContext();
-  const { refreshOutboundRatings } = useMyEvaluations();
+  const { refreshOutboundRatings, loading } = useMyEvaluations();
 
   const brightIdBackup = useBrightIdBackupWithAuraConnectionData();
 
@@ -92,13 +96,35 @@ export const SubjectListControls = ({
     }),
     [clearSortAndFilter],
   );
-  const dropdownOptions: AuraFilterDropdownOption[] = useMemo(
-    () => [
-      defaultOption,
+
+  const dropdownOptions: AuraFilterDropdownOption[] = useMemo(() => {
+    if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER) {
+      return [
+        defaultOption,
+        ...[
+          {
+            value: 2,
+            label: <p>Recently evaluated</p>,
+            filterIds: null,
+            sortId: AuraSortId.ConnectionRecentEvaluation,
+            ascending: false,
+          },
+        ].map((item) => ({
+          ...item,
+          onClick: () => {
+            toggleFiltersById(item.filterIds, true);
+            setSelectedSort(item.sortId, item.ascending);
+          },
+        })),
+        customViewOption,
+      ];
+    }
+
+    return [
       ...[
         {
           value: 2,
-          label: <p>Recently evaluated</p>,
+          label: <p>Recently evaluated (default)</p>,
           filterIds: null,
           sortId: AuraSortId.ConnectionRecentEvaluation,
           ascending: false,
@@ -111,14 +137,34 @@ export const SubjectListControls = ({
         },
       })),
       customViewOption,
-    ],
-    [customViewOption, defaultOption, setSelectedSort, toggleFiltersById],
-  );
+    ];
+  }, [
+    currentViewMode,
+    customViewOption,
+    defaultOption,
+    params,
+    setSelectedSort,
+    toggleFiltersById,
+  ]);
 
   const selectedItem: AuraFilterDropdownOption = useMemo(() => {
     if (!selectedFilters && !selectedSort) {
-      return defaultOption;
+      if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER)
+        return defaultOption;
+
+      return {
+        value: 2,
+        label: <p>Recently evaluated (default)</p>,
+        filterIds: null,
+        sortId: AuraSortId.ConnectionRecentEvaluation,
+        ascending: false,
+        onClick: () => {
+          toggleFiltersById(null, true);
+          setSelectedSort(AuraSortId.ConnectionRecentEvaluation, false);
+        },
+      };
     }
+
     const selectedItem = dropdownOptions.find((item) => {
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
@@ -136,12 +182,27 @@ export const SubjectListControls = ({
     });
     return selectedItem ?? customViewOption;
   }, [
+    currentViewMode,
     customViewOption,
     defaultOption,
     dropdownOptions,
+    params,
     selectedFilters,
     selectedSort,
+    setSelectedSort,
+    toggleFiltersById,
   ]);
+
+  useEffect(() => {
+    if (params.has('subjectId') || currentViewMode === PreferredView.PLAYER) {
+      // if (selectedSort?.id === AuraSortId.ConnectionRecentEvaluation)
+      //   setSelectedSort(null);
+      return;
+    }
+
+    if (!selectedSort?.id)
+      setSelectedSort(AuraSortId.ConnectionRecentEvaluation);
+  }, [currentViewMode, selectedSort, params, setSelectedSort]);
 
   useEffect(() => {
     if (!params.get('search')) {
@@ -156,7 +217,7 @@ export const SubjectListControls = ({
 
   return (
     <>
-      <div className="bg-gray40 text-black2 dark:text-white dark:bg-button-primary rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+      <div className="bg-card dark:bg-dark-primary text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
             className="w-4 h-4"
@@ -164,7 +225,7 @@ export const SubjectListControls = ({
             alt=""
           />
           <input
-            className="bg-gray40 w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 dark:bg-button-primary text-sm h-11 focus:outline-none"
+            className="w-full font-medium bg-transparent text-card-foreground dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
             type="text"
             placeholder="Subject name or ID ..."
             value={searchString}
@@ -233,7 +294,10 @@ export const SubjectListControls = ({
         <img
           src="/assets/images/Shared/refresh.svg"
           alt="refresh"
-          className="w-7 h-7 ml-1 mt-0.5 cursor-pointer"
+          className={cn(
+            'w-7 h-7 ml-1 mt-0.5 cursor-pointer',
+            (loading || contextLoading) && 'animate-spin',
+          )}
           onClick={() => {
             refreshBrightIdBackup();
             refreshOutboundRatings();

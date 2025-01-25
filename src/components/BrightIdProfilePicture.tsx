@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { hash } from 'utils/crypto';
 
+import { createBlockiesImage } from '@/utils/image';
+
 import {
   selectAuthData,
   selectBrightIdBackup,
@@ -15,14 +17,15 @@ const BrightIdProfilePicture = ({
 }: React.HTMLAttributes<HTMLImageElement> & {
   subjectId: string | undefined;
 }) => {
-  const [imgSrc, setImgSrc] = useState(DEFAULT_PROFILE_PICTURE);
+  const [imgSrc, setImgSrc] = useState(
+    subjectId ? createBlockiesImage(subjectId) : DEFAULT_PROFILE_PICTURE,
+  );
   const authData = useSelector(selectAuthData);
   const brightIdBackup = useSelector(selectBrightIdBackup);
   useEffect(() => {
     let mounted = true;
 
     async function f() {
-      setImgSrc(DEFAULT_PROFILE_PICTURE);
       if (!authData || !subjectId || !brightIdBackup) return;
       if (
         subjectId !== authData.brightId &&
@@ -37,7 +40,8 @@ const BrightIdProfilePicture = ({
         );
         if (mounted) setImgSrc(profilePhoto);
       } catch (e) {
-        console.log(e);
+        // console.log(e);
+        setImgSrc(createBlockiesImage(subjectId));
       }
     }
 

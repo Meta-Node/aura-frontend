@@ -10,6 +10,7 @@ import {
   INBOUND_EVIDENCE_VIEW_MODES,
   preferredViewIconColored,
   subjectViewAsIconColored,
+  viewModeSubjectString,
   viewModeToSubjectViewMode,
   viewModeToViewAs,
 } from 'constants/index';
@@ -39,6 +40,7 @@ import { compactFormat } from 'utils/number';
 import { useSelector } from '../../../store/hooks';
 import { selectAuthData } from '../../../store/profile/selectors';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
+import Tooltip from '../Tooltip';
 
 const ProfileEvaluation = ({
   fromSubjectId,
@@ -117,6 +119,8 @@ const ConnectionInfo = ({
   const authData = useSelector(selectAuthData);
   const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
 
+  const name = useSubjectName(subjectId);
+
   const bgColor = useMemo(() => {
     if (rating && Number(rating?.rating) !== 0) {
       return getBgClassNameOfAuraRatingObject(rating);
@@ -139,45 +143,51 @@ const ConnectionInfo = ({
     return '';
   }, [inboundConnectionInfo?.level, rating]);
   return (
-    <div className={`flex flex-col gap-0.5 ${bgColor} py-1.5 rounded-md`}>
-      {loading ? (
-        '...'
-      ) : (
-        <>
-          <div className="flex gap-0.5 justify-center items-center">
-            {inboundConnectionInfo &&
-              connectionLevelIcons[inboundConnectionInfo.level] && (
-                <img
-                  src={`/assets/images/Shared/${
-                    connectionLevelIcons[inboundConnectionInfo.level]
-                  }.svg`}
-                  className="h-[18px] w-[18px]"
-                  alt=""
-                />
+    <Tooltip
+      position="right"
+      className="z-10"
+      content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+    >
+      <div className={`flex flex-col gap-0.5 ${bgColor} py-1.5 rounded-md`}>
+        {loading ? (
+          '...'
+        ) : (
+          <>
+            <div className="flex gap-0.5 justify-center items-center">
+              {inboundConnectionInfo &&
+                connectionLevelIcons[inboundConnectionInfo.level] && (
+                  <img
+                    src={`/assets/images/Shared/${
+                      connectionLevelIcons[inboundConnectionInfo.level]
+                    }.svg`}
+                    className="h-[18px] w-[18px]"
+                    alt=""
+                  />
+                )}
+              {!!rating && Number(rating?.rating) !== 0 && (
+                <p
+                  className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
+                    rating,
+                  )}`}
+                >
+                  {Number(rating.rating) < 0 ? '-' : '+'}
+                  {Math.abs(Number(rating.rating))}
+                </p>
               )}
+            </div>
             {!!rating && Number(rating?.rating) !== 0 && (
               <p
-                className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
+                className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
                   rating,
-                )}`}
+                )} text-[11px] font-bold text-center w-full`}
               >
-                {Number(rating.rating) < 0 ? '-' : '+'}
-                {Math.abs(Number(rating.rating))}
+                {impactPercentage !== null ? `${impactPercentage}%` : '-'}
               </p>
             )}
-          </div>
-          {!!rating && Number(rating?.rating) !== 0 && (
-            <p
-              className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
-                rating,
-              )} text-[11px] font-bold text-center w-full`}
-            >
-              {impactPercentage !== null ? `${impactPercentage}%` : '-'}
-            </p>
-          )}
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </Tooltip>
   );
 };
 
@@ -261,7 +271,9 @@ const UserInformation = ({
         </p>
       ) : (
         <>
-          <p
+          <Tooltip
+            content="subject level"
+            tooltipClassName="z-10 font-normal"
             className={`level text-sm font-bold mr-0.5 ${
               INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
                 ? getViewModeTextColorClass(currentViewMode)
@@ -274,8 +286,10 @@ const UserInformation = ({
             }`}
           >
             {auraLevel}
-          </p>
-          <p
+          </Tooltip>
+          <Tooltip
+            content="subject score"
+            tooltipClassName="z-10 font-normal"
             className={`text-sm font-bold ${
               INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
                 ? getViewModeTextColorClass(currentViewMode)
@@ -289,7 +303,7 @@ const UserInformation = ({
           >
             {/*13.4<span className="font-medium">m</span>*/}
             {auraScore ? compactFormat(auraScore) : '-'}
-          </p>
+          </Tooltip>
         </>
       )}
     </div>
@@ -340,7 +354,16 @@ const EvidenceInformation = ({
   const { currentViewMode } = useViewMode();
   return (
     <div className="evidence-information flex justify-between flex-1 gap-2">
-      <div
+      <Tooltip
+        content={
+          evidenceType === EvidenceType.EVALUATED
+            ? evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
+              ? 'This user was evaluated by the current subject'
+              : 'The current subject evaluated this user'
+            : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
+            ? 'This user initiated the connection with the current subject'
+            : 'This user is connected to the current subject'
+        }
         className={`${
           INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
             ? getViewModeTextColorClass(currentViewMode)
@@ -354,7 +377,7 @@ const EvidenceInformation = ({
           : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
           ? 'connected by'
           : 'connected to'}
-      </div>
+      </Tooltip>
       <div className="text-xs font-medium truncate flex-1 text-right">
         {name}
       </div>
@@ -397,6 +420,9 @@ export const EvaluationInformation = ({
     evaluationCategory,
   });
 
+  const fromName = useSubjectName(fromSubjectId);
+  const toName = useSubjectName(toSubjectId);
+
   const { auraImpacts } = useSubjectVerifications(
     toSubjectId,
     evaluationCategory,
@@ -405,36 +431,45 @@ export const EvaluationInformation = ({
 
   //TODO: change bg color on negative rating
   return (
-    <div
-      className={`evaluation-information flex flex-col py-1.5 items-center justify-center gap-1 ${getBgClassNameOfAuraRatingObject(
-        rating,
-      )} rounded-md`}
+    <Tooltip
+      position="left"
+      tooltipClassName="z-10"
+      // tooltipClassName="translate-x-1/2"
+      content={`${fromName} evaluated ${toName} ${
+        Number(rating?.rating) > 0 ? '+' : ''
+      }${rating?.rating}`}
     >
-      {loading ? (
-        '...'
-      ) : (
-        <div className="flex items-center gap-1.5">
-          <EvaluationThumb rating={rating && Number(rating?.rating)} />
-          <p
-            className={`${getTextClassNameOfAuraRatingObject(
-              rating,
-            )} text-xs font-bold mt-0.5`}
-          >{`${getConfidenceValueOfAuraRatingNumber(Number(rating?.rating))} ${
-            rating?.rating
-          }`}</p>
-        </div>
-      )}
       <div
-        className={`flex justify-between gap-9 text-sm ${getTextClassNameOfAuraRatingObject(
+        className={`evaluation-information flex flex-col py-1.5 items-center justify-center gap-1 ${getBgClassNameOfAuraRatingObject(
           rating,
-        )}`}
+        )} rounded-md`}
       >
-        <p>Impact</p>
-        <p className="font-bold">
-          {impactPercentage !== null ? `${impactPercentage}%` : '-'}
-        </p>
+        {loading ? (
+          '...'
+        ) : (
+          <div className="flex items-center gap-1.5">
+            <EvaluationThumb rating={rating && Number(rating?.rating)} />
+            <p
+              className={`${getTextClassNameOfAuraRatingObject(
+                rating,
+              )} text-xs font-bold mt-0.5`}
+            >{`${getConfidenceValueOfAuraRatingNumber(
+              Number(rating?.rating),
+            )} ${rating?.rating}`}</p>
+          </div>
+        )}
+        <div
+          className={`flex justify-between gap-9 text-sm ${getTextClassNameOfAuraRatingObject(
+            rating,
+          )}`}
+        >
+          <p>Impact</p>
+          <p className="font-bold">
+            {impactPercentage !== null ? `${impactPercentage}%` : '-'}
+          </p>
+        </div>
       </div>
-    </div>
+    </Tooltip>
   );
 };
 
@@ -454,6 +489,8 @@ const EvaluatedCardBody = ({
         : toSubjectId,
     [evidenceViewMode, fromSubjectId, toSubjectId],
   );
+  const name = useSubjectName(leftCardSide);
+
   const rightCardSide = useMemo(
     () =>
       INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
@@ -461,7 +498,8 @@ const EvaluatedCardBody = ({
         : fromSubjectId,
     [evidenceViewMode, fromSubjectId, toSubjectId],
   );
-  const { currentViewMode } = useViewMode();
+  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+
   return (
     <>
       <div className="card__left-column w-[60%] flex gap-1.5">
@@ -490,7 +528,17 @@ const EvaluatedCardBody = ({
             subjectId={leftCardSide}
             evidenceViewMode={evidenceViewMode}
           />
-          <Graph subjectId={leftCardSide} evidenceViewMode={evidenceViewMode} />
+          <Tooltip
+            // className="z-10"
+            content={`All evaluations of ${name} as a ${currentEvaluationCategory}`}
+          >
+            <div>
+              <Graph
+                subjectId={leftCardSide}
+                evidenceViewMode={evidenceViewMode}
+              />
+            </div>
+          </Tooltip>
         </div>
         <span className="divider border-r border-dashed border-gray00 pl-.5 mr-1.5 h-full"></span>
       </div>
@@ -590,6 +638,9 @@ const ConnectedCardBody = ({
         : toSubjectId,
     [evidenceViewMode, fromSubjectId, toSubjectId],
   );
+
+  const name = useSubjectName(leftCardSide);
+
   const rightCardSide = useMemo(
     () =>
       INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
@@ -616,7 +667,17 @@ const ConnectedCardBody = ({
             evidenceViewMode={evidenceViewMode}
             subjectId={leftCardSide}
           />
-          <Graph subjectId={leftCardSide} evidenceViewMode={evidenceViewMode} />
+          <Tooltip
+            // className="z-10"
+            content={`All of ${name}'s evaluations as a ${viewModeSubjectString[evidenceViewMode]}`}
+          >
+            <div>
+              <Graph
+                subjectId={leftCardSide}
+                evidenceViewMode={evidenceViewMode}
+              />
+            </div>
+          </Tooltip>
         </div>
         <span className="divider border-r border-dashed border-gray00 pl-.5 mr-1.5 h-full"></span>
       </div>
