@@ -222,45 +222,6 @@ export const useImpactEChartOption = (
           barMaxWidth: 30,
         },
       ],
-      // graphic:
-      //   !shouldFetchImages || auraTopImpacts.length > 5
-      //     ? undefined
-      //     : auraTopImpacts.map((item, index) => ({
-      //         type: 'group',
-      //         children: [
-      //           {
-      //             type: 'image',
-      //             style: {
-      //               data: item, // Add your custom data here
-      //               image:
-      //                 profileImages[item.evaluator] ??
-      //                 '/assets/images/avatar-thumb.jpg',
-      //               width: 30,
-      //               height: 30,
-      //             },
-      //             position: [0, 0],
-      //             bounding: 'raw',
-      //           },
-      //         ], // 3 = 50
-
-      //         position: calculateImagePosition(
-      //           index,
-      //           140,
-      //           auraTopImpacts.length,
-      //           item.impact >= 0,
-      //         ),
-      //         z: 100,
-      //         clipPath: {
-      //           type: 'rect',
-      //           shape: {
-      //             x: 0,
-      //             y: 0,
-      //             width: 30,
-      //             height: 30,
-      //             r: [5, 5, 5, 5],
-      //           },
-      //         },
-      //       })),
     };
   }, [
     auraSumImpacts,

@@ -64,9 +64,7 @@ export default function useParseBrightIdVerificationData(
               );
 
         return {
-          evaluatorName:
-            profileInfo?.name ??
-            `${impact.evaluator.slice(0, 4)}...${impact.evaluator.slice(-3)}`,
+          evaluatorName: profileInfo?.name ?? `${impact.evaluator.slice(0, 7)}`,
           ...impact,
         };
       }) ?? null,
