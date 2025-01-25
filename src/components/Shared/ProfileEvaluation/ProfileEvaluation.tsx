@@ -11,7 +11,6 @@ import {
   preferredViewIconColored,
   subjectViewAsIconColored,
   viewModeSubjectString,
-  viewModeToString,
   viewModeToSubjectViewMode,
   viewModeToViewAs,
 } from 'constants/index';
@@ -436,7 +435,9 @@ export const EvaluationInformation = ({
       position="left"
       tooltipClassName="z-10"
       // tooltipClassName="translate-x-1/2"
-      content={`${fromName} evaluated ${toName} +4`}
+      content={`${fromName} evaluated ${toName} ${
+        Number(rating?.rating) > 0 ? '+' : ''
+      }${rating?.rating}`}
     >
       <div
         className={`evaluation-information flex flex-col py-1.5 items-center justify-center gap-1 ${getBgClassNameOfAuraRatingObject(
@@ -497,7 +498,8 @@ const EvaluatedCardBody = ({
         : fromSubjectId,
     [evidenceViewMode, fromSubjectId, toSubjectId],
   );
-  const { currentViewMode } = useViewMode();
+  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+
   return (
     <>
       <div className="card__left-column w-[60%] flex gap-1.5">
@@ -528,7 +530,7 @@ const EvaluatedCardBody = ({
           />
           <Tooltip
             // className="z-10"
-            content={`All evaluations of ${name} as a ${viewModeToString[evidenceViewMode]}`}
+            content={`All evaluations of ${name} as a ${currentEvaluationCategory}`}
           >
             <div>
               <Graph
