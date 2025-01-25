@@ -172,7 +172,7 @@ export const useImpactEChartOption = (
           color: '#ABCAAE',
           label:
             !shouldFetchImages || auraTopImpacts.length > 5
-              ? undefined
+              ? { show: false, formatter: (params: any) => '' }
               : {
                   show: true,
                   position: 'bottom',
