@@ -28,5 +28,5 @@
   "background_color": "#0c0a09",
   "display": "standalone",
   "scope": "/",
-  "start_url": "https://aura-frontend-new.vercel.app/"
+  "start_url": "/"
 }
