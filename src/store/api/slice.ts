@@ -12,7 +12,7 @@ function isHydrateAction(action: Action): action is Action<typeof REHYDRATE> & {
 }
 
 export const apiSlice = createApi({
-  reducerPath: 'api',
+  reducerPath: 'apiSlice',
   baseQuery: fetchBaseQuery({
     baseUrl: AURA_NODE_URL_PROXY,
     mode: 'no-cors',
