@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { RootState } from 'store';
 import { useDispatch, useSelector } from 'store/hooks';
 
+import { selectKeypair } from '../actions';
+
 type ApiContext = NodeApi | null;
 
 export const NodeApiContext = React.createContext<ApiContext>(null);
@@ -25,7 +27,7 @@ export const getGlobalNodeApi = () => globalNodeApi;
 
 const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
   const id = useSelector((state: RootState) => state.user.id);
-  const secretKey = useSelector((state: RootState) => state.keypair.secretKey);
+  const { secretKey } = useSelector(selectKeypair);
   const url = useSelector(selectBaseUrl);
   const [nodeError, setNodeError] = useState(false);
   const [api, setApi] = useState<NodeApi | null>(null);
