@@ -3,7 +3,7 @@ import localforage from 'localforage';
 import { getTestSelector } from '../utils';
 
 describe('Unauthenticated issue', () => {
-  beforeEach(() => {
+  afterEach(() => {
     cy.clearLocalStorage();
     localforage.clear();
   });
@@ -46,3 +46,46 @@ describe('Unauthenticated issue', () => {
     cy.location('pathname').should('eq', '/');
   });
 });
+
+describe('Login functionality', () => {
+  it('basic login', () => {
+    cy.get(getTestSelector('splash-dismiss-btn')).click();
+
+    cy.get(getTestSelector('import-universal-link'))
+      .invoke('attr', 'href')
+      .then((universalLink) => {
+        if (!universalLink) throw Error('aesKey not found');
+        const aesKey =
+          new URL(
+            decodeURIComponent(
+              universalLink.slice(
+                'https://app.brightid.org/connection-code/'.length,
+              ),
+            ),
+          ).searchParams.get('aes') || '';
+      });
+  });
+});
+
+const setupLoginNetworkInterceptors = () => {
+  cy.intercept(
+    {
+      url: '/auranode*/profile/upload/*',
+      method: 'POST',
+    },
+    {
+      body: JSON.stringify({ success: true }),
+      statusCode: 201,
+    },
+  );
+
+  cy.intercept(
+    {
+      url: '/auranode*/profile/list/*',
+      method: 'GET',
+    },
+    {
+      body: JSON.stringify({ profileIds: ['data'] }),
+    },
+  );
+};

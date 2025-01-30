@@ -67,7 +67,7 @@ function connectionIntercepts(connection: BrightIdBackupConnection) {
   );
   cy.intercept(
     {
-      url: `/auranode/brightid/v6/users/${connection.id}/connections/inbound?withVerifications=true`,
+      url: `/auranode*/brightid/v6/users/${connection.id}/connections/inbound?withVerifications=true`,
       method: 'GET',
     },
     {
@@ -76,7 +76,7 @@ function connectionIntercepts(connection: BrightIdBackupConnection) {
   );
   cy.intercept(
     {
-      url: `/auranode/brightid/v6/users/${connection.id}/connections/outbound?withVerifications=true`,
+      url: `/auranode*/brightid/v6/users/${connection.id}/connections/outbound?withVerifications=true`,
       method: 'GET',
     },
     {
@@ -151,7 +151,7 @@ Cypress.Commands.add('profileIntercepts', () => {
   // node api
   cy.intercept(
     {
-      url: `auranode/brightid/v6/users/*/profile`,
+      url: `auranode*/brightid/v6/users/*/profile`,
       method: 'GET',
     },
     {
@@ -161,7 +161,7 @@ Cypress.Commands.add('profileIntercepts', () => {
 
   cy.intercept(
     {
-      url: `/auranode/brightid/v6/users/${FAKE_BRIGHT_ID}/connections/inbound?withVerifications=true`,
+      url: `/auranode*/brightid/v6/users/${FAKE_BRIGHT_ID}/connections/inbound?withVerifications=true`,
       method: 'GET',
     },
     {
@@ -170,7 +170,7 @@ Cypress.Commands.add('profileIntercepts', () => {
   );
   cy.intercept(
     {
-      url: `/auranode/brightid/v6/users/${FAKE_BRIGHT_ID}/connections/outbound?withVerifications=true`,
+      url: `/auranode*/brightid/v6/users/${FAKE_BRIGHT_ID}/connections/outbound?withVerifications=true`,
       method: 'GET',
     },
     {
