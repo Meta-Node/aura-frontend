@@ -24,7 +24,7 @@ describe('Auth', () => {
       'iA:YztBoikEQb1LK5PYztBoikEQ-rE9rMDH52d0R1LK5PntbNxrE9rMDHG2d0RgsAhOhKQmntbNxgsAhOhKQmiA';
     cy.intercept(
       {
-        url: `/auranode/profile/upload/*`,
+        url: `/auranode*/profile/upload/*`,
         method: 'POST',
       },
       {
@@ -34,7 +34,7 @@ describe('Auth', () => {
     ).as('profileUpload');
     cy.intercept(
       {
-        url: `/auranode/profile/list/*`,
+        url: `/auranode*/profile/list/*`,
         method: 'GET',
       },
       {
@@ -45,7 +45,7 @@ describe('Auth', () => {
 
     cy.intercept(
       {
-        url: `/auranode/profile/download/**/sig_completed_` + dataId,
+        url: `/auranode*/profile/download/**/sig_completed_` + dataId,
         method: 'GET',
       },
       {
@@ -58,7 +58,7 @@ describe('Auth', () => {
 
     cy.intercept(
       {
-        url: `/auranode/profile/*/sig_userinfo_` + dataId,
+        url: `/auranode*/profile/*/sig_userinfo_` + dataId,
         method: 'DELETE',
       },
       {
@@ -68,7 +68,7 @@ describe('Auth', () => {
     ).as('deleteUserInfo');
     cy.intercept(
       {
-        url: `/auranode/profile/*/sig_completed_` + dataId,
+        url: `/auranode*/profile/*/sig_completed_` + dataId,
         method: 'DELETE',
       },
       {
@@ -98,7 +98,7 @@ describe('Auth', () => {
 
         cy.intercept(
           {
-            url: `/auranode/profile/download/**/sig_userinfo_` + dataId,
+            url: `/auranode*/profile/download/**/sig_userinfo_` + dataId,
             method: 'GET',
           },
           {
@@ -121,7 +121,7 @@ describe('Auth', () => {
         cy.wait('@profileWaitingForScan');
         cy.intercept(
           {
-            url: `/auranode/profile/list/*`,
+            url: `/auranode*/profile/list/*`,
             method: 'GET',
           },
           {
@@ -141,7 +141,7 @@ describe('Auth', () => {
         cy.wait('@downloadCompleted');
         cy.intercept(
           {
-            url: `/auranode/profile/list/*`,
+            url: `/auranode*/profile/list/*`,
             method: 'GET',
           },
           {

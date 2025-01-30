@@ -17,6 +17,10 @@ import App from './App';
 import { RefreshEvaluationsContextProvider } from './contexts/RefreshEvaluationsContext';
 import { persistor, store } from './store';
 
+if (import.meta.env.VITE_REACT_APP_IS_CYPRESS) {
+  console.log('[T] Running test mode of app');
+}
+
 // Sentry.init({
 //   dsn: 'https://6294f4d2fd5ba93d12c1aa4a5029d36c@o4505929495150592.ingest.sentry.io/4505929496657920',
 //   integrations: [

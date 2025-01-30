@@ -78,7 +78,7 @@ export const Settings = () => {
         </Card>
 
         {(__DEV__ ||
-          process.env.REACT_APP_IS_CYPRESS === 'true' ||
+          process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||
           process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
           <Card
             className={'cursor-pointer rounded-lg pl-5 py-3.5 pr-2'}

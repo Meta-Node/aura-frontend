@@ -17,6 +17,7 @@ import {
   selectIsLoggedIn,
   selectPlayerOnboardingScreenShown,
 } from './store/profile/selectors';
+import localforage from 'localforage';
 
 const RequireAuth: FC<{ children: React.ReactElement }> = ({ children }) => {
   const userIsLogged = useSelector(selectIsLoggedIn); // Your hook to get login status
@@ -66,6 +67,11 @@ function App() {
   const noHeader = currentRouteObject?.noHeader || isPlayerOnboarding;
 
   useEffect(() => {
+    if (import.meta.env.VITE_REACT_APP_IS_CYPRESS) {
+      // @ts-ignore
+      window.localforge = localforage;
+    }
+
     if (prefferedTheme === 'dark') {
       document.body.classList.add('dark');
     } else {

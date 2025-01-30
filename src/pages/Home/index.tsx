@@ -152,6 +152,9 @@ const Home = () => {
 export const HomeHeader = () => {
   const authData = useSelector(selectAuthData);
   const subjectId = authData?.brightId;
+
+  if (!subjectId) return null;
+
   return (
     <>
       Home

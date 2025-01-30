@@ -129,7 +129,7 @@ export const HomeOverlayContent = () => {
           </p>
         </div>
         {(__DEV__ ||
-          process.env.REACT_APP_IS_CYPRESS === 'true' ||
+          process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||
           process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
           <button
             className={'btn'}

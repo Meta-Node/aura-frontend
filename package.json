@@ -64,11 +64,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir cypress/utils/mock-contracts/types \"./src/abis/**/*.json\"",
-    "start:cypress": "env REACT_APP_IS_CYPRESS='true' react-app-rewired start",
-    "build:cypress": "env REACT_APP_IS_CYPRESS='true' react-app-rewired build",
+    "start:cypress": "env VITE_REACT_APP_IS_CYPRESS='true' vite",
+    "build:cypress": "env VITE_REACT_APP_IS_CYPRESS='true' vite build",
     "cypress:open": "cypress open --browser chrome --e2e",
-    "cypress": "start-server-and-test 'yarn start:cypress' http://localhost:3000 'yarn cypress:open'",
-    "cypress:headless": "yarn build:cypress && start-server-and-test 'serve -s -L build' http://localhost:3000 'cypress run --browser chrome --e2e'"
+    "cypress": "start-server-and-test 'bun start:cypress' http://localhost:3000 'bun cypress:open'",
+    "cypress:headless": "bun run build:cypress && start-server-and-test 'serve -s -L build' http://localhost:3000 'cypress run --browser chrome --e2e'"
   },
   "eslintConfig": {
     "extends": [
