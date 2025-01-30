@@ -15,6 +15,8 @@ import { __DEV__ } from 'utils/env';
 import { apiSlice } from './api/slice';
 import { profileSlice } from './profile';
 
+localForage.config({ storeName: 'keyvaluepairs', name: 'localforage' });
+
 const migrations: MigrationManifest = {
   1: (oldState: any) => {
     return {
