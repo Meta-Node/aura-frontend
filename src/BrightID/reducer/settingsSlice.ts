@@ -31,7 +31,7 @@ const initialState: SettingsSlice = {
   isPrimaryDevice: true,
   lastSyncTime: 0,
   languageTag: null,
-  prefferedTheme: 'light',
+  prefferedTheme: 'dark',
   isSearchModalOpen: false,
   hasManagerRole: RoleStatus.NOT_SET,
   hasTrainerRole: RoleStatus.NOT_SET,
