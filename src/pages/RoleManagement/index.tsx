@@ -30,9 +30,9 @@ export const RoleManagement = () => {
               <ManagerCard subjectId={subjectId} />
             </section>
 
-            <section className="mt-auto flex w-full justify-center">
+            {/* <section className="mt-auto flex w-full justify-center">
               <p className="text-white text-sm">Aura version 2.1</p>
-            </section>
+            </section> */}
           </div>
         </SubjectInboundConnectionsContextProvider>
       </SubjectInboundEvaluationsContextProvider>
