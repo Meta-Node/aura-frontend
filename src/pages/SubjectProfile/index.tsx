@@ -241,7 +241,9 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
 
   const evaluators = useMemo(() => {
     return (
-      evaluations?.filter((e) => e.rating).map((e) => e.fromSubjectId) || []
+      evaluations
+        ?.filter((e) => e.rating && Number(e.rating.rating))
+        .map((e) => e.fromSubjectId) || []
     );
   }, [evaluations]);
 
@@ -293,8 +295,9 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
 
   const evaluateds = useMemo(() => {
     return (
-      outboundEvaluations?.filter((e) => e.rating).map((e) => e.toSubjectId) ||
-      []
+      outboundEvaluations
+        ?.filter((e) => e.rating && Number(e.rating.rating))
+        .map((e) => e.toSubjectId) || []
     );
   }, [outboundEvaluations]);
 
