@@ -1,9 +1,10 @@
 import ChannelAPI from 'BrightID/api/channelService';
 import { setRecoveryChannel } from 'BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
-import { selectBaseUrl } from 'BrightID/reducer/settingsSlice';
 import { hash } from 'BrightID/utils/encoding';
 import { uploadRecoveryData } from 'BrightID/utils/recovery';
 import { AppDispatch, GetState } from 'store';
+
+import { AURA_NODE_URL_PROXY } from '@/constants/urls';
 
 // CONSTANTS
 
@@ -15,7 +16,7 @@ export const createRecoveryChannel =
   () => async (dispatch: AppDispatch, getState: GetState) => {
     try {
       const { recoveryData } = getState();
-      const baseUrl = selectBaseUrl(getState());
+      const baseUrl = AURA_NODE_URL_PROXY;
       const url = new URL(`${baseUrl}/profile`);
       // use this for local running profile service
       // const url = new URL(`http://10.0.2.2:3000/`);
