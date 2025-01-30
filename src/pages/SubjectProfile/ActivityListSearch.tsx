@@ -197,7 +197,8 @@ export const ActivityListSearch = ({
         </Modal>
         <span className="ml-1">
           (
-          {filteredSubjects?.filter((e) => e.rating).length ??
+          {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
+            .length ??
             itemsOriginal?.length ??
             '...'}{' '}
           result

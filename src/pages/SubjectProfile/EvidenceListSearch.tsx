@@ -179,12 +179,13 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
         </Modal>
         <span className="ml-auto">
           (
-          {filteredSubjects?.filter((e) => e.rating).length ??
+          {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
+            .length ??
             itemsOriginal?.length ??
             '...'}{' '}
           result
-          {(filteredSubjects?.filter((e) => e.rating).length ??
-            itemsOriginal?.length) !== 1
+          {(filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
+            .length ?? itemsOriginal?.length) !== 1
             ? 's'
             : ''}
           )
