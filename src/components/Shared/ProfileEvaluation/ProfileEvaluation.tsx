@@ -144,8 +144,9 @@ const ConnectionInfo = ({
   }, [inboundConnectionInfo?.level, rating]);
   return (
     <Tooltip
-      position="right"
       className="z-10"
+      tooltipClassName="text-sm !w-52 !whitespace-normal"
+      position="right"
       content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
     >
       <div className={`flex flex-col gap-0.5 ${bgColor} py-1.5 rounded-md`}>
@@ -530,7 +531,7 @@ const EvaluatedCardBody = ({
           />
           <Tooltip
             // className="z-10"
-            content={`All evaluations of ${name} as a ${currentEvaluationCategory}`}
+            content={`Top evaluations of ${name} as a ${currentEvaluationCategory}`}
           >
             <div>
               <Graph
@@ -669,7 +670,7 @@ const ConnectedCardBody = ({
           />
           <Tooltip
             // className="z-10"
-            content={`All of ${name}'s evaluations as a ${viewModeSubjectString[evidenceViewMode]}`}
+            content={`Top evaluations ${name}'s as a ${viewModeSubjectString[evidenceViewMode]}`}
           >
             <div>
               <Graph

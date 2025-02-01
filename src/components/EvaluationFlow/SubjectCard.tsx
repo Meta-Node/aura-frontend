@@ -98,7 +98,7 @@ export const SubjectCard = ({
           <Tooltip
             tooltipClassName="text-sm translate-x-1/2"
             position="top-left"
-            content={'All evaluations of ' + name}
+            content={'Top evaluations of ' + name}
             className="evaluation-right__bottom"
           >
             <ReactECharts

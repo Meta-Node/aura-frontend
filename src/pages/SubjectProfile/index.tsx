@@ -370,17 +370,15 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       >
         <EvidenceHelpModal />
       </Modal>
-      <button
-        onClick={() => setIsHelpModalOpen(true)}
-        className="flex gap-2 -mb-1 items-center"
-      >
+      <div className="flex gap-2 -mb-1 items-center">
         <p className="font-bold text-lg text-white">Evidence</p>
         <img
+          onClick={() => setIsHelpModalOpen(true)}
           className="cursor-pointer w-5 h-5"
           src="/assets/images/SubjectProfile/evidence-info-icon.svg"
           alt=""
         />
-      </button>
+      </div>
       <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       {selectedTab === ProfileTab.OVERVIEW ? (
         <ProfileOverview

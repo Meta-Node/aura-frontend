@@ -106,7 +106,7 @@ export const ConnectionAndEvaluationStatus = ({
   return (
     <div className="w-full items-center flex gap-1">
       <Tooltip
-        tooltipClassName="text-sm"
+        tooltipClassName="text-sm !w-52 !whitespace-normal"
         position="right"
         content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
       >
