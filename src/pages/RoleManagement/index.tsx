@@ -111,10 +111,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
           color="text-pastel-green"
         />{' '}
       </section>
-      {playerEvaluation.auraLevel === null ||
-      playerEvaluation.auraLevel === undefined ? (
-        '...'
-      ) : playerEvaluation.auraLevel < 2 ? (
+      {!playerEvaluation.auraLevel || playerEvaluation.auraLevel < 2 ? (
         <>
           <section>
             <div className="flex gap-2 items-center mt-2 text-sm font-medium">
@@ -186,10 +183,7 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
           color="text-gray50"
         />
       </section>
-      {trainerEvaluation.auraLevel === undefined ||
-      trainerEvaluation.auraLevel === null ? (
-        '...'
-      ) : trainerEvaluation.auraLevel < 1 ? (
+      {!trainerEvaluation.auraLevel || trainerEvaluation.auraLevel < 1 ? (
         <>
           <section>
             <div className="flex gap-2 items-center mt-2 text-sm font-medium">
