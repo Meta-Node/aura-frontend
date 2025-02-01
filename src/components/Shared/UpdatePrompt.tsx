@@ -32,6 +32,7 @@ const UpdatePrompt = () => {
             Update
           </ToastAction>
         ),
+        duration: Infinity,
       });
     }
   }, [updateAvailable, toast]);

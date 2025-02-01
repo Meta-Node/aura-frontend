@@ -17,7 +17,7 @@ export function usePWAUpdate() {
       console.log('[] Checking for update');
       navigator.serviceWorker.ready
         .then((registration) => {
-          registration.update();
+          // registration.update();
         })
         .catch((error) => {
           console.error('Error during service worker update check:', error);
