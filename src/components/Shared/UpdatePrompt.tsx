@@ -17,6 +17,7 @@ const UpdatePrompt = () => {
     }
     if (import.meta.hot) {
       console.log('Hot Reloading');
+      console.log('This is a test for HMR ');
       import.meta.hot.accept();
     }
   };
