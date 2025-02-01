@@ -40,7 +40,9 @@ export const selectKeypair = (state: RootState) => ({
           )
         : null;
     } catch {
-      return state.keypair.secretKey;
+      return new Uint8Array(
+        state.keypair.secretKey.split('').map((char) => char.charCodeAt(0)),
+      );
     }
   })(),
 });
