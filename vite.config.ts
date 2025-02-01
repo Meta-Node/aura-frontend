@@ -21,7 +21,7 @@ export default defineConfig(() => {
           skipWaiting: true,
         },
 
-        registerType: 'autoUpdate',
+        registerType: 'prompt',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
           display: 'standalone',
