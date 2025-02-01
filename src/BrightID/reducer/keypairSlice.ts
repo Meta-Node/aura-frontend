@@ -30,13 +30,19 @@ export const { setKeypair } = keypairSlice.actions;
 // Export selectors
 export const selectKeypair = (state: RootState) => ({
   publicKey: state.keypair.publicKey,
-  secretKey: state.keypair.secretKey
-    ? new Uint8Array(
-        atob(state.keypair.secretKey)
-          .split('')
-          .map((char) => char.charCodeAt(0)),
-      )
-    : null, // Decode Base64 back to Uint8Array when accessing
+  secretKey: (() => {
+    try {
+      return state.keypair.secretKey
+        ? new Uint8Array(
+            atob(state.keypair.secretKey)
+              .split('')
+              .map((char) => char.charCodeAt(0)),
+          )
+        : null;
+    } catch {
+      return state.keypair.secretKey;
+    }
+  })(),
 });
 
 // Export reducer
