@@ -31,7 +31,7 @@ export const createSyncChannel =
     const {
       recoveryData: { aesKey },
     } = getState();
-    const baseUrl = selectBaseUrl(getState());
+    const baseUrl = selectBaseUrl();
     const url = new URL(`${baseUrl}/profile`);
     // use this for local running profile service
     // const url = new URL(`http://10.0.2.2:3000/`);

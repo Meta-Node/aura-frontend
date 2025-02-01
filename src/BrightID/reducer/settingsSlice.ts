@@ -141,7 +141,7 @@ export const {
   toggleTrainerRole,
 } = settingsSlice.actions;
 
-export const selectBaseUrl = (state: RootState) => state.settings.baseUrl;
+export const selectBaseUrl = () => AURA_NODE_URL_PROXY;
 export const selectPrefferedTheme = (state: RootState) =>
   state.settings.prefferedTheme ?? 'dark';
 
