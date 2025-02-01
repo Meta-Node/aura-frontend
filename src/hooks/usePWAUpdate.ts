@@ -14,6 +14,7 @@ export function usePWAUpdate() {
     });
 
     const interval = setInterval(() => {
+      console.log('[] Checking for update');
       navigator.serviceWorker.ready
         .then((registration) => {
           registration.update();
