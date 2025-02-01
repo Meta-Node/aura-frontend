@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { registerSW } from 'virtual:pwa-register';
 
+const CHECK_INTERVAL = 1000 * 60 * 1;
+
 export function usePWAUpdate() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
 
@@ -11,10 +13,13 @@ export function usePWAUpdate() {
       },
     });
 
+    const interval = setInterval(() => {
+      updateSW();
+    }, CHECK_INTERVAL);
+
     return () => {
-      if (updateSW) {
-        updateSW();
-      }
+      clearInterval(interval);
+      updateSW();
     };
   }, []);
 
