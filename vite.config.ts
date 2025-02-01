@@ -22,6 +22,7 @@ export default defineConfig(() => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {
+          display: 'standalone',
           name: 'Aura',
           short_name: 'aura',
           description: 'Aura web app',

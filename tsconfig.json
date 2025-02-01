@@ -32,5 +32,9 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["src/**/*", "src/**/*.json"]
+  "include": [
+    "src/**/*",
+    "src/**/*.json",
+    "node_modules/vite-plugin-pwa/client.d.ts"
+  ]
 }
