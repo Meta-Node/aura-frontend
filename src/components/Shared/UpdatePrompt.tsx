@@ -15,7 +15,7 @@ const UpdatePrompt = () => {
         }
       });
     }
-    // console.log('test for hot reloading the application');
+    console.log('test for hot reloading the application');
     if (import.meta.hot) {
       console.log('Hot Reloading');
       import.meta.hot.accept();
