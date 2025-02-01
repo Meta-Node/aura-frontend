@@ -3,61 +3,23 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import reducers from 'BrightID/reducer';
 import localForage from 'localforage';
 import { combineReducers } from 'redux';
-import {
-  createMigrate,
-  MigrationManifest,
-  persistReducer,
-  persistStore,
-} from 'redux-persist';
-import { PreferredView } from 'types/dashboard';
+import { createMigrate, persistReducer, persistStore } from 'redux-persist';
 import { __DEV__ } from 'utils/env';
 
 import { apiSlice } from './api/slice';
+import { migrations } from './migrations';
 import { profileSlice } from './profile';
 
-localForage.config({ storeName: 'keyvaluepairs', name: 'localforage' });
-
-const migrations: MigrationManifest = {
-  1: (oldState: any) => {
-    return {
-      ...oldState,
-      profile: {
-        ...oldState.profile,
-        splashScreenShown: false,
-        playerOnboardingScreenShown: false,
-      },
-    };
-  },
-  2: (oldState: any) => {
-    return {
-      ...oldState,
-      profile: {
-        ...oldState.profile,
-        preferredView: PreferredView.PLAYER,
-      },
-    };
-  },
-  3: (oldState: any) => {
-    return {
-      ...oldState,
-      profile: {
-        ...oldState.profile,
-        authData: oldState.profile.authData
-          ? {
-              brightId: oldState.profile.authData.brightId,
-              password: oldState.profile.authData.password,
-            }
-          : null,
-      },
-    };
-  },
-};
+localForage.config({
+  storeName: 'keyvaluepairs',
+  name: 'localforage',
+});
 
 const persistConfig = {
   key: 'root',
-  version: 3,
+  version: 4,
   storage: localForage,
-  blacklist: ['recoveryData'], // won't be persisted
+  blacklist: ['recoveryData'],
   migrate: createMigrate(migrations, { debug: __DEV__ }),
 };
 
