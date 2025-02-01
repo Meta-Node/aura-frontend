@@ -372,7 +372,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       </Modal>
       <button
         onClick={() => setIsHelpModalOpen(true)}
-        className="flex gap-1 -mb-1 justify-between items-center"
+        className="flex gap-2 -mb-1 items-center"
       >
         <p className="font-bold text-lg text-white">Evidence</p>
         <img

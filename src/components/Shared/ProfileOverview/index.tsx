@@ -173,7 +173,7 @@ const ProfileOverview = ({
               <ChartViewHelpModal />
             </DialogContent>
           </Dialog>
-          <div className="body__info flex justify-between w-full">
+          <div className="body__info flex gap-2 w-full">
             <div className="font-medium">Evaluation Impact:</div>
             <button
               onClick={() => setIsChartHelpModalOpen(true)}
