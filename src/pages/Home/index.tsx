@@ -152,12 +152,15 @@ const Home = () => {
 export const HomeHeader = () => {
   const authData = useSelector(selectAuthData);
   const subjectId = authData?.brightId;
+
+  if (!subjectId) return null;
+
   return (
     <>
       Home
-      <SubjectOutboundEvaluationsContextProvider subjectId={subjectId!}>
-        <SubjectInboundEvaluationsContextProvider subjectId={subjectId!}>
-          <SubjectInboundConnectionsContextProvider subjectId={subjectId!}>
+      <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
+        <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
+          <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
             <HeaderPreferedView.PreferedView />
           </SubjectInboundConnectionsContextProvider>
         </SubjectInboundEvaluationsContextProvider>

@@ -575,7 +575,9 @@ export const SubjectProfileHeader = () => {
   const subjectId = useMemo(
     () => subjectIdProp ?? authData?.brightId,
     [authData?.brightId, subjectIdProp],
-  )!;
+  );
+
+  if (!subjectId) return null;
 
   return (
     <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
