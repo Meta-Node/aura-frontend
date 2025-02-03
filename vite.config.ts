@@ -48,8 +48,9 @@ const replaceOptions = { __DATE__: new Date().toISOString() };
 const claims = process.env.CLAIMS === 'true';
 const reload = true;
 const selfDestroying = process.env.SW_DESTROY === 'true';
+const SW = true;
 
-if (process.env.SW === 'true') {
+if (SW) {
   pwaConfig.srcDir = 'src';
   pwaConfig.filename = claims ? 'claims-sw.ts' : 'prompt-sw.ts';
   pwaConfig.strategies = 'injectManifest';
