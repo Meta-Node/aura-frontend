@@ -26,6 +26,9 @@ export const useSubjectVerifications = (
 ) => {
   const profileFetch = useGetBrightIDProfileQuery(
     subjectId ? { id: subjectId } : skipToken,
+    {
+      refetchOnMountOrArgChange: true,
+    },
   );
 
   const verifications = profileFetch.data?.verifications;

@@ -1,6 +1,7 @@
 import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
-import moment from 'moment/moment';
 import { useMemo } from 'react';
+
+import { useSubjectVerifications } from '@/hooks/useSubjectVerifications';
 
 import {
   viewModeSubjectString,
@@ -9,7 +10,7 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { PreferredView } from '../../../types/dashboard';
-import ProfileEvaluationMini from './ProfileEvaluationMini';
+import { ActivityChart } from './ActivityChart';
 
 const ActivitiesCard = ({
   subjectId,
@@ -30,13 +31,12 @@ const ActivitiesCard = ({
     () => outboundRatings?.filter((r) => Number(r.rating)),
     [outboundRatings],
   );
-  const lastRating = useMemo(
-    () =>
-      outboundActiveRatings?.length
-        ? outboundActiveRatings[outboundActiveRatings.length - 1]
-        : undefined,
-    [outboundActiveRatings],
+
+  const { auraScore, auraImpacts } = useSubjectVerifications(
+    subjectId,
+    viewModeToViewAs[viewMode],
   );
+
   return (
     <>
       <div className=" mb-4 font-semibold text-xl">
@@ -61,31 +61,12 @@ const ActivitiesCard = ({
               </span>
             </div>
           </div>
-          <div className="flex justify-between">
-            <div className="font-medium">Last evaluation:</div>
-            <div>
-              <span className="font-medium">
-                {lastRating ? moment(lastRating.updatedAt).fromNow() : '-'}
-              </span>
-            </div>
-          </div>
         </div>
-        {lastRating && (
-          <ProfileEvaluationMini
-            fromSubjectId={subjectId}
-            toSubjectId={lastRating.toBrightId}
-            evaluationCategory={
-              viewModeToViewAs[viewModeToSubjectViewMode[viewMode]]
-            }
-            onClick={() =>
-              onLastEvaluationClick({
-                subjectId: lastRating.toBrightId,
-                evaluationCategory:
-                  viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
-              })
-            }
-          ></ProfileEvaluationMini>
-        )}
+        <ActivityChart
+          key={viewMode}
+          auraScore={auraScore ?? 0}
+          auraImpacts={auraImpacts}
+        />
       </div>
     </>
   );
