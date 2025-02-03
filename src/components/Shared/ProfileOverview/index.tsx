@@ -1,4 +1,3 @@
-import ActivitiesCard from 'components/Shared/ActivitiesCard';
 import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
 import { AuraFilterId } from 'hooks/useFilters';
@@ -118,26 +117,13 @@ const ProfileOverview = ({
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>
         )}
-        {viewMode !== PreferredView.PLAYER &&
-          viewMode !== PreferredView.TRAINER && (
-            <ActivitiesCard
-              subjectId={subjectId}
-              onLastEvaluationClick={setCredibilityDetailsProps}
-              viewMode={viewMode}
-            />
-          )}
 
         <div className="flex flex-col gap-1.5">
           {viewMode !== PreferredView.PLAYER && (
-            <div className=" mt-4 font-semibold text-xl">
+            <div className="font-semibold text-xl">
               {viewModeToString[viewMode]} Evaluations
             </div>
           )}
-          {/*<ShowData*/}
-          {/*  title="Connections"*/}
-          {/*  value={inboundConnections?.length ?? '...'}*/}
-          {/*  details={null}*/}
-          {/*/>*/}
           <div className="header__info flex flex-col gap-1">
             <ShowData
               title="Evaluations"
