@@ -58,6 +58,7 @@ const UpdatePrompt = () => {
   };
 
   React.useEffect(() => {
+    console.log(needRefresh);
     if (needRefresh) {
       toast({
         title: 'New Version Available ↗️',
