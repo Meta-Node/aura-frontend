@@ -37,6 +37,8 @@ import {
 import { connectionLevelIcons } from 'utils/connection';
 import { compactFormat } from 'utils/number';
 
+import { ratingToText } from '@/constants/chart';
+
 import { useSelector } from '../../../store/hooks';
 import { selectAuthData } from '../../../store/profile/selectors';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
@@ -143,11 +145,11 @@ const ConnectionInfo = ({
     return '';
   }, [inboundConnectionInfo?.level, rating]);
   return (
-    <Tooltip
+    <div
       className="z-10"
-      tooltipClassName="text-sm !w-52 !whitespace-normal"
-      position="right"
-      content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+      // tooltipClassName="text-sm !w-52 !whitespace-normal"
+      // position="right"
+      content={``}
     >
       <div className={`flex flex-col gap-0.5 ${bgColor} py-1.5 rounded-md`}>
         {loading ? (
@@ -157,38 +159,60 @@ const ConnectionInfo = ({
             <div className="flex gap-0.5 justify-center items-center">
               {inboundConnectionInfo &&
                 connectionLevelIcons[inboundConnectionInfo.level] && (
-                  <img
-                    src={`/assets/images/Shared/${
-                      connectionLevelIcons[inboundConnectionInfo.level]
-                    }.svg`}
-                    className="h-[18px] w-[18px]"
-                    alt=""
-                  />
+                  <Tooltip
+                    content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+                    position="right"
+                    tooltipClassName="!whitespace-normal !w-40"
+                  >
+                    <img
+                      src={`/assets/images/Shared/${
+                        connectionLevelIcons[inboundConnectionInfo.level]
+                      }.svg`}
+                      className="h-[18px] w-[18px]"
+                      alt=""
+                    />
+                  </Tooltip>
                 )}
               {!!rating && Number(rating?.rating) !== 0 && (
-                <p
-                  className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
-                    rating,
-                  )}`}
+                <Tooltip
+                  position="right"
+                  content={`You evaluated ${name} ${
+                    Number(rating.rating) > 0
+                      ? `+${rating.rating}`
+                      : rating.rating
+                  } (${ratingToText[rating.rating]})`}
                 >
-                  {Number(rating.rating) < 0 ? '-' : '+'}
-                  {Math.abs(Number(rating.rating))}
-                </p>
+                  <p
+                    className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
+                      rating,
+                    )}`}
+                  >
+                    {Number(rating.rating) < 0 ? '-' : '+'}
+                    {Math.abs(Number(rating.rating))}
+                  </p>
+                </Tooltip>
               )}
             </div>
             {!!rating && Number(rating?.rating) !== 0 && (
-              <p
-                className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
-                  rating,
-                )} text-[11px] font-bold text-center w-full`}
+              <Tooltip
+                position="right"
+                content={`Your evaluation impact on ${name} is ${
+                  impactPercentage !== null ? `${impactPercentage}%` : '-'
+                }`}
               >
-                {impactPercentage !== null ? `${impactPercentage}%` : '-'}
-              </p>
+                <p
+                  className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
+                    rating,
+                  )} text-[11px] font-bold text-center w-full`}
+                >
+                  {impactPercentage !== null ? `${impactPercentage}%` : '-'}
+                </p>
+              </Tooltip>
             )}
           </>
         )}
       </div>
-    </Tooltip>
+    </div>
   );
 };
 
