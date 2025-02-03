@@ -12,6 +12,7 @@
     "@rainbow-me/rainbowkit": "^1.0.1",
     "@react-router/dev": "^7.1.1",
     "@reduxjs/toolkit": "^1.9.5",
+    "@rollup/plugin-replace": "^6.0.2",
     "@sentry/react": "^7.70.0",
     "@tailwindcss/typography": "^0.5.15",
     "apisauce": "2.0.1",
