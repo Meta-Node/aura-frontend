@@ -45,6 +45,7 @@ const CredibilityDetailsForRole = ({
     subjectId,
     roleEvaluationCategory,
   );
+  const [showEvaluationFlow, setShowEvaluationFlow] = useState(false);
   const { ratings, inboundRatingsStatsString } = useInboundEvaluations({
     subjectId,
     evaluationCategory: roleEvaluationCategory,
@@ -132,9 +133,26 @@ const CredibilityDetailsForRole = ({
             Number(myRatingToSubject?.rating),
           )}`}
         >
-          {impactPercentage !== null ? `${impactPercentage}%` : '-'}
+          {impactPercentage ? (
+            `${impactPercentage}%`
+          ) : (
+            <span>
+              none.{' '}
+              <button
+                onClick={() => setShowEvaluationFlow(true)}
+                className="text-pastel-blue text-sm"
+              >
+                Evaluate Now
+              </button>
+            </span>
+          )}
         </span>
       </div>
+      {/* <EvaluationFlow
+        showEvaluationFlow={showEvaluationFlow}
+        setShowEvaluationFlow={setShowEvaluationFlow}
+        subjectId={subjectId}
+      /> */}
       <ReactECharts
         style={{ height: '110px' }}
         option={impactChartOption}
