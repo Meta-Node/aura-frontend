@@ -56,28 +56,29 @@ export default defineConfig(() => {
       }),
     ],
     server: {
-      port: 3000,
+      port: Number(process.env.PORT) || 3000, // Ensure port is a number
 
       proxy: {
         '^/brightid(/.*)?$': {
           target: 'https://recovery.brightid.org',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/brightid/, ''),
-          secure: process.env.NODE_ENV !== 'development',
+          secure: process.env.NODE_ENV?.toLowerCase() !== 'development',
         },
 
         '^/auranode(/.*)?$': {
           target: 'https://aura-node.brightid.org',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/auranode/, ''),
-          secure: process.env.NODE_ENV !== 'development',
+          secure: process.env.NODE_ENV?.toLowerCase() !== 'development',
         },
+
         '^/auranode-test(/.*)?$': {
           target: 'https://aura-test.brightid.org',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/auranode-test\//, ''),
-          secure: process.env.NODE_ENV !== 'development',
-          autoRewrite: true,
+          rewrite: (path) => path.replace(/^\/auranode-test/, ''), // Fixed regex
+          secure: process.env.NODE_ENV?.toLowerCase() !== 'development',
+          // Removed autoRewrite for safety
         },
       },
     },
