@@ -114,7 +114,7 @@ const ProfileOverview = ({
             subjectId={subjectId}
           />
         )}
-      <div className="card dark:bg-dark-primary">
+      <div className="card !px-2 md:!px-4 dark:bg-dark-primary">
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>
         )}

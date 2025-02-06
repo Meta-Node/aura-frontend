@@ -85,12 +85,12 @@ const Header = () => {
   const HeaderTitle = HeaderComponent.title ?? (() => <></>);
 
   return (
-    <div className="flex flex-col gap-2.5 px-6 pt-9">
+    <div className="flex flex-col gap-2.5 px-1 md:px-6 pt-9">
       {isSequenceOpen && (
         <PlayerHistorySequence playerHistorySequence={playerHistorySequence} />
       )}
-      <header className="header pb-4 flex justify-between">
-        <div className="header-left items-center flex gap-1.5">
+      <header className="header pb-4 flex-wrap flex justify-between">
+        <div className="header-left flex-wrap items-center flex gap-1.5">
           {HeaderComponent.icon && (
             <span
               key={HeaderComponent.icon}
@@ -120,7 +120,7 @@ const Header = () => {
               onClick={() => setIsSequenceOpen(!isSequenceOpen)}
             />
           )}
-          <div className="header-title font-medium text-2xl text-white whitespace-nowrap flex items-center">
+          <div className="header-title font-medium text-xl text-white whitespace-nowrap flex items-center">
             <HeaderTitle />
           </div>
         </div>
