@@ -67,7 +67,6 @@
     "start:cypress": "env VITE_REACT_APP_IS_CYPRESS='true' vite",
     "build:cypress": "env VITE_REACT_APP_IS_CYPRESS='true' vite build",
     "cypress:open": "cypress open --browser chrome --e2e",
-    "cypress": "start-server-and-test 'bun start:cypress' http://localhost:3000 'bun cypress:open'",
     "cypress:headless": "bun run build:cypress && start-server-and-test 'serve -s -L build' http://localhost:3000 'cypress run --browser chrome --e2e'"
   },
   "eslintConfig": {

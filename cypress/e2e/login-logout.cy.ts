@@ -49,6 +49,7 @@ describe('Unauthenticated issue', () => {
 
 describe('Login functionality', () => {
   it('basic login', () => {
+    cy.visit('/');
     cy.get(getTestSelector('splash-dismiss-btn')).click();
 
     cy.get(getTestSelector('import-universal-link'))
