@@ -332,7 +332,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   }, [currentViewMode, selectedTab]);
 
   return (
-    <div className="page page__dashboard flex flex-col gap-y-4">
+    <div className="page overflow-x-hidden page__dashboard flex flex-col gap-y-4">
       {selectedTab !== ProfileTab.OVERVIEW && showEvaluateOverlayCard && (
         <EvaluateOverlayCard
           className={`absolute z-20 top-24 min-h-[89px] w-full md:w-[calc(100vw-40px)] max-w-[420px]`}
