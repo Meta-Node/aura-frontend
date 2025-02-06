@@ -6,20 +6,30 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 
+import { viewModeSubjectString } from '@/constants';
+import { EvaluationCategory, PreferredView } from '@/types/dashboard';
+
 import useViewMode from '../../hooks/useViewMode';
 import CustomTrans from '../CustomTrans';
 
 const EvaluateModalBody = ({
   subjectId,
   onSubmitted,
+  evaluationCategory,
+  viewMode,
 }: {
   subjectId: string;
   onSubmitted: (newRating: number | null | undefined) => void;
+  evaluationCategory?: EvaluationCategory;
+  viewMode?: PreferredView;
 }) => {
   const [isYes, setIsYes] = useState(true);
   const [confidence, setConfidence] = useState(1);
   const [onDelete, setOnDelete] = useState(false);
-  const { myRatingObject } = useSubjectInboundEvaluationsContext({ subjectId });
+  const { myRatingObject } = useSubjectInboundEvaluationsContext({
+    subjectId,
+    evaluationCategory,
+  });
   const authData = useSelector(selectAuthData);
   const prevRating = useMemo(
     () => (myRatingObject ? Number(myRatingObject.rating) : undefined),
@@ -34,7 +44,7 @@ const EvaluateModalBody = ({
 
   const name = useSubjectName(subjectId);
 
-  const { submitEvaluation, loading } = useEvaluateSubject();
+  const { submitEvaluation, loading } = useEvaluateSubject(evaluationCategory);
 
   const submit = useCallback(async () => {
     if (loading || !authData?.brightId) return;
@@ -55,8 +65,12 @@ const EvaluateModalBody = ({
     submitEvaluation,
   ]);
 
-  const { subjectViewModeTitle } = useViewMode();
+  const { subjectViewModeTitle: defaultViewTitle } = useViewMode();
 
+  const subjectViewModeTitle = useMemo(
+    () => (viewMode ? viewModeSubjectString[viewMode] : defaultViewTitle),
+    [defaultViewTitle, viewMode],
+  );
   return (
     <div>
       <p className="subtitle mb-6 -mt-1">

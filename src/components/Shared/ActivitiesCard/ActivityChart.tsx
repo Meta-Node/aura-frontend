@@ -14,9 +14,9 @@ import { compactFormat } from '@/utils/number';
 const processAuraImpacts = (impacts: AuraImpact[], auraScore: number) => {
   let cumulativeScore = 0;
   return impacts.map((impact, index) => {
-    cumulativeScore += impact.score ?? 0;
+    cumulativeScore += impact.impact ?? 0;
 
-    const adjustedScore = Math.max(cumulativeScore, 0.1);
+    const adjustedScore = cumulativeScore === 0 ? 0.1 : cumulativeScore;
     return {
       index: index + 1,
       evaluatorName: impact.evaluatorName,
@@ -31,8 +31,7 @@ const processAuraImpacts = (impacts: AuraImpact[], auraScore: number) => {
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const { evaluatorName, impact, confidence, cumulativeScore } =
-      payload[0].payload;
+    const { evaluatorName, impact, confidence } = payload[0].payload;
     return (
       <div className="bg-dark-primary p-2 shadow-md rounded-lg text-sm border">
         <p className="font-semibold">{evaluatorName}</p>
@@ -72,12 +71,12 @@ export function ActivityChart({
         <XAxis
           axisLine={false}
           dataKey="evaluatorName"
-          tick={{ fontSize: 12 }}
+          tick={{ fontSize: 10 }}
         />
         <YAxis
           axisLine={false}
           type="number"
-          tick={{ fontSize: 12 }}
+          tick={{ fontSize: 9 }}
           domain={['auto', 'auto']}
           scale="log"
           tickFormatter={(value) => compactFormat(value)}

@@ -2,6 +2,7 @@ import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useSubjectsListContext } from 'contexts/SubjectsListContext';
 import { useMyEvaluations } from 'hooks/useMyEvaluations';
+import { RefreshCcwIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ import { AuraFilterDropdownOption } from '../../types';
 import { PreferredView } from '../../types/dashboard';
 import Dropdown from '../Shared/Dropdown';
 import Modal from '../Shared/Modal';
+import { Button } from '../ui/button';
 
 function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
   const {
@@ -291,18 +293,23 @@ export const SubjectListControls = ({
             : ''}
           )
         </span>
-        <img
-          src="/assets/images/Shared/refresh.svg"
-          alt="refresh"
-          className={cn(
-            'w-7 h-7 ml-1 mt-0.5 cursor-pointer',
-            (loading || contextLoading) && 'animate-spin',
-          )}
+        <Button
           onClick={() => {
             refreshBrightIdBackup();
             refreshOutboundRatings();
           }}
-        />
+          disabled={loading || contextLoading}
+          className="ml-1"
+          variant="outline"
+          size={'icon'}
+        >
+          <RefreshCcwIcon
+            className={cn(
+              'w-7 h-7 cursor-pointer',
+              (loading || contextLoading) && 'animate-spin',
+            )}
+          />
+        </Button>
       </div>
     </>
   );

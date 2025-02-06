@@ -1,4 +1,3 @@
-import Modal from 'components/Shared/Modal';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
 import { useInboundEvaluations } from 'hooks/useSubjectEvaluations';
@@ -16,13 +15,17 @@ import { EvaluationCategory } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
+import { SubjectInboundEvaluationsContextProvider } from '@/contexts/SubjectInboundEvaluationsContext';
+
 import {
   getRawTextClassNameOfAuraRatingNumber,
   getViewModeSubjectTextColorClass,
   viewAsToViewMode,
 } from '../constants';
 import { CredibilityDetailsProps } from '../types';
+import EvaluationFlow from './EvaluationFlow/EvaluationFlow';
 import { HorizontalProgressBar } from './Shared/HorizontalProgressBar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 
 const views = [
   EvaluationCategory.SUBJECT,
@@ -41,15 +44,15 @@ const CredibilityDetailsForRole = ({
   onClose: () => void;
 }) => {
   const authData = useSelector(selectAuthData);
-  const { auraLevel, auraScore, auraImpacts } = useSubjectVerifications(
-    subjectId,
-    roleEvaluationCategory,
-  );
+  const { auraLevel, auraScore, auraImpacts, refresh } =
+    useSubjectVerifications(subjectId, roleEvaluationCategory);
+  const [showEvaluationFlow, setShowEvaluationFlow] = useState(false);
   const { ratings, inboundRatingsStatsString } = useInboundEvaluations({
     subjectId,
     evaluationCategory: roleEvaluationCategory,
   });
   const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
+
   const { loading, myRatingToSubject, myConfidenceValueInThisSubjectRating } =
     useMyEvaluationsContext({
       subjectId,
@@ -125,16 +128,46 @@ const CredibilityDetailsForRole = ({
           )}
         </span>
       </div>
+      <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
+        <EvaluationFlow
+          refresh={refresh}
+          evaluationCategory={roleEvaluationCategory}
+          currentViewMode={viewAsToViewMode[roleEvaluationCategory]}
+          showEvaluationFlow={showEvaluationFlow}
+          setShowEvaluationFlow={setShowEvaluationFlow}
+          subjectId={subjectId}
+        />
+      </SubjectInboundEvaluationsContextProvider>
       <div>
         Your Evaluation Impact:{' '}
-        <span
-          className={`font-bold ${getRawTextClassNameOfAuraRatingNumber(
-            Number(myRatingToSubject?.rating),
-          )}`}
-        >
-          {impactPercentage !== null ? `${impactPercentage}%` : '-'}
-        </span>
+        {loading ? (
+          <span className="text-gray20">...</span>
+        ) : myRatingToSubject && Number(myRatingToSubject.rating) > 0 ? (
+          <span
+            className={`font-bold`}
+            style={{
+              color: '#6C34B3',
+            }}
+          >
+            {impactPercentage ?? 0}%
+          </span>
+        ) : (
+          <span>
+            none.{' '}
+            <button
+              onClick={() => setShowEvaluationFlow(true)}
+              className="text-pastel-blue text-sm"
+            >
+              Evaluate Now
+            </button>
+          </span>
+        )}
       </div>
+      {/* <EvaluationFlow
+        showEvaluationFlow={showEvaluationFlow}
+        setShowEvaluationFlow={setShowEvaluationFlow}
+        subjectId={subjectId}
+      /> */}
       <ReactECharts
         style={{ height: '110px' }}
         option={impactChartOption}
@@ -336,12 +369,19 @@ const CredibilityDetailsModal = ({
 }) => {
   const name = useSubjectName(credibilityDetailsProps.subjectId);
   return (
-    <Modal isOpen={true} closeModalHandler={onClose} title={name}>
-      <CredibilityDetails
-        credibilityDetailsProps={credibilityDetailsProps}
-        onClose={onClose}
-      />
-    </Modal>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogHeader>
+        <DialogTitle>{name}</DialogTitle>
+      </DialogHeader>
+      <DialogContent>
+        <div className="mt-5">
+          <CredibilityDetails
+            credibilityDetailsProps={credibilityDetailsProps}
+            onClose={onClose}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
