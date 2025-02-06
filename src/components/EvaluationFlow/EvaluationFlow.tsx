@@ -7,17 +7,23 @@ import { useSubjectName } from 'hooks/useSubjectName';
 import { useCallback, useState } from 'react';
 
 import useViewMode from '../../hooks/useViewMode';
-import { PreferredView } from '../../types/dashboard';
+import { EvaluationCategory, PreferredView } from '../../types/dashboard';
 import { Dialog, DialogContent, DialogHeader } from '../ui/dialog';
 
 const EvaluationFlow = ({
   showEvaluationFlow,
   subjectId,
   setShowEvaluationFlow,
+  currentViewMode: preferredView,
+  refresh,
+  evaluationCategory,
 }: {
   subjectId: string;
   showEvaluationFlow: boolean;
   setShowEvaluationFlow: (value: boolean) => void;
+  currentViewMode?: PreferredView;
+  refresh?: () => void;
+  evaluationCategory?: EvaluationCategory;
 }) => {
   const name = useSubjectName(subjectId);
 
@@ -28,7 +34,9 @@ const EvaluationFlow = ({
   });
 
   const [myNewRatingCount, setMyNewRatingCount] = useState<number | null>(null);
-  const { currentViewMode } = useViewMode();
+  const { currentViewMode: pageCurrentViewMode } = useViewMode();
+
+  const currentViewMode = preferredView ?? pageCurrentViewMode;
 
   const onSubmitted = useCallback(
     async (newRating: number | null | undefined) => {
@@ -49,9 +57,11 @@ const EvaluationFlow = ({
         setShowEvaluationFlow(false);
       } else {
         setMyNewRatingCount(newRatingCount);
+        refresh?.();
       }
     },
     [
+      refresh,
       currentViewMode,
       myRatingObject,
       myRatings,
@@ -79,7 +89,12 @@ const EvaluationFlow = ({
             ratingsDoneCount={myNewRatingCount}
           />
         ) : (
-          <EvaluateModalBody subjectId={subjectId} onSubmitted={onSubmitted} />
+          <EvaluateModalBody
+            subjectId={subjectId}
+            viewMode={currentViewMode}
+            evaluationCategory={evaluationCategory}
+            onSubmitted={onSubmitted}
+          />
         )}
       </DialogContent>
     </Dialog>

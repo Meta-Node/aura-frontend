@@ -8,10 +8,10 @@ import {
   selectOperationByHash,
 } from '../BrightID/reducer/operationsSlice';
 import { operation_states } from '../BrightID/utils/constants';
-import { EvaluationValue } from '../types/dashboard';
+import { EvaluationCategory, EvaluationValue } from '../types/dashboard';
 import useViewMode from './useViewMode';
 
-export function useEvaluateSubject() {
+export function useEvaluateSubject(evaluationCategory?: EvaluationCategory) {
   const authData = useSelector(selectAuthData);
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ export function useEvaluateSubject() {
           newRating < 0 ? EvaluationValue.NEGATIVE : EvaluationValue.POSITIVE,
           Math.abs(newRating),
           'BrightID',
-          currentEvaluationCategory,
+          evaluationCategory ?? currentEvaluationCategory,
           Date.now(),
         );
         dispatch(addOperation(op));
@@ -54,7 +54,7 @@ export function useEvaluateSubject() {
         throw e;
       }
     },
-    [api, authData, currentEvaluationCategory, dispatch],
+    [api, authData, currentEvaluationCategory, dispatch, evaluationCategory],
   );
 
   return { submitEvaluation, loading };

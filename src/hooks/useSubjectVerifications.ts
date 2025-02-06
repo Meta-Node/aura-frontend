@@ -37,6 +37,7 @@ export const useSubjectVerifications = (
     useParseBrightIdVerificationData(verifications, evaluationCategory);
 
   return {
+    refresh: profileFetch.refetch,
     auraLevel,
     userHasRecovery,
     auraScore,
