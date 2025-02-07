@@ -10,6 +10,7 @@ const UpdatePrompt = () => {
     updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(swUrl, r) {
+      console.log('test for update ');
       console.log(`Service Worker at: ${swUrl}`);
       r &&
         setInterval(() => {
