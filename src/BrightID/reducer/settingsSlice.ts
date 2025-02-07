@@ -154,6 +154,12 @@ export const selectLastSyncTime = (state: RootState) =>
 export const selectLanguageTag = (state: RootState) =>
   state.settings.languageTag;
 
+export const selectManagerRoleState = (state: RootState) =>
+  state.settings.hasManagerRole;
+
+export const selectTrainerRoleState = (state: RootState) =>
+  state.settings.hasTrainerRole;
+
 export const selectHasManagerRole = (state: RootState) =>
   state.settings.hasManagerRole !== RoleStatus.HIDE;
 

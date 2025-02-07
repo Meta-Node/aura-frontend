@@ -1,7 +1,11 @@
-import { selectHasManagerRole, selectTrainerRole } from 'BrightID/actions';
+import {
+  RoleStatus,
+  selectManagerRoleState,
+  selectTrainerRoleState,
+} from 'BrightID/actions';
 import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
-import * as React from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 
@@ -49,7 +53,7 @@ export const HeaderPreferedView = {
       EvaluationCategory.MANAGER,
     );
 
-    const authorizedTabs = React.useMemo(() => {
+    const authorizedTabs = useMemo(() => {
       const tabs = [EvaluationCategory.SUBJECT];
 
       if (playerEvaluation.auraLevel && playerEvaluation.auraLevel > 0)
@@ -107,9 +111,9 @@ export const HeaderPreferedView = {
 
     const authData = useSelector(selectAuthData);
 
-    const hasManagerRole = useSelector(selectHasManagerRole);
+    const managerRole = useSelector(selectManagerRoleState);
 
-    const hasTrainerRole = useSelector(selectTrainerRole);
+    const trainerRole = useSelector(selectTrainerRoleState);
 
     const subjectId = authData!.brightId;
 
@@ -133,109 +137,95 @@ export const HeaderPreferedView = {
       EvaluationCategory.TRAINER,
     );
 
-    React.useEffect(() => {
+    const shouldNavigateToPlayerFromTrainer =
+      currentViewMode === PreferredView.TRAINER &&
+      !trainerEvaluation.loading &&
+      (!playerEvaluation.auraLevel ||
+        playerEvaluation.auraLevel < 2 ||
+        (trainerRole === RoleStatus.NOT_SET &&
+          (!trainerActivity || trainerActivity.length === 0)));
+
+    const shouldNavigateToPlayerFromManager =
+      (currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
+        currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER) &&
+      (!trainerEvaluation.auraLevel ||
+        trainerEvaluation.auraLevel < 1 ||
+        (managerRole === RoleStatus.NOT_SET &&
+          (!managerActivity || managerActivity.length === 0)));
+
+    const canShowTrainerTooltip =
+      !!playerEvaluation.auraLevel &&
+      playerEvaluation.auraLevel >= 2 &&
+      (trainerRole === RoleStatus.SHOW ||
+        (trainerRole === RoleStatus.NOT_SET &&
+          (trainerActivity?.length ?? 0) > 0));
+
+    const canShowManagerTooltip =
+      !!trainerEvaluation.auraLevel &&
+      trainerEvaluation.auraLevel >= 1 &&
+      (managerRole === RoleStatus.SHOW ||
+        (managerRole === RoleStatus.NOT_SET &&
+          (managerActivity?.length ?? 0) > 0));
+
+    useEffect(() => {
       if (
-        currentViewMode === PreferredView.TRAINER &&
-        !trainerEvaluation.loading
+        shouldNavigateToPlayerFromTrainer ||
+        shouldNavigateToPlayerFromManager
       ) {
-        if (
-          !playerEvaluation.auraLevel ||
-          playerEvaluation.auraLevel < 2 ||
-          !hasTrainerRole
-          // ||
-          // !trainerActivity ||
-          // trainerActivity.length === 0
-        ) {
-          setPreferredView(PreferredView.PLAYER);
-        }
-      } else if (
-        currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
-        PreferredView.MANAGER_EVALUATING_MANAGER
-      ) {
-        if (
-          !trainerEvaluation.auraLevel ||
-          trainerEvaluation.auraLevel < 1 ||
-          !hasManagerRole
-          // ||
-          // !managerActivity ||
-          // managerActivity.length === 0
-        ) {
-          setPreferredView(PreferredView.PLAYER);
-        }
+        setPreferredView(PreferredView.PLAYER);
       }
     }, [
-      currentViewMode,
-      hasManagerRole,
-      hasTrainerRole,
-      managerActivity,
-      playerEvaluation.auraLevel,
+      shouldNavigateToPlayerFromTrainer,
+      shouldNavigateToPlayerFromManager,
       setPreferredView,
-      trainerActivity,
-      trainerEvaluation.auraLevel,
-      trainerEvaluation.loading,
     ]);
 
     return (
       <>
-        <Tooltip
+        <ViewTooltip
+          view={PreferredView.PLAYER}
           content="Player"
-          className={`p-1 rounded ${
-            currentViewMode === PreferredView.PLAYER
-              ? getViewModeBackgroundColorClass(currentViewMode)
-              : 'bg-gray100'
-          } ml-2 cursor-pointer`}
-          onClick={() => setPreferredView(PreferredView.PLAYER)}
-        >
-          <img
-            className="w-4 h-4"
-            src={preferredViewIcon[PreferredView.PLAYER]}
-            alt=""
-          />
-        </Tooltip>
-        {!!playerEvaluation.auraLevel &&
-          playerEvaluation.auraLevel >= 2 &&
-          hasTrainerRole && (
-            <Tooltip
-              content="Trainer"
-              className={`p-1 rounded ${
-                currentViewMode === PreferredView.TRAINER
-                  ? getViewModeBackgroundColorClass(currentViewMode)
-                  : 'bg-gray100'
-              } ml-2 cursor-pointer`}
-              onClick={() => setPreferredView(PreferredView.TRAINER)}
-            >
-              <img
-                className="w-4 h-4"
-                src={preferredViewIcon[PreferredView.TRAINER]}
-                alt=""
-              />
-            </Tooltip>
-          )}
-        {!!trainerEvaluation.auraLevel &&
-          trainerEvaluation.auraLevel >= 1 &&
-          hasManagerRole && (
-            <Tooltip
-              content="Manager"
-              className={`p-1 rounded ${
-                currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER ||
-                currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER
-                  ? getViewModeBackgroundColorClass(currentViewMode)
-                  : 'bg-gray100'
-              } ml-2 cursor-pointer`}
-              onClick={() =>
-                setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
-              }
-            >
-              <img
-                className="w-4 h-4"
-                src={
-                  preferredViewIcon[PreferredView.MANAGER_EVALUATING_TRAINER]
-                }
-                alt=""
-              />
-            </Tooltip>
-          )}
+          condition={true}
+        />
+        <ViewTooltip
+          view={PreferredView.TRAINER}
+          content="Trainer"
+          condition={canShowTrainerTooltip}
+        />
+        <ViewTooltip
+          view={PreferredView.MANAGER_EVALUATING_TRAINER}
+          content="Manager"
+          condition={canShowManagerTooltip}
+        />
       </>
     );
   },
+};
+
+const ViewTooltip = ({
+  view,
+  content,
+  condition,
+}: {
+  view: PreferredView;
+  content: string;
+  condition: boolean;
+}) => {
+  const { setPreferredView, currentViewMode } = useViewMode();
+
+  if (!condition) return null;
+
+  return (
+    <Tooltip
+      content={content}
+      className={`p-1 rounded ${
+        currentViewMode === view
+          ? getViewModeBackgroundColorClass(currentViewMode)
+          : 'bg-gray100'
+      } ml-2 cursor-pointer`}
+      onClick={() => setPreferredView(view)}
+    >
+      <img className="w-4 h-4" src={preferredViewIcon[view]} alt="" />
+    </Tooltip>
+  );
 };
