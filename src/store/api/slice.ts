@@ -24,12 +24,12 @@ export const apiSlice = createApi({
       }
 
       if (action.key === 'root') {
-        return action.payload;
-      }
-
-      if (action.payload[reducerPath]) {
         return action.payload[reducerPath];
       }
+
+      // if (action.payload[reducerPath]) {
+      //   return action.payload[reducerPath];
+      // }
     }
 
     return undefined;
