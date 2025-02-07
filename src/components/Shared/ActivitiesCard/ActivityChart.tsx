@@ -17,14 +17,18 @@ const processAuraImpacts = (impacts: AuraImpact[], auraScore: number) => {
     cumulativeScore += impact.impact ?? 0;
 
     const adjustedScore = cumulativeScore === 0 ? 0.1 : cumulativeScore;
+
+    const confidence =
+      adjustedScore > 0 ? impact.confidence : -impact.confidence;
+
     return {
       index: index + 1,
       evaluatorName: impact.evaluatorName,
       impact: impact.impact,
-      confidence: impact.confidence,
+      confidence,
       cumulativeScore: adjustedScore,
       // @ts-ignore
-      color: valueColorMap[impact.confidence.toString()] || '#000000',
+      color: valueColorMap[confidence] || '#000000',
     };
   });
 };
