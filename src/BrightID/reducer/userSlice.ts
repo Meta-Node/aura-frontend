@@ -90,10 +90,11 @@ const userSlice = createSlice({
       state.localServerUrl = action.payload;
     },
   },
-  extraReducers: {
-    [RESET_STORE]: () => {
-      return initialState;
-    },
+extraReducers: (builder) => {
+    builder.addMatcher(
+      (action) => action.type === RESET_STORE,
+      () => initialState
+    );
   },
 });
 

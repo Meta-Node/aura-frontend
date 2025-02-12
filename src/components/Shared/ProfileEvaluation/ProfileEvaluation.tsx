@@ -68,7 +68,7 @@ const ProfileEvaluation = ({
   return (
     <div
       onClick={onClick}
-      className={`profile-evaluation-card card !flex-row cursor-pointer gap-.5 pl-2 pt-[11px] pr-[14px] pb-3`}
+      className={`profile-evaluation-card border card !flex-row cursor-pointer gap-.5 pl-2 pt-[11px] pr-[14px] pb-3`}
     >
       {loading ? (
         'Loading...'

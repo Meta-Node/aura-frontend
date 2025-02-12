@@ -27,16 +27,18 @@ const ActivitiesCard = ({
     subjectId,
     evaluationCategory: viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
   });
-  const outboundActiveRatings = useMemo(
-    () => outboundRatings?.filter((r) => Number(r.rating)),
-    [outboundRatings],
-  );
+
 
   const { auraScore, auraImpacts } = useSubjectVerifications(
     subjectId,
     viewModeToViewAs[viewMode],
   );
 
+  const outboundActiveRatings = useMemo(
+    () => outboundRatings?.filter((r) => Number(r.rating)),
+    [outboundRatings],
+  );
+  
   return (
     <>
       <div className=" mb-4 font-semibold text-xl">
@@ -62,10 +64,14 @@ const ActivitiesCard = ({
             </div>
           </div>
         </div>
+        {/* <MixedChart /> */}
         <ActivityChart
           key={viewMode}
-          auraScore={auraScore ?? 0}
-          auraImpacts={auraImpacts}
+          ratings={outboundRatings?.filter((r) => r.rating !== '0').sort((a, b) => a.timestamp - b.timestamp).slice(0, 20) ?? []}
+          evaluationCategory={viewModeToViewAs[viewMode]}
+          subjectId={subjectId}
+          // auraImpacts={auraImpacts}
+          // auraScore={auraScore ?? 0}
         />
       </div>
     </>

@@ -17,10 +17,10 @@ const keypairSlice = createSlice({
       state.secretKey = btoa(String.fromCharCode(...new Uint8Array(secretKey))); // Convert Uint8Array to Base64
     },
   },
-  extraReducers: {
-    [RESET_STORE]: () => {
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STORE, () => {
       return initialState;
-    },
+    });
   },
 });
 

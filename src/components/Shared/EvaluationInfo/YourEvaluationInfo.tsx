@@ -4,6 +4,8 @@ import { selectAuthData } from 'store/profile/selectors';
 
 import { useSubjectEvaluationFromContext } from '../../../hooks/useSubjectEvaluation';
 import { EvaluationCategory } from '../../../types/dashboard';
+import { Button } from '@/components/ui/button';
+import { PencilIcon } from 'lucide-react';
 
 export const YourEvaluationInfo = ({
   toSubjectId,
@@ -34,18 +36,14 @@ export const YourEvaluationInfo = ({
         toSubjectId={toSubjectId}
         evaluationCategory={evaluationCategory}
       />
-      <div
+      <Button
         onClick={() => setShowEvaluationFlow(true)}
         data-testid={`your-evaluation-${authData?.brightId}-${toSubjectId}-edit`}
-        className="rounded-md p-2 bg-button-primary cursor-pointer"
+        variant="secondary"
+        size="icon"
       >
-        <img
-          src="/assets/images/Shared/edit-icon.svg"
-          alt=""
-          width="20px"
-          height="20px"
-        />
-      </div>
+        <PencilIcon width={20} height={20} />
+      </Button>
     </div>
   );
 };

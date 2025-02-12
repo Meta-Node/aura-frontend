@@ -262,7 +262,7 @@ export const SubjectListControls = ({
           </button>
         )}
       </div>
-      <div className="text-lg text-white flex mb-3 items-center">
+      <div className="text-lg flex mb-3 items-center">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -281,7 +281,7 @@ export const SubjectListControls = ({
             isPlayerMode={currentViewMode === PreferredView.PLAYER}
           />
         </Modal>
-        <span className="ml-auto">
+        <span className="ml-auto text-white">
           (
           {filteredSubjects?.length ??
             brightIdBackup?.connections.length ??

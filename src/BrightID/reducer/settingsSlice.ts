@@ -117,10 +117,11 @@ export const settingsSlice = createSlice({
       state.isSearchModalOpen = !state.isSearchModalOpen;
     },
   },
-  extraReducers: {
-    [RESET_STORE]: () => {
-      return initialState;
-    },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      (action) => action.type === RESET_STORE,
+      () => initialState
+    );
   },
 });
 

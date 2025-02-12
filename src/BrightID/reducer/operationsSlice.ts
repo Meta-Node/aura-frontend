@@ -42,8 +42,8 @@ const operationsSlice = createSlice({
     updateOperation: operationsAdapter.updateOne,
     removeManyOperations: operationsAdapter.removeMany,
   },
-  extraReducers: {
-    [RESET_STORE]: operationsAdapter.removeAll,
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STORE, operationsAdapter.removeAll);
   },
 });
 

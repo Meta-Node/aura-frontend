@@ -1,5 +1,10 @@
-export const valueColorMap = {
-  '-4': '#924848',
+export type AuraColorRating = {
+  [key: string]: string;
+}
+
+
+export const valueColorMap: AuraColorRating = {
+  '-4': '#924848', 
   '-3': '#DA6A6A',
   '-2': '#EE9D9D',
   '-1': '#F5BFBF',
@@ -9,7 +14,7 @@ export const valueColorMap = {
   '4': '#5B9969',
 };
 
-export const userRatingColorMap = {
+export const userRatingColorMap: AuraColorRating = {
   '-4': '#D9C7F9',
   '-3': '#C2A8F3',
   '-2': '#AC89ED',
@@ -31,7 +36,7 @@ export const ratingToText: Record<string, string> = {
   '4': 'Very High',
 };
 
-export const subjectRatingColorMap = {
+export const subjectRatingColorMap: AuraColorRating = {
   '-4': '#FAD7A0',
   '-3': '#F8C471',
   '-2': '#F5B041',
