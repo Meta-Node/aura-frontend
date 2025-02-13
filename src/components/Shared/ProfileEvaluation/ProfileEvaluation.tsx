@@ -27,6 +27,7 @@ import {
   useSubjectVerifications,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
+import { ArrowDownLeft, ArrowUpRight, } from 'lucide-react';
 import moment from 'moment';
 import { useMemo } from 'react';
 import {
@@ -393,8 +394,16 @@ const EvidenceInformation = ({
           INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
             ? getViewModeTextColorClass(currentViewMode)
             : getViewModeSubjectTextColorClass(currentViewMode)
-        } text-xs font-medium`}
+        } text-xs  font-medium`}
       >
+        <span className='inline-flex items-center gap-1'>
+        {
+          evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY || evidenceType === EvidenceType.CONNECTED ? (
+            <ArrowDownLeft className="w-4 h-4" />
+          ) : (
+            <ArrowUpRight className="w-4 h-4" />
+          )
+        }
         {evidenceType === EvidenceType.EVALUATED
           ? evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
             ? 'evaluated by'
@@ -402,6 +411,7 @@ const EvidenceInformation = ({
           : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
           ? 'connected by'
           : 'connected to'}
+        </span>
       </Tooltip>
       <div className="text-xs font-medium truncate flex-1 text-right">
         {name}
