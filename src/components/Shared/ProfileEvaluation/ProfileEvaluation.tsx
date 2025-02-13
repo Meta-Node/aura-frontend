@@ -310,7 +310,7 @@ const UserInformation = ({
                   )
             }`}
           >
-            {auraLevel}
+            lvl {auraLevel}
           </Tooltip>
           <Tooltip
             content="subject score"
