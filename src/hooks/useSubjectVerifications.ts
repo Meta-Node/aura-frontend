@@ -204,7 +204,7 @@ export const useImpactEChartOption = (
                 },
           data: auraTopImpacts.map((item) => ({
             value: item.impact,
-            label: `${item.evaluatorName} ${(
+            label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : ''}${item.confidence}) ${(
               (item.impact / auraSumImpacts) *
               100
             ).toFixed(2)}%`,
