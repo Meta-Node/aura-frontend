@@ -1,14 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
-  Bar,
-  ComposedChart,
-  Line,
-  ResponsiveContainer,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  ChartData,
+  ChartOptions,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
   Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+} from 'chart.js';
+import { useEffect, useMemo, useState } from 'react';
+import { Chart } from 'react-chartjs-2';
+import { useSelector } from 'react-redux';
 
 import { AuraImpact } from '@/api/auranode.service';
 import { ratingToText, valueColorMap } from '@/constants/chart';
@@ -19,6 +24,25 @@ import { AuraRating } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
 import { compactFormat } from '@/utils/number';
 
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+interface ActivityChartData {
+  rating: number;
+  impact: number;
+  color: string;
+  evaluatorName: string;
+  timestamp: number;
+}
 
 const processAuraImpacts = (impacts: AuraImpact[], auraScore: number) => {
   let cumulativeScore = 0;
@@ -57,14 +81,16 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 
-const processAuraRatings = (ratings: AuraRating[], impacts: AuraImpact[]) => {
+const processAuraRatings = (ratings: AuraRating[], impacts: (AuraImpact & { evaluated: string })[]) => {
+
   return ratings.map((rating) => {
-    const impact = impacts.find((i) => i.evaluator === rating.fromBrightId)
+    const impact = impacts.find((i) => i.evaluated === rating.toBrightId)
     return {
       ...rating,
       color: valueColorMap[rating.rating],
       impact: impact?.impact,
-      evaluatorName: impact?.evaluatorName
+      evaluatorName: impact?.evaluatorName ?? impact?.evaluated.slice(0, 7),
+      evaluated: impact?.evaluated
 
     };
   });
@@ -72,7 +98,7 @@ const processAuraRatings = (ratings: AuraRating[], impacts: AuraImpact[]) => {
 
 
 const useOutboundImpacts = (ratings: AuraRating[], evaluationCategory: EvaluationCategory, subjectId: string) => {
-  const [outboundImpacts, setOutboundImpacts] = useState<AuraImpact[]>([]);
+  const [outboundImpacts, setOutboundImpacts] = useState<(AuraImpact & { evaluated: string })[]>([]);
   const brightIdBackup = useSelector(selectBrightIdBackup);
 
   const authData = useSelector(selectAuthData);
@@ -92,16 +118,17 @@ const useOutboundImpacts = (ratings: AuraRating[], evaluationCategory: Evaluatio
       )
 
       const profileInfo =
-        subjectImpact?.evaluator === authData?.brightId
+        rating.toBrightId === authData?.brightId
           ? brightIdBackup?.userData
             : brightIdBackup?.connections.find(
-                (conn) => conn.id === subjectImpact?.evaluator,
+                (conn) => conn.id === rating.toBrightId,
               );
 
         return {
           evaluatorName: profileInfo?.name ?? `${subjectImpact?.evaluator.slice(0, 7)}`,
           ...subjectImpact,
-        } as AuraImpact;
+          evaluated: rating.toBrightId
+        } as AuraImpact & { evaluated: string };
     })).then((impacts) => {
       setOutboundImpacts(impacts)
     })
@@ -147,6 +174,9 @@ const useOutboundImpacts = (ratings: AuraRating[], evaluationCategory: Evaluatio
     } else if (minutes > 0) {
       return `${minutes}m`;
     } else {
+      if (isNaN(timestamp)) {
+        return '' 
+      }
       return 'now';
     }
   };
@@ -160,77 +190,151 @@ export function ActivityChart({
   evaluationCategory: EvaluationCategory;
   subjectId: string;
 }) {
+  const outboundImpacts = useOutboundImpacts(ratings ?? [], evaluationCategory, subjectId);
+  const chartData = useMemo(() => 
+    processAuraRatings(ratings ?? [], outboundImpacts),
+    [ratings, outboundImpacts]
+  );
 
-  const outboundImpacts = useOutboundImpacts(ratings ?? [], evaluationCategory, subjectId)
+  const data: ChartData<'bar' | 'line', number[]> = {
+    labels: chartData.map((_, index) => index + 1),
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Rating',
+        order: 2,
+        data: chartData.map(item => {
+          const rating = Number(item.rating);
+          return rating < 0 ? rating : rating;
+        }),
+        backgroundColor: chartData.map(item => item.color),
+        borderRadius: 4,
+        barThickness: chartData.length > 20 ? 10 : chartData.length > 10 ? 15 : 20,
+        barPercentage: chartData.length > 20 ? 0.1 : chartData.length > 10 ? 0.15 : 0.2,
+        categoryPercentage: chartData.length > 20 ? 0.2 : chartData.length > 10 ? 0.25 : 0.3,
+        yAxisID: 'rating',
+      },
+      {
+        type: 'line',
+        label: 'Impact',
+        order: 1,
+        data: chartData.map(item => {
+          const impact = Number(item.impact ?? 0);
+          const rating = Number(item.rating);
+          return rating < 0 ? -Math.abs(impact) : Math.abs(impact);
+        }),
+        borderColor: chartData.map(item => item.color),
+        borderWidth: 2,
+        tension: 0,
+        pointRadius: chartData.length < 12 ? 4 : 0,
+        pointBackgroundColor: chartData.map(item => item.color),
+        yAxisID: 'impact',
+      }
+    ]
+  };
 
-  const chartData = useMemo(() => processAuraRatings(ratings ?? [], outboundImpacts), [ratings, outboundImpacts]);
+  const options: ChartOptions<'bar' | 'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const dataPoint = chartData[context.dataIndex];
+            if (context.dataset.label === 'Rating') {
+              return [
+                `Rating: ${context.parsed.y}`,
+                `Confidence: ${ratingToText[dataPoint.rating]}`
+              ];
+            }
+            return [`Impact: ${compactFormat(context.parsed.y)}`];
+          },
+          title: (tooltipItems) => {
+            if (tooltipItems.length > 0) {
+              const index = tooltipItems[0].dataIndex;
+              return chartData[index].evaluatorName;
+            }
+            return '';
+          },
+          // labelColor: () => ({
+          //   borderColor: 'transparent',
+          //   backgroundColor: 'transparent',
+          // }),
+          // labelTextColor: () => 'black',
+        },
+        usePointStyle: true,
+        boxPadding: 0,
+        padding: {
+          top: 4,
+          bottom: 4,
+          left: 8,
+          right: 8,
+        },
+        backgroundColor: 'black',
+        titleColor: 'white',
+        bodyColor: 'hsl(var(--foreground))',
+        borderColor: 'transparent',
+        borderWidth: 1,
+        cornerRadius: 4,
+        titleFont: {
+          weight: 'bold',
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          callback: (value) => formatXAxis(chartData[Number(value) - 1]?.timestamp),
+          font: {
+            size: 10,
+          },
+        },
+      },
+      rating: {
+        type: 'linear',
+        position: 'left',
+        min: -5,
+        max: 5,
+        ticks: {
+          display: false,
+        },
+        grid: {
+          display: false,
+        },
+        border: {
+          display: false,
+        },
+      },
+      impact: {
+        type: 'linear',
+        position: 'right',
+        grid: {
+          display: false,
+        },
+        ticks: {
+          display: false,
+        },
+        border: {
+          display: false,
+        },
+        beginAtZero: false,
+      },
+    },
+  };
 
   return (
-    <ResponsiveContainer className="-ml-10 mt-10" width="100%" height={200}>
-      <ComposedChart data={chartData}>
-        <defs>
-          <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-            {chartData.map((entry, index) => (
-              <stop
-                key={index}
-                offset={`${(index / chartData.length) * 100}%`}
-                stopColor={entry.color}
-              />
-            ))}
-          </linearGradient>
-        </defs>
-
-        <XAxis
-          axisLine={false}
-          dataKey="timestamp"
-          tick={{ fontSize: 10 }}
-          tickFormatter={formatXAxis}
-        />
-
-        <YAxis
-          axisLine={false}
-          yAxisId="rating"
-          orientation="left"
-          tick={{ fontSize: 9 }}
-          domain={[0, 5]}
-          tickFormatter={(value) => value.toString()}
-          tickCount={6}
-          tickLine={false}
-          tickMargin={10}
-        />
-
-        <YAxis
-          axisLine={false}
-          yAxisId="impact"
-          orientation="right"
-          tick={{ fontSize: 9 }}
-          domain={['auto', 'auto']}
-          scale="linear"
-          tickFormatter={(value) => compactFormat(value)}
-          tickCount={5}
-          tickLine={false}
-          tickMargin={10}
-        />
-
-        <Tooltip content={<CustomTooltip />} />
-
-        <Bar 
-          yAxisId="rating"
-          dataKey="rating" 
-          fill={valueColorMap[4]} 
-          radius={[4, 4, 2, 2]} 
-          barSize={20}
-        />
-
-        <Line
-          yAxisId="impact"
-          type="monotone"
-          dataKey="impact"
-          stroke="url(#lineGradient)"
-          strokeWidth={2}
-          dot={chartData.length < 12 ? { fill: 'currentColor', r: 4 } : { r: 0 }}
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
+    <div className="h-[200px] w-full mt-10">
+      <Chart type="bar" data={data} options={options} />
+    </div>
   );
 }
