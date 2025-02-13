@@ -14,6 +14,17 @@ export const valueColorMap: AuraColorRating = {
   '4': '#5B9969',
 };
 
+export const valueLineColorMap: AuraColorRating = {
+  '-4': '#723838', 
+  '-3': '#B85757',
+  '-2': '#CC8585',
+  '-1': '#D3A3A3',
+  '1': '#B4CCBA',
+  '2': '#95C6A1',
+  '3': '#5EA36D',
+  '4': '#487D54',
+};
+
 export const userRatingColorMap: AuraColorRating = {
   '-4': '#D9C7F9',
   '-3': '#C2A8F3',

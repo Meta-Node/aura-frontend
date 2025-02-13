@@ -11,12 +11,13 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import { useEffect, useMemo, useState } from 'react';
 import { Chart } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 
 import { AuraImpact } from '@/api/auranode.service';
-import { ratingToText, valueColorMap } from '@/constants/chart';
+import { ratingToText, valueColorMap, valueLineColorMap } from '@/constants/chart';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { useLazyGetBrightIDProfileQuery } from '@/store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from '@/store/profile/selectors';
@@ -33,7 +34,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  zoomPlugin
 );
 
 interface ActivityChartData {
@@ -217,13 +219,23 @@ export function ActivityChart({
       {
         type: 'line',
         label: 'Impact',
-        order: 1,
+        order: 0,
         data: chartData.map(item => {
           const impact = Number(item.impact ?? 0);
           const rating = Number(item.rating);
           return rating < 0 ? -Math.abs(impact) : Math.abs(impact);
         }),
         borderColor: chartData.map(item => item.color),
+        backgroundColor: chartData.map(item => item.color),
+        segment: {
+          borderColor: (ctx) => {
+            if (ctx.p0.parsed && ctx.p1.parsed) {
+              const index = ctx.p1DataIndex;
+              return valueLineColorMap[chartData[index]?.rating];
+            }
+            return valueLineColorMap[chartData[0]?.rating];
+          }
+        },
         borderWidth: 2,
         tension: 0,
         pointRadius: chartData.length < 12 ? 4 : 0,
@@ -236,6 +248,7 @@ export function ActivityChart({
   const options: ChartOptions<'bar' | 'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    
     interaction: {
       mode: 'index',
       intersect: false,
@@ -287,9 +300,30 @@ export function ActivityChart({
           weight: 'bold',
         },
       },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x',
+        },
+        zoom: {
+          drag: {
+            enabled: true,
+          },
+          wheel: {
+            enabled: true,
+            modifierKey: 'ctrl',
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: 'x',
+          scaleMode: 'x',
+        },
+      },
     },
     scales: {
       x: {
+       
         grid: {
           display: false,
         },
@@ -333,7 +367,7 @@ export function ActivityChart({
   };
 
   return (
-    <div className="h-[200px] w-full mt-10">
+    <div className="h-[200px] w-full my-10">
       <Chart type="bar" data={data} options={options} />
     </div>
   );

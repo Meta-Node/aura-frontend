@@ -29,6 +29,7 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { compactFormat } from '../../../utils/number';
+import ActivitiesCard from '../ActivitiesCard';
 
 const ProfileOverview = ({
   subjectId,
@@ -117,11 +118,11 @@ const ProfileOverview = ({
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>
         )}
-        {/* <ActivitiesCard
+        <ActivitiesCard
           subjectId={subjectId}
           onLastEvaluationClick={setCredibilityDetailsProps}
           viewMode={viewMode}
-        /> */}
+        />
         <div className="flex flex-col gap-1.5">
           {viewMode !== PreferredView.PLAYER && (
             <div className="font-semibold text-xl">

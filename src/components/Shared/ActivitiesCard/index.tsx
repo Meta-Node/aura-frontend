@@ -1,8 +1,6 @@
 import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
 import { useMemo } from 'react';
 
-import { useSubjectVerifications } from '@/hooks/useSubjectVerifications';
-
 import {
   viewModeSubjectString,
   viewModeToSubjectViewMode,
@@ -28,11 +26,6 @@ const ActivitiesCard = ({
     evaluationCategory: viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
   });
 
-
-  const { auraScore, auraImpacts } = useSubjectVerifications(
-    subjectId,
-    viewModeToViewAs[viewMode],
-  );
 
   const outboundActiveRatings = useMemo(
     () => outboundRatings?.filter((r) => Number(r.rating)),
@@ -64,14 +57,11 @@ const ActivitiesCard = ({
             </div>
           </div>
         </div>
-        {/* <MixedChart /> */}
         <ActivityChart
           key={viewMode}
           ratings={outboundRatings?.filter((r) => r.rating !== '0').sort((a, b) => a.timestamp - b.timestamp).slice(0, 20) ?? []}
           evaluationCategory={viewModeToViewAs[viewMode]}
           subjectId={subjectId}
-          // auraImpacts={auraImpacts}
-          // auraScore={auraScore ?? 0}
         />
       </div>
     </>
