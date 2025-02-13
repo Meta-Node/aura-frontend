@@ -93,6 +93,16 @@ const dropdownOptions = [
     },
   ],
 ];
+
+
+const gitBookLinks: { [key: number]: string } = {
+  0: 'https://brightid.gitbook.io/aura/advanced-features/filters#smart-sort-default',
+  1: 'https://brightid.gitbook.io/aura/advanced-features/filters#expected-connections',
+  2: 'https://brightid.gitbook.io/aura/advanced-features/filters#their-recovery',
+  3: 'https://brightid.gitbook.io/aura/advanced-features/filters#recovery',
+  4: 'https://brightid.gitbook.io/aura/advanced-features/filters#already-known',
+}
+
 export default function SubjectConnectionsHelpBody({
   selectedItemIndex = 0,
 }: {
@@ -116,7 +126,7 @@ export default function SubjectConnectionsHelpBody({
       <Link
         className="text-sm flex items-center gap-4"
         target="_blank"
-        to="https://brightid.gitbook.io/aura/advanced-features/filters"
+        to={gitBookLinks[selectedItem.value]}
       >
         <SiGitbook /> Gitbook
       </Link>
