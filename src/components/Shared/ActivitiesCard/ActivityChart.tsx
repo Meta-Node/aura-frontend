@@ -1,4 +1,5 @@
 import {
+  BarController,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
@@ -13,7 +14,7 @@ import {
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { useEffect, useMemo, useState } from 'react';
-import { Chart } from 'react-chartjs-2';
+import {  Chart } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 
 import { AuraImpact } from '@/api/auranode.service';
@@ -25,8 +26,8 @@ import { AuraRating } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
 import { compactFormat } from '@/utils/number';
 
-// Register ChartJS components
 ChartJS.register(
+  BarController,
   CategoryScale,
   LinearScale,
   PointElement,
