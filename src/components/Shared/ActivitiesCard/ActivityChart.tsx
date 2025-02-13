@@ -7,6 +7,7 @@ import {
   ChartOptions,
   Legend,
   LinearScale,
+  LineController,
   LineElement,
   PointElement,
   Title,
@@ -27,6 +28,7 @@ import { EvaluationCategory } from '@/types/dashboard';
 import { compactFormat } from '@/utils/number';
 
 ChartJS.register(
+  LineController,
   BarController,
   CategoryScale,
   LinearScale,
