@@ -578,14 +578,10 @@ export const SubjectProfileHeader = () => {
   if (!subjectId) return null;
 
   return (
-    <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
-      <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
-        <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
+    <>
           {subjectViewModeTitle} Profile
           <HeaderPreferedView.ProfileHeaderViews subjectId={subjectId} />
-        </SubjectInboundConnectionsContextProvider>
-      </SubjectInboundEvaluationsContextProvider>
-    </SubjectOutboundEvaluationsContextProvider>
+    </>
   );
 };
 export default SubjectProfile;

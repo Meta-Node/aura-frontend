@@ -9,6 +9,8 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 
+import { useOutboundEvaluations } from '@/hooks/useSubjectEvaluations';
+
 import {
   getViewModeBackgroundColorClass,
   preferredViewIcon,
@@ -38,40 +40,40 @@ export const HeaderPreferedView = {
     const { updateViewAs, currentViewMode, currentEvaluationCategory } =
       useViewMode();
 
-    const playerEvaluation = useSubjectVerifications(
+    const playerActivity = useOutboundEvaluations({
       subjectId,
-      EvaluationCategory.PLAYER,
-    );
+      evaluationCategory: EvaluationCategory.PLAYER,
+    });
 
-    const trainerEvaluation = useSubjectVerifications(
+    const trainerActivity = useOutboundEvaluations({
       subjectId,
-      EvaluationCategory.TRAINER,
-    );
+      evaluationCategory: EvaluationCategory.TRAINER,
+    });
 
-    const managerEvaluation = useSubjectVerifications(
+    const managerActivity = useOutboundEvaluations({
       subjectId,
-      EvaluationCategory.MANAGER,
-    );
+      evaluationCategory: EvaluationCategory.MANAGER,
+    });
 
     const authorizedTabs = useMemo(() => {
       const tabs = [EvaluationCategory.SUBJECT];
 
-      if (playerEvaluation.auraLevel && playerEvaluation.auraLevel > 0)
+      if ((playerActivity.ratings?.length ?? 0) > 0)
         tabs.push(EvaluationCategory.PLAYER);
 
-      if (trainerEvaluation.auraLevel && trainerEvaluation.auraLevel > 0)
+      if ((trainerActivity.ratings?.length ?? 0) > 0)
         tabs.push(EvaluationCategory.TRAINER);
 
-      if (managerEvaluation.auraLevel && managerEvaluation.auraLevel > 0)
+      if ((managerActivity.ratings?.length ?? 0) > 0)
         tabs.push(EvaluationCategory.MANAGER);
 
       return tabs;
-    }, [playerEvaluation, trainerEvaluation, managerEvaluation]);
+    }, [playerActivity, trainerActivity, managerActivity]);
 
     const isLoading =
-      managerEvaluation.loading ||
-      trainerEvaluation.loading ||
-      playerEvaluation.loading;
+      managerActivity.loading ||
+      trainerActivity.loading ||
+      playerActivity.loading;
 
     return (
       <>
