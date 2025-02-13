@@ -8,7 +8,6 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { PreferredView } from '../../../types/dashboard';
-import { ActivityChart } from './ActivityChart';
 
 const ActivitiesCard = ({
   subjectId,
@@ -57,12 +56,12 @@ const ActivitiesCard = ({
             </div>
           </div>
         </div>
-        <ActivityChart
+        {/* <ActivityChart
           key={viewMode}
           ratings={outboundRatings?.filter((r) => r.rating !== '0').sort((a, b) => a.timestamp - b.timestamp).slice(0, 20) ?? []}
           evaluationCategory={viewModeToViewAs[viewMode]}
           subjectId={subjectId}
-        />
+        /> */}
       </div>
     </>
   );
