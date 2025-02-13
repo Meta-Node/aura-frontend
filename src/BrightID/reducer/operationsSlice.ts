@@ -18,8 +18,8 @@ export type Operation = SubmittedOp & {
 
 export type EvaluateSubmittedOperation = Operation & EvaluateOp;
 
-const operationsAdapter = createEntityAdapter<Operation>({
-  selectId: (op) => op.hash,
+const operationsAdapter = createEntityAdapter({
+  selectId: (op: Operation) => op.hash,
 });
 
 const operationsSlice = createSlice({
