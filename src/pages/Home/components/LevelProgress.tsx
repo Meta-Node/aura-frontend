@@ -176,7 +176,7 @@ const LevelProgress: FC<{
             {compactFormat(remainingScore)}
           </span>
           <span className="text-lg font-medium">to</span>
-          <span className={`text-lg font-semibold ${getLevelTextColor()}`}>
+          <span className={`text-lg whitespace-nowrap font-semibold ${getLevelTextColor()}`}>
             Level {(auraLevel ?? 0) + 1}
           </span>
         </>
@@ -220,7 +220,7 @@ const LevelProgress: FC<{
           )}
         </p>
         <span className="text-lg font-medium">to</span>
-        <span className={`text-lg w-24 font-semibold ${getLevelTextColor()}`}>
+        <span className={`text-lg whitespace-nowrap w-24 font-semibold ${getLevelTextColor()}`}>
           Level {(auraLevel ?? 0) + 1}
         </span>
       </>
