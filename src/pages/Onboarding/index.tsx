@@ -122,8 +122,8 @@ const Onboarding = () => {
 
       <footer className="flex justify-between text-gray90 text-sm">
         <span className="flex gap-1">
-          <p className="font-light">Version</p>
-          <p className="">2.1</p>
+          {/* <p className="font-light">Version</p>
+          <p className="">2.1</p> */}
         </span>
         <span className="flex gap-1">
           <p className="text-gray50">Powered by:</p>

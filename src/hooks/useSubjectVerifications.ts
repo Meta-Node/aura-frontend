@@ -26,6 +26,9 @@ export const useSubjectVerifications = (
 ) => {
   const profileFetch = useGetBrightIDProfileQuery(
     subjectId ? { id: subjectId } : skipToken,
+    {
+      refetchOnMountOrArgChange: true,
+    },
   );
 
   const verifications = profileFetch.data?.verifications;
@@ -34,6 +37,7 @@ export const useSubjectVerifications = (
     useParseBrightIdVerificationData(verifications, evaluationCategory);
 
   return {
+    refresh: profileFetch.refetch,
     auraLevel,
     userHasRecovery,
     auraScore,
@@ -200,7 +204,7 @@ export const useImpactEChartOption = (
                 },
           data: auraTopImpacts.map((item) => ({
             value: item.impact,
-            label: `${item.evaluatorName} ${(
+            label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : ''}${item.confidence}) ${(
               (item.impact / auraSumImpacts) *
               100
             ).toFixed(2)}%`,

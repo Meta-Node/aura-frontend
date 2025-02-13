@@ -12,9 +12,16 @@ import {
 } from 'BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
 import { RecoveryErrorType } from 'BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
 import { createRecoveryChannel } from 'BrightID/components/Onboarding/RecoveryFlow/thunks/channelThunks';
-import { setRecoveryKeys, setupRecovery } from 'BrightID/components/Onboarding/RecoveryFlow/thunks/recoveryThunks';
+import {
+  setRecoveryKeys,
+  setupRecovery,
+} from 'BrightID/components/Onboarding/RecoveryFlow/thunks/recoveryThunks';
 import { setUserId, userSelector } from 'BrightID/reducer/userSlice';
-import { recover_steps, RecoveryCodeScreenAction, urlTypesOfActions } from 'BrightID/utils/constants';
+import {
+  recover_steps,
+  RecoveryCodeScreenAction,
+  urlTypesOfActions,
+} from 'BrightID/utils/constants';
 import { buildRecoveryChannelQrUrl } from 'BrightID/utils/recovery';
 import { LOCATION_ORIGIN } from 'constants/index';
 import { AURA_NODE_URL, AURA_NODE_URL_PROXY } from 'constants/urls';
@@ -325,8 +332,8 @@ const RecoveryCodeScreen = () => {
           <FadeIn delay={0.35}>
             <footer className="flex justify-between text-gray90 text-sm">
               <span className="flex gap-1">
-                <p className="font-light">Version</p>
-                <p className="">2.1</p>
+                {/* <p className="font-light">Version</p>
+                <p className="">2.1</p> */}
               </span>
               <span className="flex gap-1">
                 <p className="text-gray50">Powered by:</p>

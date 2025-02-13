@@ -1,6 +1,9 @@
 import BrightIdProfilePicture from 'components/BrightIdProfilePicture';
 import { useSubjectName } from 'hooks/useSubjectName';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
+import { useSelector } from 'react-redux';
+
+import { selectAuthData } from '@/store/profile/selectors';
 
 import useViewMode from '../../hooks/useViewMode';
 
@@ -22,7 +25,11 @@ const EvaluateOverlayCard = ({
     subjectId,
     currentEvaluationCategory,
   );
+  const authData = useSelector(selectAuthData);
   const name = useSubjectName(subjectId);
+
+  if (authData?.brightId === subjectId) return null;
+
   return (
     <div className={`card bg-white dark:dark-primary ${className}`}>
       <div className="card--header flex justify-between w-full items-center">

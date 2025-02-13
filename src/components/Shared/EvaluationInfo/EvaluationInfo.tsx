@@ -67,7 +67,7 @@ export default function EvaluationInfo({
     return {
       bgAndTextColor: 'bg-gray20 text-white',
       iconBgColor: 'bg-gray50',
-      text: 'Not Rated',
+      text: 'Checking for evaluation…',
     };
   }, [rating, loading]);
 

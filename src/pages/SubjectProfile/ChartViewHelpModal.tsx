@@ -14,7 +14,7 @@ export default function ChartViewHelpModal() {
       <Link
         className="text-sm flex items-center gap-4"
         target="_blank"
-        to="https://brightid.gitbook.io/aura/advanced-features/filters"
+        to="https://brightid.gitbook.io/aura/evidence/impact-bar-chart"
       >
         <SiGitbook /> Gitbook
       </Link>

@@ -149,10 +149,11 @@ const recoveryData = createSlice({
       state.channel.pollTimerId = action.payload;
     },
   },
-  extraReducers: {
-    [RESET_STORE]: () => {
-      return initialState;
-    },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      (action) => action.type === RESET_STORE,
+      () => initialState
+    );
   },
 });
 

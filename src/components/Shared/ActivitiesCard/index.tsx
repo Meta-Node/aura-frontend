@@ -1,5 +1,4 @@
 import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
-import moment from 'moment/moment';
 import { useMemo } from 'react';
 
 import {
@@ -9,7 +8,6 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { PreferredView } from '../../../types/dashboard';
-import ProfileEvaluationMini from './ProfileEvaluationMini';
 
 const ActivitiesCard = ({
   subjectId,
@@ -26,17 +24,13 @@ const ActivitiesCard = ({
     subjectId,
     evaluationCategory: viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
   });
+
+
   const outboundActiveRatings = useMemo(
     () => outboundRatings?.filter((r) => Number(r.rating)),
     [outboundRatings],
   );
-  const lastRating = useMemo(
-    () =>
-      outboundActiveRatings?.length
-        ? outboundActiveRatings[outboundActiveRatings.length - 1]
-        : undefined,
-    [outboundActiveRatings],
-  );
+  
   return (
     <>
       <div className=" mb-4 font-semibold text-xl">
@@ -61,31 +55,13 @@ const ActivitiesCard = ({
               </span>
             </div>
           </div>
-          <div className="flex justify-between">
-            <div className="font-medium">Last evaluation:</div>
-            <div>
-              <span className="font-medium">
-                {lastRating ? moment(lastRating.updatedAt).fromNow() : '-'}
-              </span>
-            </div>
-          </div>
         </div>
-        {lastRating && (
-          <ProfileEvaluationMini
-            fromSubjectId={subjectId}
-            toSubjectId={lastRating.toBrightId}
-            evaluationCategory={
-              viewModeToViewAs[viewModeToSubjectViewMode[viewMode]]
-            }
-            onClick={() =>
-              onLastEvaluationClick({
-                subjectId: lastRating.toBrightId,
-                evaluationCategory:
-                  viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
-              })
-            }
-          ></ProfileEvaluationMini>
-        )}
+        {/* <ActivityChart
+          key={viewMode}
+          ratings={outboundRatings?.filter((r) => r.rating !== '0').sort((a, b) => a.timestamp - b.timestamp).slice(0, 20) ?? []}
+          evaluationCategory={viewModeToViewAs[viewMode]}
+          subjectId={subjectId}
+        /> */}
       </div>
     </>
   );

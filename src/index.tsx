@@ -14,6 +14,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import App from './App';
+import UpdatePrompt from './components/Shared/UpdatePrompt';
+import { Toaster } from './components/ui/toaster';
 import { RefreshEvaluationsContextProvider } from './contexts/RefreshEvaluationsContext';
 import { persistor, store } from './store';
 
@@ -43,6 +45,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               <SubjectsListContextProvider>
                 <NodeApiGateContextProvider>
                   <BrowserHistoryContextProvider>
+                    <Toaster />
+                    <UpdatePrompt />
                     <App />
                   </BrowserHistoryContextProvider>
                 </NodeApiGateContextProvider>

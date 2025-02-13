@@ -1,23 +1,28 @@
 import EvaluateModalBody from 'components/EvaluationFlow/EvaluateModalBody';
-import NewPlayerGuideAfterEvaluation from 'components/EvaluationFlow/NewPlayerGuideAfterEvaluation';
 import { PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING } from 'constants/index';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { useSubjectName } from 'hooks/useSubjectName';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import useViewMode from '../../hooks/useViewMode';
-import { PreferredView } from '../../types/dashboard';
+import { EvaluationCategory, PreferredView } from '../../types/dashboard';
 import { Dialog, DialogContent, DialogHeader } from '../ui/dialog';
 
 const EvaluationFlow = ({
   showEvaluationFlow,
   subjectId,
   setShowEvaluationFlow,
+  currentViewMode: preferredView,
+  refresh,
+  evaluationCategory,
 }: {
   subjectId: string;
   showEvaluationFlow: boolean;
   setShowEvaluationFlow: (value: boolean) => void;
+  currentViewMode?: PreferredView;
+  refresh?: () => void;
+  evaluationCategory?: EvaluationCategory;
 }) => {
   const name = useSubjectName(subjectId);
 
@@ -28,7 +33,9 @@ const EvaluationFlow = ({
   });
 
   const [myNewRatingCount, setMyNewRatingCount] = useState<number | null>(null);
-  const { currentViewMode } = useViewMode();
+  const { currentViewMode: pageCurrentViewMode } = useViewMode();
+
+  const currentViewMode = preferredView ?? pageCurrentViewMode;
 
   const onSubmitted = useCallback(
     async (newRating: number | null | undefined) => {
@@ -49,9 +56,11 @@ const EvaluationFlow = ({
         setShowEvaluationFlow(false);
       } else {
         setMyNewRatingCount(newRatingCount);
+        refresh?.();
       }
     },
     [
+      refresh,
       currentViewMode,
       myRatingObject,
       myRatings,
@@ -60,6 +69,13 @@ const EvaluationFlow = ({
       setShowEvaluationFlow,
     ],
   );
+
+  useEffect(() => {
+    const myRating = myRatings?.find((r) => r.toBrightId === subjectId);
+    if (myRating) {
+      setMyNewRatingCount(Number(myRating.rating));
+    }
+  }, [myRatings, subjectId]);
 
   return (
     <Dialog
@@ -73,14 +89,12 @@ const EvaluationFlow = ({
         <DialogHeader>
           {myNewRatingCount === null ? `Evaluating ${name}` : undefined}
         </DialogHeader>
-        {myNewRatingCount !== null ? (
-          <NewPlayerGuideAfterEvaluation
-            closeModalHandler={() => {}}
-            ratingsDoneCount={myNewRatingCount}
-          />
-        ) : (
-          <EvaluateModalBody subjectId={subjectId} onSubmitted={onSubmitted} />
-        )}
+        <EvaluateModalBody
+          subjectId={subjectId}
+          viewMode={currentViewMode}
+          evaluationCategory={evaluationCategory}
+          onSubmitted={onSubmitted}
+        />
       </DialogContent>
     </Dialog>
   );

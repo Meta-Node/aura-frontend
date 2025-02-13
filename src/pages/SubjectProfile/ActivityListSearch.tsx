@@ -197,7 +197,8 @@ export const ActivityListSearch = ({
         </Modal>
         <span className="ml-1">
           (
-          {filteredSubjects?.filter((e) => e.rating).length ??
+          {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
+            .length ??
             itemsOriginal?.length ??
             '...'}{' '}
           result
@@ -209,7 +210,7 @@ export const ActivityListSearch = ({
         </span>
       </div>
 
-      <div className="bg-card text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+      <div className="bg-card border text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
             className="w-4 h-4"

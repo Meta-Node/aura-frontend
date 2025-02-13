@@ -198,6 +198,8 @@ export const getViewModeTextColorClass = (viewMode: PreferredView) => {
   }
 };
 
+export type StringViewModes = 'manager' | 'trainer' | 'player' | 'subject';
+
 export const viewModeToString: {
   [key in PreferredView]: string;
 } = {

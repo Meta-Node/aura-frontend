@@ -17,10 +17,10 @@ const keypairSlice = createSlice({
       state.secretKey = btoa(String.fromCharCode(...new Uint8Array(secretKey))); // Convert Uint8Array to Base64
     },
   },
-  extraReducers: {
-    [RESET_STORE]: () => {
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STORE, () => {
       return initialState;
-    },
+    });
   },
 });
 
@@ -30,13 +30,21 @@ export const { setKeypair } = keypairSlice.actions;
 // Export selectors
 export const selectKeypair = (state: RootState) => ({
   publicKey: state.keypair.publicKey,
-  secretKey: state.keypair.secretKey
-    ? new Uint8Array(
-        atob(state.keypair.secretKey)
-          .split('')
-          .map((char) => char.charCodeAt(0)),
-      )
-    : null, // Decode Base64 back to Uint8Array when accessing
+  secretKey: (() => {
+    try {
+      return state.keypair.secretKey
+        ? new Uint8Array(
+            atob(state.keypair.secretKey)
+              .split('')
+              .map((char) => char.charCodeAt(0)),
+          )
+        : null;
+    } catch {
+      return new Uint8Array(
+        state.keypair.secretKey.split('').map((char) => char.charCodeAt(0)),
+      );
+    }
+  })(),
 });
 
 // Export reducer

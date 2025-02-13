@@ -1,4 +1,3 @@
-import ActivitiesCard from 'components/Shared/ActivitiesCard';
 import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import ReactECharts from 'echarts-for-react';
 import { AuraFilterId } from 'hooks/useFilters';
@@ -30,6 +29,7 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { compactFormat } from '../../../utils/number';
+import ActivitiesCard from '../ActivitiesCard';
 
 const ProfileOverview = ({
   subjectId,
@@ -114,30 +114,21 @@ const ProfileOverview = ({
             subjectId={subjectId}
           />
         )}
-      <div className="card dark:bg-dark-primary">
+      <div className="card !px-2 md:!px-4 dark:bg-dark-primary">
         {hasHeader && (
           <div className=" mb-4 font-bold text-lg text-black">{title}</div>
         )}
-        {viewMode !== PreferredView.PLAYER &&
-          viewMode !== PreferredView.TRAINER && (
-            <ActivitiesCard
-              subjectId={subjectId}
-              onLastEvaluationClick={setCredibilityDetailsProps}
-              viewMode={viewMode}
-            />
-          )}
-
+        <ActivitiesCard
+          subjectId={subjectId}
+          onLastEvaluationClick={setCredibilityDetailsProps}
+          viewMode={viewMode}
+        />
         <div className="flex flex-col gap-1.5">
           {viewMode !== PreferredView.PLAYER && (
-            <div className=" mt-4 font-semibold text-xl">
+            <div className="font-semibold text-xl">
               {viewModeToString[viewMode]} Evaluations
             </div>
           )}
-          {/*<ShowData*/}
-          {/*  title="Connections"*/}
-          {/*  value={inboundConnections?.length ?? '...'}*/}
-          {/*  details={null}*/}
-          {/*/>*/}
           <div className="header__info flex flex-col gap-1">
             <ShowData
               title="Evaluations"
@@ -173,7 +164,7 @@ const ProfileOverview = ({
               <ChartViewHelpModal />
             </DialogContent>
           </Dialog>
-          <div className="body__info flex justify-between w-full">
+          <div className="body__info flex gap-2 w-full">
             <div className="font-medium">Evaluation Impact:</div>
             <button
               onClick={() => setIsChartHelpModalOpen(true)}
