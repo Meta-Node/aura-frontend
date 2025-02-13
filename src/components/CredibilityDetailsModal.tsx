@@ -7,6 +7,7 @@ import {
   useImpactPercentage,
   useSubjectVerifications,
 } from 'hooks/useSubjectVerifications';
+import { PencilIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'store/hooks';
@@ -25,6 +26,7 @@ import {
 import { CredibilityDetailsProps } from '../types';
 import EvaluationFlow from './EvaluationFlow/EvaluationFlow';
 import { HorizontalProgressBar } from './Shared/HorizontalProgressBar';
+import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 
 const views = [
@@ -143,14 +145,25 @@ const CredibilityDetailsForRole = ({
         {loading ? (
           <span className="text-gray20">...</span>
         ) : myRatingToSubject && Number(myRatingToSubject.rating) > 0 ? (
-          <span
-            className={`font-bold`}
-            style={{
-              color: '#6C34B3',
-            }}
-          >
-            {impactPercentage ?? 0}%
-          </span>
+          <div className="inline-flex items-center gap-3">
+            <span
+              className={`font-bold`}
+              style={{
+                color: '#6C34B3',
+              }}
+            >
+              {impactPercentage ?? 0}%
+            </span>
+
+            <Button
+              onClick={() => setShowEvaluationFlow(true)}
+              variant="secondary"
+              size="icon"
+            >
+              <PencilIcon width={10} height={10} />
+            </Button>
+
+          </div>
         ) : (
           <span>
             none.{' '}

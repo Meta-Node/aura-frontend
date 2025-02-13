@@ -1,11 +1,12 @@
 import EvaluationInfo from 'components/Shared/EvaluationInfo/EvaluationInfo';
+import { PencilIcon } from 'lucide-react';
 import { useSelector } from 'store/hooks';
 import { selectAuthData } from 'store/profile/selectors';
 
+import { Button } from '@/components/ui/button';
+
 import { useSubjectEvaluationFromContext } from '../../../hooks/useSubjectEvaluation';
 import { EvaluationCategory } from '../../../types/dashboard';
-import { Button } from '@/components/ui/button';
-import { PencilIcon } from 'lucide-react';
 
 export const YourEvaluationInfo = ({
   toSubjectId,
