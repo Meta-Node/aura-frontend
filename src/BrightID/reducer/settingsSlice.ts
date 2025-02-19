@@ -117,10 +117,11 @@ export const settingsSlice = createSlice({
       state.isSearchModalOpen = !state.isSearchModalOpen;
     },
   },
-  extraReducers: {
-    [RESET_STORE]: () => {
-      return initialState;
-    },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      (action) => action.type === RESET_STORE,
+      () => initialState
+    );
   },
 });
 
@@ -141,7 +142,7 @@ export const {
   toggleTrainerRole,
 } = settingsSlice.actions;
 
-export const selectBaseUrl = (state: RootState) => state.settings.baseUrl;
+export const selectBaseUrl = () => AURA_NODE_URL_PROXY;
 export const selectPrefferedTheme = (state: RootState) =>
   state.settings.prefferedTheme ?? 'dark';
 
@@ -153,6 +154,12 @@ export const selectLastSyncTime = (state: RootState) =>
   state.settings.lastSyncTime;
 export const selectLanguageTag = (state: RootState) =>
   state.settings.languageTag;
+
+export const selectManagerRoleState = (state: RootState) =>
+  state.settings.hasManagerRole;
+
+export const selectTrainerRoleState = (state: RootState) =>
+  state.settings.hasTrainerRole;
 
 export const selectHasManagerRole = (state: RootState) =>
   state.settings.hasManagerRole !== RoleStatus.HIDE;

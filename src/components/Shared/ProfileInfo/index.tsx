@@ -83,7 +83,7 @@ export const ProfileInfo = ({
   const isVisitingYourPage = authData?.brightId === subjectId;
 
   return (
-    <div className="card dark:bg-dark-primary flex flex-col gap-3">
+    <div className="card border dark:bg-dark-primary flex flex-col gap-3">
       <div className="card--header flex justify-between w-full items-center">
         <div className="card--header__left flex gap-4">
           <BrightIdProfilePicture

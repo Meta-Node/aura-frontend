@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RESET_STORE } from 'BrightID/actions';
 import { PreferredView } from 'types/dashboard';
 
@@ -69,19 +69,19 @@ export const profileSlice = createSlice({
       )
       .addMatcher(
         (action) => action.type === SET_SPLASH_SCREEN_SHOWN,
-        (state, action) => {
+        (state, action: PayloadAction<boolean>) => {
           state.splashScreenShown = action.payload;
         },
       )
       .addMatcher(
         (action) => action.type === SET_PLAYER_ONBOARDING_SCREEN_SHOWN,
-        (state, action) => {
+        (state, action: PayloadAction<boolean>) => {
           state.playerOnboardingScreenShown = action.payload;
         },
       )
       .addMatcher(
         (action) => action.type === SET_PREFERRED_VIEW,
-        (state, action) => {
+        (state, action: PayloadAction<PreferredView>) => {
           state.preferredView = action.payload;
         },
       );

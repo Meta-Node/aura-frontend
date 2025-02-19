@@ -158,9 +158,9 @@ export const HomeHeader = () => {
   return (
     <>
       Home
-      <SubjectOutboundEvaluationsContextProvider subjectId={subjectId!}>
-        <SubjectInboundEvaluationsContextProvider subjectId={subjectId!}>
-          <SubjectInboundConnectionsContextProvider subjectId={subjectId!}>
+      <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
+        <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
+          <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
             <HeaderPreferedView.PreferedView />
           </SubjectInboundConnectionsContextProvider>
         </SubjectInboundEvaluationsContextProvider>

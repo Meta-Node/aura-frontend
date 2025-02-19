@@ -19,23 +19,20 @@ export const apiSlice = createApi({
   }),
   extractRehydrationInfo(action, { reducerPath }): any {
     if (isHydrateAction(action)) {
-      // Check if action.payload exists
       if (!action.payload) {
-        return undefined; // Return undefined if payload is not defined
+        return undefined;
       }
 
-      // When persisting the api reducer
-      if (action.key === 'key used with redux-persist') {
-        return action.payload;
-      }
-
-      // When persisting the root reducer
-      if (action.payload[reducerPath]) {
+      if (action.key === 'root') {
         return action.payload[reducerPath];
       }
+
+      // if (action.payload[reducerPath]) {
+      //   return action.payload[reducerPath];
+      // }
     }
 
-    return undefined; // Default return if no conditions are met
+    return undefined;
   },
 
   endpoints: () => ({}),

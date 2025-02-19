@@ -39,4 +39,5 @@ export const {
   useGetBrightIDProfileQuery,
   useGetProfilePhotoQuery,
   useLazyGetProfilePhotoQuery,
+  useLazyGetBrightIDProfileQuery
 } = profileApi;

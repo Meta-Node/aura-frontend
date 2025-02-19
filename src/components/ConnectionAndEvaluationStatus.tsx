@@ -89,6 +89,15 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
   );
 };
 
+export const connectionLevelColors: Record<ConnectionLevel, string> = {
+  'reported': '#FF4B31',   
+  'suspicious': '#FF7831',  
+  'recovery': '#FFA131',   
+  'already known': '#FFC585', 
+  'just met': '#FFB85C',   
+  'aura only': '#FFE8D4',  
+};
+
 export const ConnectionAndEvaluationStatus = ({
   subjectId,
 }: {
@@ -106,11 +115,11 @@ export const ConnectionAndEvaluationStatus = ({
   return (
     <div className="w-full items-center flex gap-1">
       <Tooltip
-        tooltipClassName="text-sm"
+        tooltipClassName="text-sm !w-52 !whitespace-normal"
         position="right"
         content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
       >
-        <div className="flex gap-1 p-2 rounded-md bg-soft-bright dark:bg-dark-bright">
+        <div className="flex gap-1 p-2 rounded-md" style={{ backgroundColor: inboundConnectionInfo?.level ? connectionLevelColors[inboundConnectionInfo.level] : '#FFB85C' }}>
           {inboundConnectionInfo &&
             connectionLevelIcons[inboundConnectionInfo.level] && (
               <img

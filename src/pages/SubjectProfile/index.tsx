@@ -332,10 +332,10 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   }, [currentViewMode, selectedTab]);
 
   return (
-    <div className="page page__dashboard flex flex-col gap-4">
+    <div className="page overflow-x-hidden page__dashboard flex flex-col gap-y-4">
       {selectedTab !== ProfileTab.OVERVIEW && showEvaluateOverlayCard && (
         <EvaluateOverlayCard
-          className={`absolute z-20 top-24 min-h-[89px] w-[calc(100vw-40px)] max-w-[420px]`}
+          className={`absolute z-20 left-1/2 -translate-x-1/2 top-24 min-h-[89px] w-full md:w-[calc(100vw-40px)] max-w-[370px]`}
           subjectId={subjectId}
           setShowEvaluationFlow={setShowEvaluationFlow}
         />
@@ -370,17 +370,15 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       >
         <EvidenceHelpModal />
       </Modal>
-      <button
-        onClick={() => setIsHelpModalOpen(true)}
-        className="flex gap-1 -mb-1 justify-between items-center"
-      >
+      <div className="flex gap-2 -mb-1 items-center">
         <p className="font-bold text-lg text-white">Evidence</p>
         <img
+          onClick={() => setIsHelpModalOpen(true)}
           className="cursor-pointer w-5 h-5"
           src="/assets/images/SubjectProfile/evidence-info-icon.svg"
           alt=""
         />
-      </button>
+      </div>
       <ProfileTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       {selectedTab === ProfileTab.OVERVIEW ? (
         <ProfileOverview
@@ -575,17 +573,15 @@ export const SubjectProfileHeader = () => {
   const subjectId = useMemo(
     () => subjectIdProp ?? authData?.brightId,
     [authData?.brightId, subjectIdProp],
-  )!;
+  );
+
+  if (!subjectId) return null;
 
   return (
-    <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
-      <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
-        <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
+    <>
           {subjectViewModeTitle} Profile
           <HeaderPreferedView.ProfileHeaderViews subjectId={subjectId} />
-        </SubjectInboundConnectionsContextProvider>
-      </SubjectInboundEvaluationsContextProvider>
-    </SubjectOutboundEvaluationsContextProvider>
+    </>
   );
 };
 export default SubjectProfile;

@@ -1,10 +1,11 @@
 import { ApiResponse } from 'apisauce';
 import { NodeApi } from 'BrightID/api/brightId';
-import { selectBaseUrl } from 'BrightID/reducer/settingsSlice';
 import { pollOperations } from 'BrightID/utils/operations';
 import React, { useEffect, useState } from 'react';
 import { RootState } from 'store';
 import { useDispatch, useSelector } from 'store/hooks';
+
+import { AURA_NODE_URL_PROXY } from '@/constants/urls';
 
 import { selectKeypair } from '../actions';
 
@@ -28,7 +29,7 @@ export const getGlobalNodeApi = () => globalNodeApi;
 const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
   const id = useSelector((state: RootState) => state.user.id);
   const { secretKey } = useSelector(selectKeypair);
-  const url = useSelector(selectBaseUrl);
+  const url = AURA_NODE_URL_PROXY;
   const [nodeError, setNodeError] = useState(false);
   const [api, setApi] = useState<NodeApi | null>(null);
   const [gateState, setGateState] = useState<ApiGateState>(
@@ -53,13 +54,13 @@ const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
           case 'CONNECTION_ERROR':
           case 'NETWORK_ERROR':
           case 'TIMEOUT_ERROR':
-            console.log(
-              `Node monitor: Detected problem: ${response.status} - ${response.problem}.`,
-            );
+            // console.log(
+            //   `Node monitor: Detected problem: ${response.status} - ${response.problem}.`,
+            // );
             setNodeError(true);
             break;
           default:
-            console.log(`Node monitor: Ignoring problem ${response.problem}`);
+            // console.log(`Node monitor: Ignoring problem ${response.problem}`);
         }
       }
     };
@@ -67,10 +68,10 @@ const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
     if (url) {
       let apiInstance: NodeApi;
       if (id && secretKey) {
-        console.log(`Creating API with credentials using ${url}`);
+        // console.log(`Creating API with credentials using ${url}`);
         apiInstance = new NodeApi({ url, id, secretKey, monitor: apiMonitor });
       } else {
-        console.log(`Creating anonymous API using ${url}`);
+        // console.log(`Creating anonymous API using ${url}`);
         apiInstance = new NodeApi({
           url,
           id: undefined,
@@ -95,12 +96,12 @@ const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
       timerId = setInterval(() => {
         dispatch(pollOperations(api));
       }, 5000);
-      console.log(`Started pollOperationsTimer ${timerId}`);
+      // console.log(`Started pollOperationsTimer ${timerId}`);
     }
 
     return () => {
       if (timerId !== null) {
-        console.log(`Stop pollOperationsTimer ${timerId}`);
+        // console.log(`Stop pollOperationsTimer ${timerId}`);
         clearInterval(timerId);
       }
     };

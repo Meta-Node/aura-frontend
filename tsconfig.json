@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ESNext"],
     "module": "esnext",
     "moduleResolution": "Bundler",
     "noEmit": true,
@@ -32,5 +32,9 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["src/**/*", "src/**/*.json"]
+  "include": [
+    "src/**/*",
+    "src/**/*.json",
+    "node_modules/vite-plugin-pwa/client.d.ts"
+  ]
 }

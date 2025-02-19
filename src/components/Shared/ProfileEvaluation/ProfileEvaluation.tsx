@@ -27,6 +27,7 @@ import {
   useSubjectVerifications,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
+import { ArrowDownLeft, ArrowUpRight, } from 'lucide-react';
 import moment from 'moment';
 import { useMemo } from 'react';
 import {
@@ -36,6 +37,8 @@ import {
 } from 'types/dashboard';
 import { connectionLevelIcons } from 'utils/connection';
 import { compactFormat } from 'utils/number';
+
+import { ratingToText } from '@/constants/chart';
 
 import { useSelector } from '../../../store/hooks';
 import { selectAuthData } from '../../../store/profile/selectors';
@@ -66,7 +69,7 @@ const ProfileEvaluation = ({
   return (
     <div
       onClick={onClick}
-      className={`profile-evaluation-card card !flex-row cursor-pointer gap-.5 pl-2 pt-[11px] pr-[14px] pb-3`}
+      className={`profile-evaluation-card border card !flex-row cursor-pointer gap-.5 pl-2 pt-[11px] pr-[14px] pb-3`}
     >
       {loading ? (
         'Loading...'
@@ -143,10 +146,11 @@ const ConnectionInfo = ({
     return '';
   }, [inboundConnectionInfo?.level, rating]);
   return (
-    <Tooltip
-      position="right"
+    <div
       className="z-10"
-      content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+      // tooltipClassName="text-sm !w-52 !whitespace-normal"
+      // position="right"
+      content={``}
     >
       <div className={`flex flex-col gap-0.5 ${bgColor} py-1.5 rounded-md`}>
         {loading ? (
@@ -156,38 +160,60 @@ const ConnectionInfo = ({
             <div className="flex gap-0.5 justify-center items-center">
               {inboundConnectionInfo &&
                 connectionLevelIcons[inboundConnectionInfo.level] && (
-                  <img
-                    src={`/assets/images/Shared/${
-                      connectionLevelIcons[inboundConnectionInfo.level]
-                    }.svg`}
-                    className="h-[18px] w-[18px]"
-                    alt=""
-                  />
+                  <Tooltip
+                    content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+                    position="right"
+                    tooltipClassName="!whitespace-normal !w-40"
+                  >
+                    <img
+                      src={`/assets/images/Shared/${
+                        connectionLevelIcons[inboundConnectionInfo.level]
+                      }.svg`}
+                      className="h-[18px] w-[18px]"
+                      alt=""
+                    />
+                  </Tooltip>
                 )}
               {!!rating && Number(rating?.rating) !== 0 && (
-                <p
-                  className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
-                    rating,
-                  )}`}
+                <Tooltip
+                  position="right"
+                  content={`You evaluated ${name} ${
+                    Number(rating.rating) > 0
+                      ? `+${rating.rating}`
+                      : rating.rating
+                  } (${ratingToText[rating.rating]})`}
                 >
-                  {Number(rating.rating) < 0 ? '-' : '+'}
-                  {Math.abs(Number(rating.rating))}
-                </p>
+                  <p
+                    className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
+                      rating,
+                    )}`}
+                  >
+                    {Number(rating.rating) < 0 ? '-' : '+'}
+                    {Math.abs(Number(rating.rating))}
+                  </p>
+                </Tooltip>
               )}
             </div>
             {!!rating && Number(rating?.rating) !== 0 && (
-              <p
-                className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
-                  rating,
-                )} text-[11px] font-bold text-center w-full`}
+              <Tooltip
+                position="right"
+                content={`Your evaluation impact on ${name} is ${
+                  impactPercentage !== null ? `${impactPercentage}%` : '-'
+                }`}
               >
-                {impactPercentage !== null ? `${impactPercentage}%` : '-'}
-              </p>
+                <p
+                  className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
+                    rating,
+                  )} text-[11px] font-bold text-center w-full`}
+                >
+                  {impactPercentage !== null ? `${impactPercentage}%` : '-'}
+                </p>
+              </Tooltip>
             )}
           </>
         )}
       </div>
-    </Tooltip>
+    </div>
   );
 };
 
@@ -285,7 +311,7 @@ const UserInformation = ({
                   )
             }`}
           >
-            {auraLevel}
+            lvl {auraLevel}
           </Tooltip>
           <Tooltip
             content="subject score"
@@ -368,8 +394,16 @@ const EvidenceInformation = ({
           INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
             ? getViewModeTextColorClass(currentViewMode)
             : getViewModeSubjectTextColorClass(currentViewMode)
-        } text-xs font-medium`}
+        } text-xs  font-medium`}
       >
+        <span className='inline-flex items-center gap-1'>
+        {
+          evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY || evidenceType === EvidenceType.CONNECTED ? (
+            <ArrowDownLeft className="w-4 h-4" />
+          ) : (
+            <ArrowUpRight className="w-4 h-4" />
+          )
+        }
         {evidenceType === EvidenceType.EVALUATED
           ? evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
             ? 'evaluated by'
@@ -377,6 +411,7 @@ const EvidenceInformation = ({
           : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
           ? 'connected by'
           : 'connected to'}
+        </span>
       </Tooltip>
       <div className="text-xs font-medium truncate flex-1 text-right">
         {name}
@@ -530,7 +565,7 @@ const EvaluatedCardBody = ({
           />
           <Tooltip
             // className="z-10"
-            content={`All evaluations of ${name} as a ${currentEvaluationCategory}`}
+            content={`Top evaluations of ${name} as a ${currentEvaluationCategory}`}
           >
             <div>
               <Graph
@@ -669,7 +704,7 @@ const ConnectedCardBody = ({
           />
           <Tooltip
             // className="z-10"
-            content={`All of ${name}'s evaluations as a ${viewModeSubjectString[evidenceViewMode]}`}
+            content={`Top evaluations ${name}'s as a ${viewModeSubjectString[evidenceViewMode]}`}
           >
             <div>
               <Graph

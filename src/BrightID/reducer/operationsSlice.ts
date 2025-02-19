@@ -18,8 +18,8 @@ export type Operation = SubmittedOp & {
 
 export type EvaluateSubmittedOperation = Operation & EvaluateOp;
 
-const operationsAdapter = createEntityAdapter<Operation>({
-  selectId: (op) => op.hash,
+const operationsAdapter = createEntityAdapter({
+  selectId: (op: Operation) => op.hash,
 });
 
 const operationsSlice = createSlice({
@@ -42,8 +42,8 @@ const operationsSlice = createSlice({
     updateOperation: operationsAdapter.updateOne,
     removeManyOperations: operationsAdapter.removeMany,
   },
-  extraReducers: {
-    [RESET_STORE]: operationsAdapter.removeAll,
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STORE, operationsAdapter.removeAll);
   },
 });
 
