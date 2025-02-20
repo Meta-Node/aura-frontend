@@ -75,10 +75,9 @@ const handleOpUpdate = (
 };
 
 export const pollOperations =
-  (api: NodeApi) => async (dispatch: AppDispatch, getState: GetState) => {
+  (api: NodeApi, secretKey: any) => async (dispatch: AppDispatch, getState: GetState) => {
     const operations = selectPendingOperations(getState());
     const { id } = getState().user;
-    const { secretKey } = getState().keypair;
     // const shouldUpdateTasks = false;
     try {
       for (const op of operations) {

@@ -1,6 +1,6 @@
 import {
   selectIsSearchModalOpen,
-  selectPrefferedTheme,
+  selectPreferredTheme,
   toggleSearchModal,
 } from 'BrightID/actions';
 import GlobalSearchModal from 'components/GlobalSearchModal';
@@ -48,7 +48,7 @@ function App() {
   const playerOnboardingScreenShown = useSelector(
     selectPlayerOnboardingScreenShown,
   );
-  const prefferedTheme = useSelector(selectPrefferedTheme);
+  const prefferedTheme = useSelector(selectPreferredTheme);
 
   const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
 
@@ -75,13 +75,11 @@ function App() {
 
   return (
     <div
-      className={`app_container bg-background ${
-        hasDarkBackground && 'app_container__dark'
-      } relative ${
-        prefferedTheme !== 'light'
+      className={`app_container bg-background ${hasDarkBackground && 'app_container__dark'
+        } relative ${prefferedTheme !== 'light'
           ? 'dark app_container_dark_bg'
           : 'app_container'
-      }`}
+        }`}
     >
       <div className="app">
         {!noHeader && <Header />}

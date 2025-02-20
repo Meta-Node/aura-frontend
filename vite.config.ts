@@ -1,8 +1,8 @@
 import replace from '@rollup/plugin-replace';
-import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
 import { ManifestOptions, VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { reactRouter } from "@react-router/dev/vite";
 
 const pwaConfig: Partial<VitePWAOptions> = {
   workbox: {
@@ -79,7 +79,7 @@ export default defineConfig(() => {
     },
     plugins: [
       tsconfigPaths(),
-      react(),
+      reactRouter(),
       VitePWA(pwaConfig),
       replace(replaceOptions),
     ],

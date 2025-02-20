@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RESET_STORE } from 'BrightID/actions/resetStore';
 import { RootState } from 'store';
 
@@ -114,13 +114,16 @@ export const {
   setLocalServerUrl,
 } = userSlice.actions;
 
-export const userSelector = (state: RootState): User => ({
-  id: state.user.id,
-  name: state.user.name,
-  photo: state.user.photo,
-  password: state.user.password,
-  secretKey: state.user.secretKey,
-});
+export const userSelector = createSelector(
+  (state: RootState) => state.user,
+  (user) => ({
+    id: user.id,
+    name: user.name,
+    photo: user.photo,
+    password: user.password,
+    secretKey: user.secretKey,
+  }),
+);
 
 export const selectIsSponsored = (state: RootState) =>
   state.user.isSponsored || state.user.isSponsoredv6;

@@ -143,7 +143,7 @@ export const {
 } = settingsSlice.actions;
 
 export const selectBaseUrl = () => AURA_NODE_URL_PROXY;
-export const selectPrefferedTheme = (state: RootState) =>
+export const selectPreferredTheme = (state: RootState) =>
   state.settings.prefferedTheme ?? 'dark';
 
 export const selectAllNodeUrls = (state: RootState) => state.settings.nodeUrls;

@@ -60,7 +60,7 @@ const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
             setNodeError(true);
             break;
           default:
-            // console.log(`Node monitor: Ignoring problem ${response.problem}`);
+          // console.log(`Node monitor: Ignoring problem ${response.problem}`);
         }
       }
     };
@@ -92,20 +92,17 @@ const NodeApiGate = (props: React.PropsWithChildren<unknown>) => {
   useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
     if (api) {
-      // subscribe to operations
       timerId = setInterval(() => {
-        dispatch(pollOperations(api));
+        dispatch(pollOperations(api, secretKey));
       }, 5000);
-      // console.log(`Started pollOperationsTimer ${timerId}`);
     }
 
     return () => {
       if (timerId !== null) {
-        // console.log(`Stop pollOperationsTimer ${timerId}`);
         clearInterval(timerId);
       }
     };
-  }, [api, dispatch]);
+  }, [api, dispatch, secretKey]);
 
   if (url && api && gateState === ApiGateState.NODE_AVAILABLE) {
     return (

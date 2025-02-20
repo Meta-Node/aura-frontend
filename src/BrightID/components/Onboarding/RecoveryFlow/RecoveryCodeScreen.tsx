@@ -23,7 +23,6 @@ import {
   urlTypesOfActions,
 } from 'BrightID/utils/constants';
 import { buildRecoveryChannelQrUrl } from 'BrightID/utils/recovery';
-import { LOCATION_ORIGIN } from 'constants/index';
 import { AURA_NODE_URL, AURA_NODE_URL_PROXY } from 'constants/urls';
 import useRedirectAfterLogin from 'hooks/useRedirectAfterLogin';
 import { useEffect, useMemo, useState } from 'react';
@@ -34,7 +33,7 @@ import { loginThunk } from 'store/profile/actions';
 import { copyToClipboard } from 'utils/copyToClipboard';
 import { __DEV__ } from 'utils/env';
 
-import { FadeIn } from '../../../../animations';
+import { FadeIn } from '../../../../components/animations';
 import CustomTrans from '../../../../components/CustomTrans';
 
 /**
@@ -65,37 +64,12 @@ const RecoveryCodeScreen = () => {
   const dispatch = useDispatch();
   const step = useSelector(selectRecoveryStep);
 
-  // start polling recovery channel to get sig and mutual info
-  // useEffect(() => {
-  //   if (
-  //     action === 'recovery' &&
-  //     recoveryData.recoverStep === recover_steps.POLLING_SIGS &&
-  //     !recoveryData.channel.pollTimerId
-  //   ) {
-  //     dispatch(pollRecoveryChannel());
-  //   }
-  // }, [
-  //   action,
-  //   dispatch,
-  //   recoveryData.channel.pollTimerId,
-  //   recoveryData.recoverStep,
-  // ]);
-
-  // create recovery data and start polling channel
-
   useEffect(() => {
-    // const runRecoveryEffect = async () => {
-    //   // create publicKey, secretKey, aesKey for user
-    //   await dispatch(setupRecovery());
-    //   // create channel and upload new publicKey to get signed by the scanner
-    //   await dispatch(createRecoveryChannel());
-    //   dispatch(setRecoverStep(recover_steps.POLLING_SIGS));
-    // };
     const runImportEffect = async () => {
       // create publicKey, secretKey, aesKey for user
       await dispatch(setupRecovery());
       // create channel and upload new publicKey to be added as a new signing key by the scanner
-      await dispatch(createRecoveryChannel());
+      await dispatch(createRecoveryChannel(window.location.origin));
       // start polling channel to get connections/groups/blindsigs info
       dispatch(pollImportChannel());
     };
@@ -114,14 +88,6 @@ const RecoveryCodeScreen = () => {
       if (step === recover_steps.NOT_STARTED) {
         dispatch(setRecoverStep(recover_steps.INITIALIZING));
         try {
-          // if (action === 'recovery') {
-          //   if (!id) {
-          //     console.log(`initializing recovery process`);
-          //     runRecoveryEffect();
-          //   } else {
-          //     console.log(`Not starting recovery process, user has id!`);
-          //   }
-          // } else
           if (action === RecoveryCodeScreenAction.ADD_SUPER_USER_APP) {
             console.log(`initializing import process`);
             await runImportEffect();
@@ -140,7 +106,7 @@ const RecoveryCodeScreen = () => {
     }
 
     runEffect();
-  }, [action, dispatch, id, step]);
+  }, [action, dispatch, id]);
 
   // set QRCode and SVG
   useEffect(() => {
@@ -148,10 +114,10 @@ const RecoveryCodeScreen = () => {
       const channelUrl = recoveryData.channel.url;
       const newQrUrl = buildRecoveryChannelQrUrl({
         aesKey: recoveryData.aesKey,
-        url: channelUrl.href.startsWith(LOCATION_ORIGIN)
+        url: channelUrl.href.startsWith("/")
           ? {
-              href: channelUrl.href.replace(AURA_NODE_URL_PROXY, AURA_NODE_URL),
-            }
+            href: channelUrl.href.replace(AURA_NODE_URL_PROXY, AURA_NODE_URL),
+          }
           : channelUrl,
         t: urlTypesOfActions[action],
         changePrimaryDevice: false,
@@ -211,8 +177,8 @@ const RecoveryCodeScreen = () => {
     () =>
       qrUrl
         ? `https://app.brightid.org/connection-code/${encodeURIComponent(
-            qrUrl.href,
-          )}`
+          qrUrl.href,
+        )}`
         : undefined,
     [qrUrl],
   );

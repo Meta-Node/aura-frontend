@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   EvaluateSubmittedOperation,
   selectEvaluateOperations,
-} from '../BrightID/reducer/operationsSlice';
+} from 'BrightID/reducer/operationsSlice';
 import { operation_states } from '../BrightID/utils/constants';
 import {
   getBgClassNameOfAuraRatingNumber,
@@ -73,11 +73,10 @@ function EvaluateOpNotification({
               alt=""
             />
             <span
-              className={`font-medium text-xs  ${
-                Math.abs(notification.operation.confidence) > 2
+              className={`font-medium text-xs  ${Math.abs(notification.operation.confidence) > 2
                   ? 'text-white'
                   : 'text-black'
-              }`}
+                }`}
             >
               (
               {notification.operation.confidence > 0

@@ -10,7 +10,7 @@ import { Card } from '@/components/ui/card';
 
 import {
   resetStore,
-  selectPrefferedTheme,
+  selectPreferredTheme,
   setPrefferedTheme,
 } from '../../BrightID/actions';
 import { useDispatch } from '../../store/hooks';
@@ -20,7 +20,7 @@ import { __DEV__ } from '../../utils/env';
 export const Settings = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const prefferedTheme = useSelector(selectPrefferedTheme);
+  const prefferedTheme = useSelector(selectPreferredTheme);
 
   return (
     <div className="page page__settings dark:text-white w-full pt-4 flex flex-col gap-4">
@@ -80,14 +80,14 @@ export const Settings = () => {
         {(__DEV__ ||
           process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||
           process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
-          <Card
-            className={'cursor-pointer rounded-lg pl-5 py-3.5 pr-2'}
-            onClick={() => dispatch(resetStore())}
-            data-testid="logout-button"
-          >
-            <p className="font-medium text-[20px]">Logout</p>
-          </Card>
-        )}
+            <Card
+              className={'cursor-pointer rounded-lg pl-5 py-3.5 pr-2'}
+              onClick={() => dispatch(resetStore())}
+              data-testid="logout-button"
+            >
+              <p className="font-medium text-[20px]">Logout</p>
+            </Card>
+          )}
       </section>
     </div>
   );

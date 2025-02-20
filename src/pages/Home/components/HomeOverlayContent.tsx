@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { MoveUpIn } from '../../../animations';
+import { MoveUpIn } from '../../../components/animations';
 import { resetStore } from '../../../BrightID/actions';
 import Modal from '../../../components/Shared/Modal';
 import { preferredViewIcon } from '../../../constants';
@@ -131,14 +131,14 @@ export const HomeOverlayContent = () => {
         {(__DEV__ ||
           process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||
           process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
-          <button
-            className={'btn'}
-            onClick={() => dispatch(resetStore())}
-            data-testid="logout-button"
-          >
-            Logout
-          </button>
-        )}
+            <button
+              className={'btn'}
+              onClick={() => dispatch(resetStore())}
+              data-testid="logout-button"
+            >
+              Logout
+            </button>
+          )}
       </div>
       <Modal
         title={'Role Selection'}

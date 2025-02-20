@@ -7,8 +7,6 @@ import {
 
 import { operation_states } from '../BrightID/utils/constants';
 
-// eslint-disable-next-line no-restricted-globals
-export const LOCATION_ORIGIN = location.origin;
 export const CONNECTION_SEARCH_SEED = 5;
 
 export const TOAST_SUCCESS = 'success';

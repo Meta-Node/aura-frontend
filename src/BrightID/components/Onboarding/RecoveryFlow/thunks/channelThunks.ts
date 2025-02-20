@@ -13,11 +13,11 @@ export const CHANNEL_POLL_INTERVAL = 3000;
 // THUNKS
 
 export const createRecoveryChannel =
-  () => async (dispatch: AppDispatch, getState: GetState) => {
+  (location: string) => async (dispatch: AppDispatch, getState: GetState) => {
     try {
       const { recoveryData } = getState();
       const baseUrl = AURA_NODE_URL_PROXY;
-      const url = new URL(`${baseUrl}/profile`);
+      const url = new URL(`${location + baseUrl}/profile`);
       // use this for local running profile service
       // const url = new URL(`http://10.0.2.2:3000/`);
       const channelApi = new ChannelAPI(url.href);
