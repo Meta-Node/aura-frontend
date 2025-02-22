@@ -14,14 +14,9 @@ import {
 } from 'contexts/SubjectOutboundEvaluationsContext';
 import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import useViewMode from 'hooks/useViewMode';
-import { ActivityListSearch } from 'pages/SubjectProfile/ActivityListSearch';
-import { ConnectionLevel } from 'pages/SubjectProfile/ConnectionLevel';
-import { EvidenceListSearch } from 'pages/SubjectProfile/EvidenceListSearch';
-import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
@@ -36,22 +31,25 @@ import { __DEV__ } from 'utils/env';
 
 import Tooltip from '@/components/Shared/Tooltip';
 
-import { EmptyActivitiesList } from '../../components/Shared/EmptyAndLoadingStates/EmptyActivitiesList';
-import { EmptyEvaluationsList } from '../../components/Shared/EmptyAndLoadingStates/EmptyEvaluationsList';
-import { EmptySubjectList } from '../../components/Shared/EmptyAndLoadingStates/EmptySubjectList';
-import { LoadingList } from '../../components/Shared/EmptyAndLoadingStates/LoadingList';
-import { HeaderPreferedView } from '../../components/Shared/HeaderPreferedView';
-import { ProfileInfo } from '../../components/Shared/ProfileInfo';
-import ProfileOverview from '../../components/Shared/ProfileOverview';
-import { viewModeToSubjectViewMode, viewModeToViewAs } from '../../constants';
+import { EmptyActivitiesList } from 'components/Shared/EmptyAndLoadingStates/EmptyActivitiesList';
+import { EmptyEvaluationsList } from 'components/Shared/EmptyAndLoadingStates/EmptyEvaluationsList';
+import { EmptySubjectList } from 'components/Shared/EmptyAndLoadingStates/EmptySubjectList';
+import { LoadingList } from 'components/Shared/EmptyAndLoadingStates/LoadingList';
+import { ProfileInfo } from 'components/Shared/ProfileInfo';
+import ProfileOverview from 'components/Shared/ProfileOverview';
+import { viewModeToSubjectViewMode, viewModeToViewAs } from 'constants/index';
 import {
   SubjectInboundConnectionsContextProvider,
   useSubjectInboundConnectionsContext,
-} from '../../contexts/SubjectInboundConnectionsContext';
-import { selectAuthData } from '../../store/profile/selectors';
-import { CredibilityDetailsProps } from '../../types';
-import { ConnectionListSearch } from './ConnectionListSearch';
-import EvidenceHelpModal from './EvidenceHelpModal';
+} from 'contexts/SubjectInboundConnectionsContext';
+import { selectAuthData } from 'store/profile/selectors';
+import { CredibilityDetailsProps } from 'types';
+import { ConnectionListSearch } from './components/connection-list-search';
+import EvidenceHelpModal from './components/evidence-help-modal';
+import { ConnectionLevel } from './components/connection-level';
+import { ActivityListSearch } from './components/activity-list-search';
+import { EvidenceListSearch } from './components/evidence-list-search';
+import SubjectProfileHeader from './components/header';
 
 const ProfileTabs = ({
   selectedTab,
@@ -92,11 +90,10 @@ const ProfileTabs = ({
           data-testid="table-view-switch-option-one"
           position="top"
           content="overall performance"
-          className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
-            selectedTab === ProfileTab.OVERVIEW
-              ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-              : 'bg-transparent dark:text-white text-black font-medium'
-          }`}
+          className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.OVERVIEW
+            ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
+            : 'bg-transparent dark:text-white text-black font-medium'
+            }`}
           tooltipClassName="font-normal"
         >
           Overview
@@ -104,11 +101,10 @@ const ProfileTabs = ({
         {currentViewMode === PreferredView.PLAYER ? (
           <Tooltip
             content="user's community"
-            className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
-              selectedTab === ProfileTab.CONNECTIONS
-                ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-                : 'bg-transparent dark:text-white text-black font-medium'
-            }`}
+            className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.CONNECTIONS
+              ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
+              : 'bg-transparent dark:text-white text-black font-medium'
+              }`}
             onClick={() => setSelectedTab(ProfileTab.CONNECTIONS)}
             data-testid="table-view-switch-option-one"
             tooltipClassName="font-normal"
@@ -119,12 +115,11 @@ const ProfileTabs = ({
           <Tooltip
             tooltipClassName="font-normal"
             content="rating history"
-            className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${
-              selectedTab === ProfileTab.ACTIVITY ||
+            className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.ACTIVITY ||
               selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
-                ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-                : 'bg-transparent dark:text-white text-black font-medium'
-            }`}
+              ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
+              : 'bg-transparent dark:text-white text-black font-medium'
+              }`}
             onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
             data-testid="table-view-switch-option-one"
           >
@@ -134,11 +129,10 @@ const ProfileTabs = ({
         <Tooltip
           tooltipClassName="font-normal"
           content="others opinion"
-          className={`rounded-md min-w-[100px] w-full cursor-pointer flex justify-center items-center h-full transition-all duration-300 ease-in-out ${
-            selectedTab === ProfileTab.EVALUATIONS
-              ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-              : 'bg-transparent dark:text-white text-black font-medium'
-          }`}
+          className={`rounded-md min-w-[100px] w-full cursor-pointer flex justify-center items-center h-full transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.EVALUATIONS
+            ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
+            : 'bg-transparent dark:text-white text-black font-medium'
+            }`}
           onClick={() => setSelectedTab(ProfileTab.EVALUATIONS)}
           data-testid="table-view-switch-option-two"
         >
@@ -415,8 +409,8 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
                         selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
                           ? EvaluationCategory.MANAGER
                           : viewModeToViewAs[
-                              viewModeToSubjectViewMode[currentViewMode]
-                            ],
+                          viewModeToSubjectViewMode[currentViewMode]
+                          ],
                     })
                   }
                   key={evaluated}
@@ -498,35 +492,6 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
           )}
         </>
       )}
-      {/* could have header based on the role */}
-      {/*<div>*/}
-      {/*	<div className="mb-2 flex justify-between">*/}
-      {/*		<p className="text-lg text-white">Other Evaluations</p>*/}
-      {/*		<div className="flex items-center gap-1.5">*/}
-      {/*			<p*/}
-      {/*				onClick={() => setIsEvaluationListModalOpen(true)}*/}
-      {/*				className="underline text-sm text-white cursor-pointer"*/}
-      {/*			>*/}
-      {/*				See all*/}
-      {/*			</p>*/}
-      {/*			<img*/}
-      {/*				src="/assets/images/Shared/arrow-right-icon-white.svg"*/}
-      {/*				alt=""*/}
-      {/*				className="w-4 h-4"*/}
-      {/*			/>*/}
-      {/*		</div>*/}
-      {/*	</div>*/}
-      {/*	<div className="flex gap-2.5 w-full overflow-x-auto !min-w-[100vw] -ml-5 px-5">*/}
-      {/*		{inboundRatings?.slice(0, 4).map((rating) => (*/}
-      {/*			<SubjectEvaluation*/}
-      {/*				key={rating.id}*/}
-      {/*				fromSubjectId={rating.fromBrightId}*/}
-      {/*				toSubjectId={rating.toBrightId}*/}
-      {/*				className="!min-w-[305px] !py-5"*/}
-      {/*			/>*/}
-      {/*		))}*/}
-      {/*	</div>*/}
-      {/*</div>*/}
       <EvaluationFlow
         showEvaluationFlow={showEvaluationFlow}
         setShowEvaluationFlow={setShowEvaluationFlow}
@@ -542,11 +507,11 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   );
 };
 const SubjectProfile = () => {
-  const { subjectIdProp } = useParams();
+  const { id } = useParams();
   const authData = useSelector(selectAuthData);
   const subjectId = useMemo(
-    () => subjectIdProp ?? authData?.brightId,
-    [authData?.brightId, subjectIdProp],
+    () => id ?? authData?.brightId,
+    [authData?.brightId, id],
   );
 
   return !subjectId ? (
@@ -555,6 +520,7 @@ const SubjectProfile = () => {
     <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
       <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
         <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
+          <SubjectProfileHeader />
           <SubjectProfileBody subjectId={subjectId} />
         </SubjectInboundConnectionsContextProvider>
       </SubjectInboundEvaluationsContextProvider>
@@ -562,26 +528,5 @@ const SubjectProfile = () => {
   );
 };
 
-export const SubjectProfileHeader = () => {
-  const { subjectViewModeTitle } = useViewMode();
-  const location = useLocation();
 
-  const authData = useSelector(selectAuthData);
-
-  const subjectIdProp = location.pathname.split('/').at(-1);
-
-  const subjectId = useMemo(
-    () => subjectIdProp ?? authData?.brightId,
-    [authData?.brightId, subjectIdProp],
-  );
-
-  if (!subjectId) return null;
-
-  return (
-    <>
-          {subjectViewModeTitle} Profile
-          <HeaderPreferedView.ProfileHeaderViews subjectId={subjectId} />
-    </>
-  );
-};
 export default SubjectProfile;

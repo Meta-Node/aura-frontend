@@ -2,7 +2,7 @@ import { resetStore } from '@/BrightID/actions';
 import { MoveUpIn } from '@/components/animations';
 import Modal from '@/components/Shared/Modal';
 import { preferredViewIcon } from '@/constants';
-import RoleSelectModal from '@/pages/Dashboard/RoleSelectModal';
+import RoleSelectModal from '@/app/routes/_app.dashboard/components/RoleSelectModal';
 import { selectPreferredView } from '@/store/profile/selectors';
 import { PreferredView } from '@/types/dashboard';
 import { RoutePath } from '@/types/router';

@@ -7,7 +7,6 @@ import {
   useTotalImpact,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import LevelProgress from 'pages/Home/components/LevelProgress';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
@@ -20,7 +19,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import ChartViewHelpModal from '@/pages/SubjectProfile/ChartViewHelpModal';
 
 import {
   viewModeToEvaluatorViewMode,
@@ -30,6 +28,8 @@ import {
 import { CredibilityDetailsProps } from '../../../types';
 import { compactFormat } from '../../../utils/number';
 import ActivitiesCard from '../ActivitiesCard';
+import ChartViewHelpModal from '@/app/routes/_app.subject.$id/components/chart-view-help-modal';
+import LevelProgress from '@/app/routes/_app.home/components/LevelProgress';
 
 const ProfileOverview = ({
   subjectId,
@@ -142,15 +142,13 @@ const ProfileOverview = ({
             <ShowData
               title="Calculated Score"
               value={auraScore ? compactFormat(auraScore) : '-'}
-              details={`(${
-                totalPositiveImpact !== null
-                  ? `+${compactFormat(totalPositiveImpact)}`
-                  : '-'
-              } / ${
-                totalNegativeImpact !== null
+              details={`(${totalPositiveImpact !== null
+                ? `+${compactFormat(totalPositiveImpact)}`
+                : '-'
+                } / ${totalNegativeImpact !== null
                   ? `-${compactFormat(totalNegativeImpact)}`
                   : '-'
-              })`}
+                })`}
             />
           </div>
           <Dialog

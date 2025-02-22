@@ -1,17 +1,14 @@
 import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
-import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
-import * as React from 'react';
+import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { useMemo, useState } from 'react';
 
-import Dropdown from '../../components/Shared/Dropdown';
-import Modal from '../../components/Shared/Modal';
-import { viewModeToSubjectViewMode, viewModeToViewAs } from '../../constants';
-import { AuraFilterId } from '../../hooks/useFilters';
-import { AuraSortId } from '../../hooks/useSorts';
-import useViewMode from '../../hooks/useViewMode';
-import { AuraFilterDropdownOption } from '../../types';
-import { PreferredView, ProfileTab } from '../../types/dashboard';
+import Dropdown from 'components/Shared/Dropdown';
+import Modal from 'components/Shared/Modal';
+import { AuraFilterId } from 'hooks/useFilters';
+import { AuraSortId } from 'hooks/useSorts';
+import useViewMode from 'hooks/useViewMode';
+import { AuraFilterDropdownOption } from 'types';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -21,7 +18,7 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
     setSelectedSort,
     filters,
     sorts,
-  } = useOutboundEvaluationsContext({ subjectId });
+  } = useSubjectInboundEvaluationsContext({ subjectId });
 
   return (
     <div>
@@ -45,16 +42,8 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   );
 }
 
-export const ActivityListSearch = ({
-  selectedTab,
-  setSelectedTab,
-  subjectId,
-}: {
-  subjectId: string;
-  selectedTab: ProfileTab;
-  setSelectedTab: (value: ProfileTab) => void;
-}) => {
-  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
+  const { currentEvaluationCategory } = useViewMode();
 
   const {
     itemsOriginal,
@@ -66,12 +55,9 @@ export const ActivityListSearch = ({
     clearSortAndFilter,
     toggleFiltersById,
     setSelectedSort,
-  } = useOutboundEvaluationsContext({
+  } = useSubjectInboundEvaluationsContext({
     subjectId,
-    evaluationCategory:
-      selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
-        ? currentEvaluationCategory
-        : viewModeToViewAs[viewModeToSubjectViewMode[currentViewMode]],
+    evaluationCategory: currentEvaluationCategory,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,7 +76,7 @@ export const ActivityListSearch = ({
   const defaultOption = useMemo(
     () => ({
       value: 0,
-      label: <p>Recent evaluations (default)</p>,
+      label: <p>Expert evaluations (default)</p>,
       filterIds: null,
       sortId: null,
       onClick: () => clearSortAndFilter(),
@@ -105,14 +91,30 @@ export const ActivityListSearch = ({
           value: 2,
           label: <p>Negative evaluations</p>,
           filterIds: [AuraFilterId.EvaluationNegativeEvaluations],
-          sortId: AuraSortId.RecentEvaluation,
+          sortId: AuraSortId.EvaluatorScore,
           ascending: false,
         },
         {
           value: 3,
-          label: <p>Confidence</p>,
-          filterIds: null,
-          sortId: AuraSortId.EvaluationConfidence,
+          label: <p>Recent evaluations - level 2+</p>,
+          filterIds: [
+            AuraFilterId.EvaluationEvaluatorLevelTwo,
+            AuraFilterId.EvaluationEvaluatorLevelThree,
+            AuraFilterId.EvaluationEvaluatorLevelFour,
+          ],
+          sortId: AuraSortId.RecentEvaluation,
+          ascending: false,
+        },
+        {
+          value: 4,
+          label: <p>Recent evaluations - level 1+</p>,
+          filterIds: [
+            AuraFilterId.EvaluationEvaluatorLevelOne,
+            AuraFilterId.EvaluationEvaluatorLevelTwo,
+            AuraFilterId.EvaluationEvaluatorLevelThree,
+            AuraFilterId.EvaluationEvaluatorLevelFour,
+          ],
+          sortId: AuraSortId.RecentEvaluation,
           ascending: false,
         },
       ].map((item) => ({
@@ -135,7 +137,7 @@ export const ActivityListSearch = ({
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
         item.ascending ===
-          (selectedSort.defaultAscending !== selectedSort.isReversed);
+        (selectedSort.defaultAscending !== selectedSort.isReversed);
       if (!isSelectedSort) return false;
       if (!selectedFilters) return !item.filterIds;
       if (!item.filterIds) return false;
@@ -157,28 +159,7 @@ export const ActivityListSearch = ({
 
   return (
     <>
-      <div className="text-right font-semibold text-sm">
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
-          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
-            {selectedTab === ProfileTab.ACTIVITY ? (
-              <p
-                className="font-medium cursor-pointer text-white"
-                onClick={() => setSelectedTab(ProfileTab.ACTIVITY_ON_MANAGERS)}
-              >
-                View Managers
-              </p>
-            ) : (
-              <p
-                className="font-medium cursor-pointer text-white"
-                onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
-              >
-                View Trainers
-              </p>
-            )}
-          </button>
-        )}
-      </div>
-      <div className="text-lg text-white -mt-3 flex items-center">
+      <div className="text-lg text-white mb-3 mt-3 flex items-center">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -195,15 +176,15 @@ export const ActivityListSearch = ({
         >
           <FilterAndSortModalBody subjectId={subjectId} />
         </Modal>
-        <span className="ml-1">
+        <span className="ml-auto">
           (
           {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
             .length ??
             itemsOriginal?.length ??
             '...'}{' '}
           result
-          {(filteredSubjects?.filter((e) => e.rating).length ??
-            itemsOriginal?.length) !== 1
+          {(filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
+            .length ?? itemsOriginal?.length) !== 1
             ? 's'
             : ''}
           )

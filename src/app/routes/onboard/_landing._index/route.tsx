@@ -1,6 +1,5 @@
 import RecoveryCodeScreen from 'BrightID/components/Onboarding/RecoveryFlow/RecoveryCodeScreen';
 import useRedirectAfterLogin from 'hooks/useRedirectAfterLogin';
-import Splash from 'pages/Splash';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'store/hooks';
 import {
@@ -11,6 +10,7 @@ import {
 import CustomTrans from '@/components/CustomTrans';
 import { checkIndexedDB } from '@/utils/check-db';
 import { selectPreferredTheme } from '@/BrightID/reducer/settingsSlice';
+import Splash from './components/splash';
 
 const Login = () => {
   const userIsLogged = useSelector(selectIsLoggedIn);

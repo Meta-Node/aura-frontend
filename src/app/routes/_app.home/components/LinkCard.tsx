@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { selectAuthData } from '../../store/profile/selectors';
-import { EvaluationCategory } from '../../types/dashboard';
+import { selectAuthData } from 'store/profile/selectors';
+import { EvaluationCategory } from 'types/dashboard';
 
 const LinkCard = () => {
   const authData = useSelector(selectAuthData);

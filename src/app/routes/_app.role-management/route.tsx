@@ -10,10 +10,10 @@ import { SubjectOutboundEvaluationsContextProvider } from 'contexts/SubjectOutbo
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useSubjectVerifications } from '../../hooks/useSubjectVerifications';
-import { selectAuthData } from '../../store/profile/selectors';
-import { EvaluationCategory } from '../../types/dashboard';
-import { compactFormat } from '../../utils/number';
+import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
+import { selectAuthData } from 'store/profile/selectors';
+import { EvaluationCategory } from 'types/dashboard';
+import { compactFormat } from 'utils/number';
 
 export const RoleManagement = () => {
   const authData = useSelector(selectAuthData);

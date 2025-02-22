@@ -1,4 +1,5 @@
-import { selectManagerRoleState, selectTrainerRoleState, RoleStatus, toggleSearchModal } from "@/BrightID/actions";
+import { selectManagerRoleState, selectTrainerRoleState, RoleStatus } from "@/BrightID/actions";
+import DefaultHeader from "@/components/Shared/DefaultHeader";
 import Tooltip from "@/components/Shared/Tooltip";
 import { getViewModeBackgroundColorClass, preferredViewIcon } from "@/constants";
 import { SubjectInboundConnectionsContextProvider } from "@/contexts/SubjectInboundConnectionsContext";
@@ -6,14 +7,10 @@ import { SubjectInboundEvaluationsContextProvider } from "@/contexts/SubjectInbo
 import { SubjectOutboundEvaluationsContextProvider, useOutboundEvaluationsContext } from "@/contexts/SubjectOutboundEvaluationsContext";
 import { useSubjectVerifications } from "@/hooks/useSubjectVerifications";
 import useViewMode from "@/hooks/useViewMode";
-import { useDispatch } from "@/store/hooks";
 import { selectAuthData } from "@/store/profile/selectors";
 import { PreferredView, EvaluationCategory } from "@/types/dashboard";
-import { RoutePath } from "@/types/router";
 import { useEffect } from "react";
-import { FaHome, FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router";
 
 
 const ViewTooltip = ({
@@ -148,13 +145,6 @@ export const HeaderBody = () => {
 
   return (
     <>
-      <Link to={RoutePath.HOME} className="flex items-center gap-1 mr-2">
-        <FaHome size={20} />
-        <span className="text-xl font-semibold">
-          Home
-        </span>
-      </Link>
-
       <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
         <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
           <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
@@ -168,39 +158,10 @@ export const HeaderBody = () => {
 
 
 export default function HomeHeader() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-2.5 px-1 md:px-6 pt-9">
-      <header className="header pb-4 flex-wrap flex justify-between">
-        <div className="header-left flex-wrap items-center flex ">
-          <HeaderBody />
-        </div>
-        <span className="header-right flex items-center">
-          <button
-            key="/assets/images/Header/search.svg"
-            onClick={() => dispatch(toggleSearchModal())}
-            className="header-icon text-gray-300 dark:text-white mr-4"
-            data-testid="nav-button"
-          >
-            <FaSearch size={20} />
-          </button>
-          <span
-            key="/assets/images/Header/settings.svg"
-            onClick={() => navigate(RoutePath.SETTINGS)}
-            className="header-icon !cursor-pointer"
-            data-testid="nav-button"
-          >
-            <img
-              key="/assets/images/Header/settings.svg"
-              className="w-6 h-6"
-              src="/assets/images/Header/settings.svg"
-              alt={''}
-            />
-          </span>
-        </span>
-      </header>
-    </div>
+    <DefaultHeader title="Home">
+      <HeaderBody />
+    </DefaultHeader>
   )
 }

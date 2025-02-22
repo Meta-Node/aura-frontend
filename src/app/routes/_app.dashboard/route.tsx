@@ -8,8 +8,8 @@ import { PreferredView } from 'types/dashboard';
 import { RoutePath } from 'types/router';
 import { __DEV__ } from 'utils/env';
 
-import { Modal } from '../../components/Shared/Modal';
-import RoleSelectModal from './RoleSelectModal';
+import { Modal } from 'components/Shared/Modal';
+import RoleSelectModal from './components/RoleSelectModal';
 
 const Dashboard = () => {
   const preferredView = useSelector(selectPreferredView);
@@ -130,14 +130,14 @@ const Dashboard = () => {
         {(__DEV__ ||
           process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||
           process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
-          <button
-            className={'btn'}
-            onClick={() => dispatch(resetStore())}
-            data-testid="logout-button"
-          >
-            Logout
-          </button>
-        )}
+            <button
+              className={'btn'}
+              onClick={() => dispatch(resetStore())}
+              data-testid="logout-button"
+            >
+              Logout
+            </button>
+          )}
       </div>
       <Modal
         title={'Role Selection'}

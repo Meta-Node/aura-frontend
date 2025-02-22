@@ -1,8 +1,8 @@
 import { useDispatch } from 'store/hooks';
 import { setSplashScreenShown } from 'store/profile';
 
-import { FadeIn, Scale } from '../../components/animations';
-import CustomTrans from '../../components/CustomTrans';
+import { FadeIn, Scale } from 'components/animations';
+import CustomTrans from 'components/CustomTrans';
 
 const Spalsh = () => {
   const dispatch = useDispatch();

@@ -1,15 +1,20 @@
 import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
-import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
-import * as React from 'react';
 import { useMemo, useState } from 'react';
 
-import Dropdown from '../../components/Shared/Dropdown';
-import Modal from '../../components/Shared/Modal';
-import { AuraFilterId } from '../../hooks/useFilters';
-import { AuraSortId } from '../../hooks/useSorts';
-import useViewMode from '../../hooks/useViewMode';
-import { AuraFilterDropdownOption } from '../../types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
+import Dropdown from 'components/Shared/Dropdown';
+import { useSubjectInboundConnectionsContext } from 'contexts/SubjectInboundConnectionsContext';
+import { AuraFilterId } from 'hooks/useFilters';
+import { AuraSortId } from 'hooks/useSorts';
+import { AuraFilterDropdownOption } from 'types';
+import SubjectConnectionsHelpBody from './subject-connections-help-modal';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -19,7 +24,7 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
     setSelectedSort,
     filters,
     sorts,
-  } = useSubjectInboundEvaluationsContext({ subjectId });
+  } = useSubjectInboundConnectionsContext({ subjectId });
 
   return (
     <div>
@@ -43,9 +48,7 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   );
 }
 
-export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
-  const { currentEvaluationCategory } = useViewMode();
-
+export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
   const {
     itemsOriginal,
     itemsFiltered: filteredSubjects,
@@ -56,12 +59,12 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
     clearSortAndFilter,
     toggleFiltersById,
     setSelectedSort,
-  } = useSubjectInboundEvaluationsContext({
+  } = useSubjectInboundConnectionsContext({
     subjectId,
-    evaluationCategory: currentEvaluationCategory,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const customViewOption = useMemo(
@@ -77,7 +80,7 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
   const defaultOption = useMemo(
     () => ({
       value: 0,
-      label: <p>Expert evaluations (default)</p>,
+      label: <p>Smart Sort (default)</p>,
       filterIds: null,
       sortId: null,
       onClick: () => clearSortAndFilter(),
@@ -90,32 +93,23 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
       ...[
         {
           value: 2,
-          label: <p>Negative evaluations</p>,
-          filterIds: [AuraFilterId.EvaluationNegativeEvaluations],
-          sortId: AuraSortId.EvaluatorScore,
+          label: <p>Their Recovery</p>,
+          filterIds: [AuraFilterId.TheirRecovery],
+          sortId: AuraSortId.ConnectionLastUpdated,
           ascending: false,
         },
         {
           value: 3,
-          label: <p>Recent evaluations - level 2+</p>,
-          filterIds: [
-            AuraFilterId.EvaluationEvaluatorLevelTwo,
-            AuraFilterId.EvaluationEvaluatorLevelThree,
-            AuraFilterId.EvaluationEvaluatorLevelFour,
-          ],
-          sortId: AuraSortId.RecentEvaluation,
+          label: <p>Recovery</p>,
+          filterIds: [AuraFilterId.ConnectionTypeRecovery],
+          sortId: AuraSortId.ConnectionLastUpdated,
           ascending: false,
         },
         {
           value: 4,
-          label: <p>Recent evaluations - level 1+</p>,
-          filterIds: [
-            AuraFilterId.EvaluationEvaluatorLevelOne,
-            AuraFilterId.EvaluationEvaluatorLevelTwo,
-            AuraFilterId.EvaluationEvaluatorLevelThree,
-            AuraFilterId.EvaluationEvaluatorLevelFour,
-          ],
-          sortId: AuraSortId.RecentEvaluation,
+          label: <p>Already known+</p>,
+          filterIds: [AuraFilterId.ConnectionTypeAlreadyKnownPlus],
+          sortId: AuraSortId.ConnectionLastUpdated,
           ascending: false,
         },
       ].map((item) => ({
@@ -138,7 +132,7 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
         item.ascending ===
-          (selectedSort.defaultAscending !== selectedSort.isReversed);
+        (selectedSort.defaultAscending !== selectedSort.isReversed);
       if (!isSelectedSort) return false;
       if (!selectedFilters) return !item.filterIds;
       if (!item.filterIds) return false;
@@ -167,31 +161,52 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
           items={dropdownOptions}
           selectedItem={selectedItem}
           onItemClick={(item) => item.onClick()}
-          className="h-10"
+          className="h-10 w-full"
         />
-        <Modal
-          title="Custom View"
-          isOpen={isModalOpen}
-          closeModalHandler={() => setIsModalOpen(false)}
-          className="select-button-with-modal__modal"
+        <Dialog
+          open={isModalOpen}
+          onOpenChange={(value) => setIsModalOpen(value)}
         >
-          <FilterAndSortModalBody subjectId={subjectId} />
-        </Modal>
-        <span className="ml-auto">
+          <DialogContent>
+            <DialogHeader className="font-semibold">
+              <DialogTitle>Custom View</DialogTitle>
+            </DialogHeader>
+            <FilterAndSortModalBody subjectId={subjectId} />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={isHelpModalOpen}
+          onOpenChange={(value) => setIsHelpModalOpen(value)}
+        >
+          <DialogContent>
+            <DialogHeader className="font-semibold">
+              <DialogTitle>Understanding Connections</DialogTitle>
+            </DialogHeader>
+            <SubjectConnectionsHelpBody
+              selectedItemIndex={selectedItem.value}
+            />
+          </DialogContent>
+        </Dialog>
+        <img
+          className="cursor-pointer ml-3 w-5 h-5"
+          src="/assets/images/SubjectProfile/evidence-info-icon.svg"
+          alt="help"
+          onClick={() => setIsHelpModalOpen(true)}
+        />
+        <span className="ml-auto flex items-center">
           (
-          {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
-            .length ??
+          {filteredSubjects?.filter((e) => e.inboundConnection).length ??
             itemsOriginal?.length ??
             '...'}{' '}
           result
-          {(filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
-            .length ?? itemsOriginal?.length) !== 1
+          {(filteredSubjects?.filter((e) => e.inboundConnection).length ??
+            itemsOriginal?.length) !== 1
             ? 's'
             : ''}
           )
         </span>
       </div>
-
       <div className="bg-card border text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
@@ -200,7 +215,7 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
             alt=""
           />
           <input
-            className="w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 bg-card text-card-foreground text-sm h-11 focus:outline-none"
+            className="bg-card text-card-foreground w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
             type="text"
             placeholder="Search in these results"
             value={searchString}

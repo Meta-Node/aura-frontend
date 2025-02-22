@@ -1,20 +1,17 @@
 import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
+import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
+import * as React from 'react';
 import { useMemo, useState } from 'react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-
-import Dropdown from '../../components/Shared/Dropdown';
-import { useSubjectInboundConnectionsContext } from '../../contexts/SubjectInboundConnectionsContext';
-import { AuraFilterId } from '../../hooks/useFilters';
-import { AuraSortId } from '../../hooks/useSorts';
-import { AuraFilterDropdownOption } from '../../types';
-import SubjectConnectionsHelpBody from './SubjectConnectionsHelpModal';
+import Dropdown from 'components/Shared/Dropdown';
+import Modal from 'components/Shared/Modal';
+import { viewModeToSubjectViewMode, viewModeToViewAs } from 'constants/index';
+import { AuraFilterId } from 'hooks/useFilters';
+import { AuraSortId } from 'hooks/useSorts';
+import useViewMode from 'hooks/useViewMode';
+import { AuraFilterDropdownOption } from 'types';
+import { PreferredView, ProfileTab } from 'types/dashboard';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -24,7 +21,7 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
     setSelectedSort,
     filters,
     sorts,
-  } = useSubjectInboundConnectionsContext({ subjectId });
+  } = useOutboundEvaluationsContext({ subjectId });
 
   return (
     <div>
@@ -48,7 +45,17 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   );
 }
 
-export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
+export const ActivityListSearch = ({
+  selectedTab,
+  setSelectedTab,
+  subjectId,
+}: {
+  subjectId: string;
+  selectedTab: ProfileTab;
+  setSelectedTab: (value: ProfileTab) => void;
+}) => {
+  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+
   const {
     itemsOriginal,
     itemsFiltered: filteredSubjects,
@@ -59,12 +66,15 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
     clearSortAndFilter,
     toggleFiltersById,
     setSelectedSort,
-  } = useSubjectInboundConnectionsContext({
+  } = useOutboundEvaluationsContext({
     subjectId,
+    evaluationCategory:
+      selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
+        ? currentEvaluationCategory
+        : viewModeToViewAs[viewModeToSubjectViewMode[currentViewMode]],
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const customViewOption = useMemo(
@@ -80,7 +90,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
   const defaultOption = useMemo(
     () => ({
       value: 0,
-      label: <p>Smart Sort (default)</p>,
+      label: <p>Recent evaluations (default)</p>,
       filterIds: null,
       sortId: null,
       onClick: () => clearSortAndFilter(),
@@ -93,23 +103,16 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
       ...[
         {
           value: 2,
-          label: <p>Their Recovery</p>,
-          filterIds: [AuraFilterId.TheirRecovery],
-          sortId: AuraSortId.ConnectionLastUpdated,
+          label: <p>Negative evaluations</p>,
+          filterIds: [AuraFilterId.EvaluationNegativeEvaluations],
+          sortId: AuraSortId.RecentEvaluation,
           ascending: false,
         },
         {
           value: 3,
-          label: <p>Recovery</p>,
-          filterIds: [AuraFilterId.ConnectionTypeRecovery],
-          sortId: AuraSortId.ConnectionLastUpdated,
-          ascending: false,
-        },
-        {
-          value: 4,
-          label: <p>Already known+</p>,
-          filterIds: [AuraFilterId.ConnectionTypeAlreadyKnownPlus],
-          sortId: AuraSortId.ConnectionLastUpdated,
+          label: <p>Confidence</p>,
+          filterIds: null,
+          sortId: AuraSortId.EvaluationConfidence,
           ascending: false,
         },
       ].map((item) => ({
@@ -132,7 +135,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
         item.ascending ===
-          (selectedSort.defaultAscending !== selectedSort.isReversed);
+        (selectedSort.defaultAscending !== selectedSort.isReversed);
       if (!isSelectedSort) return false;
       if (!selectedFilters) return !item.filterIds;
       if (!item.filterIds) return false;
@@ -154,59 +157,59 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
 
   return (
     <>
-      <div className="text-lg text-white mb-3 mt-3 flex items-center">
+      <div className="text-right font-semibold text-sm">
+        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
+          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
+            {selectedTab === ProfileTab.ACTIVITY ? (
+              <p
+                className="font-medium cursor-pointer text-white"
+                onClick={() => setSelectedTab(ProfileTab.ACTIVITY_ON_MANAGERS)}
+              >
+                View Managers
+              </p>
+            ) : (
+              <p
+                className="font-medium cursor-pointer text-white"
+                onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
+              >
+                View Trainers
+              </p>
+            )}
+          </button>
+        )}
+      </div>
+      <div className="text-lg text-white -mt-3 flex items-center">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
           items={dropdownOptions}
           selectedItem={selectedItem}
           onItemClick={(item) => item.onClick()}
-          className="h-10 w-full"
+          className="h-10"
         />
-        <Dialog
-          open={isModalOpen}
-          onOpenChange={(value) => setIsModalOpen(value)}
+        <Modal
+          title="Custom View"
+          isOpen={isModalOpen}
+          closeModalHandler={() => setIsModalOpen(false)}
+          className="select-button-with-modal__modal"
         >
-          <DialogContent>
-            <DialogHeader className="font-semibold">
-              <DialogTitle>Custom View</DialogTitle>
-            </DialogHeader>
-            <FilterAndSortModalBody subjectId={subjectId} />
-          </DialogContent>
-        </Dialog>
-
-        <Dialog
-          open={isHelpModalOpen}
-          onOpenChange={(value) => setIsHelpModalOpen(value)}
-        >
-          <DialogContent>
-            <DialogHeader className="font-semibold">
-              <DialogTitle>Understanding Connections</DialogTitle>
-            </DialogHeader>
-            <SubjectConnectionsHelpBody
-              selectedItemIndex={selectedItem.value}
-            />
-          </DialogContent>
-        </Dialog>
-        <img
-          className="cursor-pointer ml-3 w-5 h-5"
-          src="/assets/images/SubjectProfile/evidence-info-icon.svg"
-          alt="help"
-          onClick={() => setIsHelpModalOpen(true)}
-        />
-        <span className="ml-auto flex items-center">
+          <FilterAndSortModalBody subjectId={subjectId} />
+        </Modal>
+        <span className="ml-1">
           (
-          {filteredSubjects?.filter((e) => e.inboundConnection).length ??
+          {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
+            .length ??
             itemsOriginal?.length ??
             '...'}{' '}
           result
-          {(filteredSubjects?.filter((e) => e.inboundConnection).length ??
+          {(filteredSubjects?.filter((e) => e.rating).length ??
             itemsOriginal?.length) !== 1
             ? 's'
             : ''}
           )
         </span>
       </div>
+
       <div className="bg-card border text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
         <div className="card__input flex gap-2 items-center rounded px-3.5">
           <img
@@ -215,7 +218,7 @@ export const ConnectionListSearch = ({ subjectId }: { subjectId: string }) => {
             alt=""
           />
           <input
-            className="bg-card text-card-foreground w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
+            className="w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 bg-card text-card-foreground text-sm h-11 focus:outline-none"
             type="text"
             placeholder="Search in these results"
             value={searchString}
