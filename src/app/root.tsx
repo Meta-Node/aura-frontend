@@ -4,13 +4,18 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration }
 import Providers from "./providers";
 import { Route } from "../../.react-router/types/src/app/+types/root";
 
-import "./i18n"
-import "App.scss"
-import "../assets/fonts/fonts.css"
 import GlobalSearchModal from "@/components/GlobalSearchModal";
 import { useSelector } from "@/store/hooks";
 import { selectIsSearchModalOpen, toggleSearchModal } from "@/BrightID/actions";
 import { useDispatch } from "react-redux";
+
+import "./i18n"
+import "App.scss"
+import "../assets/fonts/fonts.css"
+
+
+import "swiper/css"
+
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

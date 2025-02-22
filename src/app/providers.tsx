@@ -4,12 +4,14 @@ import { BrowserHistoryContextProvider } from "@/contexts/BrowserHistoryContext"
 import { MyEvaluationsContextProvider } from "@/contexts/MyEvaluationsContext";
 import { RefreshEvaluationsContextProvider } from "@/contexts/RefreshEvaluationsContext";
 import { SubjectsListContextProvider } from "@/contexts/SubjectsListContext";
-import { persistor, store } from "@/store";
+import { configureAppStore } from "@/store";
 import { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import NodeApiGateContextProvider from 'BrightID/components/NodeApiGate';
 
+
+const { persistor, store } = configureAppStore()
 
 export default function Providers({ children }: PropsWithChildren) {
   return (

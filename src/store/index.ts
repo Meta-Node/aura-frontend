@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import reducers from 'BrightID/reducer';
-import localForage from 'localforage';
 import { combineReducers } from 'redux';
 import { createMigrate, persistReducer, persistStore } from 'redux-persist';
-import { __DEV__ } from 'utils/env';
+import localForage from 'localforage';
 
+import reducers from 'BrightID/reducer';
+import { __DEV__ } from 'utils/env';
 import { apiSlice } from './api/slice';
 import { migrations } from './migrations';
 import { profileSlice } from './profile';
@@ -23,39 +23,41 @@ const persistConfig = {
   migrate: createMigrate(migrations, { debug: __DEV__ }),
 };
 
-const persistedReducer = persistReducer(
-  persistConfig,
-  combineReducers({
-    ...reducers,
-    profile: profileSlice.reducer,
-  }),
-);
-
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          'persist/PERSIST',
-          'persist/REHYDRATE',
-          'recoveryData/setRecoveryChannel',
-          'recoveryData/init',
-          apiSlice.reducerPath,
-        ],
-        ignoredPaths: ['recoveryData'],
-      },
-      immutableCheck: false,
-    })
-      .concat(apiSlice.middleware)
-      .concat(),
+const rootReducer = combineReducers({
+  ...reducers,
+  profile: profileSlice.reducer,
 });
 
-export const persistor = persistStore(store);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export type AppStore = typeof store;
+export function configureAppStore(preloadedState?: any) {
+  const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [
+            'persist/PERSIST',
+            'persist/REHYDRATE',
+            'recoveryData/setRecoveryChannel',
+            'recoveryData/init',
+            apiSlice.reducerPath,
+          ],
+          ignoredPaths: ['recoveryData'],
+        },
+        immutableCheck: false,
+      }).concat(apiSlice.middleware),
+      preloadedState
+  });
+
+  const persistor = persistStore(store);
+
+  setupListeners(store.dispatch);
+
+  return { store, persistor };
+}
+
+export type AppStore = ReturnType<typeof configureAppStore>['store'];
 export type AppDispatch = AppStore['dispatch'];
-export type GetState = typeof store.getState;
+export type GetState = AppStore['getState'];
 export type RootState = ReturnType<GetState>;
-
-setupListeners(store.dispatch);

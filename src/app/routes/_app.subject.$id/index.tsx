@@ -365,7 +365,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
         <EvidenceHelpModal />
       </Modal>
       <div className="flex gap-2 -mb-1 items-center">
-        <p className="font-bold text-lg text-white">Evidence</p>
+        <p className="font-bold text-lg">Evidence</p>
         <img
           onClick={() => setIsHelpModalOpen(true)}
           className="cursor-pointer w-5 h-5"
