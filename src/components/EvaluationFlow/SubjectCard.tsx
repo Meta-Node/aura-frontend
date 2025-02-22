@@ -68,7 +68,7 @@ export const SubjectCard = ({
                 {name}
               </p>
 
-              <p className="text-gray10 dark:text-gray70">
+              <div className="text-gray10 dark:text-gray70">
                 Level:{' '}
                 <span className="font-medium text-black dark:text-white">
                   {auraLevel}
@@ -81,7 +81,7 @@ export const SubjectCard = ({
                     </span>
                   </p>
                 </span>
-              </p>
+              </div>
               {progress < 0 ? (
                 '😈'
               ) : (
@@ -102,6 +102,10 @@ export const SubjectCard = ({
             className="evaluation-right__bottom"
           >
             <ReactECharts
+              opts={{
+                height: 48,
+                width: "auto"
+              }}
               style={{ height: '48px', width: '100%' }}
               option={impactChartSmallOption}
             />

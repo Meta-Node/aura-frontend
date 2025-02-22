@@ -19,6 +19,7 @@ import {
   valueColorMap,
 } from '../constants/chart';
 import { EvaluationCategory } from '../types/dashboard';
+import { selectPreferredTheme } from '@/BrightID/actions';
 
 export const useSubjectVerifications = (
   subjectId: string | null | undefined,
@@ -51,6 +52,7 @@ export const useImpactEChartOption = (
   shouldFetchImages?: boolean,
 ) => {
   const params = useParams();
+  const preferredTheme = useSelector(selectPreferredTheme);
   const focusedSubjectId = params.subjectIdProp;
 
   const authData = useSelector(selectAuthData);
@@ -67,11 +69,14 @@ export const useImpactEChartOption = (
   const [profileImages, setProfileImages] = useState(() => {
     if (auraTopImpacts.length > 5) return {} as Record<string, string | null>;
 
-    return auraTopImpacts.reduce((prev, curr) => {
-      prev[curr.evaluator] = createBlockiesImage(curr.evaluator);
+    return auraTopImpacts.reduce(
+      (prev, curr) => {
+        prev[curr.evaluator] = createBlockiesImage(curr.evaluator);
 
-      return prev;
-    }, {} as Record<string, string | null>);
+        return prev;
+      },
+      {} as Record<string, string | null>,
+    );
   });
 
   const auraSumImpacts = useMemo(
@@ -100,12 +105,14 @@ export const useImpactEChartOption = (
               profilePhoto,
               50,
               50,
+              preferredTheme,
             );
           } catch (e) {
             images[impact.evaluator] = await renderImageCover(
               createBlockiesImage(impact.evaluator),
               30,
               30,
+              preferredTheme,
             );
           }
         }),
@@ -114,7 +121,13 @@ export const useImpactEChartOption = (
     };
 
     fetchUserImages();
-  }, [auraTopImpacts, authData, brightIdBackup, shouldFetchImages]);
+  }, [
+    auraTopImpacts,
+    preferredTheme,
+    authData,
+    brightIdBackup,
+    shouldFetchImages,
+  ]);
 
   const impactChartOption: EChartsOption = useMemo(() => {
     const maxImpact = auraTopImpacts
@@ -184,23 +197,26 @@ export const useImpactEChartOption = (
                   formatter: (params: any) => {
                     return `{img${params.dataIndex}|}`;
                   },
-                  rich: auraTopImpacts.reduce((prev, curr, index) => {
-                    prev[`img${index}`] = {
-                      height: 35,
-                      width: 35,
-                      align: 'center',
-                      backgroundColor: {
-                        image: profileImages[curr.evaluator],
-                      },
-                      borderRadius: 12,
-                      style: {
-                        'border-radius': '12px',
-                        overflow: 'hidden',
-                      },
-                    };
+                  rich: auraTopImpacts.reduce(
+                    (prev, curr, index) => {
+                      prev[`img${index}`] = {
+                        height: 35,
+                        width: 35,
+                        align: 'center',
+                        backgroundColor: {
+                          image: profileImages[curr.evaluator],
+                        },
+                        borderRadius: 12,
+                        style: {
+                          'border-radius': '12px',
+                          overflow: 'hidden',
+                        },
+                      };
 
-                    return prev;
-                  }, {} as Record<string, any>),
+                      return prev;
+                    },
+                    {} as Record<string, any>,
+                  ),
                 },
           data: auraTopImpacts.map((item) => ({
             value: item.impact,
@@ -215,8 +231,8 @@ export const useImpactEChartOption = (
                 authData?.brightId === item.evaluator
                   ? userRatingColorMap
                   : item.evaluator === focusedSubjectId
-                  ? subjectRatingColorMap
-                  : valueColorMap,
+                    ? subjectRatingColorMap
+                    : valueColorMap,
               ),
               borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
             },
@@ -262,8 +278,8 @@ export const useImpactEChartOption = (
                       authData?.brightId === item.evaluator
                         ? userRatingColorMap
                         : item.evaluator === focusedSubjectId
-                        ? subjectRatingColorMap
-                        : valueColorMap,
+                          ? subjectRatingColorMap
+                          : valueColorMap,
                     ),
               borderRadius: item.impact >= 0 ? [2, 2, 0, 0] : [0, 0, 2, 2],
             },

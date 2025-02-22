@@ -10,11 +10,6 @@ import { apiSlice } from './api/slice';
 import { migrations } from './migrations';
 import { profileSlice } from './profile';
 
-localForage.config({
-  storeName: 'keyvaluepairs',
-  name: 'localforage',
-});
-
 const persistConfig = {
   key: 'root',
   version: 4,
@@ -31,6 +26,11 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export function configureAppStore(preloadedState?: any) {
+  localForage.config({
+    storeName: 'keyvaluepairs',
+    name: 'localforage',
+  });
+
   const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
@@ -47,7 +47,7 @@ export function configureAppStore(preloadedState?: any) {
         },
         immutableCheck: false,
       }).concat(apiSlice.middleware),
-      preloadedState
+    preloadedState,
   });
 
   const persistor = persistStore(store);
