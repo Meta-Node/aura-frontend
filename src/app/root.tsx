@@ -3,7 +3,6 @@ import { PropsWithChildren } from "react";
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import Providers from "./providers";
 import { Route } from "../../.react-router/types/src/app/+types/root";
-// import EvaluationOpNotifications from "@/components/EvaluationOpNotifications";
 
 import "./i18n"
 import "App.scss"
@@ -59,7 +58,6 @@ export default function App() {
   const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
   const dispatch = useDispatch()
 
-
   return (
     <>
       {isSearchModalOpen && (
@@ -67,9 +65,6 @@ export default function App() {
       )}
       <Outlet />
       <ThemeResolver />
-      {/* <div className="sticky bottom-2 pr-5 pl-5">
-        <EvaluationOpNotifications />
-      </div> */}
     </>
   )
 }

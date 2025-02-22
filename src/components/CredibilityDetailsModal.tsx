@@ -144,7 +144,7 @@ const CredibilityDetailsForRole = ({
         Your Evaluation Impact:{' '}
         {loading ? (
           <span className="text-gray20">...</span>
-        ) : myRatingToSubject && Number(myRatingToSubject.rating) > 0 ? (
+        ) : myRatingToSubject && Number(myRatingToSubject.rating) !== 0 ? (
           <div className="inline-flex items-center gap-3">
             <span
               className={`font-bold`}
@@ -152,7 +152,7 @@ const CredibilityDetailsForRole = ({
                 color: '#6C34B3',
               }}
             >
-              {impactPercentage ?? 0}%
+              {Number(myRatingToSubject) > 0 ? 1 : -1 * (impactPercentage ?? 0)}%
             </span>
 
             <Button
@@ -168,8 +168,9 @@ const CredibilityDetailsForRole = ({
           <span>
             none.{' '}
             <button
+              disabled={subjectId === authData?.brightId}
               onClick={() => setShowEvaluationFlow(true)}
-              className="text-pastel-blue text-sm"
+              className="text-pastel-blue disabled:opacity-50 text-sm"
             >
               Evaluate Now
             </button>
@@ -297,13 +298,11 @@ const CredibilityDetails = ({
           }}
         >
           <p
-            className={`rounded-md ${
-              authorizedTabs.length > 0 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out ${
-              evaluationCategory === EvaluationCategory.SUBJECT
+            className={`rounded-md ${authorizedTabs.length > 0 ? '' : 'hidden'
+              } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out ${evaluationCategory === EvaluationCategory.SUBJECT
                 ? 'background bg-orange dark:text-black text-white font-bold'
                 : 'bg-transparent text-black dark:text-white font-medium'
-            }`}
+              }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.SUBJECT)}
             data-testid="table-view-switch-option-one"
           >
@@ -318,13 +317,11 @@ const CredibilityDetails = ({
             Subject
           </p>
           <p
-            className={`rounded-md ${
-              authorizedTabs.length > 1 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out ${
-              evaluationCategory === EvaluationCategory.PLAYER
+            className={`rounded-md ${authorizedTabs.length > 1 ? '' : 'hidden'
+              } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out ${evaluationCategory === EvaluationCategory.PLAYER
                 ? 'background bg-purple text-white font-bold'
                 : 'bg-transparent text-black dark:text-white font-medium'
-            }`}
+              }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.PLAYER)}
             data-testid="table-view-switch-option-one"
           >
@@ -332,13 +329,11 @@ const CredibilityDetails = ({
             Player
           </p>
           <p
-            className={`rounded-md ${
-              authorizedTabs.length > 2 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 justify-center items-center transition-all duration-300 ease-in-out ${
-              evaluationCategory === EvaluationCategory.TRAINER
+            className={`rounded-md ${authorizedTabs.length > 2 ? '' : 'hidden'
+              } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 justify-center items-center transition-all duration-300 ease-in-out ${evaluationCategory === EvaluationCategory.TRAINER
                 ? 'background bg-green text-white font-bold'
                 : 'bg-transparent text-black dark:text-white font-medium'
-            }`}
+              }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.TRAINER)}
             data-testid="table-view-switch-option-two"
           >
@@ -346,13 +341,11 @@ const CredibilityDetails = ({
             Trainer
           </p>
           <p
-            className={`rounded-md ${
-              authorizedTabs.length > 3 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 justify-center items-center transition-all duration-300 ease-in-out ${
-              evaluationCategory === EvaluationCategory.MANAGER
+            className={`rounded-md ${authorizedTabs.length > 3 ? '' : 'hidden'
+              } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 justify-center items-center transition-all duration-300 ease-in-out ${evaluationCategory === EvaluationCategory.MANAGER
                 ? 'background bg-blue text-white font-bold'
                 : 'bg-transparent text-black dark:text-white font-medium'
-            }`}
+              }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.MANAGER)}
             data-testid="table-view-switch-option-two"
           >

@@ -1,4 +1,5 @@
 import { selectPreferredTheme } from "@/BrightID/actions";
+import EvaluationOpNotifications from "@/components/EvaluationOpNotifications";
 import { Outlet } from "react-router-dom";
 import { useSelector } from "store/hooks";
 
@@ -11,6 +12,10 @@ export default function AppLanding() {
 
       <div className="app">
         <Outlet />
+
+        <div className="sticky bottom-2 pr-5 pl-5">
+          <EvaluationOpNotifications />
+        </div>
       </div>
     </div>
   )

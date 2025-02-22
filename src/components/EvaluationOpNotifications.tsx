@@ -74,8 +74,8 @@ function EvaluateOpNotification({
             />
             <span
               className={`font-medium text-xs  ${Math.abs(notification.operation.confidence) > 2
-                  ? 'text-white'
-                  : 'text-black'
+                ? 'text-white'
+                : 'text-black'
                 }`}
             >
               (
@@ -186,19 +186,15 @@ export default function EvaluationOpNotifications() {
     localStorage.setItem('prevOperations', JSON.stringify(operations));
   }, [addNotification, operations, refreshEvaluations]);
 
-  return notifications.length === 0 ? (
-    <></>
-  ) : (
-    <div className="w-full">
-      <div className="flex flex-col gap-2">
-        {notifications.map((notification) => (
-          <EvaluateOpNotification
-            key={notification.id}
-            notification={notification}
-            dismiss={() => removeNotification(notification.id)}
-          />
-        ))}
-      </div>
+  return <div className="w-full">
+    <div className="flex flex-col gap-2">
+      {notifications.map((notification) => (
+        <EvaluateOpNotification
+          key={notification.id}
+          notification={notification}
+          dismiss={() => removeNotification(notification.id)}
+        />
+      ))}
     </div>
-  );
+  </div>
 }

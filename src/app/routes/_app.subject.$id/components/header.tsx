@@ -30,7 +30,6 @@ export default function SubjectProfileHeader() {
   const authData = useSelector(selectAuthData);
 
   const subjectIdProp = params["id"];
-  console.log(params)
 
   const subjectId = useMemo(
     () => subjectIdProp ?? authData?.brightId,
