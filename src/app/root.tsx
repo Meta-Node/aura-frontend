@@ -8,6 +8,10 @@ import { Route } from "../../.react-router/types/src/app/+types/root";
 import "./i18n"
 import "App.scss"
 import "../assets/fonts/fonts.css"
+import GlobalSearchModal from "@/components/GlobalSearchModal";
+import { useSelector } from "@/store/hooks";
+import { selectIsSearchModalOpen, toggleSearchModal } from "@/BrightID/actions";
+import { useDispatch } from "react-redux";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -52,8 +56,15 @@ export function Layout({ children }: PropsWithChildren) {
 
 
 export default function App() {
+  const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
+  const dispatch = useDispatch()
+
+
   return (
     <>
+      {isSearchModalOpen && (
+        <GlobalSearchModal onClose={() => dispatch(toggleSearchModal())} />
+      )}
       <Outlet />
       <ThemeResolver />
       {/* <div className="sticky bottom-2 pr-5 pl-5">
