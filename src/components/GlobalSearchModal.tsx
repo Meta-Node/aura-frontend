@@ -35,6 +35,7 @@ const GlobalSearchBody: FC = () => {
             <input
               className="bg-card font-medium dark:placeholder:text-gray-50 placeholder-black2 w-full text-sm h-11 focus:outline-none"
               type="text"
+              autoFocus
               placeholder="Subject name or ID ..."
               value={searchString}
               onChange={(e) => setSearchString(e.target.value)}

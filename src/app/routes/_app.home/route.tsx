@@ -140,10 +140,10 @@ const Home = () => {
 
 const HomePage = () => {
   return (
-    <div>
+    <>
       <HomeHeader />
       <Home />
-    </div>
+    </>
   )
 }
 
