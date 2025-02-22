@@ -2,6 +2,7 @@ import { toggleSearchModal } from "@/BrightID/actions";
 import { useDispatch } from "@/store/hooks";
 import { selectAuthData } from "@/store/profile/selectors";
 import { RoutePath } from "@/types/router";
+import { HouseIcon, SearchIcon, SettingsIcon } from "lucide-react";
 import { FC, PropsWithChildren } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -18,7 +19,7 @@ export const HeaderBody: FC<PropsWithChildren & { title?: string }> = ({ title, 
   return (
     <>
       <Link to={RoutePath.HOME} className="flex items-center gap-1 mr-2">
-        <img src="/assets/images/Header/home.svg" alt="home" width={20} height={20} />
+        <HouseIcon className="w-6 h-6" />
       </Link>
       <span className="text-xl font-semibold">
         {title ?? "Home"}
@@ -43,26 +44,16 @@ export default function DefaultHeader({ title, children }: { title?: string } & 
         </div>
         <span className="header-right flex items-center">
           <button
-            key="/assets/images/Header/search.svg"
             onClick={() => dispatch(toggleSearchModal())}
-            className="header-icon text-gray-300 dark:text-white mr-4"
-            data-testid="nav-button"
+            className="header-icon dark:text-white mr-4"
           >
-            <FaSearch size={20} />
+            <SearchIcon size={20} />
           </button>
-          <span
-            key="/assets/images/Header/settings.svg"
-            onClick={() => navigate(RoutePath.SETTINGS)}
-            className="header-icon !cursor-pointer"
-            data-testid="nav-button"
-          >
-            <img
-              key="/assets/images/Header/settings.svg"
+          <Link to={RoutePath.SETTINGS}>
+            <SettingsIcon
               className="w-6 h-6"
-              src="/assets/images/Header/settings.svg"
-              alt={''}
             />
-          </span>
+          </Link>
         </span>
       </header>
     </div>

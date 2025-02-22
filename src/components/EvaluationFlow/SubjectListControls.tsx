@@ -171,7 +171,7 @@ export const SubjectListControls = ({
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
         item.ascending ===
-          (selectedSort.defaultAscending !== selectedSort.isReversed);
+        (selectedSort.defaultAscending !== selectedSort.isReversed);
       if (!isSelectedSort) return false;
       if (!selectedFilters) return !item.filterIds;
       if (!item.filterIds) return false;
@@ -240,7 +240,7 @@ export const SubjectListControls = ({
           <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
             {' '}
             <p
-              className="ml-auto font-medium cursor-pointer text-white"
+              className="ml-auto font-medium cursor-pointer dark:text-white"
               onClick={() =>
                 setPreferredView(PreferredView.MANAGER_EVALUATING_MANAGER)
               }
@@ -252,7 +252,7 @@ export const SubjectListControls = ({
         {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
           <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
             <p
-              className="ml-auto font-medium cursor-pointer text-white"
+              className="ml-auto font-medium cursor-pointer dark:text-white"
               onClick={() =>
                 setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
               }
@@ -288,7 +288,7 @@ export const SubjectListControls = ({
             '...'}{' '}
           result
           {(filteredSubjects?.length ?? brightIdBackup?.connections.length) !==
-          1
+            1
             ? 's'
             : ''}
           )
