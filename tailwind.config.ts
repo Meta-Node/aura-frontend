@@ -12,6 +12,7 @@ const tailwindConfig = {
         size: 'width, height',
       },
       colors: {
+        "background-light": "#e9e9e9",
         'dark-primary': '#18181b',
         gray00: '#393939',
         gray10: '#343434',

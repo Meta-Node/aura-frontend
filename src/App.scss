@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .app_container {
-  background-image: url('../public/assets/images/app-background.svg'),
-    url('../public/assets/images/app-background-blub.svg');
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
-  background-size: cover, cover;
+  // background-image: url('../public/assets/images/app-background.svg'),
+  //   url('../public/assets/images/app-background-blub.svg');
+  // background-position: center, center;
+  // background-repeat: no-repeat, no-repeat;
+  // background-size: cover, cover;
 
   &__dark {
     @apply bg-black3;
@@ -19,10 +19,10 @@
 }
 
 .app_container_dark_bg {
-  background-image: url('../public/assets/images/app-background-blub-dark.svg');
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
-  background-size: cover, cover;
+  // background-image: url('../public/assets/images/app-background-blub-dark.svg');
+  // background-position: center, center;
+  // background-repeat: no-repeat, no-repeat;
+  // background-size: cover, cover;
 }
 
 .app {

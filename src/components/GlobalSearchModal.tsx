@@ -25,7 +25,7 @@ const GlobalSearchBody: FC = () => {
           onSearch();
         }}
       >
-        <div className="bg-card text-card-foreground rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
+        <div className="bg-card text-card-foreground rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px] border">
           <div className="card__input flex gap-2 items-center rounded-lg px-3.5">
             <img
               className="w-4 h-4"

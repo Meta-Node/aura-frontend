@@ -8,7 +8,7 @@ import { useSelector } from "store/hooks";
 export default function AppLanding() {
   const prefferedTheme = useSelector(selectPreferredTheme)
   return (
-    <div className={`bg-background app_container_dark_bg ${prefferedTheme === 'dark' ? 'dark app_container_dark_bg' : 'app_container'}`}>
+    <div className={`bg-background app_container_dark_bg ${prefferedTheme === 'dark' ? 'app_container_dark_bg' : 'bg-background-light'}`}>
 
       <div className="app">
         <Outlet />
