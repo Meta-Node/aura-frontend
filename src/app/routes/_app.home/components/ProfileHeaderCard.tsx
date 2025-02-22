@@ -30,15 +30,13 @@ const ProfileHeaderCard: FC<{
   return (
     <Card className="relative p-4">
       <div className="flex justify-center flex-col gap-2">
-        <div className="evaluation-left__top flex flex-1 gap-3">
-          <div className="evaluation__profile">
-            <BrightIdProfilePicture
-              className={`rounded-full w-16 h-16 border-2 ${getViewModeSubjectBorderColorClass(
-                currentViewMode,
-              )} bg-center bg-cover`}
-              subjectId={subjectId}
-            />
-          </div>
+        <div className="flex flex-1 gap-3">
+          <BrightIdProfilePicture
+            className={`rounded-full w-16 h-16 border-2 ${getViewModeSubjectBorderColorClass(
+              currentViewMode,
+            )} bg-center bg-cover`}
+            subjectId={subjectId}
+          />
           <div className="evaluation__info flex flex-1 flex-col">
             <p className="text-black dark:text-white font-medium">{name}</p>
 

@@ -1,6 +1,66 @@
+import { BrightIdBackupConnection } from 'types';
+
+export const TEST_BRIGHT_ID = 'TEST_BRIGHTID';
+export const TEST_BRIGHT_PASSWORD = 'TEST_BRIGHTID_PASSWORD';
+
+export const generateRandomBrightIdConnectionBackup = (
+  incomingLevel = 'already known',
+) => {
+  return {
+    id: Math.random().toString(36).slice(2, 16),
+    name: `Name ${Math.random().toString(36).slice(2, 5)}`,
+    connectionDate: Date.now(),
+    photo: {
+      filename: `${Math.random().toString(36).slice(2, 16)}.jpg`,
+    },
+    status: 'verified', // static status
+    notificationToken: 'TOKEN', // static token
+    level: 'just met', // static level
+    socialMedia: [], // empty array for simplicity
+    verifications: [
+      {
+        name: 'Seed',
+        block: Math.floor(Math.random() * 100000),
+        timestamp: Date.now(),
+        hash: 'HASH',
+      },
+      {
+        name: 'SeedConnected',
+        rank: Math.floor(Math.random() * 100),
+        block: Math.floor(Math.random() * 100000),
+        timestamp: Date.now(),
+        hash: 'HASH',
+      },
+      {
+        name: 'BrightID',
+        block: Math.floor(Math.random() * 100000),
+        timestamp: Date.now(),
+        hash: 'HASH',
+      },
+    ],
+    timestamp: Date.now(),
+    incomingLevel: incomingLevel,
+    reportReason: null,
+  } as BrightIdBackupConnection;
+};
+
+export const BRIGHTID_BACKUP = {
+  userData: {
+    id: TEST_BRIGHT_ID,
+    name: 'Test User',
+    photo: {
+      filename: 'test-image.jpg',
+    },
+  },
+  connections: Array.from({ length: 5 }, () =>
+    generateRandomBrightIdConnectionBackup(),
+  ),
+  groups: [],
+};
+
 const data = {
   data: {
-    id: 't0sBPD1NMz_vSYZlv8gCXMfyQcO5puzKcf4eCzBPrP8',
+    id: TEST_BRIGHT_ID,
     sponsored: false,
     verifications: [
       {
@@ -17,7 +77,7 @@ const data = {
                 level: 1,
                 impacts: [
                   {
-                    evaluator: 'HsKfPmmRtoaws5CQd44Z8u6FhtftTESyL_Q1HT30htQ',
+                    evaluator: 'BRIGHTID',
                     level: 3,
                     score: 104207372.08003037,
                     confidence: 1,
@@ -32,36 +92,18 @@ const data = {
       {
         name: 'SeedConnected',
         rank: 5,
-        connected: [
-          'lQ1kMUbQXuIW_2c_WxF5f6Ko8Gqg6eVaWuu9cQjZkYQ',
-          'qOKewbkPJTnu7rVAA8j3NTCt7EaBZ5fm_cJfEqCHTas',
-          'ufl4PdK91Qf_1Efb61chYN6Sa6BZjU8mjPSqBbrDhDk',
-          'rTRQfFHu79WSyd-dOAG0Q_wCZEKNCER3ugevL5S6yl0',
-          '8k0uJqf0wtapuC4K2aLPCk9IUe5fv_w33gt5twFI6Go',
-        ],
-        communities: [
-          '-z6lbLFK4yxj1YmrUz7dYttceEg1XWZRoD_V8xE8qC0',
-          '3vqWfpOxP2fR',
-          'Dbu8rcx59Cml',
-          'ETxf2qlnq4Kh',
-          'Pr5SHCQkGvSc',
-          'mKkG_Vk0fOoy',
-          'lQ1kMUbQXuIW_2c_WxF5f6Ko8Gqg6eVaWuu9cQjZkYQ',
-          'qOKewbkPJTnu7rVAA8j3NTCt7EaBZ5fm_cJfEqCHTas',
-          'ufl4PdK91Qf_1Efb61chYN6Sa6BZjU8mjPSqBbrDhDk',
-          'rTRQfFHu79WSyd-dOAG0Q_wCZEKNCER3ugevL5S6yl0',
-          '8k0uJqf0wtapuC4K2aLPCk9IUe5fv_w33gt5twFI6Go',
-        ],
+        connected: ['BRIGHTID', 'BRIGHTID', 'BRIGHTID', 'BRIGHTID', 'BRIGHTID'],
+        communities: ['HASH', 'HASH'],
         reported: [],
         block: 30138000,
         timestamp: 1740239030320,
-        hash: 'l9CqwO1b_As_Fjx0JsmDtBOgTk9UyTOVqw_xdtMhrMk',
+        hash: 'HASH',
       },
       {
         name: 'BrightID',
         block: 30138000,
         timestamp: 1740239050922,
-        hash: 'C_IuYpeFBrEYHiJxiXFKUniEOwl4VWzFZVpGH1PRM_w',
+        hash: 'HASH',
       },
     ],
     recoveryConnections: [],
@@ -69,7 +111,7 @@ const data = {
     groupsNum: 0,
     reports: [],
     createdAt: 1738434513000,
-    signingKeys: ['t0sBPD1NMz/vSYZlv8gCXMfyQcO5puzKcf4eCzBPrP8='],
+    signingKeys: ['SIGN_KEY'],
     requiredRecoveryNum: 2,
   },
 };
