@@ -1,26 +1,25 @@
 version: 2.1
 
 description: Aura Testing Config for Circle CI
-
 jobs:
   test:
     docker:
-      - image: cimg/node:18.17
+      - image: oven/bun:latest
     steps:
       - checkout
       - restore_cache:
           keys:
-            - node-modules-{{ checksum "yarn.lock" }}
+            - bun-modules-{{ checksum "bun.lockb" }}
       - run:
           name: Install dependencies
-          command: yarn install --frozen-lockfile
+          command: bun install
       - save_cache:
           paths:
             - node_modules
-          key: node-modules-{{ checksum "yarn.lock" }}
+          key: bun-modules-{{ checksum "bun.lockb" }}
       - run:
-          name: Run Integration Tests
-          command: yarn test:integration
+          name: Run Vitest Integration Tests
+          command: bun run test-vite
       - store_test_results:
           path: ./test-results
       - store_artifacts:
