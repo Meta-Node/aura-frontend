@@ -19,11 +19,11 @@
 }
 
 .app {
-  @apply max-w-[460px] w-screen mx-auto h-screen flex flex-col;
+  @apply mx-auto flex h-screen w-screen max-w-[460px] flex-col;
 }
 
 .page {
-  @apply px-1 md:px-5 pb-4 overflow-y-auto;
+  @apply overflow-y-auto px-1 pb-4 md:px-5;
   @apply no-scrollbar;
 
   &__splash {
@@ -66,50 +66,50 @@
 }
 
 .row {
-  @apply flex justify-between w-full gap-4 items-stretch;
+  @apply flex w-full items-stretch justify-between gap-4;
 }
 
 .card {
-  @apply bg-card dark:text-white rounded-[10px] px-[18px] py-4 flex-1 flex flex-col justify-center;
+  @apply flex flex-1 flex-col justify-center rounded-[10px] bg-card px-[18px] py-4 dark:text-white;
 }
 
 .icon {
-  @apply w-10 h-10;
+  @apply h-10 w-10;
 }
 
 .btn {
-  @apply text-white py-3 px-4 rounded-[6px] font-bold bg-button-primary;
+  @apply rounded-[6px] bg-button-primary px-4 py-3 font-bold text-white;
 
   &--icon {
     @apply p-2;
 
     & img {
-      @apply w-4 h-4;
+      @apply h-4 w-4;
     }
   }
 
   &--small {
-    @apply px-4 py-1.5 font-medium rounded;
+    @apply rounded px-4 py-1.5 font-medium;
   }
 
   &--medium {
-    @apply px-4 py-2 font-bold rounded-md;
+    @apply rounded-md px-4 py-2 font-bold;
   }
 
   &--big {
-    @apply p-3.5 font-bold text-xl rounded-lg;
+    @apply rounded-lg p-3.5 text-xl font-bold;
   }
 
   &--outlined {
-    @apply bg-transparent text-button-primary dark:text-white-90-card border border-button-primary dark:border-white-90-card;
+    @apply border border-button-primary bg-transparent text-button-primary dark:border-white-90-card dark:text-white-90-card;
   }
 
   &--outlined-big {
-    @apply py-3.5 rounded-xl font-bold bg-transparent text-button-primary border-2 border-button-primary;
+    @apply rounded-xl border-2 border-button-primary bg-transparent py-3.5 font-bold text-button-primary;
   }
 
   &--text-black {
-    @apply text-black font-semibold;
+    @apply font-semibold text-black;
   }
 
   &--bg-orange {

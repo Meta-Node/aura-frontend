@@ -67,7 +67,11 @@ const Home = () => {
     evaluationCategory: currentRoleEvaluatorEvaluationCategory,
   });
 
-  if (!authData) {
+  useEffect(() => {
+    if (!authData?.brightId) navigate('/');
+  }, [authData, navigate]);
+
+  if (!authData?.brightId) {
     return <div>Not logged in</div>;
   }
 
@@ -105,7 +109,7 @@ const Home = () => {
             />
             {filteredSubjects && !loading ? (
               filteredSubjects.length > 0 ? (
-                <div className="overflow-auto flex-grow no-scrollbar">
+                <div className="no-scrollbar flex-grow overflow-auto">
                   <InfiniteScrollLocal
                     getScrollParent={() =>
                       document.getElementById('scrollable-div')
@@ -114,7 +118,11 @@ const Home = () => {
                     items={filteredSubjects}
                     //TODO: optimize rendering by caching the rendered components
                     renderItem={(conn, index) => (
-                      <SubjectCard key={conn.id} index={index} subjectId={conn.id} />
+                      <SubjectCard
+                        key={conn.id}
+                        index={index}
+                        subjectId={conn.id}
+                      />
                     )}
                   />
                 </div>
@@ -137,14 +145,13 @@ const Home = () => {
   );
 };
 
-
 const HomePage = () => {
   return (
     <>
       <HomeHeader />
       <Home />
     </>
-  )
-}
+  );
+};
 
 export default HomePage;

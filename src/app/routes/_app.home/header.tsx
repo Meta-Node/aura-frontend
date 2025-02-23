@@ -1,17 +1,26 @@
-import { selectManagerRoleState, selectTrainerRoleState, RoleStatus } from "@/BrightID/actions";
-import DefaultHeader from "@/components/Shared/DefaultHeader";
-import Tooltip from "@/components/Shared/Tooltip";
-import { getViewModeBackgroundColorClass, preferredViewIcon } from "@/constants";
-import { SubjectInboundConnectionsContextProvider } from "@/contexts/SubjectInboundConnectionsContext";
-import { SubjectInboundEvaluationsContextProvider } from "@/contexts/SubjectInboundEvaluationsContext";
-import { SubjectOutboundEvaluationsContextProvider, useOutboundEvaluationsContext } from "@/contexts/SubjectOutboundEvaluationsContext";
-import { useSubjectVerifications } from "@/hooks/useSubjectVerifications";
-import useViewMode from "@/hooks/useViewMode";
-import { selectAuthData } from "@/store/profile/selectors";
-import { PreferredView, EvaluationCategory } from "@/types/dashboard";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-
+import {
+  selectManagerRoleState,
+  selectTrainerRoleState,
+  RoleStatus,
+} from '@/BrightID/actions';
+import DefaultHeader from '@/components/Shared/DefaultHeader';
+import Tooltip from '@/components/Shared/Tooltip';
+import {
+  getViewModeBackgroundColorClass,
+  preferredViewIcon,
+} from '@/constants';
+import { SubjectInboundConnectionsContextProvider } from '@/contexts/SubjectInboundConnectionsContext';
+import { SubjectInboundEvaluationsContextProvider } from '@/contexts/SubjectInboundEvaluationsContext';
+import {
+  SubjectOutboundEvaluationsContextProvider,
+  useOutboundEvaluationsContext,
+} from '@/contexts/SubjectOutboundEvaluationsContext';
+import { useSubjectVerifications } from '@/hooks/useSubjectVerifications';
+import useViewMode from '@/hooks/useViewMode';
+import { selectAuthData } from '@/store/profile/selectors';
+import { PreferredView, EvaluationCategory } from '@/types/dashboard';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const ViewTooltip = ({
   view,
@@ -29,17 +38,18 @@ const ViewTooltip = ({
   return (
     <Tooltip
       content={content}
-      className={`p-1 rounded ${currentViewMode === view
-        ? getViewModeBackgroundColorClass(currentViewMode)
-        : 'bg-gray100'
-        } ml-2 cursor-pointer`}
+      data-testid={`hometab-${content}`}
+      className={`rounded p-1 ${
+        currentViewMode === view
+          ? getViewModeBackgroundColorClass(currentViewMode)
+          : 'bg-gray100'
+      } ml-2 cursor-pointer`}
       onClick={() => setPreferredView(view)}
     >
-      <img className="w-4 h-4" src={preferredViewIcon[view]} alt="" />
+      <img className="h-4 w-4" src={preferredViewIcon[view]} alt="" />
     </Tooltip>
   );
 };
-
 
 function HomeHeaderItems() {
   const { currentViewMode, setPreferredView } = useViewMode();
@@ -136,7 +146,6 @@ function HomeHeaderItems() {
   );
 }
 
-
 export const HeaderBody = () => {
   const authData = useSelector(selectAuthData);
   const subjectId = authData?.brightId;
@@ -156,12 +165,10 @@ export const HeaderBody = () => {
   );
 };
 
-
 export default function HomeHeader() {
-
   return (
     <DefaultHeader title="Home">
       <HeaderBody />
     </DefaultHeader>
-  )
+  );
 }

@@ -25,12 +25,12 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export function configureAppStore(preloadedState?: any) {
-  localForage.config({
-    storeName: 'keyvaluepairs',
-    name: 'localforage',
-  });
+localForage.config({
+  storeName: 'keyvaluepairs',
+  name: 'localforage',
+});
 
+export function configureAppStore(preloadedState?: any) {
   const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>

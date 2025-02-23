@@ -54,7 +54,7 @@ export const useLevelupProgress = ({
 }) => {
   const authData = useSelector(selectAuthData);
 
-  const subjectId = authData!.brightId;
+  const subjectId = authData?.brightId;
 
   const playerEvaluation = useSubjectVerifications(
     subjectId,
