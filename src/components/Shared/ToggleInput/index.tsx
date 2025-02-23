@@ -25,7 +25,7 @@ export const ToggleInput = ({
       <div className="flex flex-wrap relative h-10 overflow-hidden">
         {/* Background Toggle Effect */}
         <p
-          className={`bg-button-primary dark:bg-stone-300 absolute w-1/2 top-0 bottom-0 rounded-md transition-all duration-300 ease-in-out ${isChecked ? 'left-0 right-1/2' : 'right-0 left-1/2'
+          className={`bg-button-primary dark:bg-foreground absolute w-1/2 top-0 bottom-0 rounded-md transition-all duration-300 ease-in-out ${isChecked ? 'left-0 right-1/2' : 'right-0 left-1/2'
             }`}
         ></p>
 

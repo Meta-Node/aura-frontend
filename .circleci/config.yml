@@ -1,15 +1,30 @@
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@3
-  browser-tools: circleci/browser-tools@1.4.6
-workflows:
+
+description: Aura Testing Config for Circle CI
+
+jobs:
   test:
-    jobs:
-      - cypress/run:
-          pre-steps:
-            - browser-tools/install-chrome
-          install-browsers: false
-          package-manager: 'yarn'
-          post-install: 'yarn build:cypress'
-          start-command: 'npx serve -s -L build'
-          cypress-command: 'npx cypress run --browser chrome'
+    docker:
+      - image: cimg/node:18.17
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Run Integration Tests
+          command: yarn test:integration
+      - store_test_results:
+          path: ./test-results
+      - store_artifacts:
+          path: ./test-results
+
+defaults:
+  working_directory: ~/repo

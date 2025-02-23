@@ -1,13 +1,18 @@
-import { BrightIdBackupConnection } from 'types';
+import { hash } from '@/utils/crypto';
+import { type BrightIdBackupConnection } from 'types';
 
 export const TEST_BRIGHT_ID = 'TEST_BRIGHTID';
 export const TEST_BRIGHT_PASSWORD = 'TEST_BRIGHTID_PASSWORD';
+export const TEST_AUTH_KEY = hash(TEST_BRIGHT_ID + TEST_BRIGHT_PASSWORD);
+
+export const generateRandomBrightId = () =>
+  Math.random().toString(36).slice(2, 16);
 
 export const generateRandomBrightIdConnectionBackup = (
   incomingLevel = 'already known',
 ) => {
   return {
-    id: Math.random().toString(36).slice(2, 16),
+    id: generateRandomBrightId(),
     name: `Name ${Math.random().toString(36).slice(2, 5)}`,
     connectionDate: Date.now(),
     photo: {
@@ -22,11 +27,10 @@ export const generateRandomBrightIdConnectionBackup = (
         name: 'Seed',
         block: Math.floor(Math.random() * 100000),
         timestamp: Date.now(),
-        hash: 'HASH',
       },
       {
         name: 'SeedConnected',
-        rank: Math.floor(Math.random() * 100),
+        // rank: Math.floor(Math.random() * 100),
         block: Math.floor(Math.random() * 100000),
         timestamp: Date.now(),
         hash: 'HASH',
@@ -58,60 +62,64 @@ export const BRIGHTID_BACKUP = {
   groups: [],
 };
 
-const data = {
+export const generateEvaluationImpact = (
+  fromBrightId: string,
+  score?: number,
+  confidence?: number,
+  impact?: number,
+) => {
+  return {
+    evaluator: fromBrightId,
+    score: score ?? Math.random() * 200000,
+    confidence: confidence ?? Math.round(Math.random() * 4),
+    impact: impact ?? Math.abs(Math.random() * 100),
+  };
+};
+
+export const generateRoleData = (
+  name: string,
+  level?: number,
+  evaluationsCount = 5,
+) => {
+  const evaluations = Array.from({ length: evaluationsCount }).map(() =>
+    generateEvaluationImpact(generateRandomBrightId(), Math.random() * 1000000),
+  );
+
+  return {
+    name,
+    level: level ?? 1,
+    impacts: evaluations,
+  };
+};
+
+export const mockedBrightIdProfileData = {
   data: {
     id: TEST_BRIGHT_ID,
-    sponsored: false,
+    sponsored: true,
     verifications: [
       {
         name: 'Aura',
-        block: 30138000,
-        timestamp: 1740239009787,
+        block: 30146400,
+        timestamp: 1740282045881,
         domains: [
           {
             name: 'BrightID',
             categories: [
-              {
-                name: 'subject',
-                score: 104207372.08003037,
-                level: 1,
-                impacts: [
-                  {
-                    evaluator: 'BRIGHTID',
-                    level: 3,
-                    score: 104207372.08003037,
-                    confidence: 1,
-                    impact: 104207372.08003037,
-                  },
-                ],
-              },
+              generateRoleData('manager'),
+              generateRoleData('trainer'),
+              generateRoleData('player'),
+              generateRoleData('subject'),
             ],
           },
         ],
       },
-      {
-        name: 'SeedConnected',
-        rank: 5,
-        connected: ['BRIGHTID', 'BRIGHTID', 'BRIGHTID', 'BRIGHTID', 'BRIGHTID'],
-        communities: ['HASH', 'HASH'],
-        reported: [],
-        block: 30138000,
-        timestamp: 1740239030320,
-        hash: 'HASH',
-      },
-      {
-        name: 'BrightID',
-        block: 30138000,
-        timestamp: 1740239050922,
-        hash: 'HASH',
-      },
     ],
     recoveryConnections: [],
-    connectionsNum: 2,
+    connectionsNum: 11,
     groupsNum: 0,
     reports: [],
-    createdAt: 1738434513000,
-    signingKeys: ['SIGN_KEY'],
+    createdAt: new Date(),
+    signingKeys: [],
     requiredRecoveryNum: 2,
   },
 };

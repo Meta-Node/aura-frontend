@@ -33,10 +33,3 @@ export interface BrightIdProfile {
   createdAt: number;
   verifications: Verifications;
 }
-
-export const getBrightIdProfile = async (userId: string) => {
-  const res = await auraBrightIdNodeApi.get<{
-    data: BrightIdProfile;
-  }>(`/brightid/v6/users/${userId}/profile`);
-  return res.data;
-};

@@ -9,8 +9,8 @@
     "start": "react-router-serve ./build/server/index.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test-vite": "vitest",
+    "test:ui-vite": "vitest --ui"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",
@@ -110,8 +110,9 @@
     "@types/react-infinite-scroller": "^1.2.3",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitejs/plugin-react-swc": "^3.7.2",
+    "@vitejs/plugin-react-swc": "^3.8.0",
     "autoprefixer": "^10.4.20",
+    "bun-bagel": "^1.1.0",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-better-styled-components": "^1.1.2",
@@ -123,6 +124,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "i18next-parser": "3.0.0",
     "jsdom": "^26.0.0",
+    "msw": "^2.7.1",
     "postcss": "^8.4.14",
     "prettier": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.6.11",

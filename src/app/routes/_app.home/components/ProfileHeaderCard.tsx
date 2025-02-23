@@ -38,7 +38,7 @@ const ProfileHeaderCard: FC<{
             subjectId={subjectId}
           />
           <div className="evaluation__info flex flex-1 flex-col">
-            <p className="text-black dark:text-white font-medium">{name}</p>
+            <p data-testid="profile-name" className="text-black dark:text-white font-medium">{name}</p>
 
             <div className="text-gray10 dark:text-gray70">
               Level:{' '}
