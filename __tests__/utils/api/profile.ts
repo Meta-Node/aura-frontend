@@ -89,6 +89,7 @@ export const generateRoleData = (
     name,
     level: level ?? 1,
     impacts: evaluations,
+    score: evaluations.reduce((prev, curr) => prev + curr.score, 0),
   };
 };
 
@@ -122,4 +123,10 @@ export const mockedBrightIdProfileData = {
     signingKeys: [],
     requiredRecoveryNum: 2,
   },
+};
+
+export const findRoleVerification = (verificationName: string) => {
+  return mockedBrightIdProfileData.data.verifications[0].domains[0].categories.find(
+    (item) => item.name === verificationName,
+  );
 };

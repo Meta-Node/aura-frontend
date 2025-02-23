@@ -17,10 +17,11 @@ const ProfileHeaderCard: FC<{
   const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
     useViewMode();
 
-  const { auraLevel, auraScore } = useSubjectVerifications(
+  const { auraLevel, auraScore, loading } = useSubjectVerifications(
     subjectId,
     currentRoleEvaluatorEvaluationCategory,
   );
+
 
   const progress = calculateUserScorePercentage(
     currentRoleEvaluatorEvaluationCategory,
@@ -42,13 +43,13 @@ const ProfileHeaderCard: FC<{
 
             <div className="text-gray10 dark:text-gray70">
               Level:{' '}
-              <span className="font-medium text-black dark:text-white">
+              <span data-testid="profile-level" className="font-medium text-black dark:text-white">
                 {auraLevel}
               </span>
               <span className="text-sm mt-2">
                 <p className="text-gray10 dark:text-gray70">
                   Score:{' '}
-                  <span className="font-medium text-black dark:text-white">
+                  <span data-testid="profile-score" className="font-medium text-black dark:text-white">
                     {auraScore ? compactFormat(auraScore) : '-'}
                   </span>
                 </p>
@@ -57,7 +58,7 @@ const ProfileHeaderCard: FC<{
             {progress < 0 ? (
               '😈'
             ) : (
-              <HorizontalProgressBar className="w-full" percentage={progress} />
+              <HorizontalProgressBar data-testid="profile-progressbar" className="w-full" percentage={progress} />
             )}
           </div>
         </div>
