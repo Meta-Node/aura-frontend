@@ -1,19 +1,20 @@
-import EvaluationOpNotifications from "@/components/EvaluationOpNotifications";
-import { Outlet } from "react-router-dom";
+import { lazy } from 'react';
+import { Outlet } from 'react-router-dom';
 
-
+const EvaluationOpNotifications = lazy(
+  () => import('@/components/EvaluationOpNotifications'),
+);
 
 export default function AppLanding() {
   return (
-    <div className={`dark:bg-background bg-background-light`}>
-
+    <div className={`bg-background-light dark:bg-background`}>
       <div className="app">
         <Outlet />
 
-        <div className="sticky bottom-2 pr-5 pl-5">
+        <div className="sticky bottom-2 pl-5 pr-5">
           <EvaluationOpNotifications />
         </div>
       </div>
     </div>
-  )
+  );
 }
