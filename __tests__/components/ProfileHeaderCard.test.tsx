@@ -6,7 +6,7 @@ import {
 } from '../utils/api/profile';
 import { renderWithProviders } from '../utils/redux';
 import ProfileHeaderCard from '@/app/routes/_app.home/components/ProfileHeaderCard';
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { setGlobalOrigin } from 'undici';
 import { compactFormat } from '@/utils/number';
@@ -46,16 +46,17 @@ describe('Profile Card Header component', () => {
     const scoreElement = screen.getByTestId('profile-score');
 
     const verificationRole = findRoleVerification('player')!;
-
-    expect(levelElement).toHaveTextContent(verificationRole.level.toString());
-    expect(scoreElement).toHaveTextContent(
-      compactFormat(verificationRole.score),
-    );
-
     const progressElement = screen.getByTestId('profile-progressbar');
 
-    expect(progressElement).toHaveStyle(
-      `width: ${calculateUserScorePercentage(EvaluationCategory.PLAYER, verificationRole.score)}%`,
-    );
+    await waitFor(() => {
+      expect(levelElement).toHaveTextContent(verificationRole.level.toString());
+      expect(scoreElement).toHaveTextContent(
+        compactFormat(verificationRole.score),
+      );
+
+      expect(progressElement).toHaveStyle(
+        `width: ${calculateUserScorePercentage(EvaluationCategory.PLAYER, verificationRole.score)}%`,
+      );
+    });
   });
 });

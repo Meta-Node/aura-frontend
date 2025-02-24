@@ -29,15 +29,15 @@ describe('Home Header', () => {
   it('should render with correct roles', async () => {
     await act(() => {
       renderWithProviders(
-        <Router>
-          <MemoryRouter initialEntries={['/home']}>
-            <RefreshEvaluationsContextProvider>
-              <MyEvaluationsContextProvider>
-                <HomeHeader />
-              </MyEvaluationsContextProvider>
-            </RefreshEvaluationsContextProvider>
-          </MemoryRouter>
-        </Router>,
+        // <Router>
+        <MemoryRouter initialEntries={['/home']}>
+          <RefreshEvaluationsContextProvider>
+            <MyEvaluationsContextProvider>
+              <HomeHeader />
+            </MyEvaluationsContextProvider>
+          </RefreshEvaluationsContextProvider>
+        </MemoryRouter>,
+        // </Router>,
         {},
       );
     });
