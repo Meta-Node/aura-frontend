@@ -4,7 +4,6 @@ import { backupInterceptor, profileInterceptor } from '../utils/api/server';
 import { setupServer } from 'msw/node';
 import { setGlobalOrigin } from 'undici';
 import { renderWithProviders } from '../utils/redux';
-import { MemoryRouter as Router } from 'react-router';
 import { MemoryRouter } from 'react-router-dom';
 import { MyEvaluationsContextProvider } from '@/contexts/MyEvaluationsContext';
 import { RefreshEvaluationsContextProvider } from '@/contexts/RefreshEvaluationsContext';
@@ -15,10 +14,6 @@ const server = setupServer(...restHandlers);
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' });
-});
-
-beforeEach(() => {
-  setGlobalOrigin(window.location.href);
 });
 
 afterAll(() => server.close());

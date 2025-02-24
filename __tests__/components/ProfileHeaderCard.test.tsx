@@ -4,15 +4,14 @@ import {
   findRoleVerification,
   TEST_BRIGHT_ID,
 } from '../utils/api/profile';
-import { renderWithProviders } from '../utils/redux';
 import ProfileHeaderCard from '@/app/routes/_app.home/components/ProfileHeaderCard';
 import { act, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import { setGlobalOrigin } from 'undici';
 import { compactFormat } from '@/utils/number';
 import { calculateUserScorePercentage } from '@/utils/score';
 import { EvaluationCategory } from '@/types/dashboard';
 import { backupInterceptor, profileInterceptor } from '../utils/api/server';
+import { renderWithRouterAndRedux } from '../utils/app';
 
 export const restHandlers = [profileInterceptor, backupInterceptor];
 
@@ -30,10 +29,11 @@ afterEach(() => server.resetHandlers());
 describe('Profile Card Header component', () => {
   it('Should render the component', async () => {
     await act(() => {
-      renderWithProviders(
-        <MemoryRouter initialEntries={['/home']}>
-          <ProfileHeaderCard subjectId={TEST_BRIGHT_ID} />
-        </MemoryRouter>,
+      renderWithRouterAndRedux(
+        <ProfileHeaderCard subjectId={TEST_BRIGHT_ID} />,
+        {
+          router: { initialEntries: ['/home'] },
+        },
       );
     });
 

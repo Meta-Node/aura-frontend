@@ -22,7 +22,9 @@ export const HeaderBody: FC<PropsWithChildren & { title?: string }> = ({
       <Link to={RoutePath.HOME} className="mr-2 flex items-center gap-1">
         <FaHome className="h-6 w-6" />
       </Link>
-      <span className="text-xl font-semibold">{title ?? 'Home'}</span>
+      <span data-testid="header-title" className="text-xl font-semibold">
+        {title ?? 'Home'}
+      </span>
       {children}
     </>
   );

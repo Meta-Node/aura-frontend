@@ -1,3 +1,5 @@
+import { AuraImpact, Domain } from '@/api/auranode.service';
+import { EvaluationCategory } from '@/types/dashboard';
 import { hash } from '@/utils/crypto';
 import { type BrightIdBackupConnection } from 'types';
 
@@ -24,28 +26,55 @@ export const generateRandomBrightIdConnectionBackup = (
     socialMedia: [], // empty array for simplicity
     verifications: [
       {
+        name: 'Aura',
+        block: Math.floor(Math.random() * 100000),
+        timestamp: new Date(),
+        domains: [
+          {
+            name: 'BrightID',
+            categories: [],
+          },
+        ],
+      },
+      {
         name: 'Seed',
         block: Math.floor(Math.random() * 100000),
         timestamp: Date.now(),
-      },
-      {
-        name: 'SeedConnected',
-        // rank: Math.floor(Math.random() * 100),
-        block: Math.floor(Math.random() * 100000),
-        timestamp: Date.now(),
-        hash: 'HASH',
-      },
-      {
-        name: 'BrightID',
-        block: Math.floor(Math.random() * 100000),
-        timestamp: Date.now(),
-        hash: 'HASH',
       },
     ],
     timestamp: Date.now(),
     incomingLevel: incomingLevel,
     reportReason: null,
   } as BrightIdBackupConnection;
+};
+
+export const createDomainFromBrightIdConenction = (
+  connection: BrightIdBackupConnection,
+) => {
+  connection.verifications?.push({
+    block: 123,
+    name: 'Aura',
+    timestamp: new Date().getTime() / 1000,
+    domains: [
+      {
+        categories: [],
+        name: 'BrightID',
+      },
+    ],
+  });
+};
+
+export const createSubjectCategory = (
+  category: EvaluationCategory,
+  impacts: AuraImpact[],
+  level = 1,
+) => {
+  return {
+    name: category,
+    score: impacts.reduce((prev, curr) => (curr.score ?? 0) + prev, 0),
+    level: level,
+    impacts,
+  };
 };
 
 export const BRIGHTID_BACKUP = {
@@ -69,10 +98,12 @@ export const generateEvaluationImpact = (
   impact?: number,
 ) => {
   return {
+    evaluatorName: fromBrightId.slice(0, 7),
     evaluator: fromBrightId,
     score: score ?? Math.random() * 200000,
     confidence: confidence ?? Math.round(Math.random() * 4),
     impact: impact ?? Math.abs(Math.random() * 100),
+    level: 1,
   };
 };
 
@@ -129,4 +160,16 @@ export const findRoleVerification = (verificationName: string) => {
   return mockedBrightIdProfileData.data.verifications[0].domains[0].categories.find(
     (item) => item.name === verificationName,
   );
+};
+
+export const mockOutboundData = {
+  data: {
+    connections: [],
+  },
+};
+
+export const mockInboundData = {
+  data: {
+    connections: [],
+  },
 };

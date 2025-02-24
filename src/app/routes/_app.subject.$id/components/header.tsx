@@ -1,13 +1,16 @@
-import DefaultHeader from "@/components/Shared/DefaultHeader";
-import Tooltip from "@/components/Shared/Tooltip";
-import { viewModeSubjectBackgroundColorClass, subjectViewAsIcon } from "@/constants";
-import { useOutboundEvaluations } from "@/hooks/useSubjectEvaluations";
-import useViewMode from "@/hooks/useViewMode";
-import { selectAuthData } from "@/store/profile/selectors";
-import { EvaluationCategory } from "@/types/dashboard";
-import { useMemo } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router";
+import DefaultHeader from '@/components/Shared/DefaultHeader';
+import Tooltip from '@/components/Shared/Tooltip';
+import {
+  viewModeSubjectBackgroundColorClass,
+  subjectViewAsIcon,
+} from '@/constants';
+import { useOutboundEvaluations } from '@/hooks/useSubjectEvaluations';
+import useViewMode from '@/hooks/useViewMode';
+import { selectAuthData } from '@/store/profile/selectors';
+import { EvaluationCategory } from '@/types/dashboard';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 
 const views = [
   EvaluationCategory.SUBJECT,
@@ -29,7 +32,7 @@ export default function SubjectProfileHeader() {
 
   const authData = useSelector(selectAuthData);
 
-  const subjectIdProp = params["id"];
+  const subjectIdProp = params['id'];
 
   const subjectId = useMemo(
     () => subjectIdProp ?? authData?.brightId,
@@ -40,11 +43,10 @@ export default function SubjectProfileHeader() {
 
   return (
     <DefaultHeader title={`${subjectViewModeTitle} Profile`}>
-
       <SubjectHeaderBody subjectId={subjectId} />
     </DefaultHeader>
   );
-};
+}
 
 export function SubjectHeaderBody({ subjectId }: { subjectId: string }) {
   const { updateViewAs, currentViewMode, currentEvaluationCategory } =
@@ -89,31 +91,33 @@ export function SubjectHeaderBody({ subjectId }: { subjectId: string }) {
     <>
       {isLoading
         ? views.map((_, key) => (
-          <div
-            key={key}
-            className={`p-1 rounded animate-pulse bg-gray100 ml-2 cursor-pointer`}
-          >
-            <div className="w-4 h-4"></div>
-          </div>
-        ))
+            <div
+              key={key}
+              className={`ml-2 animate-pulse cursor-pointer rounded bg-gray100 p-1`}
+            >
+              <div className="h-4 w-4"></div>
+            </div>
+          ))
         : authorizedTabs.map((subjectViewMode) => (
-          <Tooltip
-            className={`p-1 rounded ${currentEvaluationCategory === subjectViewMode
-              ? viewModeSubjectBackgroundColorClass[currentViewMode]
-              : 'bg-gray100'
+            <Tooltip
+              className={`rounded p-1 ${
+                currentEvaluationCategory === subjectViewMode
+                  ? viewModeSubjectBackgroundColorClass[currentViewMode]
+                  : 'bg-gray100'
               } ml-2 cursor-pointer`}
-            position="bottom"
-            key={subjectViewMode}
-            content={viewsLabel[subjectViewMode]}
-            onClick={() => updateViewAs(subjectViewMode)}
-          >
-            <img
-              className="w-4 h-4"
-              src={subjectViewAsIcon[subjectViewMode]}
-              alt=""
-            />
-          </Tooltip>
-        ))}
+              position="bottom"
+              key={subjectViewMode}
+              content={viewsLabel[subjectViewMode]}
+              onClick={() => updateViewAs(subjectViewMode)}
+              data-testid={`subject-view-${viewsLabel[subjectViewMode]}`}
+            >
+              <img
+                className="h-4 w-4"
+                src={subjectViewAsIcon[subjectViewMode]}
+                alt=""
+              />
+            </Tooltip>
+          ))}
     </>
   );
 }
