@@ -7,6 +7,8 @@ import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
 
 import { userLevelPoints } from '../constants/levels';
+import { AuraRating } from '@/types';
+import { AuraImpactRaw } from '@/api/auranode.service';
 
 export const calculateRemainingScoreToNextLevel = (
   view: EvaluationCategory,
@@ -115,4 +117,33 @@ export const useLevelupProgress = ({
     reason: '',
     percent: 0,
   };
+};
+
+export const calculateSubjectScore = (
+  category: EvaluationCategory,
+  ratings: AuraImpactRaw[],
+) => {
+  const selectedCategoryLevel = userLevelPoints[category];
+  const score = ratings.reduce((prev, item) => (item.score ?? 0) + prev, 0);
+
+  const currentLevel = selectedCategoryLevel.findIndex((item) => item > score);
+
+  return currentLevel;
+
+  // switch (category) {
+  //   case EvaluationCategory.SUBJECT:
+  //     return currentLevel;
+
+  //   case EvaluationCategory.PLAYER:
+  //     return currentLevel;
+
+  //   case EvaluationCategory.TRAINER:
+
+  //     return currentLevel;
+
+  //   case EvaluationCategory.MANAGER:
+  //     return currentLevel;
+  // }
+
+  // return -1;
 };
