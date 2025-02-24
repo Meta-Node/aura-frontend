@@ -16,11 +16,7 @@ import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import useViewMode from 'hooks/useViewMode';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   EvaluationCategory,
   EvidenceViewMode,
@@ -61,10 +57,10 @@ const ProfileTabs = ({
   const { currentViewMode } = useViewMode();
   return (
     <div
-      className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary`}
+      className={`min-h-[52px] w-full rounded-lg border bg-white-90-card px-1.5 py-1.5 dark:bg-dark-primary`}
     >
       <div
-        className={`flex flex-row min-w-full gap-1.5 h-full`}
+        className={`flex h-full min-w-full flex-row gap-1.5`}
         // TODO: refactor this to tailwindcss class and values
         style={{
           scrollbarWidth: 'thin',
@@ -90,10 +86,11 @@ const ProfileTabs = ({
           data-testid="table-view-switch-option-one"
           position="top"
           content="overall performance"
-          className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.OVERVIEW
-            ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-            : 'bg-transparent dark:text-white text-black font-medium'
-            }`}
+          className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+            selectedTab === ProfileTab.OVERVIEW
+              ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
+              : 'bg-transparent font-medium text-black dark:text-white'
+          }`}
           tooltipClassName="font-normal"
         >
           Overview
@@ -101,10 +98,11 @@ const ProfileTabs = ({
         {currentViewMode === PreferredView.PLAYER ? (
           <Tooltip
             content="user's community"
-            className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.CONNECTIONS
-              ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-              : 'bg-transparent dark:text-white text-black font-medium'
-              }`}
+            className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+              selectedTab === ProfileTab.CONNECTIONS
+                ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
+                : 'bg-transparent font-medium text-black dark:text-white'
+            }`}
             onClick={() => setSelectedTab(ProfileTab.CONNECTIONS)}
             data-testid="table-view-switch-option-one"
             tooltipClassName="font-normal"
@@ -115,11 +113,12 @@ const ProfileTabs = ({
           <Tooltip
             tooltipClassName="font-normal"
             content="rating history"
-            className={`rounded-md min-w-[100px] w-full cursor-pointer h-full flex items-center justify-center transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.ACTIVITY ||
+            className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+              selectedTab === ProfileTab.ACTIVITY ||
               selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
-              ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-              : 'bg-transparent dark:text-white text-black font-medium'
-              }`}
+                ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
+                : 'bg-transparent font-medium text-black dark:text-white'
+            }`}
             onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
             data-testid="table-view-switch-option-one"
           >
@@ -129,10 +128,11 @@ const ProfileTabs = ({
         <Tooltip
           tooltipClassName="font-normal"
           content="others opinion"
-          className={`rounded-md min-w-[100px] w-full cursor-pointer flex justify-center items-center h-full transition-all duration-300 ease-in-out ${selectedTab === ProfileTab.EVALUATIONS
-            ? 'background bg-button-primary dark:bg-slate-200 dark:text-black text-white font-bold'
-            : 'bg-transparent dark:text-white text-black font-medium'
-            }`}
+          className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+            selectedTab === ProfileTab.EVALUATIONS
+              ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
+              : 'bg-transparent font-medium text-black dark:text-white'
+          }`}
           onClick={() => setSelectedTab(ProfileTab.EVALUATIONS)}
           data-testid="table-view-switch-option-two"
         >
@@ -326,10 +326,10 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   }, [currentViewMode, selectedTab]);
 
   return (
-    <div className="page overflow-x-hidden page__dashboard flex flex-col gap-y-4">
+    <div className="page page__dashboard flex flex-col gap-y-4 overflow-x-hidden">
       {selectedTab !== ProfileTab.OVERVIEW && showEvaluateOverlayCard && (
         <EvaluateOverlayCard
-          className={`absolute z-20 left-1/2 -translate-x-1/2 top-24 min-h-[89px] w-full md:w-[calc(100vw-40px)] max-w-[370px]`}
+          className={`absolute left-1/2 top-24 z-20 min-h-[89px] w-full max-w-[370px] -translate-x-1/2 md:w-[calc(100vw-40px)]`}
           subjectId={subjectId}
           setShowEvaluationFlow={setShowEvaluationFlow}
         />
@@ -364,11 +364,11 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       >
         <EvidenceHelpModal />
       </Modal>
-      <div className="flex gap-2 -mb-1 items-center">
-        <p className="font-bold text-lg">Evidence</p>
+      <div className="-mb-1 flex items-center gap-2">
+        <p className="text-lg font-bold">Evidence</p>
         <img
           onClick={() => setIsHelpModalOpen(true)}
-          className="cursor-pointer w-5 h-5"
+          className="h-5 w-5 cursor-pointer"
           src="/assets/images/SubjectProfile/evidence-info-icon.svg"
           alt=""
         />
@@ -393,7 +393,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             <LoadingList />
           ) : evaluateds.length > 0 ? (
             <InfiniteScrollLocal
-              className={'flex flex-col gap-2.5 w-full -mb-5 pb-5 h-full'}
+              className={'-mb-5 flex h-full w-full flex-col gap-2.5 pb-5'}
               items={evaluateds}
               renderItem={(evaluated) => (
                 <ProfileEvaluation
@@ -409,8 +409,8 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
                         selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
                           ? EvaluationCategory.MANAGER
                           : viewModeToViewAs[
-                          viewModeToSubjectViewMode[currentViewMode]
-                          ],
+                              viewModeToSubjectViewMode[currentViewMode]
+                            ],
                     })
                   }
                   key={evaluated}
@@ -433,7 +433,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             <LoadingList />
           ) : evaluators.length > 0 ? (
             <InfiniteScrollLocal
-              className={'flex flex-col gap-2.5 w-full -mb-5 pb-5 h-full'}
+              className={'-mb-5 flex h-full w-full flex-col gap-2.5 pb-5'}
               items={evaluators}
               renderItem={(evaluator) => {
                 return (
@@ -467,7 +467,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             <LoadingList />
           ) : connectionIds.length > 0 ? (
             <InfiniteScrollLocal
-              className={'flex flex-col gap-2.5 w-full -mb-5 pb-5 h-full'}
+              className={'-mb-5 flex h-full w-full flex-col gap-2.5 pb-5'}
               items={connectionIds}
               renderItem={(connectionId) => (
                 <ProfileEvaluation
@@ -527,6 +527,5 @@ const SubjectProfile = () => {
     </SubjectOutboundEvaluationsContextProvider>
   );
 };
-
 
 export default SubjectProfile;
