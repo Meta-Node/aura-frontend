@@ -7,7 +7,9 @@ const EvaluationOpNotifications = lazy(
 
 export default function AppLanding() {
   return (
-    <div className={`bg-background-light dark:bg-background`}>
+    <div
+      className={`bg-background-light dark:bg-gradient-to-tr dark:from-black dark:to-gray-950`}
+    >
       <div className="app">
         <Outlet />
 
