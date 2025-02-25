@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { combineReducers } from 'redux';
+import { combineReducers, Middleware } from 'redux';
 import { createMigrate, persistReducer, persistStore } from 'redux-persist';
 import localForage from 'localforage';
+import {
+  createStateSyncMiddleware,
+  initMessageListener,
+} from 'redux-state-sync';
 
 import reducers from 'BrightID/reducer';
 import { __DEV__ } from 'utils/env';
@@ -32,6 +36,10 @@ localForage.config({
 });
 
 export function configureAppStore(preloadedState?: any) {
+  const syncMiddleware = createStateSyncMiddleware({
+    channel: 'UPDATE_REDUX_STATE',
+  });
+
   const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
@@ -47,13 +55,18 @@ export function configureAppStore(preloadedState?: any) {
           ignoredPaths: ['recoveryData'],
         },
         immutableCheck: false,
-      }).concat(apiSlice.middleware, backupApiSlice.middleware),
+      }).concat(
+        apiSlice.middleware,
+        backupApiSlice.middleware,
+        syncMiddleware as Middleware,
+      ),
     preloadedState,
   });
 
   const persistor = persistStore(store);
 
   setupListeners(store.dispatch);
+  initMessageListener(store);
 
   return { store, persistor };
 }
