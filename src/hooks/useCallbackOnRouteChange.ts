@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 export default function useCallbackOnRouteChange(
   callback?: (...args: any[]) => any,

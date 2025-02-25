@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 
 import { useSubjectInboundEvaluationsContext } from '../contexts/SubjectInboundEvaluationsContext';
 import useViewMode from '../hooks/useViewMode';
-import EvaluationsDetailsPerformance from '../pages/Home/components/EvaluationsDetailsPerformance';
 import { selectAuthData } from '../store/profile/selectors';
 import { PreferredView } from '../types/dashboard';
 import FindTrainersCard from './Shared/FindTrainersCard';
+import EvaluationsDetailsPerformance from '@/app/routes/_app.home/components/EvaluationsDetailsPerformance';
 
 export default function LevelUp({ subjectId }: { subjectId: string }) {
   const authData = useSelector(selectAuthData);
@@ -50,10 +50,9 @@ export default function LevelUp({ subjectId }: { subjectId: string }) {
       ) : (
         <EvaluationsDetailsPerformance
           subjectId={subjectId}
-          title={`Evaluation by ${
-            currentRoleEvaluatorEvaluationCategory.slice(0, 1).toUpperCase() +
+          title={`Evaluation by ${currentRoleEvaluatorEvaluationCategory.slice(0, 1).toUpperCase() +
             currentRoleEvaluatorEvaluationCategory.slice(1)
-          }`}
+            }`}
           hasHeader={true}
           hasBtn={true}
           onFindEvaluatorsButtonClick={() => setForceShowFindTrainers(true)}

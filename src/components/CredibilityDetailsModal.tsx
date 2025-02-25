@@ -9,7 +9,7 @@ import {
 } from 'hooks/useSubjectVerifications';
 import { PencilIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { useSelector } from 'store/hooks';
 import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
@@ -71,7 +71,7 @@ const CredibilityDetailsForRole = ({
 
   return (
     <>
-      <div className="font-bold text-l">
+      <div className="text-l font-bold">
         As a{' '}
         <span
           className={getViewModeSubjectTextColorClass(
@@ -86,7 +86,7 @@ const CredibilityDetailsForRole = ({
       <div>
         Level: <span className="font-bold">{auraLevel}</span>
       </div>
-      <div className="flex w-full gap-2 items-center">
+      <div className="flex w-full items-center gap-2">
         <div>
           Score:{' '}
           <span className="font-medium">
@@ -144,7 +144,7 @@ const CredibilityDetailsForRole = ({
         Your Evaluation Impact:{' '}
         {loading ? (
           <span className="text-gray20">...</span>
-        ) : myRatingToSubject && Number(myRatingToSubject.rating) > 0 ? (
+        ) : myRatingToSubject && Number(myRatingToSubject.rating) !== 0 ? (
           <div className="inline-flex items-center gap-3">
             <span
               className={`font-bold`}
@@ -152,7 +152,8 @@ const CredibilityDetailsForRole = ({
                 color: '#6C34B3',
               }}
             >
-              {impactPercentage ?? 0}%
+              {Number(myRatingToSubject) > 0 ? 1 : -1 * (impactPercentage ?? 0)}
+              %
             </span>
 
             <Button
@@ -162,14 +163,14 @@ const CredibilityDetailsForRole = ({
             >
               <PencilIcon width={10} height={10} />
             </Button>
-
           </div>
         ) : (
           <span>
             none.{' '}
             <button
+              disabled={subjectId === authData?.brightId}
               onClick={() => setShowEvaluationFlow(true)}
-              className="text-pastel-blue text-sm"
+              className="text-sm text-pastel-blue disabled:opacity-50"
             >
               Evaluate Now
             </button>
@@ -184,11 +185,11 @@ const CredibilityDetailsForRole = ({
       <ReactECharts
         style={{ height: '110px' }}
         option={impactChartOption}
-        className="body__chart w-full mb-5 mt-2"
+        className="body__chart mb-5 mt-2 w-full"
       />
       <Link
         to={link + '?viewas=' + roleEvaluationCategory}
-        className="flex btn w-full mt-auto justify-center"
+        className="btn mt-auto flex w-full justify-center"
         onClick={(e) => {
           e.preventDefault();
           onClose();
@@ -260,12 +261,12 @@ const CredibilityDetails = ({
 
   if (isLoading)
     return (
-      <div className="min-h-[450px] flex flex-col w-full">
+      <div className="flex min-h-[450px] w-full flex-col">
         <div
-          className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg p-1 mb-5`}
+          className={`mb-5 min-h-[52px] w-full rounded-lg p-1 px-1.5 py-1.5`}
         >
           <div
-            className={`flex flex-row gap-1 min-w-full overflow-x-auto overflow-y-hidden h-full pb-1`}
+            className={`flex h-full min-w-full flex-row gap-1 overflow-x-auto overflow-y-hidden pb-1`}
             // TODO: refactor this to tailwindcss class and values
             style={{
               scrollbarWidth: 'thin',
@@ -275,7 +276,7 @@ const CredibilityDetails = ({
             {views.map((_, key) => (
               <p
                 key={key}
-                className={`rounded-md bg-gray100 min-w-[100px] animate-pulse w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out`}
+                className={`flex h-9 w-full min-w-[100px] animate-pulse cursor-pointer items-center justify-center gap-1 rounded-md bg-gray100 transition-all duration-300 ease-in-out`}
               ></p>
             ))}
           </div>
@@ -284,12 +285,12 @@ const CredibilityDetails = ({
     );
 
   return (
-    <div className="min-h-[450px] flex flex-col w-full">
+    <div className="flex min-h-[450px] w-full flex-col">
       <div
-        className={`px-1.5 py-1.5 w-full min-h-[52px] rounded-lg bg-white-90-card dark:bg-dark-primary p-1 mb-5`}
+        className={`mb-5 min-h-[52px] w-full rounded-lg bg-white-90-card p-1 px-1.5 py-1.5 dark:bg-dark-primary`}
       >
         <div
-          className={`flex flex-row min-w-full overflow-x-auto overflow-y-hidden h-full pb-1`}
+          className={`flex h-full min-w-full flex-row overflow-x-auto overflow-y-hidden pb-1`}
           // TODO: refactor this to tailwindcss class and values
           style={{
             scrollbarWidth: 'thin',
@@ -299,10 +300,10 @@ const CredibilityDetails = ({
           <p
             className={`rounded-md ${
               authorizedTabs.length > 0 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out ${
+            } flex h-9 w-full min-w-[100px] cursor-pointer items-center justify-center gap-1 transition-all duration-300 ease-in-out ${
               evaluationCategory === EvaluationCategory.SUBJECT
-                ? 'background bg-orange dark:text-black text-white font-bold'
-                : 'bg-transparent text-black dark:text-white font-medium'
+                ? 'background bg-orange font-bold text-white dark:text-black'
+                : 'bg-transparent font-medium text-black dark:text-white'
             }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.SUBJECT)}
             data-testid="table-view-switch-option-one"
@@ -320,10 +321,10 @@ const CredibilityDetails = ({
           <p
             className={`rounded-md ${
               authorizedTabs.length > 1 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 items-center justify-center transition-all duration-300 ease-in-out ${
+            } flex h-9 w-full min-w-[100px] cursor-pointer items-center justify-center gap-1 transition-all duration-300 ease-in-out ${
               evaluationCategory === EvaluationCategory.PLAYER
-                ? 'background bg-purple text-white font-bold'
-                : 'bg-transparent text-black dark:text-white font-medium'
+                ? 'background bg-purple font-bold text-white'
+                : 'bg-transparent font-medium text-black dark:text-white'
             }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.PLAYER)}
             data-testid="table-view-switch-option-one"
@@ -334,10 +335,10 @@ const CredibilityDetails = ({
           <p
             className={`rounded-md ${
               authorizedTabs.length > 2 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 justify-center items-center transition-all duration-300 ease-in-out ${
+            } flex h-9 w-full min-w-[100px] cursor-pointer items-center justify-center gap-1 transition-all duration-300 ease-in-out ${
               evaluationCategory === EvaluationCategory.TRAINER
-                ? 'background bg-green text-white font-bold'
-                : 'bg-transparent text-black dark:text-white font-medium'
+                ? 'background bg-green font-bold text-white'
+                : 'bg-transparent font-medium text-black dark:text-white'
             }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.TRAINER)}
             data-testid="table-view-switch-option-two"
@@ -348,10 +349,10 @@ const CredibilityDetails = ({
           <p
             className={`rounded-md ${
               authorizedTabs.length > 3 ? '' : 'hidden'
-            } min-w-[100px] w-full cursor-pointer h-9 flex gap-1 justify-center items-center transition-all duration-300 ease-in-out ${
+            } flex h-9 w-full min-w-[100px] cursor-pointer items-center justify-center gap-1 transition-all duration-300 ease-in-out ${
               evaluationCategory === EvaluationCategory.MANAGER
-                ? 'background bg-blue text-white font-bold'
-                : 'bg-transparent text-black dark:text-white font-medium'
+                ? 'background bg-blue font-bold text-white'
+                : 'bg-transparent font-medium text-black dark:text-white'
             }`}
             onClick={() => setEvaluationCategory(EvaluationCategory.MANAGER)}
             data-testid="table-view-switch-option-two"

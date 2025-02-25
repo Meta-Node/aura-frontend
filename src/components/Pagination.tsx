@@ -18,9 +18,8 @@ export default function StepsPagination({
             onClick={() => {
               setPageNumber(step);
             }}
-            className={`transition-all w-2.5 h-2.5 rounded-full cursor-pointer bg-white dark:bg-stone-700 ${
-              activePage === step && '!w-10 !bg-pastel-purple dark:!bg-purple'
-            }`}
+            className={`transition-all w-2.5 h-2.5 rounded-full cursor-pointer bg-stone-700 ${activePage === step && '!w-10 !bg-pastel-purple dark:!bg-purple'
+              }`}
           ></span>
         ))}
       </div>

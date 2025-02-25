@@ -1,10 +1,9 @@
 import { skipToken } from '@reduxjs/toolkit/query';
-import { pullProfilePhoto } from 'api/profilePhoto.service';
 import { EChartsOption } from 'echarts-for-react/src/types';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
@@ -19,6 +18,9 @@ import {
   valueColorMap,
 } from '../constants/chart';
 import { EvaluationCategory } from '../types/dashboard';
+import { selectPreferredTheme } from '@/BrightID/actions';
+import { useDispatch } from '@/store/hooks';
+import { getProfilePhoto } from '@/store/api/backup';
 
 export const useSubjectVerifications = (
   subjectId: string | null | undefined,
@@ -51,7 +53,9 @@ export const useImpactEChartOption = (
   shouldFetchImages?: boolean,
 ) => {
   const params = useParams();
+  const preferredTheme = useSelector(selectPreferredTheme);
   const focusedSubjectId = params.subjectIdProp;
+  const dispatch = useDispatch();
 
   const authData = useSelector(selectAuthData);
 
@@ -67,11 +71,14 @@ export const useImpactEChartOption = (
   const [profileImages, setProfileImages] = useState(() => {
     if (auraTopImpacts.length > 5) return {} as Record<string, string | null>;
 
-    return auraTopImpacts.reduce((prev, curr) => {
-      prev[curr.evaluator] = createBlockiesImage(curr.evaluator);
+    return auraTopImpacts.reduce(
+      (prev, curr) => {
+        prev[curr.evaluator] = createBlockiesImage(curr.evaluator);
 
-      return prev;
-    }, {} as Record<string, string | null>);
+        return prev;
+      },
+      {} as Record<string, string | null>,
+    );
   });
 
   const auraSumImpacts = useMemo(
@@ -86,35 +93,66 @@ export const useImpactEChartOption = (
     const fetchUserImages = async () => {
       if (auraTopImpacts.length > 5) return;
 
-      const images: Record<string, string | null> = {};
+      const abortController = new AbortController();
 
-      await Promise.all(
-        auraTopImpacts.map(async (impact) => {
+      const key = hash(authData.brightId + authData.password);
+
+      auraTopImpacts.forEach(async (impact) => {
+        try {
+          let imageData: string;
+
           try {
-            const profilePhoto = await pullProfilePhoto(
-              hash(authData.brightId + authData.password),
-              impact.evaluator,
-              authData.password,
+            const res = await dispatch(
+              getProfilePhoto.initiate({
+                brightId: impact.evaluator,
+                key,
+                password: authData.password,
+              }),
             );
-            images[impact.evaluator] = await renderImageCover(
+
+            const profilePhoto = res.data;
+
+            if (!profilePhoto) throw new Error('No response text for image');
+
+            imageData = await renderImageCover(
               profilePhoto,
               50,
               50,
+              preferredTheme,
             );
           } catch (e) {
-            images[impact.evaluator] = await renderImageCover(
+            imageData = await renderImageCover(
               createBlockiesImage(impact.evaluator),
               30,
               30,
+              preferredTheme,
             );
           }
-        }),
-      );
-      setProfileImages(images);
+
+          if (!abortController.signal.aborted) {
+            setProfileImages((prevImages) => ({
+              ...prevImages,
+              [impact.evaluator]: imageData,
+            }));
+          }
+        } catch (error) {
+          console.error(`Failed to load image for ${impact.evaluator}:`, error);
+        }
+      });
+
+      return () => {
+        abortController.abort();
+      };
     };
 
     fetchUserImages();
-  }, [auraTopImpacts, authData, brightIdBackup, shouldFetchImages]);
+  }, [
+    auraTopImpacts,
+    preferredTheme,
+    authData,
+    brightIdBackup,
+    shouldFetchImages,
+  ]);
 
   const impactChartOption: EChartsOption = useMemo(() => {
     const maxImpact = auraTopImpacts
@@ -184,23 +222,26 @@ export const useImpactEChartOption = (
                   formatter: (params: any) => {
                     return `{img${params.dataIndex}|}`;
                   },
-                  rich: auraTopImpacts.reduce((prev, curr, index) => {
-                    prev[`img${index}`] = {
-                      height: 35,
-                      width: 35,
-                      align: 'center',
-                      backgroundColor: {
-                        image: profileImages[curr.evaluator],
-                      },
-                      borderRadius: 12,
-                      style: {
-                        'border-radius': '12px',
-                        overflow: 'hidden',
-                      },
-                    };
+                  rich: auraTopImpacts.reduce(
+                    (prev, curr, index) => {
+                      prev[`img${index}`] = {
+                        height: 35,
+                        width: 35,
+                        align: 'center',
+                        backgroundColor: {
+                          image: profileImages[curr.evaluator],
+                        },
+                        borderRadius: 12,
+                        style: {
+                          'border-radius': '12px',
+                          overflow: 'hidden',
+                        },
+                      };
 
-                    return prev;
-                  }, {} as Record<string, any>),
+                      return prev;
+                    },
+                    {} as Record<string, any>,
+                  ),
                 },
           data: auraTopImpacts.map((item) => ({
             value: item.impact,
@@ -215,8 +256,8 @@ export const useImpactEChartOption = (
                 authData?.brightId === item.evaluator
                   ? userRatingColorMap
                   : item.evaluator === focusedSubjectId
-                  ? subjectRatingColorMap
-                  : valueColorMap,
+                    ? subjectRatingColorMap
+                    : valueColorMap,
               ),
               borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
             },
@@ -262,8 +303,8 @@ export const useImpactEChartOption = (
                       authData?.brightId === item.evaluator
                         ? userRatingColorMap
                         : item.evaluator === focusedSubjectId
-                        ? subjectRatingColorMap
-                        : valueColorMap,
+                          ? subjectRatingColorMap
+                          : valueColorMap,
                     ),
               borderRadius: item.impact >= 0 ? [2, 2, 0, 0] : [0, 0, 2, 2],
             },

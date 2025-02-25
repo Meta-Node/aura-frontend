@@ -30,9 +30,9 @@ type SubjectInboundConnectionsContextType = ReturnType<
 > & {
   subjectId: string;
 } & ReturnType<typeof useFilterAndSort<AuraInboundConnectionAndRatingData>> & {
-    sorts: AuraSortOptions<AuraInboundConnectionAndRatingData>;
-    filters: AuraFilterOptions<AuraInboundConnectionAndRatingData>;
-  };
+  sorts: AuraSortOptions<AuraInboundConnectionAndRatingData>;
+  filters: AuraFilterOptions<AuraInboundConnectionAndRatingData>;
+};
 // Define the context
 export const SubjectInboundConnectionsContext =
   createContext<SubjectInboundConnectionsContextType | null>(null);
@@ -42,7 +42,6 @@ interface ProviderProps {
   children: ReactNode;
 }
 
-// Define the Provider component
 export const SubjectInboundConnectionsContextProvider: React.FC<
   ProviderProps
 > = ({ subjectId, children }) => {
@@ -171,8 +170,8 @@ export const useSubjectInboundConnectionsContext = (props: {
   if (context.subjectId !== props.subjectId) {
     throw new Error(
       'SubjectInboundConnectionsContextProvider for ' +
-        props.subjectId +
-        'not provided',
+      props.subjectId +
+      'not provided',
     );
   }
 
@@ -181,10 +180,10 @@ export const useSubjectInboundConnectionsContext = (props: {
     () =>
       context.ratings
         ? context.ratings.filter(
-            (r) =>
-              r.category ===
-              (props?.evaluationCategory ?? currentEvaluationCategory),
-          )
+          (r) =>
+            r.category ===
+            (props?.evaluationCategory ?? currentEvaluationCategory),
+        )
         : null,
     [context.ratings, currentEvaluationCategory, props?.evaluationCategory],
   );
@@ -203,9 +202,8 @@ export const useSubjectInboundConnectionsContext = (props: {
     [ratings],
   );
   const inboundRatingsStatsString = useMemo(() => {
-    return `${inboundPositiveRatingsCount ?? '...'} Pos / ${
-      inboundNegativeRatingsCount ?? '...'
-    } Neg`;
+    return `${inboundPositiveRatingsCount ?? '...'} Pos / ${inboundNegativeRatingsCount ?? '...'
+      } Neg`;
   }, [inboundNegativeRatingsCount, inboundPositiveRatingsCount]);
 
   const [itemsFiltered, itemsOriginal] = useMemo(
@@ -217,7 +215,7 @@ export const useSubjectInboundConnectionsContext = (props: {
               Boolean(o.inboundConnection) &&
               (o.rating === undefined ||
                 o.rating.category ===
-                  (props?.evaluationCategory ?? currentEvaluationCategory)),
+                (props?.evaluationCategory ?? currentEvaluationCategory)),
           ) || null,
       ),
     [

@@ -41,6 +41,7 @@ export default function useParseBrightIdVerificationData(
     () => getAuraVerification(verifications, evaluationCategory),
     [evaluationCategory, verifications],
   );
+
   const auraLevel = useMemo(
     () => auraVerification?.level ?? null,
     [auraVerification?.level],

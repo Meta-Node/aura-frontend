@@ -26,13 +26,15 @@
     "strictNullChecks": true,
     "target": "ESNext",
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo/build",
-    "types": ["jest", "@types/node", "vite/client"],
+    "types": ["@types/node", "vite/client", "vitest/globals"],
     "useUnknownInCatchVariables": false,
     "paths": {
       "@/*": ["./*"]
     }
   },
   "include": [
+    ".react-router/**/*",
+    "__tests__/**/*",
     "src/**/*",
     "src/**/*.json",
     "node_modules/vite-plugin-pwa/client.d.ts"

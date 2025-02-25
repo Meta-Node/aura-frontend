@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
   EvaluateSubmittedOperation,
   selectEvaluateOperations,
-} from '../BrightID/reducer/operationsSlice';
+} from 'BrightID/reducer/operationsSlice';
 import { operation_states } from '../BrightID/utils/constants';
 import {
   getBgClassNameOfAuraRatingNumber,
@@ -33,10 +33,10 @@ function EvaluateOpNotification({
 }) {
   const subjectName = useSubjectName(notification.operation.evaluated);
   return (
-    <div className="card !bg-neutral-l2 !border-neutral-l3 flex flex-col gap-1">
-      <div className="flex w-full justify-between items-center">
+    <div className="card flex flex-col gap-1 !border-neutral-l3 !bg-neutral-l2">
+      <div className="flex w-full items-center justify-between">
         <Link
-          className="flex gap-2 items-center"
+          className="flex items-center gap-2"
           to={
             '/subject/' +
             notification.operation.evaluated +
@@ -52,28 +52,28 @@ function EvaluateOpNotification({
           />
           <BrightIdProfilePicture
             subjectId={notification.operation.evaluated}
-            className={`border-solid border rounded w-4 h-4 ${getViewModeSubjectBorderColorClass(
+            className={`h-4 w-4 rounded border border-solid ${getViewModeSubjectBorderColorClass(
               viewAsToViewMode[notification.operation.category],
             )}`}
           />
           <div>{subjectName}</div>
           <img
             src={subjectViewAsIconColored[notification.operation.category]}
-            className="w-4 h-4"
+            className="h-4 w-4"
             alt=""
           />
           <div
-            className={`rounded flex px-3 py-1 gap-1 items-center ${getBgClassNameOfAuraRatingNumber(
+            className={`flex items-center gap-1 rounded px-3 py-1 ${getBgClassNameOfAuraRatingNumber(
               notification.operation.confidence,
             )}`}
           >
             <EvaluationThumb
               rating={notification.operation.confidence}
-              className="w-3.5 h-3.5"
+              className="h-3.5 w-3.5"
               alt=""
             />
             <span
-              className={`font-medium text-xs  ${
+              className={`text-xs font-medium ${
                 Math.abs(notification.operation.confidence) > 2
                   ? 'text-white'
                   : 'text-black'
@@ -87,7 +87,7 @@ function EvaluateOpNotification({
             </span>
           </div>
         </Link>
-        <p className="font-bold text-sm text-button-primary">
+        <p className="text-sm font-bold text-button-primary">
           {notification.text}
         </p>
       </div>
@@ -187,9 +187,7 @@ export default function EvaluationOpNotifications() {
     localStorage.setItem('prevOperations', JSON.stringify(operations));
   }, [addNotification, operations, refreshEvaluations]);
 
-  return notifications.length === 0 ? (
-    <></>
-  ) : (
+  return (
     <div className="w-full">
       <div className="flex flex-col gap-2">
         {notifications.map((notification) => (

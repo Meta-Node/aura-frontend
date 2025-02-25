@@ -1,3 +1,5 @@
+import { UserSearchIcon } from "lucide-react";
+
 export const EmptySubjectList = ({
   clearSortAndFilter,
   hasFilter,
@@ -9,13 +11,9 @@ export const EmptySubjectList = ({
 }) => {
   return (
     <div className="flex flex-col items-center justify-center py-10 px-2 gap-2">
-      <img
-        src="/assets/images/Shared/no-subjects-found.svg"
-        alt="Empty State"
-        className="w-10 h-8 mb-1"
-      />
-      <h2 className="text-lg font-medium text-white">No subjects found</h2>
-      <p className="text-center text-white">
+      <UserSearchIcon className="w-10 h-10 mb-1" />
+      <h2 className="text-lg font-medium">No subjects found</h2>
+      <p className="text-center">
         {hasFilter ? (
           <span
             className="underline cursor-pointer"

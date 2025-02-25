@@ -2,7 +2,7 @@ import { toggleSearchModal } from 'BrightID/actions';
 import { useEffect, useMemo, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
-import { matchPath, useLocation, useNavigate } from 'react-router-dom';
+import { matchPath, useLocation, useNavigate } from 'react-router';
 import routes from 'Routes';
 import { RoutePath } from 'types/router';
 import { findLastIndex } from 'utils/index';
@@ -85,24 +85,24 @@ const Header = () => {
   const HeaderTitle = HeaderComponent.title ?? (() => <></>);
 
   return (
-    <div className="flex flex-col gap-2.5 px-1 md:px-6 pt-9">
+    <div className="flex flex-col gap-2.5 px-1 pt-9 md:px-6">
       {isSequenceOpen && (
         <PlayerHistorySequence playerHistorySequence={playerHistorySequence} />
       )}
-      <header className="header pb-4 flex-wrap flex justify-between">
-        <div className="header-left flex-wrap items-center flex gap-1.5">
+      <header className="header flex flex-wrap justify-between pb-4">
+        <div className="header-left flex flex-wrap items-center gap-1.5">
           {HeaderComponent.icon && (
             <span
               key={HeaderComponent.icon}
               onClick={() =>
                 HeaderComponent && HeaderComponent.iconClickedHandler(navigate)
               }
-              className="header-icon !cursor-pointer mr-0.5"
+              className="header-icon mr-0.5 !cursor-pointer"
               data-testid="nav-button"
             >
               <img
                 key={HeaderComponent.icon}
-                className="w-6 h-6"
+                className="h-6 w-6"
                 src={HeaderComponent.icon}
                 alt={''}
               />
@@ -110,7 +110,7 @@ const Header = () => {
           )}
           {playerHistorySequence.length !== 0 && (
             <img
-              className="cursor-pointer w-6 h-[18px]"
+              className="h-[18px] w-6 cursor-pointer"
               src={
                 isSequenceOpen
                   ? '/assets/images/Header/close-sequence.svg'
@@ -120,7 +120,7 @@ const Header = () => {
               onClick={() => setIsSequenceOpen(!isSequenceOpen)}
             />
           )}
-          <div className="header-title font-medium text-xl text-white whitespace-nowrap flex items-center">
+          <div className="header-title flex items-center whitespace-nowrap text-xl font-medium text-white">
             <HeaderTitle />
           </div>
         </div>
@@ -128,7 +128,7 @@ const Header = () => {
           <button
             key="/assets/images/Header/search.svg"
             onClick={() => dispatch(toggleSearchModal())}
-            className="header-icon text-gray-300 dark:text-white mr-4"
+            className="header-icon mr-4 text-gray-300 dark:text-white"
             data-testid="nav-button"
           >
             <FaSearch size={20} />
@@ -142,7 +142,7 @@ const Header = () => {
             >
               <img
                 key="/assets/images/Header/settings.svg"
-                className="w-6 h-6"
+                className="h-6 w-6"
                 src="/assets/images/Header/settings.svg"
                 alt={''}
               />

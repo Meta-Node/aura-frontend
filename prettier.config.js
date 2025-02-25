@@ -1,6 +1,5 @@
-
 /** @type {import("prettier").Config} */
-module.exports = {
+const prettierConfig = {
   plugins: ['prettier-plugin-tailwindcss'],
   semi: true,
   trailingComma: 'all',
@@ -10,8 +9,7 @@ module.exports = {
   indent_style: 'space',
   indent_size: 2,
   end_of_line: 'lf',
-  tailwindConfig: "./tailwind.config.ts",
+  tailwindConfig: './tailwind.config.ts',
 };
 
-
-
+export default prettierConfig;

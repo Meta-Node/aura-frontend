@@ -1,6 +1,6 @@
 import { PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING } from 'constants/index';
 import { useBrowserHistoryContext } from 'contexts/BrowserHistoryContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { RoutePath } from 'types/router';
 
 const NewPlayerGuideAfterEvaluation = ({
@@ -26,9 +26,9 @@ const NewPlayerGuideAfterEvaluation = ({
           </span>{' '}
           more before you can start getting feedback from Aura trainers
         </p>
-        <div className="grow bg-[#D9D9D9] rounded-xl h-[14px] overflow-hidden mt-[20px]">
+        <div className="mt-[20px] h-[14px] grow overflow-hidden rounded-xl bg-[#D9D9D9]">
           <span
-            className={`flex bg-pastel-purple h-[inherit] rounded-xl w-[${Math.ceil(
+            className={`flex h-[inherit] rounded-xl bg-pastel-purple w-[${Math.ceil(
               (ratingsDoneCount * 100) /
                 PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING,
             )}%]`}
@@ -60,9 +60,9 @@ const NewPlayerGuideAfterEvaluation = ({
           <span data-testid="ratings-done-count">{ratingsDoneCount}</span>{' '}
           evaluations. Start getting feedback from Aura trainers!
         </p>
-        <div className="grow bg-[#D9D9D9] rounded-xl h-[14px] overflow-hidden mt-[20px]">
+        <div className="mt-[20px] h-[14px] grow overflow-hidden rounded-xl bg-[#D9D9D9]">
           <span
-            className={`flex bg-pastel-purple h-[inherit] rounded-xl w-full`}
+            className={`flex h-[inherit] w-full rounded-xl bg-pastel-purple`}
           ></span>
         </div>
       </div>

@@ -17,10 +17,10 @@ import { connectionLevelIcons } from 'utils/connection';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
-import NewEvaluationCard from '../../../pages/SubjectProfile/NewEvaluationCard';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
 import { YourEvaluationInfo } from '../EvaluationInfo/YourEvaluationInfo';
 import { HorizontalProgressBar } from '../HorizontalProgressBar';
+import NewEvaluationCard from '@/app/routes/_app.subject.$id/components/new-evaluation-card';
 
 export const ProfileInfo = ({
   isPerformance = false,
@@ -101,9 +101,8 @@ export const ProfileInfo = ({
               </span>{' '}
               {myConnectionToSubject && (
                 <img
-                  src={`/assets/images/Shared/${
-                    connectionLevelIcons[myConnectionToSubject.level]
-                  }.svg`}
+                  src={`/assets/images/Shared/${connectionLevelIcons[myConnectionToSubject.level]
+                    }.svg`}
                   alt=""
                   className="w-5 ml-2"
                 />
@@ -126,15 +125,13 @@ export const ProfileInfo = ({
                   setSelectedSort(AuraSortId.ConnectionLastUpdated);
                 }
               }}
-              className={`${
-                userHasRecovery
+              className={`${userHasRecovery
                   ? 'bg-orange text-white font-bold'
                   : 'bg-gray-300 text-black'
-              } ${
-                userHasRecovery && !isPerformance && inboundEvaluationsContext
+                } ${userHasRecovery && !isPerformance && inboundEvaluationsContext
                   ? 'cursor-pointer'
                   : ''
-              } px-2 py-1.5 rounded`}
+                } px-2 py-1.5 rounded`}
             >
               <p className="text-xs">
                 {userHasRecovery ? 'Has Recovery' : 'No Recovery'}

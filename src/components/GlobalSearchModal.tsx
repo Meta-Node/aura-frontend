@@ -2,7 +2,7 @@ import { toggleSearchModal } from 'BrightID/actions';
 import Modal from 'components/Shared/Modal';
 import { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const GlobalSearchBody: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
@@ -19,22 +19,23 @@ const GlobalSearchBody: FC = () => {
   return (
     <div className="w-full">
       <form
-        className="flex items-center gap-2 justify-center"
+        className="flex items-center justify-center gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           onSearch();
         }}
       >
-        <div className="bg-card text-card-foreground rounded-[10px] p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
-          <div className="card__input flex gap-2 items-center rounded-lg px-3.5">
+        <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-[10px] border bg-card p-1 text-card-foreground">
+          <div className="card__input flex items-center gap-2 rounded-lg px-3.5">
             <img
-              className="w-4 h-4"
+              className="h-4 w-4"
               src="/assets/images/Shared/search-icon.svg"
               alt=""
             />
             <input
-              className="bg-card font-medium dark:placeholder:text-gray-50 placeholder-black2 w-full text-sm h-11 focus:outline-none"
+              className="h-11 w-full bg-card text-sm font-medium placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
               type="text"
+              autoFocus
               placeholder="Subject name or ID ..."
               value={searchString}
               onChange={(e) => setSearchString(e.target.value)}
@@ -43,7 +44,7 @@ const GlobalSearchBody: FC = () => {
         </div>
         <button
           type="submit"
-          className="bg-pastel-purple px-4 dark:bg-primary-d1 hover:bg-pastel-purple/80 dark:hover:bg-primary-d1/80 rounded-[10px] h-11 text-sm font-bold text-white"
+          className="h-11 rounded-[10px] bg-pastel-purple px-4 text-sm font-bold text-white hover:bg-pastel-purple/80 dark:bg-primary-d1 dark:hover:bg-primary-d1/80"
         >
           Search
         </button>

@@ -6,6 +6,7 @@ export function drawImageCover(
   canvasWidth: number,
   canvasHeight: number,
   borderRadius?: number,
+  preferredTheme?: 'dark' | 'light',
 ) {
   const originalWidth = img.width;
   const originalHeight = img.height;
@@ -20,7 +21,7 @@ export function drawImageCover(
   const horizontalPadding = (canvasWidth - scaledWidth) / 2;
   const verticalPadding = (canvasHeight - scaledHeight) / 2;
 
-  ctx.fillStyle = '#18181b';
+  ctx.fillStyle = preferredTheme === 'light' ? '#fff' : '#18181b';
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   if (borderRadius) {
@@ -63,6 +64,7 @@ export async function renderImageCover(
   imageContent: string,
   width: number,
   height: number,
+  preferredTheme?: 'light' | 'dark',
 ) {
   const image = new Image();
 
@@ -77,7 +79,7 @@ export async function renderImageCover(
   return await new Promise<string>(
     (resolve) =>
       (image.onload = () => {
-        drawImageCover(context, image, width, height, 12);
+        drawImageCover(context, image, width, height, 12, preferredTheme);
 
         const data = canvas.toDataURL();
 
