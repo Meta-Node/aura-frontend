@@ -63,20 +63,26 @@ export const SubjectCard = ({
             <div className="evaluation__info flex flex-col">
               <p
                 className="font-medium text-black dark:text-white"
-                data-testid={`user-item-${index}-name`}
+                data-testid={`subject-item-${index}-name`}
               >
                 {name}
               </p>
 
               <div className="text-gray10 dark:text-gray70">
                 Level:{' '}
-                <span className="font-medium text-black dark:text-white">
+                <span
+                  data-testid={`subject-item-${index}-level`}
+                  className="font-medium text-black dark:text-white"
+                >
                   {auraLevel}
                 </span>
                 <span className="mt-2 text-sm">
                   <p className="text-gray10 dark:text-gray70">
                     Score:{' '}
-                    <span className="font-medium text-black dark:text-white">
+                    <span
+                      data-testid={`subject-item-${index}-score`}
+                      className="font-medium text-black dark:text-white"
+                    >
                       {auraScore ? compactFormat(auraScore) : '-'}
                     </span>
                   </p>
@@ -102,6 +108,7 @@ export const SubjectCard = ({
             className="evaluation-right__bottom"
           >
             <ReactECharts
+              data-testid={`subject-item-${index}-chart`}
               opts={{
                 height: 48,
                 width: 'auto',

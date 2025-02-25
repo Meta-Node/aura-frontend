@@ -18,7 +18,6 @@ export const restHandlers = [profileInterceptor, backupInterceptor];
 const server = setupServer(...restHandlers);
 
 beforeAll(() => {
-  setGlobalOrigin(window.location.href);
   server.listen({ onUnhandledRequest: 'error' });
 });
 

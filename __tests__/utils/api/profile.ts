@@ -128,6 +128,54 @@ export const generateRoleData = (
   };
 };
 
+export const findProfileCategory = (profile: any, name: string) => {
+  return profile.data.verifications[0].domains[0].categories.find(
+    (item: { name: string }) => item.name === name,
+  ) as {
+    name: string;
+    level: number;
+    impacts: {
+      evaluatorName: string;
+      evaluator: string;
+      score: number;
+      confidence: number;
+      impact: number;
+      level: number;
+    }[];
+    score: number;
+  };
+};
+
+export const generateMockedProfile = (
+  brightId = generateRandomBrightId(),
+  categories: any[],
+) => {
+  return {
+    id: brightId,
+    sponsored: true,
+    verifications: [
+      {
+        name: 'Aura',
+        block: 30146400,
+        timestamp: 1740282045881,
+        domains: [
+          {
+            name: 'BrightID',
+            categories: categories,
+          },
+        ],
+      },
+    ],
+    recoveryConnections: [],
+    connectionsNum: 11,
+    groupsNum: 0,
+    reports: [],
+    createdAt: new Date(),
+    signingKeys: [],
+    requiredRecoveryNum: 2,
+  };
+};
+
 export const mockedBrightIdProfileData = {
   data: {
     id: TEST_BRIGHT_ID,
