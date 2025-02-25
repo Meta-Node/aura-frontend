@@ -9,7 +9,6 @@ import {
   getViewModeBackgroundColorClass,
   preferredViewIcon,
 } from '@/constants';
-import { SubjectInboundConnectionsContextProvider } from '@/contexts/SubjectInboundConnectionsContext';
 import { SubjectInboundEvaluationsContextProvider } from '@/contexts/SubjectInboundEvaluationsContext';
 import {
   SubjectOutboundEvaluationsContextProvider,
@@ -156,9 +155,7 @@ export const HeaderBody = () => {
     <>
       <SubjectOutboundEvaluationsContextProvider subjectId={subjectId}>
         <SubjectInboundEvaluationsContextProvider subjectId={subjectId}>
-          <SubjectInboundConnectionsContextProvider subjectId={subjectId}>
-            <HomeHeaderItems />
-          </SubjectInboundConnectionsContextProvider>
+          <HomeHeaderItems />
         </SubjectInboundEvaluationsContextProvider>
       </SubjectOutboundEvaluationsContextProvider>
     </>
