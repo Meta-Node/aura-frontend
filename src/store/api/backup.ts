@@ -41,6 +41,9 @@ export const backupApiSlice = createApi({
         method: 'GET',
         responseHandler: 'text',
       }),
+      extraOptions: {
+        maxRetries: 0,
+      },
       transformResponse: (response: string, meta, args) => {
         return decryptData(response, args.password);
       },
