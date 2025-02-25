@@ -1,5 +1,5 @@
 import { SubjectCard } from '@/components/EvaluationFlow/SubjectCard';
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 import { renderWithRouterAndRedux } from '../utils/app';
 import {
@@ -93,25 +93,27 @@ describe('Subject card functionality', () => {
       ),
     );
 
-    expect(screen.getByTestId(`subject-item-0-level`)).toHaveTextContent(
-      findProfileCategory(
-        mockedBrightIdProfileData,
-        'subject',
-      ).level.toString(),
-    );
+    await waitFor(() => {
+      expect(screen.getByTestId(`subject-item-0-level`)).toHaveTextContent(
+        findProfileCategory(
+          mockedBrightIdProfileData,
+          'subject',
+        ).level.toString(),
+      );
 
-    expect(screen.getByTestId(`subject-item-0-score`)).toHaveTextContent(
-      compactFormat(
-        findProfileCategory(mockedBrightIdProfileData, 'subject').score,
-      ),
-    );
+      expect(screen.getByTestId(`subject-item-0-score`)).toHaveTextContent(
+        compactFormat(
+          findProfileCategory(mockedBrightIdProfileData, 'subject').score,
+        ),
+      );
 
-    expect(screen.getByTestId(`subject-item-0-name`)).toHaveTextContent(
-      BRIGHTID_BACKUP.userData.name,
-    );
+      expect(screen.getByTestId(`subject-item-0-name`)).toHaveTextContent(
+        BRIGHTID_BACKUP.userData.name,
+      );
 
-    expect(
-      screen.getByTestId(`subject-card-${TEST_BRIGHT_ID}`),
-    ).toHaveAttribute('href', `/subject/${TEST_BRIGHT_ID}`);
+      expect(
+        screen.getByTestId(`subject-card-${TEST_BRIGHT_ID}`),
+      ).toHaveAttribute('href', `/subject/${TEST_BRIGHT_ID}`);
+    });
   });
 });
