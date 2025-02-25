@@ -1,36 +1,39 @@
-import ThemeResolver from "@/components/ui/theme-resolver";
-import { PropsWithChildren } from "react";
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import Providers from "./providers";
-import { Route } from "../../.react-router/types/src/app/+types/root";
+import ThemeResolver from '@/components/ui/theme-resolver';
+import { PropsWithChildren } from 'react';
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from 'react-router';
+import Providers from './providers';
+import { Route } from '../../.react-router/types/src/app/+types/root';
 
-import GlobalSearchModal from "@/components/GlobalSearchModal";
-import { useSelector } from "@/store/hooks";
-import { selectIsSearchModalOpen, toggleSearchModal } from "@/BrightID/actions";
-import { useDispatch } from "react-redux";
+import GlobalSearchModal from '@/components/GlobalSearchModal';
+import { useSelector } from '@/store/hooks';
+import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
+import { useDispatch } from 'react-redux';
 
-import "./i18n"
-import "App.scss"
-import "../assets/fonts/fonts.css"
+import './i18n';
+import 'App.scss';
+import '../assets/fonts/fonts.css';
 
-
-import "swiper/css"
-
+import 'swiper/css';
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
+    rel: 'preconnect',
+    href: 'https://fonts.gstatic.com',
+    crossOrigin: 'anonymous',
   },
   {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap",
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap',
   },
 ];
-
-
 
 export function Layout({ children }: PropsWithChildren) {
   return (
@@ -47,21 +50,17 @@ export function Layout({ children }: PropsWithChildren) {
         <Links />
       </head>
       <body>
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
-  )
+  );
 }
-
-
 
 export default function App() {
   const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -71,20 +70,19 @@ export default function App() {
       <Outlet />
       <ThemeResolver />
     </>
-  )
+  );
 }
 
-
-export function ErrorBoundary({ error }: /*Route.ErrorBoundaryProps*/  any) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
+export function ErrorBoundary({ error }: /*Route.ErrorBoundaryProps*/ any) {
+  let message = 'Oops!';
+  let details = 'An unexpected error occurred.';
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? '404' : 'Error';
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? 'The requested page could not be found.'
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -92,11 +90,11 @@ export function ErrorBoundary({ error }: /*Route.ErrorBoundaryProps*/  any) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <main className="container mx-auto p-4 pt-16">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className="w-full overflow-x-auto p-4">
           <code>{stack}</code>
         </pre>
       )}
