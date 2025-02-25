@@ -109,6 +109,7 @@
     "@types/react-dom": "^18.0.0",
     "@types/react-infinite-scroller": "^1.2.3",
     "@types/uuid": "^10.0.0",
+    "@vercel/react-router": "^1.0.2",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitejs/plugin-react-swc": "^3.8.0",
     "@vitest/ui": "3.0.6",
