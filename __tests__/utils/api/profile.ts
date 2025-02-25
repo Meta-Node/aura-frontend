@@ -1,7 +1,10 @@
-import { AuraImpact, Domain } from '@/api/auranode.service';
+import { AuraImpact } from '@/api/auranode.service';
 import { EvaluationCategory } from '@/types/dashboard';
 import { hash } from '@/utils/crypto';
-import { type BrightIdBackupConnection } from 'types';
+import {
+  AuraNodeBrightIdConnection,
+  type BrightIdBackupConnection,
+} from 'types';
 
 export const TEST_BRIGHT_ID = 'TEST_BRIGHTID';
 export const TEST_BRIGHT_PASSWORD = 'TEST_BRIGHTID_PASSWORD';
@@ -45,7 +48,8 @@ export const generateRandomBrightIdConnectionBackup = (
     timestamp: Date.now(),
     incomingLevel: incomingLevel,
     reportReason: null,
-  } as BrightIdBackupConnection;
+    auraEvaluations: [],
+  } as AuraNodeBrightIdConnection;
 };
 
 export const createDomainFromBrightIdConenction = (

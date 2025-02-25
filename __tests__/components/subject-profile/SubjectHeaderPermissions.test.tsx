@@ -1,6 +1,6 @@
 import SubjectProfileHeader from '@/app/routes/_app.subject.$id/components/header';
 import { BrightIdBackupConnection } from '@/types';
-import { EvaluationCategory } from '@/types/dashboard';
+import { EvaluationCategory, EvaluationValue } from '@/types/dashboard';
 import { screen, waitFor } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 import { act } from 'react';
@@ -21,9 +21,16 @@ const createOutboundMockedDataForValidPlayer = () => {
     data: { connections: [] as BrightIdBackupConnection[] },
   };
 
-  mockedOutboundData.data.connections.push(
-    generateRandomBrightIdConnectionBackup(),
-  );
+  const connection = generateRandomBrightIdConnectionBackup();
+  mockedOutboundData.data.connections.push(connection);
+
+  connection.auraEvaluations?.push({
+    domain: 'BrightID',
+    category: EvaluationCategory.PLAYER,
+    confidence: 4,
+    evaluation: EvaluationValue.POSITIVE,
+    modified: new Date().getTime() / 1000,
+  });
 
   const domains =
     mockedOutboundData.data.connections[0].verifications![0].domains!;
@@ -85,6 +92,20 @@ describe('Should render the header with permissions', () => {
         ).not.toBeInTheDocument();
       },
       { timeout: 5000 },
+    );
+  });
+
+  it('Should render the component on player mode', async () => {
+    await act(() =>
+      renderWithRouterAndRedux(<SubjectProfileHeader />, {
+        router: {
+          initialEntries: ['/subject/' + TEST_BRIGHT_ID + '?viewas=player'],
+        },
+      }),
+    );
+
+    expect(screen.getByTestId('header-title')).toHaveTextContent(
+      'Player Profile',
     );
   });
 });

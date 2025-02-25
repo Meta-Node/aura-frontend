@@ -53,11 +53,8 @@ export const useMyEvaluationsContext = (props?: {
 }) => {
   const context = useContext(MyEvaluationsContext);
 
-  if (context === null) {
-    throw new Error(
-      'MyEvaluationsContext must be used within a MyEvaluationsContextProvider',
-    );
-  }
+  if (!context) return {};
+
   const { currentEvaluationCategory } = useViewMode();
   const myRatings = useMemo(() => {
     if (!context.myRatings) return null;

@@ -2,6 +2,18 @@ import SubjectProfileHeader from '@/app/routes/_app.subject.$id/components/heade
 import { renderWithRouterAndRedux } from '../../utils/app';
 import { act, screen, waitFor } from '@testing-library/react';
 import { TEST_BRIGHT_ID } from '../../utils/api/profile';
+import { setupServer } from 'msw/node';
+import { outboundEmptyInterceptor } from '../../utils/api/server';
+
+const server = setupServer(outboundEmptyInterceptor);
+
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'error' });
+});
+
+afterAll(() => server.close());
+
+afterEach(() => server.resetHandlers());
 
 describe('subject header component', () => {
   it('Should render the component on subject mode', async () => {
@@ -13,20 +25,6 @@ describe('subject header component', () => {
 
     expect(screen.getByTestId('header-title')).toHaveTextContent(
       'Subject Profile',
-    );
-  });
-
-  it('Should render the component on player mode', async () => {
-    await act(() =>
-      renderWithRouterAndRedux(<SubjectProfileHeader />, {
-        router: {
-          initialEntries: ['/subject/' + TEST_BRIGHT_ID + '?viewas=player'],
-        },
-      }),
-    );
-
-    expect(screen.getByTestId('header-title')).toHaveTextContent(
-      'Player Profile',
     );
   });
 
