@@ -1,5 +1,3 @@
-import { decryptData } from 'utils/crypto';
-
 import { apiSlice } from './slice';
 
 export const profileApi = apiSlice.injectEndpoints({
@@ -11,16 +9,6 @@ export const profileApi = apiSlice.injectEndpoints({
       transformResponse: (res: UserProfileRes) => res.data,
     }),
 
-    getProfilePhoto: build.query<
-      string,
-      { key: string; brightId: string; password: string }
-    >({
-      query: ({ brightId, key }) => ({
-        url: `/backups/${key}/${brightId}`,
-      }),
-      transformResponse: (response: string, meta, args) =>
-        decryptData(response, args.password),
-    }),
     getConnections: build.query<
       ConnectionInfo[],
       { id: number; direction: 'inbound' | 'outbound' }
@@ -32,12 +20,11 @@ export const profileApi = apiSlice.injectEndpoints({
       transformResponse: (res: UserConnectionsRes) => res.data.connections,
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {
   useGetConnectionsQuery,
   useGetBrightIDProfileQuery,
-  useGetProfilePhotoQuery,
-  useLazyGetProfilePhotoQuery,
-  useLazyGetBrightIDProfileQuery
+  useLazyGetBrightIDProfileQuery,
 } = profileApi;

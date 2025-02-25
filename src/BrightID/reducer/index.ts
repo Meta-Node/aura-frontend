@@ -6,6 +6,7 @@ import keypair from './keypairSlice';
 import operations from './operationsSlice';
 import settings from './settingsSlice';
 import user from './userSlice';
+import { backupApiSlice } from '@/store/api/backup';
 
 const reducers = {
   recoveryData,
@@ -13,6 +14,7 @@ const reducers = {
   operations,
   keypair,
   user,
+  [backupApiSlice.reducerPath]: backupApiSlice.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 };
 export default reducers;

@@ -9,6 +9,7 @@ import { __DEV__ } from 'utils/env';
 import { apiSlice } from './api/slice';
 import { migrations } from './migrations';
 import { profileSlice } from './profile';
+import { backupApiSlice } from './api/backup';
 
 const persistConfig = {
   key: 'root',
@@ -46,7 +47,7 @@ export function configureAppStore(preloadedState?: any) {
           ignoredPaths: ['recoveryData'],
         },
         immutableCheck: false,
-      }).concat(apiSlice.middleware),
+      }).concat(apiSlice.middleware, backupApiSlice.middleware),
     preloadedState,
   });
 

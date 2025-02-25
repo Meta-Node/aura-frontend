@@ -1,14 +1,12 @@
-import { pullProfilePhoto } from 'api/profilePhoto.service';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { hash } from 'utils/crypto';
 
 import { createBlockiesImage } from '@/utils/image';
 
-import {
-  selectAuthData,
-  selectBrightIdBackup,
-} from '../store/profile/selectors';
+import { selectAuthData } from '../store/profile/selectors';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { useGetProfilePhotoQuery } from '@/store/api/backup';
 
 const DEFAULT_PROFILE_PICTURE = '/assets/images/avatar-thumb.jpg';
 const BrightIdProfilePicture = ({
@@ -17,47 +15,30 @@ const BrightIdProfilePicture = ({
 }: React.HTMLAttributes<HTMLImageElement> & {
   subjectId: string | undefined;
 }) => {
-  const [imgSrc, setImgSrc] = useState(
-    subjectId ? createBlockiesImage(subjectId) : DEFAULT_PROFILE_PICTURE,
+  const imgSrc = useMemo(
+    () =>
+      subjectId ? createBlockiesImage(subjectId) : DEFAULT_PROFILE_PICTURE,
+    [subjectId],
   );
   const authData = useSelector(selectAuthData);
-  const brightIdBackup = useSelector(selectBrightIdBackup);
-  useEffect(() => {
-    let mounted = true;
-
-    async function f() {
-      if (!authData || !subjectId || !brightIdBackup) return;
-      if (
-        subjectId !== authData.brightId &&
-        !brightIdBackup.connections.find((conn) => conn.id === subjectId)
-      )
-        return;
-      try {
-        const profilePhoto = await pullProfilePhoto(
-          hash(authData.brightId + authData.password),
-          subjectId,
-          authData.password,
-        );
-        if (mounted) setImgSrc(profilePhoto);
-      } catch (e) {
-        // console.log(e);
-        setImgSrc(createBlockiesImage(subjectId));
-      }
-    }
-
-    f();
-    return () => {
-      mounted = false;
-    };
-  }, [authData, brightIdBackup, subjectId]);
+  const { data } = useGetProfilePhotoQuery(
+    authData && subjectId
+      ? {
+          brightId: subjectId,
+          key: hash(authData.brightId + authData.password),
+          password: authData.password,
+        }
+      : skipToken,
+  );
 
   //TODO: use profile name in alt
+
   return (
     <img
       {...props}
       alt={subjectId}
       className={`${props.className ?? ''} object-cover`}
-      src={imgSrc}
+      src={data ?? imgSrc}
     />
   );
 };
