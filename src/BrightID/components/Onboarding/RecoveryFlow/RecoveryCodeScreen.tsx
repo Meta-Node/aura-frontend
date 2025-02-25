@@ -27,7 +27,7 @@ import { AURA_NODE_URL, AURA_NODE_URL_PROXY } from 'constants/urls';
 import useRedirectAfterLogin from 'hooks/useRedirectAfterLogin';
 import { useEffect, useMemo, useState } from 'react';
 import { QRCode } from 'react-qrcode-logo';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'store/hooks';
 import { loginThunk } from 'store/profile/actions';
 import { copyToClipboard } from 'utils/copyToClipboard';
@@ -114,10 +114,10 @@ const RecoveryCodeScreen = () => {
       const channelUrl = recoveryData.channel.url;
       const newQrUrl = buildRecoveryChannelQrUrl({
         aesKey: recoveryData.aesKey,
-        url: channelUrl.href.startsWith("/")
+        url: channelUrl.href.startsWith('/')
           ? {
-            href: channelUrl.href.replace(AURA_NODE_URL_PROXY, AURA_NODE_URL),
-          }
+              href: channelUrl.href.replace(AURA_NODE_URL_PROXY, AURA_NODE_URL),
+            }
           : channelUrl,
         t: urlTypesOfActions[action],
         changePrimaryDevice: false,
@@ -177,8 +177,8 @@ const RecoveryCodeScreen = () => {
     () =>
       qrUrl
         ? `https://app.brightid.org/connection-code/${encodeURIComponent(
-          qrUrl.href,
-        )}`
+            qrUrl.href,
+          )}`
         : undefined,
     [qrUrl],
   );
@@ -213,22 +213,22 @@ const RecoveryCodeScreen = () => {
   const qrCodeSize = Math.min(window.innerWidth * 0.9 - 40, 270);
 
   return (
-    <div className="page page__splash !pt-[90px] !px-[22px] pb-4 flex flex-col">
+    <div className="page page__splash flex flex-col !px-[22px] !pt-[90px] pb-4">
       {importedUserData ? (
-        <section className="content pl-5 pr-12 mb-6">
-          <p className="text-white font-black text-5xl mb-6">Login</p>
-          <p className="text-white font-medium text-lg">
+        <section className="content mb-6 pl-5 pr-12">
+          <p className="mb-6 text-5xl font-black text-white">Login</p>
+          <p className="text-lg font-medium text-white">
             Downloading backup data...
           </p>
         </section>
       ) : (
         <>
-          <section className="content pl-5 pr-12 mb-6">
+          <section className="content mb-6 pl-5 pr-12">
             <FadeIn delay={0.1}>
-              <p className="text-white font-black text-5xl mb-6">Login</p>
+              <p className="mb-6 text-5xl font-black text-white">Login</p>
             </FadeIn>
             <FadeIn delay={0.15}>
-              <p className="text-white font-medium text-lg">
+              <p className="text-lg font-medium text-white">
                 <span className="hidden md:block">
                   <CustomTrans i18nKey="login.topDescriptionDesktop" />
                 </span>
@@ -240,7 +240,7 @@ const RecoveryCodeScreen = () => {
           </section>
 
           <a
-            className="pl-8 pr-10 flex flex-col items-center gap-6 mb-3"
+            className="mb-3 flex flex-col items-center gap-6 pl-8 pr-10"
             href={universalLink}
             target="_blank"
             rel="noreferrer"
@@ -263,10 +263,10 @@ const RecoveryCodeScreen = () => {
               </FadeIn>
             )}
 
-            <FadeIn delay={0.25} className="flex gap-2 items-center">
-              <hr className="w-12 h-[1px]" />
+            <FadeIn delay={0.25} className="flex items-center gap-2">
+              <hr className="h-[1px] w-12" />
               <p className="text-white">Or</p>
-              <hr className="w-12 h-[1px]" />
+              <hr className="h-[1px] w-12" />
             </FadeIn>
             <FadeIn delay={0.25}>
               <p className="text-lg font-medium text-white">
@@ -277,12 +277,12 @@ const RecoveryCodeScreen = () => {
 
           <FadeIn delay={0.3} className="actions mb-auto pb-24 text-center">
             <section className="actions mb-auto pb-24 text-center">
-              <span className="bg-gray00 w-full py-2 pr-2.5 pl-3 rounded-lg flex justify-between items-center gap-2">
+              <span className="flex w-full items-center justify-between gap-2 rounded-lg bg-gray00 py-2 pl-3 pr-2.5">
                 <a
                   href={universalLink}
                   target="_blank"
                   data-testid={universalLink && 'import-universal-link'}
-                  className="font-medium text-white underline text-left line-clamp-1 text-ellipsis"
+                  className="line-clamp-1 text-ellipsis text-left font-medium text-white underline"
                   rel="noreferrer"
                 >
                   {universalLink}
@@ -296,7 +296,7 @@ const RecoveryCodeScreen = () => {
             </section>
           </FadeIn>
           <FadeIn delay={0.35}>
-            <footer className="flex justify-between text-gray90 text-sm">
+            <footer className="flex justify-between text-sm text-gray90">
               <span className="flex gap-1">
                 {/* <p className="font-light">Version</p>
                 <p className="">2.1</p> */}

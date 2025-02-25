@@ -16,7 +16,7 @@ import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import useViewMode from 'hooks/useViewMode';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
   EvaluationCategory,
   EvidenceViewMode,

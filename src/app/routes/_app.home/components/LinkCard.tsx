@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
@@ -42,15 +42,15 @@ const LinkCard = () => {
   };
 
   return (
-    <div className="card flex dark:bg-dark-primary flex-col gap-3 w-full">
-      <p className="text-gray00 dark:text-gray-300 leading-4 font-medium">
+    <div className="card flex w-full flex-col gap-3 dark:bg-dark-primary">
+      <p className="font-medium leading-4 text-gray00 dark:text-gray-300">
         Share this link with a trainer to become their player
       </p>
-      <div className="flex w-full gap-2.5 items-center">
-        <div className="rounded py-2.5 px-3 bg-purple00 bg-opacity-50 flex-grow min-w-0">
+      <div className="flex w-full items-center gap-2.5">
+        <div className="min-w-0 flex-grow rounded bg-purple00 bg-opacity-50 px-3 py-2.5">
           <Link
             to={evaluationLink}
-            className="text-sm font-medium dark:text-gray-100 text-black2 overflow-hidden whitespace-nowrap text-ellipsis block"
+            className="block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-black2 dark:text-gray-100"
           >
             {evaluationLink}
           </Link>
@@ -81,10 +81,10 @@ const LinkIcon = ({
 }) => {
   return (
     <div
-      className={`rounded bg-button-primary p-2 cursor-pointer ${className}`}
+      className={`cursor-pointer rounded bg-button-primary p-2 ${className}`}
       onClick={onClick} // Attach click handler
     >
-      <img className="w-6 h-6" src={image} alt="" />
+      <img className="h-6 w-6" src={image} alt="" />
     </div>
   );
 };

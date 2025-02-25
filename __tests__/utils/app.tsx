@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { FC, PropsWithChildren } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { ExtendedReduxRenderOptions } from './redux';
 import { ProfileState } from '@/store/profile';
 import { PreferredView } from '@/types/dashboard';

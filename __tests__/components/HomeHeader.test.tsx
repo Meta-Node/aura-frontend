@@ -2,9 +2,8 @@ import HomeHeader from '@/app/routes/_app.home/header';
 import { act, screen } from '@testing-library/react';
 import { backupInterceptor, profileInterceptor } from '../utils/api/server';
 import { setupServer } from 'msw/node';
-import { setGlobalOrigin } from 'undici';
 import { renderWithProviders } from '../utils/redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { MyEvaluationsContextProvider } from '@/contexts/MyEvaluationsContext';
 import { RefreshEvaluationsContextProvider } from '@/contexts/RefreshEvaluationsContext';
 
@@ -24,7 +23,6 @@ describe('Home Header', () => {
   it('should render with correct roles', async () => {
     await act(() => {
       renderWithProviders(
-        // <Router>
         <MemoryRouter initialEntries={['/home']}>
           <RefreshEvaluationsContextProvider>
             <MyEvaluationsContextProvider>
@@ -32,7 +30,6 @@ describe('Home Header', () => {
             </MyEvaluationsContextProvider>
           </RefreshEvaluationsContextProvider>
         </MemoryRouter>,
-        // </Router>,
         {},
       );
     });

@@ -9,7 +9,7 @@ import {
 import useViewMode from 'hooks/useViewMode';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import { selectAuthData } from 'store/profile/selectors';
 import { PreferredView, ProfileTab } from 'types/dashboard';
 

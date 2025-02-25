@@ -73,19 +73,18 @@ describe('Should render the header with permissions', () => {
 
     afterEach(() => server.resetHandlers());
 
-    // TODO: implement this test later
-    // await waitFor(
-    //   () => {
-    //     expect(screen.getByTestId('subject-view-Subject')).toBeInTheDocument();
-    //     expect(screen.getByTestId('subject-view-Player')).toBeInTheDocument();
-    //     expect(
-    //       screen.queryByTestId('subject-view-Trainer'),
-    //     ).not.toBeInTheDocument();
-    //     expect(
-    //       screen.queryByTestId('subject-view-Manager'),
-    //     ).not.toBeInTheDocument();
-    //   },
-    //   { timeout: 5000 },
-    // );
+    await waitFor(
+      () => {
+        expect(screen.getByTestId('subject-view-Subject')).toBeInTheDocument();
+        expect(screen.getByTestId('subject-view-Player')).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('subject-view-Trainer'),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByTestId('subject-view-Manager'),
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 });

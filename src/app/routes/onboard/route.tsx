@@ -6,7 +6,7 @@ import 'swiper/css/scrollbar';
 
 import { SUBJECTS_EVALUATION_ONBOARDING_GUIDE_STEP_COUNT } from 'constants/index';
 import { useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useDispatch } from 'store/hooks';
 import { setPlayerOnboardingScreenShown } from 'store/profile';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
@@ -43,7 +43,7 @@ const Onboarding = () => {
 
   return (
     <div
-      className="page page__splash !pt-[30px] !px-[22px] pb-4 flex flex-col"
+      className="page page__splash flex flex-col !px-[22px] !pt-[30px] pb-4"
       data-testid="subjects-evaluation-onboarding-guide"
     >
       <section
@@ -73,7 +73,7 @@ const Onboarding = () => {
         </Swiper>
       </section>
 
-      <section className="actions px-5 flex justify-between items-center w-full min-h-[56px] mb-24 mt-auto text-center">
+      <section className="actions mb-24 mt-auto flex min-h-[56px] w-full items-center justify-between px-5 text-center">
         <div className="step-anotators flex gap-2">
           {[1, 2, 3, 4].map((step) => (
             <span
@@ -82,8 +82,9 @@ const Onboarding = () => {
                 setSearchParams({ step: step.toString() });
                 swiperRef.current?.swiper.slideTo(step - 1);
               }}
-              className={`transition-all w-2.5 h-2.5 rounded-full cursor-pointer bg-white ${stepNumber === step && '!w-10 !bg-pastel-purple'
-                }`}
+              className={`h-2.5 w-2.5 cursor-pointer rounded-full bg-white transition-all ${
+                stepNumber === step && '!w-10 !bg-pastel-purple'
+              }`}
             ></span>
           ))}
         </div>
@@ -96,21 +97,22 @@ const Onboarding = () => {
               handleFinish();
             }
           }}
-          className={`bg-pastel-purple p-3 w-10 h-10 rounded-3xl transition-all duration-400 ${stepNumber === SUBJECTS_EVALUATION_ONBOARDING_GUIDE_STEP_COUNT &&
-            '!rounded-xl !w-[165px] !h-14'
-            }`}
+          className={`duration-400 h-10 w-10 rounded-3xl bg-pastel-purple p-3 transition-all ${
+            stepNumber === SUBJECTS_EVALUATION_ONBOARDING_GUIDE_STEP_COUNT &&
+            '!h-14 !w-[165px] !rounded-xl'
+          }`}
         >
           {stepNumber < SUBJECTS_EVALUATION_ONBOARDING_GUIDE_STEP_COUNT ? (
             <img
               src="/assets/images/Shared/next-page.svg"
               data-testid="subjects-evaluation-onboarding-guide-next-button"
-              className="translate-x-[1px] w-4 h-4 opacity-1 transition-all"
+              className="opacity-1 h-4 w-4 translate-x-[1px] transition-all"
               alt=""
             />
           ) : (
             <p
               data-testid="subjects-evaluation-onboarding-guide-finish-button"
-              className="font-semibold text-xl text-white transition-all opacity-1"
+              className="opacity-1 text-xl font-semibold text-white transition-all"
             >
               Let&apos;s Start
             </p>
@@ -118,9 +120,8 @@ const Onboarding = () => {
         </button>
       </section>
 
-      <footer className="flex justify-between text-gray90 text-sm">
-        <span className="flex gap-1">
-        </span>
+      <footer className="flex justify-between text-sm text-gray90">
+        <span className="flex gap-1"></span>
         <span className="flex gap-1">
           <p className="text-gray50">Powered by:</p>
           <p className="font-light">BrightID</p>

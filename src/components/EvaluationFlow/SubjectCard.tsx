@@ -4,7 +4,7 @@ import { getViewModeSubjectBorderColorClass } from 'constants/index';
 import ReactECharts from 'echarts-for-react';
 import { useSubjectName } from 'hooks/useSubjectName';
 import useViewMode from 'hooks/useViewMode';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
@@ -45,7 +45,7 @@ export const SubjectCard = ({
       data-testid={`subject-card-${subjectId}`}
     >
       <Card
-        className={`p-4 b-4 flex !flex-row gap-1 items-center !justify-between w-full`}
+        className={`b-4 flex w-full !flex-row items-center !justify-between gap-1 p-4`}
       >
         <div
           className="evaluation-left flex flex-col gap-2"
@@ -54,15 +54,15 @@ export const SubjectCard = ({
           <div className="evaluation-left__top flex gap-3">
             <div className="evaluation__profile">
               <BrightIdProfilePicture
-                className={`rounded-full w-12 h-12 border-2 ${getViewModeSubjectBorderColorClass(
+                className={`h-12 w-12 rounded-full border-2 ${getViewModeSubjectBorderColorClass(
                   currentViewMode,
-                )} bg-center bg-cover`}
+                )} bg-cover bg-center`}
                 subjectId={subjectId}
               />
             </div>
             <div className="evaluation__info flex flex-col">
               <p
-                className="text-black dark:text-white font-medium"
+                className="font-medium text-black dark:text-white"
                 data-testid={`user-item-${index}-name`}
               >
                 {name}
@@ -73,7 +73,7 @@ export const SubjectCard = ({
                 <span className="font-medium text-black dark:text-white">
                   {auraLevel}
                 </span>
-                <span className="text-sm mt-2">
+                <span className="mt-2 text-sm">
                   <p className="text-gray10 dark:text-gray70">
                     Score:{' '}
                     <span className="font-medium text-black dark:text-white">
@@ -94,7 +94,7 @@ export const SubjectCard = ({
             <ConnectionAndEvaluationStatus subjectId={subjectId} />
           </div>
         </div>
-        <div className="evaluation-right flex flex-col gap-2 items-end">
+        <div className="evaluation-right flex flex-col items-end gap-2">
           <Tooltip
             tooltipClassName="text-sm translate-x-1/2"
             position="top-left"
@@ -104,7 +104,7 @@ export const SubjectCard = ({
             <ReactECharts
               opts={{
                 height: 48,
-                width: "auto"
+                width: 'auto',
               }}
               style={{ height: '48px', width: '100%' }}
               option={impactChartSmallOption}

@@ -4,7 +4,7 @@ import { EChartsOption } from 'echarts-for-react/src/types';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';

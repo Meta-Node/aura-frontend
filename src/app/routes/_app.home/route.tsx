@@ -6,7 +6,7 @@ import useViewMode from 'hooks/useViewMode';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from '@/store/hooks';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { RoutePath } from 'types/router';
 import { useLevelupProgress } from 'utils/score';
 

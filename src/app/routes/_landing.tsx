@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router';
 
 export default function LandingLayout() {
   return (
@@ -7,5 +7,5 @@ export default function LandingLayout() {
         <Outlet />
       </div>
     </div>
-  )
+  );
 }

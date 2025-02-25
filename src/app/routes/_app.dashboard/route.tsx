@@ -1,7 +1,7 @@
 import { resetStore } from 'BrightID/actions';
 import { preferredViewIcon } from 'constants/index';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useDispatch, useSelector } from 'store/hooks';
 import { selectPreferredView } from 'store/profile/selectors';
 import { PreferredView } from 'types/dashboard';
@@ -21,19 +21,19 @@ const Dashboard = () => {
       <div className="row mb-4">
         <div className="card">
           <p className="text-sm">Domain</p>
-          <p className="font-bold mb-2.5">BrightID</p>
+          <p className="mb-2.5 font-bold">BrightID</p>
           <p className="text-sm">Energy Team</p>
-          <p className="font-bold mb-5">Core</p>
+          <p className="mb-5 font-bold">Core</p>
           <button className="btn">Change</button>
         </div>
         <div className="card">
           <p className="mb-5">Preferred view</p>
           <img
-            className="icon mb-7 mx-auto !w-10 !h-10"
+            className="icon mx-auto mb-7 !h-10 !w-10"
             src={preferredViewIcon[preferredView]}
             alt=""
           />
-          <span className="flex justify-between w-full items-center mt-auto">
+          <span className="mt-auto flex w-full items-center justify-between">
             <p className="font-bold">{preferredView}</p>
             <button
               className="btn btn--icon"
@@ -122,7 +122,7 @@ const Dashboard = () => {
             src="/assets/images/Dashboard/setting-icon.svg"
             alt=""
           />
-          <p className="text-right text-[18px] text-gray20 mt-auto">
+          <p className="mt-auto text-right text-[18px] text-gray20">
             {' '}
             <br /> Settings
           </p>
@@ -130,14 +130,14 @@ const Dashboard = () => {
         {(__DEV__ ||
           process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||
           process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
-            <button
-              className={'btn'}
-              onClick={() => dispatch(resetStore())}
-              data-testid="logout-button"
-            >
-              Logout
-            </button>
-          )}
+          <button
+            className={'btn'}
+            onClick={() => dispatch(resetStore())}
+            data-testid="logout-button"
+          >
+            Logout
+          </button>
+        )}
       </div>
       <Modal
         title={'Role Selection'}

@@ -4,7 +4,7 @@ import { useSubjectsListContext } from 'contexts/SubjectsListContext';
 import { useMyEvaluations } from 'hooks/useMyEvaluations';
 import { RefreshCcwIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 import { cn } from '@/lib/utils';
 
@@ -29,7 +29,7 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
 
   return (
     <div>
-      <p className="text-black2 dark:text-gray-100 font-bold">Filters</p>
+      <p className="font-bold text-black2 dark:text-gray-100">Filters</p>
       <FiltersModal
         includeConnectionFilters={isPlayerMode}
         testidPrefix={'subject-filter'}
@@ -37,7 +37,7 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
         selectedFilterIds={selectedFilterIds}
         toggleFiltersById={toggleFiltersById}
       />
-      <p className="text-black2 dark:text-gray-100 font-bold pt-3 pb-1">
+      <p className="pb-1 pt-3 font-bold text-black2 dark:text-gray-100">
         Sorts
       </p>
       <SortsModal
@@ -171,7 +171,7 @@ export const SubjectListControls = ({
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
         item.ascending ===
-        (selectedSort.defaultAscending !== selectedSort.isReversed);
+          (selectedSort.defaultAscending !== selectedSort.isReversed);
       if (!isSelectedSort) return false;
       if (!selectedFilters) return !item.filterIds;
       if (!item.filterIds) return false;
@@ -219,15 +219,15 @@ export const SubjectListControls = ({
 
   return (
     <>
-      <div className="bg-card dark:bg-dark-primary text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px] border">
-        <div className="card__input flex gap-2 items-center rounded px-3.5">
+      <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-lg border bg-card p-1 text-card-foreground dark:bg-dark-primary">
+        <div className="card__input flex items-center gap-2 rounded px-3.5">
           <img
-            className="w-4 h-4"
+            className="h-4 w-4"
             src="/assets/images/Shared/search-icon.svg"
             alt=""
           />
           <input
-            className="w-full font-medium bg-transparent text-card-foreground dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
+            className="h-11 w-full bg-transparent text-sm font-medium text-card-foreground placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
             type="text"
             placeholder="Subject name or ID ..."
             value={searchString}
@@ -235,12 +235,12 @@ export const SubjectListControls = ({
           />
         </div>
       </div>
-      <div className="text-right text-sm mb-2 mt-2">
+      <div className="mb-2 mt-2 text-right text-sm">
         {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
-          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
+          <button className="rounded-lg bg-white-90-card px-4 py-1 dark:bg-button-primary">
             {' '}
             <p
-              className="ml-auto font-medium cursor-pointer dark:text-white"
+              className="ml-auto cursor-pointer font-medium dark:text-white"
               onClick={() =>
                 setPreferredView(PreferredView.MANAGER_EVALUATING_MANAGER)
               }
@@ -250,9 +250,9 @@ export const SubjectListControls = ({
           </button>
         )}
         {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
-          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
+          <button className="rounded-lg bg-white-90-card px-4 py-1 dark:bg-button-primary">
             <p
-              className="ml-auto font-medium cursor-pointer dark:text-white"
+              className="ml-auto cursor-pointer font-medium dark:text-white"
               onClick={() =>
                 setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
               }
@@ -262,7 +262,7 @@ export const SubjectListControls = ({
           </button>
         )}
       </div>
-      <div className="text-lg flex mb-3 items-center">
+      <div className="mb-3 flex items-center text-lg">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -288,7 +288,7 @@ export const SubjectListControls = ({
             '...'}{' '}
           result
           {(filteredSubjects?.length ?? brightIdBackup?.connections.length) !==
-            1
+          1
             ? 's'
             : ''}
           )
@@ -305,7 +305,7 @@ export const SubjectListControls = ({
         >
           <RefreshCcwIcon
             className={cn(
-              'w-7 h-7 cursor-pointer',
+              'h-7 w-7 cursor-pointer',
               (loading || contextLoading) && 'animate-spin',
             )}
           />
