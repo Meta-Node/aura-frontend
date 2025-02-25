@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import useViewMode from '../../hooks/useViewMode';
 import { EvaluationCategory, PreferredView } from '../../types/dashboard';
-import { Dialog, DialogContent, DialogHeader } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 
 const EvaluationFlow = ({
   showEvaluationFlow,
@@ -87,7 +87,9 @@ const EvaluationFlow = ({
     >
       <DialogContent>
         <DialogHeader>
-          {myNewRatingCount === null ? `Evaluating ${name}` : undefined}
+          <DialogTitle>
+            {myNewRatingCount === null ? `Evaluating ${name}` : undefined}
+          </DialogTitle>
         </DialogHeader>
         <EvaluateModalBody
           subjectId={subjectId}

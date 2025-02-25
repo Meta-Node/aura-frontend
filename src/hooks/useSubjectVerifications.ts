@@ -248,7 +248,7 @@ export const useImpactEChartOption = (
             label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : ''}${item.confidence}) ${(
               (item.impact / auraSumImpacts) *
               100
-            ).toFixed(2)}%`,
+            ).toFixed(1)}%`,
             evaluator: item.evaluator,
             itemStyle: {
               color: findNearestColor(

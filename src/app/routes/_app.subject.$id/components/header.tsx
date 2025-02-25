@@ -1,3 +1,4 @@
+import { PlayerHistorySequence } from '@/components/Header/PlayerHistorySequence';
 import DefaultHeader from '@/components/Shared/DefaultHeader';
 import Tooltip from '@/components/Shared/Tooltip';
 import {
@@ -7,8 +8,10 @@ import {
 import { useOutboundEvaluations } from '@/hooks/useSubjectEvaluations';
 import useViewMode from '@/hooks/useViewMode';
 import { selectAuthData } from '@/store/profile/selectors';
+import { PlayerHistorySequenceType } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
-import { useMemo } from 'react';
+import { findLastIndex } from '@/utils';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 
@@ -39,12 +42,77 @@ export default function SubjectProfileHeader() {
     [authData?.brightId, subjectIdProp],
   );
 
+  const [playerHistorySequence, setPlayerHistorySequence] = useState<
+    PlayerHistorySequenceType[]
+  >([]);
+  const [isSequenceOpen, setIsSequenceOpen] = useState(false);
+  const { currentEvaluationCategory } = useViewMode();
+
+  useEffect(() => {
+    if (!subjectId) return;
+    setPlayerHistorySequence((prevSequence) => {
+      if (
+        findLastIndex(prevSequence, (h) => h.subjectId === subjectId) ===
+        prevSequence.length - 1
+      ) {
+        return [
+          ...prevSequence.slice(0, prevSequence.length - 1),
+          {
+            subjectId,
+            evaluationCategory: currentEvaluationCategory,
+          },
+        ];
+      }
+      const index = findLastIndex(
+        prevSequence,
+        (h) =>
+          h.subjectId === subjectId &&
+          h.evaluationCategory === currentEvaluationCategory,
+      );
+      if (index === -1) {
+        return [
+          ...prevSequence,
+          {
+            subjectId,
+            evaluationCategory: currentEvaluationCategory,
+          },
+        ];
+      }
+      return prevSequence.slice(0, index + 1);
+    });
+  }, [currentEvaluationCategory, subjectId]);
+
   if (!subjectId) return null;
 
   return (
-    <DefaultHeader title={`${subjectViewModeTitle} Profile`}>
-      <SubjectHeaderBody subjectId={subjectId} />
-    </DefaultHeader>
+    <>
+      <DefaultHeader
+        breadcrumbs={
+          isSequenceOpen && (
+            <PlayerHistorySequence
+              playerHistorySequence={playerHistorySequence}
+            />
+          )
+        }
+        beforeTitle={
+          playerHistorySequence.length !== 0 && (
+            <img
+              className="mr-1 h-[18px] w-6 cursor-pointer"
+              src={
+                isSequenceOpen
+                  ? '/assets/images/Header/close-sequence.svg'
+                  : '/assets/images/Header/sequence.svg'
+              }
+              alt=""
+              onClick={() => setIsSequenceOpen(!isSequenceOpen)}
+            />
+          )
+        }
+        title={`${subjectViewModeTitle} Profile`}
+      >
+        <SubjectHeaderBody subjectId={subjectId} />
+      </DefaultHeader>
+    </>
   );
 }
 

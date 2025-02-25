@@ -152,7 +152,8 @@ const CredibilityDetailsForRole = ({
                 color: '#6C34B3',
               }}
             >
-              {Number(myRatingToSubject) > 0 ? 1 : -1 * (impactPercentage ?? 0)}
+              {(Number(myRatingToSubject.rating) > 0 ? 1 : -1) *
+                (impactPercentage ?? 0)}
               %
             </span>
 
@@ -384,10 +385,10 @@ const CredibilityDetailsModal = ({
   const name = useSubjectName(credibilityDetailsProps.subjectId);
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogHeader>
-        <DialogTitle>{name}</DialogTitle>
-      </DialogHeader>
-      <DialogContent>
+      <DialogContent aria-describedby={`${name} subject credebility details`}>
+        <DialogHeader>
+          <DialogTitle>{name}</DialogTitle>
+        </DialogHeader>
         <div className="mt-5">
           <CredibilityDetails
             credibilityDetailsProps={credibilityDetailsProps}
