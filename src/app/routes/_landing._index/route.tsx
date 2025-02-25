@@ -9,14 +9,12 @@ import {
 
 import CustomTrans from '@/components/CustomTrans';
 import { checkIndexedDB } from '@/utils/check-db';
-import { selectPreferredTheme } from '@/BrightID/reducer/settingsSlice';
 import Splash from './components/splash';
 
 const Login = () => {
   const userIsLogged = useSelector(selectIsLoggedIn);
   const splashScreenShown = useSelector(selectSplashScreenShown);
   const redirectAfterLogin = useRedirectAfterLogin();
-  const preferredTheme = useSelector(selectPreferredTheme);
 
   const [isDbHealthy, setIsDbHealthy] = useState(false);
 
