@@ -16,7 +16,7 @@ const Login = () => {
   const userIsLogged = useSelector(selectIsLoggedIn);
   const splashScreenShown = useSelector(selectSplashScreenShown);
   const redirectAfterLogin = useRedirectAfterLogin();
-  const preferredTheme = useSelector(selectPreferredTheme)
+  const preferredTheme = useSelector(selectPreferredTheme);
 
   const [isDbHealthy, setIsDbHealthy] = useState(false);
 
@@ -36,20 +36,18 @@ const Login = () => {
     return <DbUnhealthy />;
   }
 
-  return <div className={`${preferredTheme === "dark" ? "app_container__dark" : "app_container"}`}>
-    {splashScreenShown ? <RecoveryCodeScreen /> : <Splash />}
-  </div>;
+  return <div>{splashScreenShown ? <RecoveryCodeScreen /> : <Splash />}</div>;
 };
 
 const DbUnhealthy = () => {
   return (
-    <div className="page page__splash !pt-[90px] !px-[22px] pb-4 flex flex-col">
+    <div className="page page__splash flex flex-col !px-[22px] !pt-[90px] pb-4">
       <section className="content pl-5 pr-12">
-        <p className="text-white font-black text-5xl mb-3">Aura</p>
-        <p className="text-white font-black text-2xl mb-9">
+        <p className="mb-3 text-5xl font-black text-white">Aura</p>
+        <p className="mb-9 text-2xl font-black text-white">
           <CustomTrans i18nKey="welcomeScreen.tagline" />
         </p>
-        <p className="text-white font-medium text-lg">
+        <p className="text-lg font-medium text-white">
           <CustomTrans i18nKey="welcomeScreen.description" />
         </p>
       </section>
@@ -60,14 +58,14 @@ const DbUnhealthy = () => {
 
       <section className="actions mb-24 mt-auto text-center">
         <button
-          className="btn btn--big !text-white max-w-[270px] w-full"
+          className="btn btn--big w-full max-w-[270px] !text-white"
           data-testid="splash-dismiss-btn"
           onClick={() => window.location.reload()}
         >
           Refresh
         </button>
       </section>
-      <footer className="flex justify-between text-gray90 text-sm">
+      <footer className="flex justify-between text-sm text-gray90">
         <span className="flex gap-1"></span>
         <span className="flex gap-1">
           <p className="text-gray50">Powered by:</p>
