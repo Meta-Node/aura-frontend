@@ -9,9 +9,8 @@ const pwaConfig: Partial<VitePWAOptions> = {
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
     clientsClaim: true,
     skipWaiting: true,
-    globPatterns: ['**/*.{js,css,html,png,jpg}'], // Include index.html
   },
-
+  base: '/',
   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
   manifest: {
     display: 'standalone',
@@ -57,7 +56,7 @@ if (SW) {
   (pwaConfig.manifest as Partial<ManifestOptions>).name = 'Aura Service Worker';
   (pwaConfig.manifest as Partial<ManifestOptions>).short_name = 'Aura';
   pwaConfig.injectManifest = {
-    minify: false,
+    minify: true,
     enableWorkboxModulesLogs: true,
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
   };
