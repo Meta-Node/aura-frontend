@@ -9,6 +9,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
     clientsClaim: true,
     skipWaiting: true,
+    globPatterns: ['**/*.{js,css,html,png,jpg}'], // Include index.html
   },
 
   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
