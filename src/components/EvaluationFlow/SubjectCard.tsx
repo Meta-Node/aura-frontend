@@ -16,21 +16,64 @@ import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';
 import Tooltip from '../Shared/Tooltip';
 import { Card } from '../ui/card';
 
-export const SubjectCard = ({
-  subjectId,
-  index,
-}: {
+export interface SubjectCardSkeletonProps {
   subjectId: string;
   index?: string | number;
-}) => {
+}
+
+export const SubjectCardSkeleton = ({
+  subjectId,
+  index,
+}: SubjectCardSkeletonProps) => {
+  return (
+    <div data-testid={`subject-card-skeleton-${subjectId}`}>
+      <div className="b-4 flex w-full !flex-row items-center !justify-between gap-1 rounded-lg border bg-card p-4">
+        <div
+          className="evaluation-left flex flex-col gap-2"
+          data-testid={`skeleton-item-${index}`}
+        >
+          <div className="evaluation-left__top flex gap-3">
+            <div className="evaluation__profile">
+              {/* Profile picture skeleton */}
+              <div className="h-12 w-12 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700" />
+            </div>
+
+            <div className="evaluation__info flex flex-col gap-2">
+              {/* Name skeleton */}
+              <div className="h-4 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
+
+              {/* Level and Score skeleton */}
+              <div className="flex flex-col gap-1">
+                <div className="h-4 w-24 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
+                <div className="h-4 w-20 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
+              </div>
+
+              {/* Progress bar skeleton */}
+              <div className="mt-1 h-2.5 w-36 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
+            </div>
+          </div>
+
+          {/* Connection status skeleton */}
+          <div className="mt-auto">
+            <div className="h-4 w-40 animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
+          </div>
+        </div>
+
+        {/* Chart skeleton */}
+        <div className="evaluation-right flex flex-col items-end">
+          <div className="h-[48px] w-[100px] animate-pulse rounded-sm bg-gray-200 dark:bg-gray-700" />
+        </div>
+      </div>
+    </div>
+  );
+};
+export const SubjectCard = ({ subjectId, index }: SubjectCardSkeletonProps) => {
   const name = useSubjectName(subjectId);
 
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
 
-  const { auraLevel, auraScore, auraImpacts } = useSubjectVerifications(
-    subjectId,
-    currentEvaluationCategory,
-  );
+  const { auraLevel, auraScore, auraImpacts, loading } =
+    useSubjectVerifications(subjectId, currentEvaluationCategory);
 
   const { impactChartSmallOption } = useImpactEChartOption(auraImpacts);
 
@@ -38,6 +81,9 @@ export const SubjectCard = ({
     currentEvaluationCategory,
     auraScore ?? 0,
   );
+
+  if (loading)
+    return <SubjectCardSkeleton index={index} subjectId={subjectId} />;
 
   return (
     <Link
