@@ -10,6 +10,7 @@ import { __DEV__ } from 'utils/env';
 
 import { Modal } from 'components/Shared/Modal';
 import RoleSelectModal from './components/RoleSelectModal';
+import { Button } from '@/components/ui/button';
 
 const Dashboard = () => {
   const preferredView = useSelector(selectPreferredView);
@@ -35,12 +36,12 @@ const Dashboard = () => {
           />
           <span className="mt-auto flex w-full items-center justify-between">
             <p className="font-bold">{preferredView}</p>
-            <button
-              className="btn btn--icon"
+            <Button
+              size={'icon'}
               onClick={() => setIsRoleSelectModalOpen(true)}
             >
               <img src="/assets/images/Dashboard/refresh-icon.svg" alt="" />
-            </button>
+            </Button>
           </span>
         </div>
       </div>

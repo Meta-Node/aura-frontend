@@ -1,6 +1,6 @@
 {
   "name": "aura",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
@@ -129,8 +129,6 @@
     "postcss": "^8.4.14",
     "prettier": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "sass": "^1.53.0",
-    "serve": "^14.2.4",
     "start-server-and-test": "^1.14.0",
     "tailwindcss": "^3.2.7",
     "vite": "^6.1.1",

@@ -2,20 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-.app_container {
-  // background-image: url('../public/assets/images/app-background.svg'),
-  //   url('../public/assets/images/app-background-blub.svg');
-  // background-position: center, center;
-  // background-repeat: no-repeat, no-repeat;
-  // background-size: cover, cover;
-
-  &__dark {
-    @apply bg-black3;
-    background-image: url('../public/assets/images/app-background-illustrator.svg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
+.app_container__dark {
+  @apply bg-black3;
+  background-image: url('../public/assets/images/app-background-illustrator.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 .app {
@@ -25,44 +17,36 @@
 .page {
   @apply overflow-y-auto px-1 pb-4 md:px-5;
   @apply no-scrollbar;
+}
 
-  &__splash {
-    @apply min-h-screen;
-  }
-
-  &__settings {
-    @apply flex-1;
-  }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 .no-scrollbar {
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
 
-  &::-webkit-scrollbar {
-    width: 0;
-    cursor: pointer;
-    border-radius: 100%;
-  }
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  cursor: pointer;
+  border-radius: 100%;
+}
 
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 0 #5158f600;
-    border-radius: 100px;
-  }
+.no-scrollbar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 0 #5158f600;
+  border-radius: 100px;
+}
 
-  &::-webkit-scrollbar-thumb {
-    background: #ecedff;
-    border-radius: 100px;
-  }
+.no-scrollbar::-webkit-scrollbar-thumb {
+  background: #ecedff;
+  border-radius: 100px;
+}
 
-  &::-webkit-scrollbar-thumb:hover {
-    background: #ecedff;
-    cursor: pointer;
-  }
+.no-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #ecedff;
+  cursor: pointer;
 }
 
 .row {
@@ -76,45 +60,49 @@
 .icon {
   @apply h-10 w-10;
 }
-
 .btn {
-  @apply rounded-[6px] bg-button-primary px-4 py-3 font-bold text-white;
+  border-radius: 6px;
+  background-color: var(--button-primary);
+  padding: 0.75rem 1rem;
+  font-weight: bold;
+  color: white;
+}
 
-  &--icon {
-    @apply p-2;
+.btn--medium {
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+}
 
-    & img {
-      @apply h-4 w-4;
-    }
-  }
+.btn--big {
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
 
-  &--small {
-    @apply rounded px-4 py-1.5 font-medium;
-  }
+.btn--outlined {
+  border: 1px solid var(--button-primary);
+  background-color: transparent;
+  color: var(--button-primary);
+}
 
-  &--medium {
-    @apply rounded-md px-4 py-2 font-bold;
-  }
+.btn--outlined-big {
+  border-radius: 0.75rem;
+  border: 2px solid var(--button-primary);
+  background-color: transparent;
+  padding: 0.875rem;
+  font-weight: bold;
+  color: var(--button-primary);
+}
 
-  &--big {
-    @apply rounded-lg p-3.5 text-xl font-bold;
-  }
+.btn--text-black {
+  font-weight: 600;
+  color: black;
+}
 
-  &--outlined {
-    @apply border border-button-primary bg-transparent text-button-primary dark:border-white-90-card dark:text-white-90-card;
-  }
-
-  &--outlined-big {
-    @apply rounded-xl border-2 border-button-primary bg-transparent py-3.5 font-bold text-button-primary;
-  }
-
-  &--text-black {
-    @apply font-semibold text-black;
-  }
-
-  &--bg-orange {
-    @apply bg-orange;
-  }
+.btn--bg-orange {
+  background-color: orange;
 }
 
 #qr-code {

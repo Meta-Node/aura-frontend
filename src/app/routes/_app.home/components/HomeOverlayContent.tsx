@@ -10,6 +10,7 @@ import { __DEV__ } from '@/utils/env';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router';
+import { Button } from '@/components/ui/button';
 
 export const HomeOverlayContent = () => {
   const preferredView = useSelector(selectPreferredView);
@@ -35,12 +36,9 @@ export const HomeOverlayContent = () => {
           />
           <span className="mt-auto flex w-full items-center justify-between">
             <p className="font-bold">{preferredView}</p>
-            <button
-              className="btn btn--icon"
-              onClick={() => setIsRoleSelectModalOpen(true)}
-            >
+            <Button size="icon" onClick={() => setIsRoleSelectModalOpen(true)}>
               <img src="/assets/images/Dashboard/refresh-icon.svg" alt="" />
-            </button>
+            </Button>
           </span>
         </div>
       </div>

@@ -26,7 +26,7 @@ export default function Settings() {
   return (
     <>
       <DefaultHeader title="Settings" />
-      <div className="page page__settings flex w-full flex-col gap-4 pt-4 dark:text-white">
+      <div className="page flex w-full flex-1 flex-col gap-4 pt-4 dark:text-white">
         <section className="flex w-full flex-col gap-4">
           <Card
             className="flex cursor-pointer items-center gap-2 rounded-lg py-3.5 pl-5 pr-2"

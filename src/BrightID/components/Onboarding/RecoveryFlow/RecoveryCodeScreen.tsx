@@ -213,7 +213,7 @@ const RecoveryCodeScreen = () => {
   const qrCodeSize = Math.min(window.innerWidth * 0.9 - 40, 270);
 
   return (
-    <div className="page page__splash flex flex-col !px-[22px] !pt-[90px] pb-4">
+    <div className="page flex min-h-screen flex-col !px-[22px] !pt-[90px] pb-4">
       {importedUserData ? (
         <section className="content mb-6 pl-5 pr-12">
           <p className="mb-6 text-5xl font-black text-white">Login</p>

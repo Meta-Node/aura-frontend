@@ -43,7 +43,7 @@ const Onboarding = () => {
 
   return (
     <div
-      className="page page__splash flex flex-col !px-[22px] !pt-[30px] pb-4"
+      className="page flex min-h-screen flex-col !px-[22px] !pt-[30px] pb-4"
       data-testid="subjects-evaluation-onboarding-guide"
     >
       <section

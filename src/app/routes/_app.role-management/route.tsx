@@ -15,6 +15,7 @@ import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
 import DefaultHeader from '@/components/Shared/DefaultHeader';
+import { Button } from '@/components/ui/button';
 
 export default function RoleManagement() {
   const authData = useSelector(selectAuthData);
@@ -54,7 +55,7 @@ const PlayerCard: FC<SubjectIdProps> = ({ subjectId }) => {
     EvaluationCategory.PLAYER,
   );
   return (
-    <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-white-90-card py-[18px] pb-4 pl-5 pr-6 dark:bg-button-primary">
+    <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-card py-[18px] pb-4 pl-5 pr-6">
       <img
         src="/assets/images/RoleManagement/player-shadow-icon.svg"
         alt=""
@@ -95,7 +96,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
   );
 
   return (
-    <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-white-90-card py-[18px] pb-4 pl-5 pr-6 dark:bg-button-primary">
+    <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-card py-[18px] pb-4 pl-5 pr-6">
       <img
         src="/assets/images/RoleManagement/trainer-shadow-icon.svg"
         alt=""
@@ -113,7 +114,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
           level={trainerEvaluation.auraLevel}
           score={trainerEvaluation.auraScore}
           color="text-pastel-green"
-        />{' '}
+        />
       </section>
       {!playerEvaluation.auraLevel || playerEvaluation.auraLevel < 2 ? (
         <>
@@ -129,21 +130,22 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
       ) : null}
 
       {!!playerEvaluation.auraLevel && playerEvaluation.auraLevel >= 2 && (
-        <section className="mt-auto flex justify-end text-black dark:text-white">
+        <section className="mt-auto flex justify-end">
           {hasTrainerRole ? (
-            <button
+            <Button
+              variant="destructive"
               onClick={() => dispatch(toggleTrainerRole())}
-              className="btn btn--outlined btn--small"
             >
               Hide
-            </button>
+            </Button>
           ) : (
-            <button
-              className="btn btn--small !bg-pl2"
+            <Button
+              variant="outline"
+              className="bg-pl4"
               onClick={() => dispatch(toggleTrainerRole())}
             >
               Show
-            </button>
+            </Button>
           )}
         </section>
       )}
@@ -167,7 +169,7 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-white-90-card py-[18px] pb-4 pl-5 pr-6 dark:bg-button-primary">
+    <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-card py-[18px] pb-4 pl-5 pr-6">
       <img
         src="/assets/images/RoleManagement/manager-shadow-icon.svg"
         alt=""
@@ -202,19 +204,20 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
       {!!trainerEvaluation.auraLevel && trainerEvaluation.auraLevel > 1 && (
         <section className="mt-auto flex justify-end text-black dark:text-white">
           {hasManagerRole ? (
-            <button
+            <Button
+              variant="destructive"
               onClick={() => dispatch(toggleManagerRole())}
-              className="btn btn--outlined btn--small"
             >
               Hide
-            </button>
+            </Button>
           ) : (
-            <button
-              className="btn btn--small !bg-pl2"
+            <Button
+              variant="outline"
+              className="bg-pl4"
               onClick={() => dispatch(toggleManagerRole())}
             >
               Show
-            </button>
+            </Button>
           )}
         </section>
       )}

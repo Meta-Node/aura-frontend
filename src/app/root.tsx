@@ -17,7 +17,7 @@ import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
 import { useDispatch } from 'react-redux';
 
 import './i18n';
-import 'App.scss';
+import './tailwind.css';
 import '../assets/fonts/fonts.css';
 
 import 'swiper/css';

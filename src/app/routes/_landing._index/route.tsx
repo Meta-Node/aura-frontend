@@ -39,7 +39,7 @@ const Login = () => {
 
 const DbUnhealthy = () => {
   return (
-    <div className="page page__splash flex flex-col !px-[22px] !pt-[90px] pb-4">
+    <div className="page flex min-h-screen flex-col !px-[22px] !pt-[90px] pb-4">
       <section className="content pl-5 pr-12">
         <p className="mb-3 text-5xl font-black text-white">Aura</p>
         <p className="mb-9 text-2xl font-black text-white">
@@ -50,7 +50,7 @@ const DbUnhealthy = () => {
         </p>
       </section>
 
-      <div className="text-warn">
+      <div className="text-warn mt-10">
         <p>IndexedDB is blocked. Please enable IndexedDB to use Aura.</p>
       </div>
 
