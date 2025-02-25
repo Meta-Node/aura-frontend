@@ -21,11 +21,7 @@ For detailed instructions, refer to the [Aura Documentation](https://brightid.gi
 
 We welcome contributions from the community. To get involved:
 
-- **Join the Discussion**: Connect with other Aura participants on our [Discord server](https://discord.gg/).
+- **Join the Discussion**: Connect with other Aura participants on our [Discord server](https://discord.gg/y24xeXq7mj).
 - **Explore the Codebase**: Visit our [GitHub repositories](https://github.com/Meta-Node/) to explore existing projects and find contribution opportunities.
-
-## License
-
-This project is licensed under the [GPL-3.0 License](https://github.com/Meta-Node/Aura/blob/main/LICENSE).
 
 *Built with ❤️ by the Aura community.* 
