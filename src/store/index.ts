@@ -1,12 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { combineReducers, Middleware } from 'redux';
-import { createMigrate, persistReducer, persistStore } from 'redux-persist';
-import localForage from 'localforage';
 import {
-  createStateSyncMiddleware,
-  initMessageListener,
-} from 'redux-state-sync';
+  createMigrate,
+  persistReducer,
+  persistStore,
+  PERSIST,
+  PURGE,
+  REHYDRATE,
+} from 'redux-persist';
+import localForage from 'localforage';
 
 import reducers from 'BrightID/reducer';
 import { __DEV__ } from 'utils/env';
@@ -14,6 +17,11 @@ import { apiSlice } from './api/slice';
 import { migrations } from './migrations';
 import { profileSlice } from './profile';
 import { backupApiSlice } from './api/backup';
+import {
+  withReduxStateSync,
+  createStateSyncMiddleware,
+  initMessageListener,
+} from 'redux-state-sync';
 
 const persistConfig = {
   key: 'root',
@@ -23,10 +31,12 @@ const persistConfig = {
   migrate: createMigrate(migrations, { debug: __DEV__ }),
 };
 
-const rootReducer = combineReducers({
-  ...reducers,
-  profile: profileSlice.reducer,
-});
+const rootReducer = withReduxStateSync(
+  combineReducers({
+    ...reducers,
+    profile: profileSlice.reducer,
+  }),
+);
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -37,7 +47,19 @@ localForage.config({
 
 export function configureAppStore(preloadedState?: any) {
   const syncMiddleware = createStateSyncMiddleware({
-    channel: 'UPDATE_REDUX_STATE',
+    channel: 'AURA_UPDATE_CHANNEL',
+    broadcastChannelOption: {
+      type: typeof window !== 'undefined' ? 'localstorage' : 'native',
+    },
+    blacklist: [
+      PERSIST,
+      PURGE,
+      REHYDRATE,
+      apiSlice.reducerPath,
+      profileSlice.reducerPath,
+      '__rtkq/unfocused',
+      '__rtkq/focused',
+    ],
   });
 
   const store = configureStore({
