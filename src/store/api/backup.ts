@@ -14,7 +14,7 @@ function isHydrateAction(action: Action): action is Action<typeof REHYDRATE> & {
 export const backupApiSlice = createApi({
   reducerPath: 'backupApiSlice',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/brightid/backups',
+    baseUrl: '/',
     mode: 'no-cors',
   }),
   extractRehydrationInfo(action, { reducerPath }): any {
@@ -32,12 +32,21 @@ export const backupApiSlice = createApi({
   },
 
   endpoints: (build) => ({
+    getAppLatestVersion: build.query<string, undefined>({
+      query: () => ({
+        url: '/versioning.txt',
+        cache: 'no-store',
+        method: 'GET',
+        responseHandler: 'text',
+      }),
+      keepUnusedDataFor: 0,
+    }),
     getProfilePhoto: build.query<
       string,
       { key: string; brightId: string; password: string }
     >({
       query: ({ brightId, key }) => ({
-        url: `/${key}/${brightId}`,
+        url: `/brightid/backups/${key}/${brightId}`,
         method: 'GET',
         responseHandler: 'text',
       }),
@@ -54,7 +63,12 @@ export const backupApiSlice = createApi({
 
 export const { reducer } = backupApiSlice;
 
-export const { getProfilePhoto } = backupApiSlice.endpoints;
+export const { getProfilePhoto, getAppLatestVersion } =
+  backupApiSlice.endpoints;
 
-export const { useGetProfilePhotoQuery, useLazyGetProfilePhotoQuery } =
-  backupApiSlice;
+export const {
+  useGetProfilePhotoQuery,
+  useLazyGetProfilePhotoQuery,
+  useGetAppLatestVersionQuery,
+  useLazyGetAppLatestVersionQuery,
+} = backupApiSlice;
