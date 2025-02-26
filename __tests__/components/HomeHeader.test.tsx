@@ -1,4 +1,4 @@
-import HomeHeader from '@/app/routes/_app.home/header';
+import HomeHeader from '@/app/routes/_app.home/components/header';
 import { act, screen } from '@testing-library/react';
 import { backupInterceptor, profileInterceptor } from '../utils/api/server';
 import { setupServer } from 'msw/node';

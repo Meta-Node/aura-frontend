@@ -110,7 +110,9 @@ export default function SubjectProfileHeader() {
         }
         title={`${subjectViewModeTitle} Profile`}
       >
-        <SubjectHeaderBody subjectId={subjectId} />
+        <div className="flex items-center">
+          <SubjectHeaderBody subjectId={subjectId} />
+        </div>
       </DefaultHeader>
     </>
   );
