@@ -294,7 +294,7 @@ const CredibilityDetails = ({
         className={`mb-5 min-h-[52px] w-full rounded-lg bg-white-90-card p-1 px-1.5 py-1.5 dark:bg-dark-primary`}
       >
         <div
-          className={`flex h-full min-w-full flex-row flex-wrap overflow-x-auto overflow-y-hidden pb-1`}
+          className={`flex h-full min-w-full overflow-x-auto overflow-y-hidden pb-1 md:flex-nowrap`}
           // TODO: refactor this to tailwindcss class and values
           style={{
             scrollbarWidth: 'thin',
