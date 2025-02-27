@@ -11,29 +11,29 @@ export const formatDuration = (timestamp: number) => {
   if (years > 0) {
     const remainingMonths = Math.floor((days - years * 365.25) / 30.44);
     if (remainingMonths > 0) {
-      return `${years}y ${remainingMonths}mo`;
+      return `${years}y ${remainingMonths}mo ago`;
     }
-    return `${years}y`;
+    return `${years}y ago`;
   } else if (months > 0) {
     const remainingDays = Math.floor(days - months * 30.44);
     if (remainingDays > 0) {
-      return `${months}mo ${remainingDays}d`;
+      return `${months}mo ${remainingDays}d ago`;
     }
-    return `${months}mo`;
+    return `${months}mo ago`;
   } else if (days > 0) {
     const remainingHours = hours - days * 24;
     if (remainingHours > 0) {
-      return `${days}d ${remainingHours}h`;
+      return `${days}d ${remainingHours}h ago`;
     }
-    return `${days}d`;
+    return `${days}d ago`;
   } else if (hours > 0) {
     const remainingMinutes = minutes - hours * 60;
     if (remainingMinutes > 0) {
-      return `${hours}h ${remainingMinutes}m`;
+      return `${hours}h ${remainingMinutes}m ago`;
     }
-    return `${hours}h`;
+    return `${hours}h ago`;
   } else if (minutes > 0) {
-    return `${minutes}m`;
+    return `${minutes}m ago`;
   } else {
     if (isNaN(timestamp)) {
       return '';

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   Area,
   XAxis,
@@ -9,6 +9,7 @@ import {
   Bar,
   Cell,
   TooltipProps,
+  ReferenceLine,
 } from 'recharts';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,13 +23,14 @@ import { AuraRating } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
 import { valueColorMap } from '@/constants/chart';
 import { AuraImpact } from '@/api/auranode.service';
+import { compactFormat } from '@/utils/number';
 import {
-  selectAuthData,
-  selectBrightIdBackup,
-} from '@/store/profile/selectors';
-import { useSelector } from '@/store/hooks';
-import { useLazyGetBrightIDProfileQuery } from '@/store/api/profile';
-import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+} from 'lucide-react';
+import useOutboundImpacts from '@/hooks/useOutboundImpacts';
 
 type ZoomableChartProps = {
   ratings: AuraRating[] | null;
@@ -37,30 +39,32 @@ type ZoomableChartProps = {
 };
 
 const chartConfig = {
-  events: {
-    label: 'Events',
-    color: 'hsl(var(--chart-1))',
+  evaluations: {
+    label: 'Evaluations',
+    color: 'hsl(var(--primary))',
   },
 } satisfies ChartConfig;
 
 const CustomRatingTooltip = ({ payload, label }: TooltipProps<any, any>) => {
   if (!payload || payload.length === 0) return null;
 
-  const ratingData = payload[0].payload; // Assuming the data is passed in as the payload
+  const ratingData = payload[0].payload;
 
-  const { score, evaluatorName, evaluated, confidence } = ratingData;
+  const { score, evaluatorName, evaluated, rating, timestamp } = ratingData;
 
   return (
     <div className="rounded-md border bg-card p-2">
       <div>
-        <strong>Score:</strong> {score}
+        Name: <strong>{evaluatorName || evaluated?.slice(0, 7)}</strong>
       </div>
       <div>
-        <strong>Confidence:</strong> {confidence || 'N/A'}
+        Score: <strong>{compactFormat(score)}</strong>
       </div>
       <div>
-        <strong>Evaluator:</strong> {evaluatorName || evaluated?.slice(0, 7)}
+        Confidence:{' '}
+        <strong>{(Number(rating) > 0 ? '+' : '') + rating || 'N/A'}</strong>
       </div>
+      <small>{formatDuration(timestamp)}</small>
     </div>
   );
 };
@@ -69,8 +73,18 @@ const processAuraRatings = (
   ratings: AuraRating[],
   impacts: (AuraImpact & { evaluated: string })[],
 ) => {
+  const impactsObj = impacts.reduce(
+    (prev, curr) => {
+      prev[curr.evaluated] = curr;
+
+      return prev;
+    },
+    {} as Record<string, AuraImpact & { evaluated: string }>,
+  );
+
   return ratings.map((rating) => {
-    const impact = impacts.find((i) => i.evaluated === rating.toBrightId);
+    const impact = impactsObj[rating.toBrightId];
+
     return {
       ...rating,
       color: valueColorMap[rating.rating],
@@ -82,204 +96,207 @@ const processAuraRatings = (
   });
 };
 
-const useOutboundImpacts = (
-  ratings: AuraRating[],
-  evaluationCategory: EvaluationCategory,
-  subjectId: string,
-) => {
-  const [outboundImpacts, setOutboundImpacts] = useState<
-    (AuraImpact & { evaluated: string })[]
-  >([]);
-  const brightIdBackup = useSelector(selectBrightIdBackup);
-
-  const authData = useSelector(selectAuthData);
-
-  const [getProfilePhoto] = useLazyGetBrightIDProfileQuery();
-
-  useEffect(() => {
-    ratings.map(async (rating) => {
-      const profilePhoto = await getProfilePhoto({
-        id: rating.toBrightId,
-      });
-
-      const auraImpacts = getAuraVerification(
-        profilePhoto.data?.verifications,
-        evaluationCategory,
-      )?.impacts;
-
-      const subjectImpact = auraImpacts?.find((i) => i.evaluator === subjectId);
-
-      const profileInfo =
-        rating.toBrightId === authData?.brightId
-          ? brightIdBackup?.userData
-          : brightIdBackup?.connections.find(
-              (conn) => conn.id === rating.toBrightId,
-            );
-
-      setOutboundImpacts((prev) => [
-        ...prev,
-        {
-          evaluatorName:
-            profileInfo?.name ?? `${subjectImpact?.evaluator.slice(0, 7)}`,
-          ...subjectImpact,
-          evaluated: rating.toBrightId,
-        } as AuraImpact & { evaluated: string },
-      ]);
-    });
-  }, [
-    authData?.brightId,
-    brightIdBackup?.connections,
-    brightIdBackup?.userData,
-    evaluationCategory,
-    getProfilePhoto,
-    ratings,
-    subjectId,
-  ]);
-
-  return outboundImpacts;
-};
-
 export function ZoomableChart({
   evaluationCategory,
   ratings,
   subjectId,
 }: ZoomableChartProps) {
+  const memoizedRatings = useMemo(() => ratings ?? [], [ratings]);
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
   const [refAreaRight, setRefAreaRight] = useState<number | null>(null);
-  const [startTime, setStartTime] = useState<number | null>(null);
-  const [endTime, setEndTime] = useState<number | null>(null);
-  const [originalData, setOriginalData] = useState<AuraRating[]>(ratings || []);
+  const [startIndex, setStartIndex] = useState<number>(0);
+  const [endIndex, setEndIndex] = useState<number>(0);
   const [isSelecting, setIsSelecting] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const outboundImpacts = useOutboundImpacts(
-    ratings ?? [],
+  const { impacts, isLoading } = useOutboundImpacts(
+    memoizedRatings,
     evaluationCategory,
     subjectId,
   );
 
-  const chartData = useMemo(
-    () => processAuraRatings(ratings ?? [], outboundImpacts),
-    [ratings, outboundImpacts],
-  );
+  const chartData = useMemo(() => {
+    return processAuraRatings(ratings ?? [], impacts);
+  }, [memoizedRatings, impacts]);
 
+  // Initialize or reset the view when chartData changes
   useEffect(() => {
-    if (chartData?.length) {
-      setOriginalData(chartData);
-      setStartTime(chartData[0].timestamp);
-      setEndTime(chartData.at(-1)?.timestamp!);
+    if (chartData.length > 0) {
+      setStartIndex(0);
+      setEndIndex(chartData.length - 1);
     }
   }, [chartData]);
 
+  // Slice the data based on current indices
   const zoomedData = useMemo(() => {
-    if (!startTime || !endTime) {
-      return chartData;
-    }
+    return chartData.slice(startIndex, endIndex + 1);
+  }, [chartData, startIndex, endIndex]);
 
-    return chartData.filter(
-      (dataPoint) =>
-        dataPoint.timestamp >= startTime && dataPoint.timestamp <= endTime,
-    );
-  }, [startTime, endTime, originalData, chartData]);
-
-  const maxAbs = Math.max(
-    ...zoomedData.map((item) => Math.abs(Number(item.score ?? 0))),
+  const maxAbs = useMemo(
+    () =>
+      Math.max(...zoomedData.map((item) => Math.abs(Number(item.score ?? 0)))),
+    [zoomedData],
   );
 
-  // const total = useMemo(
-  //   () => zoomedData.reduce((acc, curr) => acc + curr.events, 0),
-  //   [zoomedData],
-  // );
+  const scaleBarHeight = useCallback(
+    (rating: string | number) => {
+      const value = Number(rating);
+      return (value / 4) * (maxAbs * 0.8);
+    },
+    [maxAbs],
+  );
 
-  const handleMouseDown = (e: any) => {
-    if (e.activeLabel) {
-      setRefAreaLeft(e.activeLabel);
-      setIsSelecting(true);
-    }
-  };
+  // Mouse event handlers using indices
+  const handleMouseDown = useCallback(
+    (e: any) => {
+      if (e && e.activePayload && e.activePayload[0]) {
+        const index = chartData.indexOf(e.activePayload[0].payload);
+        if (index !== -1) {
+          setRefAreaLeft(index);
+          setIsSelecting(true);
+        }
+      }
+    },
+    [chartData],
+  );
 
-  const handleMouseMove = (e: any) => {
-    if (isSelecting && e.activeLabel) {
-      setRefAreaRight(e.activeLabel);
-    }
-  };
+  const handleMouseMove = useCallback(
+    (e: any) => {
+      if (isSelecting && e && e.activePayload && e.activePayload[0]) {
+        const index = chartData.indexOf(e.activePayload[0].payload);
+        if (index !== -1) {
+          setRefAreaRight(index);
+        }
+      }
+    },
+    [isSelecting, chartData],
+  );
 
-  const handleMouseUp = () => {
-    if (refAreaLeft && refAreaRight) {
-      const [left, right] = [refAreaLeft, refAreaRight].sort();
-      setStartTime(left);
-      setEndTime(right);
+  const handleMouseUp = useCallback(() => {
+    if (refAreaLeft !== null && refAreaRight !== null) {
+      const [left, right] = [refAreaLeft, refAreaRight].sort((a, b) => a - b);
+      setStartIndex(left);
+      setEndIndex(right);
     }
     setRefAreaLeft(null);
     setRefAreaRight(null);
     setIsSelecting(false);
-  };
+  }, [refAreaLeft, refAreaRight]);
 
-  const handleReset = () => {
-    setStartTime(originalData[0].timestamp);
-    setEndTime(originalData[originalData.length - 1].timestamp);
-  };
+  // Reset to full view
+  const handleReset = useCallback(() => {
+    setStartIndex(0);
+    setEndIndex(chartData.length - 1);
+  }, [chartData]);
 
-  const handleZoom = (
-    e: React.WheelEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-  ) => {
-    if (!originalData.length || !chartRef.current) return;
+  // Handle zooming with wheel or pinch
+  const handleZoom = useCallback(
+    (
+      e: React.WheelEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
+    ) => {
+      if (!chartData.length || !chartRef.current) return;
 
-    let zoomFactor = 0.1;
-    let direction = 0;
-    let clientX = 0;
+      let zoomFactor = 0.1;
+      let direction = 0;
+      let clientX = 0;
 
-    if ('deltaY' in e) {
-      // Mouse wheel event
-      direction = e.deltaY < 0 ? 1 : -1;
-      clientX = e.clientX;
-    } else if (e.touches.length === 2) {
-      // Pinch zoom
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const currentDistance = Math.hypot(
-        touch1.clientX - touch2.clientX,
-        touch1.clientY - touch2.clientY,
-      );
-
-      if ((e as any).lastTouchDistance) {
-        direction = currentDistance > (e as any).lastTouchDistance ? 1 : -1;
+      if ('deltaY' in e) {
+        direction = e.deltaY < 0 ? 1 : -1; // Zoom in if scrolling up
+        clientX = e.clientX;
+      } else if (e.touches.length === 2) {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentDistance = Math.hypot(
+          touch1.clientX - touch2.clientX,
+          touch1.clientY - touch2.clientY,
+        );
+        if ((e as any).lastTouchDistance) {
+          direction = currentDistance > (e as any).lastTouchDistance ? 1 : -1;
+        }
+        (e as any).lastTouchDistance = currentDistance;
+        clientX = (touch1.clientX + touch2.clientX) / 2;
+      } else {
+        return;
       }
-      (e as any).lastTouchDistance = currentDistance;
 
-      clientX = (touch1.clientX + touch2.clientX) / 2;
-    } else {
-      return;
+      const currentRange = endIndex - startIndex;
+      const zoomAmount = currentRange * zoomFactor * direction;
+      const chartRect = chartRef.current.getBoundingClientRect();
+      const mouseX = clientX - chartRect.left;
+      const mousePercentage = mouseX / chartRect.width;
+
+      let newStartIndex = startIndex + zoomAmount * mousePercentage;
+      let newEndIndex = endIndex - zoomAmount * (1 - mousePercentage);
+
+      newStartIndex = Math.max(0, Math.round(newStartIndex));
+      newEndIndex = Math.min(chartData.length - 1, Math.round(newEndIndex));
+
+      if (newStartIndex <= newEndIndex) {
+        setStartIndex(newStartIndex);
+        setEndIndex(newEndIndex);
+      }
+    },
+    [startIndex, endIndex, chartData],
+  );
+
+  // Manual zoom in button
+  const zoomIn = useCallback(() => {
+    const midIndex = Math.round((startIndex + endIndex) / 2);
+    const newRange = Math.round((endIndex - startIndex) * 0.8);
+    let newStartIndex = Math.max(0, midIndex - newRange / 2);
+    let newEndIndex = newStartIndex + newRange;
+    if (newEndIndex > chartData.length - 1) {
+      newEndIndex = chartData.length - 1;
+      newStartIndex = Math.max(0, newEndIndex - newRange);
     }
+    setStartIndex(newStartIndex);
+    setEndIndex(newEndIndex);
+  }, [startIndex, endIndex, chartData]);
 
-    const currentRange =
-      new Date(
-        endTime || originalData[originalData.length - 1].timestamp,
-      ).getTime() - new Date(startTime || originalData[0].timestamp).getTime();
-    const zoomAmount = currentRange * zoomFactor * direction;
+  // Manual zoom out button
+  const zoomOut = useCallback(() => {
+    const midIndex = Math.round((startIndex + endIndex) / 2);
+    const newRange = Math.round((endIndex - startIndex) * 1.2);
+    let newStartIndex = Math.max(0, midIndex - newRange / 2);
+    let newEndIndex = newStartIndex + newRange;
+    if (newEndIndex > chartData.length - 1) {
+      newEndIndex = chartData.length - 1;
+      newStartIndex = Math.max(0, newEndIndex - newRange);
+    }
+    setStartIndex(newStartIndex);
+    setEndIndex(newEndIndex);
+  }, [startIndex, endIndex, chartData]);
 
-    const chartRect = chartRef.current.getBoundingClientRect();
-    const mouseX = clientX - chartRect.left;
-    const chartWidth = chartRect.width;
-    const mousePercentage = mouseX / chartWidth;
+  // Pan left
+  const panLeft = useCallback(() => {
+    const currentRange = endIndex - startIndex;
+    const shift = 1;
+    let newStartIndex = Math.max(0, startIndex - shift);
+    let newEndIndex = newStartIndex + currentRange;
+    if (newEndIndex > chartData.length - 1) {
+      newEndIndex = chartData.length - 1;
+      newStartIndex = Math.max(0, newEndIndex - currentRange);
+    }
+    setStartIndex(newStartIndex);
+    setEndIndex(newEndIndex);
+  }, [startIndex, endIndex, chartData]);
 
-    const currentStartTime = new Date(
-      (startTime || originalData[0].timestamp) * 1000,
-    ).getTime();
-    const currentEndTime = new Date(
-      (endTime || originalData[originalData.length - 1].timestamp) * 1000,
-    ).getTime();
-
-    const newStartTime = new Date(
-      currentStartTime + zoomAmount * mousePercentage,
-    );
-    const newEndTime = new Date(
-      currentEndTime - zoomAmount * (1 - mousePercentage),
-    );
-
-    setStartTime(newStartTime.getTime() / 1000);
-    setEndTime(newEndTime.getTime() / 1000);
-  };
+  // Pan right
+  const panRight = useCallback(() => {
+    const currentRange = endIndex - startIndex;
+    const shift = Math.round(currentRange * 0.1);
+    let newEndIndex = Math.min(chartData.length - 1, endIndex + shift);
+    let newStartIndex = newEndIndex - currentRange;
+    if (newStartIndex < 0) {
+      newStartIndex = 0;
+      newEndIndex = Math.min(
+        chartData.length - 1,
+        newStartIndex + currentRange,
+      );
+    }
+    setStartIndex(newStartIndex);
+    setEndIndex(newEndIndex);
+  }, [startIndex, endIndex, chartData]);
 
   return (
     <ChartContainer config={chartConfig} className="mb-12 h-52 w-full">
@@ -295,10 +312,44 @@ export function ZoomableChart({
             variant="ghost"
             size="icon"
             onClick={handleReset}
-            disabled={!startTime && !endTime}
+            disabled={startIndex === 0 && endIndex === chartData.length - 1}
             className="h-6 w-6 text-xs sm:text-sm"
           >
             <MdRefresh className="h-2 w-2" />
+          </Button>
+          <Button
+            size="icon"
+            className="h-6 w-6 text-xs sm:text-sm"
+            variant="ghost"
+            onClick={zoomIn}
+          >
+            <ZoomInIcon className="h-2 w-2" />
+          </Button>
+          <Button
+            size="icon"
+            className="h-6 w-6 text-xs sm:text-sm"
+            variant="ghost"
+            onClick={zoomOut}
+          >
+            <ZoomOutIcon className="h-2 w-2" />
+          </Button>
+          <Button
+            size="icon"
+            className="h-6 w-6 text-xs sm:text-sm"
+            variant="ghost"
+            onClick={panLeft}
+            disabled={startIndex === 0}
+          >
+            <ArrowLeftIcon className="h-2 w-2" />
+          </Button>
+          <Button
+            size="icon"
+            className="h-6 w-6 text-xs sm:text-sm"
+            variant="ghost"
+            onClick={panRight}
+            disabled={endIndex === chartData.length - 1}
+          >
+            <ArrowRightIcon className="h-2 w-2" />
           </Button>
         </div>
         <ResponsiveContainer width="100%" height="100%">
@@ -317,7 +368,6 @@ export function ZoomableChart({
           >
             <XAxis
               dataKey="timestamp"
-              // tickFormatter={formatXAxis}
               tickLine={false}
               axisLine={false}
               style={{ fontSize: '10px', userSelect: 'none' }}
@@ -333,27 +383,29 @@ export function ZoomableChart({
               type="number"
             />
             <ChartTooltip content={<CustomRatingTooltip />} />
-
-            {/* Area Chart */}
+            <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
             <Area
               type="monotone"
               dataKey="score"
-              stroke={chartConfig.events.color}
+              stroke={chartConfig.evaluations.color}
               fillOpacity={1}
-              dot={{ r: 2, fill: 'blue' }} // Always show dot, adjust size here
-              fill="url(#colorEvents)"
+              dot={{ r: 2, fill: 'white' }}
+              fill="url(#colorEvaluations)"
               isAnimationActive={false}
             />
-            <Bar dataKey="confidence" barSize={10} opacity={0.9}>
+            <Bar
+              maxBarSize={20}
+              dataKey={(data) => scaleBarHeight(data.rating)}
+              opacity={0.9}
+            >
               {zoomedData.map((entry, index) => (
                 <Cell radius={2} key={`cell-${index}`} fill={entry.color} />
               ))}
             </Bar>
-
-            {refAreaLeft && refAreaRight && (
+            {refAreaLeft !== null && refAreaRight !== null && (
               <ReferenceArea
-                x1={refAreaLeft}
-                x2={refAreaRight}
+                x1={chartData[Math.min(refAreaLeft, refAreaRight)].timestamp}
+                x2={chartData[Math.max(refAreaLeft, refAreaRight)].timestamp}
                 strokeOpacity={0.3}
                 fill="hsl(var(--foreground))"
                 fillOpacity={0.05}
