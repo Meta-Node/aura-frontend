@@ -239,32 +239,14 @@ export function ZoomableChart({
     [startIndex, endIndex, chartData],
   );
 
-  // Manual zoom in button
   const zoomIn = useCallback(() => {
-    const midIndex = Math.round((startIndex + endIndex) / 2);
-    const newRange = Math.round((endIndex - startIndex) * 0.8);
-    let newStartIndex = Math.max(0, midIndex - newRange / 2);
-    let newEndIndex = newStartIndex + newRange;
-    if (newEndIndex > chartData.length - 1) {
-      newEndIndex = chartData.length - 1;
-      newStartIndex = Math.max(0, newEndIndex - newRange);
-    }
-    setStartIndex(newStartIndex);
-    setEndIndex(newEndIndex);
-  }, [startIndex, endIndex, chartData]);
+    setStartIndex((prev) => Math.min(prev + 1, endIndex - 1));
+    setEndIndex((prev) => Math.max(prev - 1, startIndex + 1));
+  }, [startIndex, endIndex]);
 
-  // Manual zoom out button
   const zoomOut = useCallback(() => {
-    const midIndex = Math.round((startIndex + endIndex) / 2);
-    const newRange = Math.round((endIndex - startIndex) * 1.2);
-    let newStartIndex = Math.max(0, midIndex - newRange / 2);
-    let newEndIndex = newStartIndex + newRange;
-    if (newEndIndex > chartData.length - 1) {
-      newEndIndex = chartData.length - 1;
-      newStartIndex = Math.max(0, newEndIndex - newRange);
-    }
-    setStartIndex(newStartIndex);
-    setEndIndex(newEndIndex);
+    setStartIndex((prev) => Math.max(prev - 1, 0));
+    setEndIndex((prev) => Math.min(prev + 1, chartData.length - 1));
   }, [startIndex, endIndex, chartData]);
 
   // Pan left
@@ -322,6 +304,7 @@ export function ZoomableChart({
             className="h-6 w-6 text-xs sm:text-sm"
             variant="ghost"
             onClick={zoomIn}
+            disabled={startIndex === endIndex - 1}
           >
             <ZoomInIcon className="h-2 w-2" />
           </Button>
@@ -330,6 +313,7 @@ export function ZoomableChart({
             className="h-6 w-6 text-xs sm:text-sm"
             variant="ghost"
             onClick={zoomOut}
+            disabled={startIndex === 0 && endIndex === chartData.length - 1}
           >
             <ZoomOutIcon className="h-2 w-2" />
           </Button>
