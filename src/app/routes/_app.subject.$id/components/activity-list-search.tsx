@@ -161,14 +161,6 @@ export const ActivityListSearch = ({
     selectedFilters,
     selectedSort,
   ]);
-  const [previusSort, setPreviousSort] = useState(selectedItem.value);
-
-  useEffect(() => {
-    if (selectedItem.value === -1) {
-    } else {
-      setPreviousSort(selectedItem.value as number);
-    }
-  }, [selectedItem]);
 
   return (
     <>
@@ -230,20 +222,16 @@ export const ActivityListSearch = ({
               <FilterAndSortModalBody subjectId={subjectId} />
             </div>
 
-            <DialogFooter className="gap-2 sm:gap-4">
+            <DialogFooter>
               <Button
                 variant="outline"
                 onClick={() => {
-                  if (previusSort !== -1) {
-                    dropdownOptions
-                      .find((item) => item.value === previusSort)
-                      ?.onClick();
-                  }
+                  clearSortAndFilter();
                   setIsModalOpen(false);
                 }}
                 className="w-full flex-1 px-6 py-2 sm:w-auto"
               >
-                Cancel
+                Clear
               </Button>
               <Button
                 variant="secondary"
@@ -253,7 +241,7 @@ export const ActivityListSearch = ({
                   setIsModalOpen(false);
                 }}
               >
-                Apply
+                Ok
               </Button>
             </DialogFooter>
           </DialogContent>

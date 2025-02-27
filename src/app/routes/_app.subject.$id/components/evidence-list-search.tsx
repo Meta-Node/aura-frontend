@@ -9,6 +9,15 @@ import { AuraFilterId } from 'hooks/useFilters';
 import { AuraSortId } from 'hooks/useSorts';
 import useViewMode from 'hooks/useViewMode';
 import { AuraFilterDropdownOption } from 'types';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -22,14 +31,14 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
 
   return (
     <div>
-      <p className="text-black2 dark:text-gray-100 font-bold">Filters</p>
+      <p className="font-bold text-black2 dark:text-gray-100">Filters</p>
       <FiltersModal
         testidPrefix={'subject-filter'}
         filters={filters}
         selectedFilterIds={selectedFilterIds}
         toggleFiltersById={toggleFiltersById}
       />
-      <p className="text-black2 dark:text-gray-100 font-bold pt-3 pb-1">
+      <p className="pb-1 pt-3 font-bold text-black2 dark:text-gray-100">
         Sorts
       </p>
       <SortsModal
@@ -137,7 +146,7 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
       const isSelectedSort =
         selectedSort?.id === item.sortId &&
         item.ascending ===
-        (selectedSort.defaultAscending !== selectedSort.isReversed);
+          (selectedSort.defaultAscending !== selectedSort.isReversed);
       if (!isSelectedSort) return false;
       if (!selectedFilters) return !item.filterIds;
       if (!item.filterIds) return false;
@@ -159,7 +168,7 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
 
   return (
     <>
-      <div className="text-lg text-white mb-3 mt-3 flex items-center">
+      <div className="mb-3 mt-3 flex items-center text-lg text-white">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -168,14 +177,54 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
           onItemClick={(item) => item.onClick()}
           className="h-10"
         />
-        <Modal
-          title="Custom View"
-          isOpen={isModalOpen}
-          closeModalHandler={() => setIsModalOpen(false)}
-          className="select-button-with-modal__modal"
-        >
-          <FilterAndSortModalBody subjectId={subjectId} />
-        </Modal>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent
+            className="max-w-md sm:max-w-lg"
+            aria-describedby="custom-view-description"
+          >
+            <DialogHeader>
+              <DialogTitle
+                id="custom-view-title"
+                className="text-xl font-semibold"
+              >
+                Custom View
+              </DialogTitle>
+              <DialogDescription
+                id="custom-view-description"
+                className="text-sm text-muted-foreground"
+              >
+                Customize your view with filters and sorting options
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="no-scrollbar max-h-96 overflow-y-auto py-4">
+              <FilterAndSortModalBody subjectId={subjectId} />
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  clearSortAndFilter();
+                  setIsModalOpen(false);
+                }}
+                className="w-full flex-1 px-6 py-2 sm:w-auto"
+              >
+                Clear
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full flex-1 px-6 py-2 sm:w-auto"
+                data-testid="subject-sort-option-Confidence-ascending"
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+              >
+                Ok
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <span className="ml-auto">
           (
           {filteredSubjects?.filter((e) => e.rating && e.rating.rating !== '0')
@@ -191,15 +240,15 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
         </span>
       </div>
 
-      <div className="bg-card border text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
-        <div className="card__input flex gap-2 items-center rounded px-3.5">
+      <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-lg border bg-card p-1 text-card-foreground">
+        <div className="card__input flex items-center gap-2 rounded px-3.5">
           <img
-            className="w-4 h-4"
+            className="h-4 w-4"
             src="/assets/images/Shared/search-icon.svg"
             alt=""
           />
           <input
-            className="w-full font-medium dark:placeholder:text-gray-50 placeholder-black2 bg-card text-card-foreground text-sm h-11 focus:outline-none"
+            className="h-11 w-full bg-card text-sm font-medium text-card-foreground placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
             type="text"
             placeholder="Search in these results"
             value={searchString}

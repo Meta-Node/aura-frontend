@@ -16,6 +16,14 @@ import { PreferredView } from '../../types/dashboard';
 import Dropdown from '../Shared/Dropdown';
 import Modal from '../Shared/Modal';
 import { Button } from '../ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
 
 function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
   const {
@@ -271,16 +279,60 @@ export const SubjectListControls = ({
           onItemClick={(item) => item.onClick()}
           className="h-10"
         />
-        <Modal
-          title="Custom View"
-          isOpen={isModalOpen}
-          closeModalHandler={() => setIsModalOpen(false)}
-          className="select-button-with-modal__modal"
+        <Dialog
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          aria-labelledby="custom-view-title"
         >
-          <FilterAndSortModalBody
-            isPlayerMode={currentViewMode === PreferredView.PLAYER}
-          />
-        </Modal>
+          <DialogContent
+            className="max-w-md sm:max-w-lg"
+            aria-describedby="custom-view-description"
+          >
+            <DialogHeader>
+              <DialogTitle
+                id="custom-view-title"
+                className="text-xl font-semibold"
+              >
+                Custom View
+              </DialogTitle>
+              <DialogDescription
+                id="custom-view-description"
+                className="text-sm text-muted-foreground"
+              >
+                Customize your view with filters and sorting options
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-4">
+              <FilterAndSortModalBody
+                isPlayerMode={currentViewMode === PreferredView.PLAYER}
+              />
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  clearSortAndFilter();
+                  setIsModalOpen(false);
+                }}
+                className="w-full flex-1 px-6 py-2 sm:w-auto"
+              >
+                Clear
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full flex-1 px-6 py-2 sm:w-auto"
+                data-testid="subject-sort-option-Confidence-ascending"
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+              >
+                Ok
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <span className="ml-auto text-white">
           (
           {filteredSubjects?.length ??
