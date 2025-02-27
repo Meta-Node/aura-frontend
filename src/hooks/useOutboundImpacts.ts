@@ -11,7 +11,7 @@ import {
 } from '@/store/profile/selectors';
 import { profileApi } from '@/store/api/profile';
 import { getAuraVerification } from './useParseBrightIdVerificationData';
-import { AuraImpact, AuraImpactRaw } from '@/api/auranode.service';
+import { AuraImpact } from '@/api/auranode.service';
 
 const useOutboundImpacts = (
   ratings: AuraRating[],

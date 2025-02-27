@@ -11,6 +11,13 @@ import {
 } from '../constants';
 import LoadingSpinner from './Shared/LoadingSpinner';
 import Tooltip from './Shared/Tooltip';
+import {
+  useImpactPercentage,
+  useSubjectVerifications,
+} from '@/hooks/useSubjectVerifications';
+import { useSelector } from '@/store/hooks';
+import { selectAuthData } from '@/store/profile/selectors';
+import useViewMode from '@/hooks/useViewMode';
 
 export type SubjectIdProps = {
   subjectId: string;
@@ -109,6 +116,15 @@ export const ConnectionAndEvaluationStatus = ({
     myConnectionToSubject: inboundConnectionInfo,
     myConfidenceValueInThisSubjectRating: confidenceValue,
   } = useMyEvaluationsContext({ subjectId });
+  const authData = useSelector(selectAuthData);
+  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+
+  const { auraImpacts } = useSubjectVerifications(
+    subjectId,
+    currentEvaluationCategory,
+  );
+
+  const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
 
   const name = useSubjectName(subjectId);
 
@@ -141,7 +157,7 @@ export const ConnectionAndEvaluationStatus = ({
             <p className="text-sm font-medium text-black">
               {inboundConnectionInfo?.level}
             </p>
-          )}
+          )}{' '}
         </div>
       </Tooltip>
       {ratingNumber ? (
@@ -160,6 +176,7 @@ export const ConnectionAndEvaluationStatus = ({
             <p className="text-sm font-bold leading-4">
               {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
             </p>
+            <small className="text-xs">{impactPercentage}%</small>
             {rating?.isPending && (
               <LoadingSpinner
                 className="ml-1 h-[18px] w-[18px]"
