@@ -45,13 +45,12 @@ export default function DefaultHeader({
   return (
     <div className="flex flex-col gap-2.5 px-1 pt-9 md:px-6">
       {breadcrumbs}
-      <header className="header flex flex-wrap justify-between pb-4">
+      <header className="header flex flex-wrap items-end gap-y-2 pb-4">
         <div className="header-left flex flex-wrap items-center">
-          <HeaderBody beforeTitle={beforeTitle} title={title}>
-            {children}
-          </HeaderBody>
+          <HeaderBody beforeTitle={beforeTitle} title={title}></HeaderBody>
         </div>
-        <span className="header-right flex items-center">
+        {children}
+        <span className="header-right ml-auto flex items-center">
           <button
             onClick={() => dispatch(toggleSearchModal())}
             className="header-icon mr-4 dark:text-white"

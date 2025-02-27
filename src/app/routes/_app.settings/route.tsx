@@ -17,6 +17,7 @@ import { useDispatch } from 'store/hooks';
 import { RoutePath } from 'types/router';
 import { __DEV__ } from 'utils/env';
 import DefaultHeader from '@/components/Shared/DefaultHeader';
+import VersionCard from './components/version';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -79,6 +80,8 @@ export default function Settings() {
             <FaHandsHelping size={20} />
             <p className="text-[20px] font-medium">Onboarding</p>
           </Card>
+
+          <VersionCard />
 
           {(__DEV__ ||
             process.env.VITE_REACT_APP_IS_CYPRESS === 'true' ||

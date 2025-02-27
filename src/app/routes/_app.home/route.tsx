@@ -21,7 +21,7 @@ import { useSubjectsListContext } from '@/contexts/SubjectsListContext';
 import { selectAuthData } from '@/store/profile/selectors';
 import { hash } from '@/utils/crypto';
 import { getBrightIdBackupThunk } from '@/store/profile/actions';
-import HomeHeader from './header';
+import HomeHeader from './components/header';
 
 const Home = () => {
   const color = {

@@ -114,7 +114,9 @@ const CredibilityDetailsForRole = ({
               )}`}
             >
               Positive - {myConfidenceValueInThisSubjectRating} (
-              {Number(myRatingToSubject.rating)})
+              {(Number(myRatingToSubject.rating) > 0 ? '+' : '') +
+                Number(myRatingToSubject.rating)}
+              )
             </span>
           ) : myRatingToSubject && Number(myRatingToSubject.rating) < 0 ? (
             <span

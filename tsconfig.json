@@ -37,6 +37,7 @@
     "__tests__/**/*",
     "src/**/*",
     "src/**/*.json",
+    "vite-env.d.ts",
     "node_modules/vite-plugin-pwa/client.d.ts"
   ]
 }

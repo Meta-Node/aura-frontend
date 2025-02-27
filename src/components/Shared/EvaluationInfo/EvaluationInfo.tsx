@@ -73,11 +73,11 @@ export default function EvaluationInfo({
 
   return (
     <div
-      className={`text-sm flex flex-1 justify-between rounded-md items-center h-[36px] px-3 py-2 ${
+      className={`flex h-[36px] flex-1 items-center justify-between rounded-md px-3 py-2 text-sm ${
         styleValues.bgAndTextColor
       } ${isYourEvaluation ? 'p-1.5' : 'p-2.5'}`}
     >
-      <div className="flex gap-0.5 items-center">
+      <div className="flex items-center gap-0.5">
         <EvaluationThumb
           width="17.5px"
           height="16.63px"
@@ -101,7 +101,9 @@ export default function EvaluationInfo({
             {rating && Number(rating.rating) !== 0 && confidenceValue
               ? ` - ${confidenceValue}`
               : ''}
-            {rating?.rating ? ` (${rating.rating})` : ''}
+            {rating?.rating
+              ? ` (${(Number(rating.rating) > 0 ? '+' : '') + rating.rating})`
+              : ''}
           </span>
         </div>
       </div>
@@ -111,7 +113,7 @@ export default function EvaluationInfo({
             <>
               <span className="font-medium italic">Pending</span>
               <LoadingSpinner
-                className="w-[20px] h-[20px]"
+                className="h-[20px] w-[20px]"
                 spinnerClassName={
                   Math.abs(Number(rating.rating)) > 2
                     ? 'border-white'

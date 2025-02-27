@@ -38,7 +38,7 @@ const ViewTooltip = ({
     <Tooltip
       content={content}
       data-testid={`hometab-${content}`}
-      className={`rounded p-1 ${
+      className={`h-6 w-6 rounded p-1 ${
         currentViewMode === view
           ? getViewModeBackgroundColorClass(currentViewMode)
           : 'bg-gray100'

@@ -38,7 +38,7 @@ const BrightIdProfilePicture = ({
       {...props}
       alt={subjectId}
       className={`${props.className ?? ''} object-cover`}
-      src={data ?? imgSrc}
+      src={data || imgSrc}
     />
   );
 };
