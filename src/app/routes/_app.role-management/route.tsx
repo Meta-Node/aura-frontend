@@ -14,7 +14,7 @@ import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
-import DefaultHeader from '@/components/Shared/DefaultHeader';
+import DefaultHeader from '@/components/Header/DefaultHeader';
 import { Button } from '@/components/ui/button';
 
 export default function RoleManagement() {

@@ -16,7 +16,7 @@ import {
 import { useDispatch } from 'store/hooks';
 import { RoutePath } from 'types/router';
 import { __DEV__ } from 'utils/env';
-import DefaultHeader from '@/components/Shared/DefaultHeader';
+import DefaultHeader from '@/components/Header/DefaultHeader';
 import VersionCard from './components/version';
 
 export default function Settings() {

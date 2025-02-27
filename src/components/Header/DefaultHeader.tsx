@@ -43,7 +43,7 @@ export default function DefaultHeader({
   const dispatch = useDispatch();
 
   return (
-    <div className="flex flex-col gap-2.5 px-1 pt-9 md:px-6">
+    <div className="flex flex-col gap-2.5 px-1 pt-3 md:px-6 md:pt-9">
       {breadcrumbs}
       <header className="header flex flex-wrap items-end gap-y-2 pb-4">
         <div className="header-left flex flex-wrap items-center">

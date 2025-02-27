@@ -35,7 +35,7 @@ const useOutboundImpacts = (
     (acc, id) => {
       acc[id] = useSelector(
         profileApi.endpoints.getBrightIDProfile.select({ id }),
-      ).data;
+      )?.data;
       return acc;
     },
     {},

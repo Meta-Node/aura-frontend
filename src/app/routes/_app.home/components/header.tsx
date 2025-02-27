@@ -3,7 +3,7 @@ import {
   selectTrainerRoleState,
   RoleStatus,
 } from '@/BrightID/actions';
-import DefaultHeader from '@/components/Shared/DefaultHeader';
+import DefaultHeader from '@/components/Header/DefaultHeader';
 import Tooltip from '@/components/Shared/Tooltip';
 import {
   getViewModeBackgroundColorClass,
