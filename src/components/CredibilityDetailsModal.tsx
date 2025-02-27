@@ -28,6 +28,7 @@ import EvaluationFlow from './EvaluationFlow/EvaluationFlow';
 import { HorizontalProgressBar } from './Shared/HorizontalProgressBar';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import BrightIdProfilePicture from './BrightIdProfilePicture';
 
 const views = [
   EvaluationCategory.SUBJECT,
@@ -389,7 +390,13 @@ const CredibilityDetailsModal = ({
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent aria-describedby={`${name} subject credebility details`}>
         <DialogHeader>
-          <DialogTitle>{name}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <BrightIdProfilePicture
+              className={`h-10 w-10 rounded-full border-2 border-stone-400 bg-cover bg-center`}
+              subjectId={credibilityDetailsProps.subjectId}
+            />
+            {name}
+          </DialogTitle>
         </DialogHeader>
         <div className="mt-5">
           <CredibilityDetails
