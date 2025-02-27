@@ -28,6 +28,7 @@ import EvaluationFlow from './EvaluationFlow/EvaluationFlow';
 import { HorizontalProgressBar } from './Shared/HorizontalProgressBar';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import BrightIdProfilePicture from './BrightIdProfilePicture';
 
 const views = [
   EvaluationCategory.SUBJECT,
@@ -293,7 +294,7 @@ const CredibilityDetails = ({
         className={`mb-5 min-h-[52px] w-full rounded-lg bg-white-90-card p-1 px-1.5 py-1.5 dark:bg-dark-primary`}
       >
         <div
-          className={`flex h-full min-w-full flex-row overflow-x-auto overflow-y-hidden pb-1`}
+          className={`flex h-full min-w-full flex-row flex-wrap overflow-x-auto overflow-y-hidden pb-1`}
           // TODO: refactor this to tailwindcss class and values
           style={{
             scrollbarWidth: 'thin',
@@ -389,7 +390,13 @@ const CredibilityDetailsModal = ({
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent aria-describedby={`${name} subject credebility details`}>
         <DialogHeader>
-          <DialogTitle>{name}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <BrightIdProfilePicture
+              className={`h-10 w-10 rounded-full border-2 border-stone-400 bg-cover bg-center`}
+              subjectId={credibilityDetailsProps.subjectId}
+            />
+            {name}
+          </DialogTitle>
         </DialogHeader>
         <div className="mt-5">
           <CredibilityDetails
