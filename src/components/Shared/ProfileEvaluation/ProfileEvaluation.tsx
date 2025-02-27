@@ -27,7 +27,7 @@ import {
   useSubjectVerifications,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import { ArrowDownLeft, ArrowUpRight, } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import moment from 'moment';
 import { useMemo } from 'react';
 import {
@@ -69,7 +69,7 @@ const ProfileEvaluation = ({
   return (
     <div
       onClick={onClick}
-      className={`profile-evaluation-card border card !flex-row cursor-pointer gap-.5 pl-2 pt-[11px] pr-[14px] pb-3`}
+      className={`profile-evaluation-card card gap-.5 cursor-pointer !flex-row border pb-3 pl-2 pr-[14px] pt-[11px]`}
     >
       {loading ? (
         'Loading...'
@@ -152,12 +152,12 @@ const ConnectionInfo = ({
       // position="right"
       content={``}
     >
-      <div className={`flex flex-col gap-0.5 ${bgColor} py-1.5 rounded-md`}>
+      <div className={`flex flex-col gap-0.5 ${bgColor} rounded-md py-1.5`}>
         {loading ? (
           '...'
         ) : (
           <>
-            <div className="flex gap-0.5 justify-center items-center">
+            <div className="flex items-center justify-center gap-0.5">
               {inboundConnectionInfo &&
                 connectionLevelIcons[inboundConnectionInfo.level] && (
                   <Tooltip
@@ -204,7 +204,7 @@ const ConnectionInfo = ({
                 <p
                   className={`impact-percentage ${getTextClassNameOfAuraRatingObject(
                     rating,
-                  )} text-[11px] font-bold text-center w-full`}
+                  )} w-full text-center text-[11px] font-bold`}
                 >
                   {impactPercentage !== null ? `${impactPercentage}%` : '-'}
                 </p>
@@ -220,8 +220,8 @@ const ConnectionInfo = ({
 const UserName = ({ subjectId }: { subjectId: string }) => {
   const name = useSubjectName(subjectId);
   return (
-    <div className="flex gap-1 items-center">
-      <p className="name flex-1 font-medium text-sm line-clamp-1 text-ellipsis">
+    <div className="flex items-center gap-1">
+      <p className="name line-clamp-1 flex-1 text-ellipsis text-sm font-medium">
         {name}
       </p>
       {/*<Link*/}
@@ -253,36 +253,36 @@ const UserInformation = ({
     evidenceViewMode === EvidenceViewMode.INBOUND_CONNECTION
       ? EvaluationCategory.SUBJECT
       : evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
-      ? currentRoleEvaluatorEvaluationCategory
-      : viewModeToViewAs[
-          evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-            ? currentViewMode
-            : viewModeToSubjectViewMode[currentViewMode]
-        ],
+        ? currentRoleEvaluatorEvaluationCategory
+        : viewModeToViewAs[
+            evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
+              ? currentViewMode
+              : viewModeToSubjectViewMode[currentViewMode]
+          ],
   );
   return (
-    <div className="bg-gray00 rounded p-1 pr-2 flex gap-0.5 justify-between items-center mb-1.5 text-white">
+    <div className="mb-1.5 flex items-center justify-between gap-0.5 rounded bg-gray00 p-1 pr-2 text-white">
       <img
         src={
           evidenceViewMode === EvidenceViewMode.INBOUND_CONNECTION
             ? '/assets/images/Shared/brightid-icon.svg'
             : evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
-            ? preferredViewIconColored[currentViewMode]
-            : subjectViewAsIconColored[
-                viewModeToViewAs[
-                  evidenceViewMode ===
-                  EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-                    ? currentViewMode
-                    : viewModeToSubjectViewMode[currentViewMode]
+              ? preferredViewIconColored[currentViewMode]
+              : subjectViewAsIconColored[
+                  viewModeToViewAs[
+                    evidenceViewMode ===
+                    EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
+                      ? currentViewMode
+                      : viewModeToSubjectViewMode[currentViewMode]
+                  ]
                 ]
-              ]
         }
         alt=""
-        className="w-3.5 h-3.5 mx-1"
+        className="mx-1 h-3.5 w-3.5"
       />
       {loading ? (
         <p
-          className={`level text-sm font-bold mr-0.5 ${
+          className={`level mr-0.5 text-sm font-bold ${
             INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
               ? getViewModeTextColorClass(currentViewMode)
               : getViewModeSubjectTextColorClass(
@@ -300,7 +300,7 @@ const UserInformation = ({
           <Tooltip
             content="subject level"
             tooltipClassName="z-10 font-normal"
-            className={`level text-sm font-bold mr-0.5 ${
+            className={`level mr-0.5 text-sm font-bold ${
               INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
                 ? getViewModeTextColorClass(currentViewMode)
                 : getViewModeSubjectTextColorClass(
@@ -350,12 +350,12 @@ const Graph = ({
     evidenceViewMode === EvidenceViewMode.INBOUND_CONNECTION
       ? EvaluationCategory.SUBJECT
       : evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
-      ? currentRoleEvaluatorEvaluationCategory
-      : viewModeToViewAs[
-          evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-            ? currentViewMode
-            : viewModeToSubjectViewMode[currentViewMode]
-        ],
+        ? currentRoleEvaluatorEvaluationCategory
+        : viewModeToViewAs[
+            evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
+              ? currentViewMode
+              : viewModeToSubjectViewMode[currentViewMode]
+          ],
   );
   const { impactChartSmallOption } = useImpactEChartOption(auraImpacts);
 
@@ -379,7 +379,7 @@ const EvidenceInformation = ({
   const name = useSubjectName(subjectId);
   const { currentViewMode } = useViewMode();
   return (
-    <div className="evidence-information flex justify-between flex-1 gap-2">
+    <div className="evidence-information flex flex-1 justify-between gap-2">
       <Tooltip
         content={
           evidenceType === EvidenceType.EVALUATED
@@ -387,33 +387,32 @@ const EvidenceInformation = ({
               ? 'This user was evaluated by the current subject'
               : 'The current subject evaluated this user'
             : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
-            ? 'This user initiated the connection with the current subject'
-            : 'This user is connected to the current subject'
+              ? 'This user initiated the connection with the current subject'
+              : 'This user is connected to the current subject'
         }
         className={`${
           INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
             ? getViewModeTextColorClass(currentViewMode)
             : getViewModeSubjectTextColorClass(currentViewMode)
-        } text-xs  font-medium`}
+        } text-xs font-medium`}
       >
-        <span className='inline-flex items-center gap-1'>
-        {
-          evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY || evidenceType === EvidenceType.CONNECTED ? (
-            <ArrowDownLeft className="w-4 h-4" />
+        <span className="inline-flex items-center gap-1">
+          {evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY ||
+          evidenceType === EvidenceType.CONNECTED ? (
+            <ArrowDownLeft className="h-4 w-4" />
           ) : (
-            <ArrowUpRight className="w-4 h-4" />
-          )
-        }
-        {evidenceType === EvidenceType.EVALUATED
-          ? evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
-            ? 'evaluated by'
-            : 'evaluated'
-          : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
-          ? 'connected by'
-          : 'connected to'}
+            <ArrowUpRight className="h-4 w-4" />
+          )}
+          {evidenceType === EvidenceType.EVALUATED
+            ? evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
+              ? 'evaluated by'
+              : 'evaluated'
+            : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY
+              ? 'connected by'
+              : 'connected to'}
         </span>
       </Tooltip>
-      <div className="text-xs font-medium truncate flex-1 text-right">
+      <div className="flex-1 truncate text-right text-xs font-medium">
         {name}
       </div>
     </div>
@@ -425,7 +424,7 @@ const EvidenceUserProfile = ({ subjectId }: { subjectId: string }) => {
     <div className="img ml-auto">
       <BrightIdProfilePicture
         subjectId={subjectId}
-        className="rounded-full border border-gray60 w-8 h-8"
+        className="h-8 w-8 rounded-full border border-gray60"
       />
     </div>
   );
@@ -475,7 +474,7 @@ export const EvaluationInformation = ({
       }${rating?.rating}`}
     >
       <div
-        className={`evaluation-information flex flex-col py-1.5 items-center justify-center gap-1 ${getBgClassNameOfAuraRatingObject(
+        className={`evaluation-information flex flex-col items-center justify-center gap-1 py-1.5 ${getBgClassNameOfAuraRatingObject(
           rating,
         )} rounded-md`}
       >
@@ -487,10 +486,10 @@ export const EvaluationInformation = ({
             <p
               className={`${getTextClassNameOfAuraRatingObject(
                 rating,
-              )} text-xs font-bold mt-0.5`}
+              )} mt-0.5 text-xs font-bold`}
             >{`${getConfidenceValueOfAuraRatingNumber(
               Number(rating?.rating),
-            )} ${rating?.rating}`}</p>
+            )} ${Number(rating?.rating) > 0 ? '+' : ''}${rating?.rating}`}</p>
           </div>
         )}
         <div
@@ -537,11 +536,11 @@ const EvaluatedCardBody = ({
 
   return (
     <>
-      <div className="card__left-column w-[60%] flex gap-1.5">
-        <div className="w-[50px] flex flex-col gap-1.5">
+      <div className="card__left-column flex w-[60%] gap-1.5">
+        <div className="flex w-[50px] flex-col gap-1.5">
           <BrightIdProfilePicture
             subjectId={leftCardSide}
-            className={`w-[46px] h-[46px] !min-w-[46px] rounded-lg border-2 ${
+            className={`h-[46px] w-[46px] !min-w-[46px] rounded-lg border-2 ${
               INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
                 ? getViewModeBorderColorClass(currentViewMode)
                 : getViewModeSubjectBorderColorClass(
@@ -557,7 +556,7 @@ const EvaluatedCardBody = ({
             subjectId={leftCardSide}
           />
         </div>
-        <div className="flex flex-col gap-0 w-full">
+        <div className="flex w-full flex-col gap-0">
           <UserName subjectId={leftCardSide} />
           <UserInformation
             subjectId={leftCardSide}
@@ -575,9 +574,9 @@ const EvaluatedCardBody = ({
             </div>
           </Tooltip>
         </div>
-        <span className="divider border-r border-dashed border-gray00 pl-.5 mr-1.5 h-full"></span>
+        <span className="divider pl-.5 mr-1.5 h-full border-r border-dashed border-gray00"></span>
       </div>
-      <div className="card__right-column flex flex-col gap-1 w-[40%]">
+      <div className="card__right-column flex w-[40%] flex-col gap-1">
         <EvidenceInformation
           evidenceViewMode={evidenceViewMode}
           evidenceType={EvidenceType.EVALUATED}
@@ -634,7 +633,7 @@ const ConnectionInformation = ({
     return moment(connectionInfo.timestamp).fromNow();
   }, [connectionInfo?.timestamp]);
   return (
-    <div className="flex flex-col py-1.5 items-center justify-center gap-1 bg-soft-bright dark:bg-dark-bright rounded-md">
+    <div className="flex flex-col items-center justify-center gap-1 rounded-md bg-soft-bright py-1.5 dark:bg-dark-bright">
       {loading ? (
         '...'
       ) : (
@@ -685,18 +684,18 @@ const ConnectedCardBody = ({
   );
   return (
     <>
-      <div className="card__left-column w-[60%] flex gap-1.5">
-        <div className="w-[50px] flex flex-col gap-1.5">
+      <div className="card__left-column flex w-[60%] gap-1.5">
+        <div className="flex w-[50px] flex-col gap-1.5">
           <BrightIdProfilePicture
             subjectId={leftCardSide}
-            className={`w-[46px] h-[46px] !min-w-[46px] rounded-lg border-2 border-pastel-purple`}
+            className={`h-[46px] w-[46px] !min-w-[46px] rounded-lg border-2 border-pastel-purple`}
           />
           <ConnectionInfo
             evidenceViewMode={evidenceViewMode}
             subjectId={leftCardSide}
           />
         </div>
-        <div className="flex flex-col gap-0 w-full">
+        <div className="flex w-full flex-col gap-0">
           <UserName subjectId={leftCardSide} />
           <UserInformation
             evidenceViewMode={evidenceViewMode}
@@ -714,9 +713,9 @@ const ConnectedCardBody = ({
             </div>
           </Tooltip>
         </div>
-        <span className="divider border-r border-dashed border-gray00 pl-.5 mr-1.5 h-full"></span>
+        <span className="divider pl-.5 mr-1.5 h-full border-r border-dashed border-gray00"></span>
       </div>
-      <div className="card__right-column flex flex-col gap-1 w-[40%]">
+      <div className="card__right-column flex w-[40%] flex-col gap-1">
         <EvidenceInformation
           evidenceViewMode={evidenceViewMode}
           evidenceType={EvidenceType.CONNECTED}

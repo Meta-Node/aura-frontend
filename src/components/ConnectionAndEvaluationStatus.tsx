@@ -30,7 +30,7 @@ export const ConnectionStatus: FC<SubjectIdProps> = ({ subjectId }) => {
   }
 
   return (
-    <div className="inline-flex gap-1 p-2 rounded-md bg-soft-bright dark:bg-dark-bright">
+    <div className="inline-flex gap-1 rounded-md bg-soft-bright p-2 dark:bg-dark-bright">
       {inboundConnectionInfo &&
         connectionLevelIcons[inboundConnectionInfo.level] && (
           <img
@@ -43,7 +43,7 @@ export const ConnectionStatus: FC<SubjectIdProps> = ({ subjectId }) => {
           />
         )}
       {!ratingNumber && (
-        <p className="font-medium text-black text-sm">
+        <p className="text-sm font-medium text-black">
           {inboundConnectionInfo?.level}
         </p>
       )}
@@ -60,9 +60,9 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
 
   return ratingNumber ? (
     <div
-      className={`flex gap-1 items-center rounded-md ${getBgClassNameOfAuraRatingNumber(
+      className={`flex items-center gap-1 rounded-md ${getBgClassNameOfAuraRatingNumber(
         ratingNumber,
-      )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} py-2.5 px-3`}
+      )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
     >
       {ratingNumber}
       <EvaluationThumb
@@ -70,12 +70,12 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
         height="18px"
         rating={rating && Number(rating?.rating)}
       />
-      <p className="font-bold text-sm leading-4">
+      <p className="text-sm font-bold leading-4">
         {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
       </p>
       {rating?.isPending && (
         <LoadingSpinner
-          className="w-[18px] h-[18px] ml-1"
+          className="ml-1 h-[18px] w-[18px]"
           spinnerClassName={
             Math.abs(Number(rating.rating)) > 2
               ? 'border-white'
@@ -90,12 +90,12 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
 };
 
 export const connectionLevelColors: Record<ConnectionLevel, string> = {
-  'reported': '#FF4B31',   
-  'suspicious': '#FF7831',  
-  'recovery': '#FFA131',   
-  'already known': '#FFC585', 
-  'just met': '#FFB85C',   
-  'aura only': '#FFE8D4',  
+  reported: '#FF4B31',
+  suspicious: '#FF7831',
+  recovery: '#FFA131',
+  'already known': '#FFC585',
+  'just met': '#FFB85C',
+  'aura only': '#FFE8D4',
 };
 
 export const ConnectionAndEvaluationStatus = ({
@@ -113,26 +113,32 @@ export const ConnectionAndEvaluationStatus = ({
   const name = useSubjectName(subjectId);
 
   return (
-    <div className="w-full items-center flex gap-1">
+    <div className="flex w-full items-center gap-1">
       <Tooltip
         tooltipClassName="text-sm !w-52 !whitespace-normal"
         position="right"
         content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
       >
-        <div className="flex gap-1 p-2 rounded-md" style={{ backgroundColor: inboundConnectionInfo?.level ? connectionLevelColors[inboundConnectionInfo.level] : '#FFB85C' }}>
-          {inboundConnectionInfo &&
-            connectionLevelIcons[inboundConnectionInfo.level] && (
-              <img
-                src={`/assets/images/Shared/${
-                  connectionLevelIcons[inboundConnectionInfo.level]
-                }.svg`}
-                alt=""
-                width="20px"
-                height="20px"
-              />
-            )}
+        <div
+          className="flex gap-1 rounded-md p-2"
+          style={{
+            backgroundColor: inboundConnectionInfo?.level
+              ? connectionLevelColors[inboundConnectionInfo.level]
+              : '#FFB85C',
+          }}
+        >
+          {inboundConnectionInfo && inboundConnectionInfo.level && (
+            <img
+              src={`/assets/images/Shared/${
+                connectionLevelIcons[inboundConnectionInfo.level]
+              }.svg`}
+              alt=""
+              width="20px"
+              height="20px"
+            />
+          )}
           {!ratingNumber && (
-            <p className="font-medium text-black text-sm">
+            <p className="text-sm font-medium text-black">
               {inboundConnectionInfo?.level}
             </p>
           )}
@@ -141,22 +147,22 @@ export const ConnectionAndEvaluationStatus = ({
       {ratingNumber ? (
         <Tooltip content={`Your evaluation of ${name}`}>
           <div
-            className={`flex gap-1 items-center rounded-md ${getBgClassNameOfAuraRatingNumber(
+            className={`flex items-center gap-1 rounded-md ${getBgClassNameOfAuraRatingNumber(
               ratingNumber,
-            )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} py-2.5 px-3`}
+            )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
           >
-            {ratingNumber}
+            {(ratingNumber > 0 ? '+' : '') + ratingNumber}
             <EvaluationThumb
               width="18px"
               height="18px"
               rating={rating && Number(rating?.rating)}
             />
-            <p className="font-bold text-sm leading-4">
+            <p className="text-sm font-bold leading-4">
               {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
             </p>
             {rating?.isPending && (
               <LoadingSpinner
-                className="w-[18px] h-[18px] ml-1"
+                className="ml-1 h-[18px] w-[18px]"
                 spinnerClassName={
                   Math.abs(Number(rating.rating)) > 2
                     ? 'border-white'

@@ -73,33 +73,33 @@ const EvaluateModalBody = ({
   );
   return (
     <div>
-      <p className="subtitle mb-6 -mt-1">
+      <p className="subtitle -mt-1 mb-6">
         as a <span className="font-bold">{subjectViewModeTitle}</span> in{' '}
         <span className="font-bold">BrightID</span> domain
       </p>
 
-      <p className="font-medium mb-2">
+      <p className="mb-2 font-medium">
         <CustomTrans
           i18nKey={`evaluationQuestion.${subjectViewModeTitle.toLowerCase()}`}
           values={{ name }}
         />
       </p>
 
-      <div className="p-1.5 rounded-lg dark:bg-button-primary bg-white w-full mb-5">
-        <div className="w-full h-[38px] relative dark:bg-button-primary bg-white flex">
+      <div className="mb-5 w-full rounded-lg bg-white p-1.5 dark:bg-button-primary">
+        <div className="relative flex h-[38px] w-full bg-white dark:bg-button-primary">
           <span
-            className={`cursor-pointer background absolute w-1/2 top-0 bottom-0 rounded-md transition-all duration-300 ease-in-out ${
-              isYes ? 'left-0 right-1/2 bg-pl3' : 'right-0 left-1/2 bg-error'
+            className={`background absolute bottom-0 top-0 w-1/2 cursor-pointer rounded-md transition-all duration-300 ease-in-out ${
+              isYes ? 'left-0 right-1/2 bg-pl3' : 'left-1/2 right-0 bg-error'
             }`}
           ></span>
           <p
-            className={`cursor-pointer bg-transparent absolute w-1/2 left-0 top-1/2 -translate-y-1/2 text-center font-bold text-lg transition-all duration-300 ease-in-out ${
+            className={`absolute left-0 top-1/2 w-1/2 -translate-y-1/2 cursor-pointer bg-transparent text-center text-lg font-bold transition-all duration-300 ease-in-out ${
               isYes ? 'text-white' : 'text-black'
             }`}
             data-testid={`evaluate-positive`}
             onClick={() => setIsYes(true)}
           >
-            <div className="flex gap-1 w-full justify-center">
+            <div className="flex w-full justify-center gap-1">
               <img
                 src={
                   isYes
@@ -114,13 +114,13 @@ const EvaluateModalBody = ({
             </div>
           </p>
           <p
-            className={`cursor-pointer bg-transparent absolute w-1/2 right-0 top-1/2 -translate-y-1/2 text-center font-bold text-lg transition-all duration-300 ease-in-out ${
+            className={`absolute right-0 top-1/2 w-1/2 -translate-y-1/2 cursor-pointer bg-transparent text-center text-lg font-bold transition-all duration-300 ease-in-out ${
               isYes ? 'text-black' : 'text-white'
             }`}
             data-testid={`evaluate-negative`}
             onClick={() => setIsYes(false)}
           >
-            <div className="flex gap-1 w-full justify-center">
+            <div className="flex w-full justify-center gap-1">
               <img
                 src={
                   isYes
@@ -137,12 +137,13 @@ const EvaluateModalBody = ({
         </div>
       </div>
 
-      <p className="font-medium mb-2">How confident are you?</p>
+      <p className="mb-2 font-medium">How confident are you?</p>
       <ConfidenceDropdown
+        isYes={isYes}
         confidence={confidence}
         setConfidence={setConfidence}
       />
-      <p className="font-medium mt-1">
+      <p className="mt-1 font-medium">
         <CustomTrans
           i18nKey={`evaluationExpression.${subjectViewModeTitle.toLowerCase()}.${
             isYes ? 'positive' : 'negative'
@@ -153,18 +154,16 @@ const EvaluateModalBody = ({
         {prevRating ? (
           <div className="flex gap-3">
             <button
-              className={`flex justify-center transition-all ease-linear
-            ${
-              onDelete
-                ? `btn btn--big btn--outlined-big`
-                : `btn btn--big w-full`
-            }
-            `}
+              className={`flex justify-center transition-all ease-linear ${
+                onDelete
+                  ? `btn btn--big btn--outlined-big`
+                  : `btn btn--big w-full`
+              } `}
               onClick={() => (onDelete ? setOnDelete(false) : submit())}
             >
               <p
                 className={`overflow-hidden ${
-                  onDelete ? 'opacity-100 w-20' : '!w-0 h-7 opacity-0'
+                  onDelete ? 'w-20 opacity-100' : 'h-7 !w-0 opacity-0'
                 }`}
               >
                 Cancel
@@ -172,7 +171,7 @@ const EvaluateModalBody = ({
               <p
                 data-testid="submit-evaluation"
                 className={`overflow-hidden ${
-                  onDelete ? '!w-0 h-7 opacity-0' : 'w-44 opacity-100'
+                  onDelete ? 'h-7 !w-0 opacity-0' : 'w-44 opacity-100'
                 }`}
               >
                 {loading ? 'Sending Operation...' : 'Update Evaluation'}
@@ -181,8 +180,8 @@ const EvaluateModalBody = ({
             </button>
             <button
               data-testid="remove-evaluation"
-              className={`btn btn--big bg-delete dark:bg-red-500 flex gap-2.5 transition-all ease-linear ${
-                onDelete ? 'w-full justify-center items-center' : ''
+              className={`btn btn--big flex gap-2.5 bg-delete transition-all ease-linear dark:bg-red-500 ${
+                onDelete ? 'w-full items-center justify-center' : ''
               }`}
               onClick={() =>
                 onDelete
@@ -192,7 +191,7 @@ const EvaluateModalBody = ({
             >
               <img src="/assets/images/Shared/erase-icon.svg" alt="" />
               <p
-                className={`transition-all overflow-hidden ${
+                className={`overflow-hidden transition-all ${
                   onDelete ? 'w-[75px] opacity-100' : 'w-0 opacity-0'
                 }`}
               >
