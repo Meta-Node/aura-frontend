@@ -467,8 +467,7 @@ export const EvaluationInformation = ({
   return (
     <Tooltip
       position="left"
-      tooltipClassName="z-10"
-      // tooltipClassName="translate-x-1/2"
+      tooltipClassName="z-10 w-32 !h-auto !whitespace-normal"
       content={`${fromName} evaluated ${toName} ${
         Number(rating?.rating) > 0 ? '+' : ''
       }${rating?.rating}`}
