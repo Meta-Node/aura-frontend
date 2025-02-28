@@ -166,8 +166,14 @@
   }
 }
 
-.bg-circle-dots {
+.dark .bg-circle-dots {
   background: radial-gradient(circle, #222222 1px, transparent 1px);
+  background-size: 10px 10px;
+  background-repeat: repeat;
+}
+
+.bg-circle-dots {
+  background: radial-gradient(circle, #e9e9e9 1px, transparent 1px);
   background-size: 10px 10px;
   background-repeat: repeat;
 }
