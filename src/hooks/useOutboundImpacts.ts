@@ -11,7 +11,8 @@ import {
 } from '@/store/profile/selectors';
 import { profileApi } from '@/store/api/profile';
 import { getAuraVerification } from './useParseBrightIdVerificationData';
-import { AuraImpact, AuraImpactRaw } from '@/api/auranode.service';
+import { AuraImpact } from '@/api/auranode.service';
+import { RootState } from '@/store';
 
 const useOutboundImpacts = (
   ratings: AuraRating[],
@@ -30,15 +31,13 @@ const useOutboundImpacts = (
   const filteredRatings = ratings.filter((rating) => rating.rating !== '0');
   const toBrightIds = filteredRatings.map((rating) => rating.toBrightId);
 
-  // Get cached profiles from Redux
-  const cachedProfiles = toBrightIds.reduce<{ [key: string]: any }>(
-    (acc, id) => {
-      acc[id] = useSelector(
-        profileApi.endpoints.getBrightIDProfile.select({ id }),
-      )?.data;
+  const cachedProfiles = useSelector((state) =>
+    toBrightIds.reduce<{ [key: string]: any }>((acc, id) => {
+      const selector = profileApi.endpoints.getBrightIDProfile.select({ id });
+      const result = selector(state as RootState);
+      acc[id] = result?.data; // Safely access data, undefined if not cached
       return acc;
-    },
-    {},
+    }, {}),
   );
 
   useEffect(() => {

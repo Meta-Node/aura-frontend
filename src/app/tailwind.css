@@ -157,8 +157,6 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -166,4 +164,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.bg-circle-dots {
+  background: radial-gradient(circle, #222222 1px, transparent 1px);
+  background-size: 10px 10px;
+  background-repeat: repeat;
 }
