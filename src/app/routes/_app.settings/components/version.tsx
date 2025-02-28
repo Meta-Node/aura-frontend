@@ -12,6 +12,9 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 export default function VersionCard() {
   const { data, isLoading } = useGetAppLatestVersionQuery(
     isDevelopment ? skipToken : undefined,
+    {
+      pollingInterval: 20000,
+    },
   );
 
   const [updateAvailable, setUpdateAvailable] = useState(false);
