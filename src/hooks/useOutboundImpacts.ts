@@ -14,6 +14,7 @@ import { getAuraVerification } from './useParseBrightIdVerificationData';
 import { AuraImpact } from '@/api/auranode.service';
 import { RootState } from '@/store';
 
+
 const useOutboundImpacts = (
   ratings: AuraRating[],
   evaluationCategory: EvaluationCategory,
