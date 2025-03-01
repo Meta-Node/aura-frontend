@@ -15,7 +15,6 @@ import GlobalSearchModal from '@/components/GlobalSearchModal';
 import { useSelector } from '@/store/hooks';
 import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
 import { useDispatch } from 'react-redux';
-
 import './i18n';
 import './tailwind.css';
 import '../assets/fonts/fonts.css';
