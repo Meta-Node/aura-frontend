@@ -45,29 +45,21 @@ const pwaConfig: Partial<VitePWAOptions> = {
 };
 
 const replaceOptions = { __DATE__: new Date().toISOString() };
-const reload = true;
-const selfDestroying = true;
-const SW = true;
 
-if (SW) {
-  pwaConfig.srcDir = 'src';
-  pwaConfig.filename = 'prompt-sw.ts';
-  pwaConfig.strategies = 'injectManifest';
-  (pwaConfig.manifest as Partial<ManifestOptions>).name = 'Aura Service Worker';
-  (pwaConfig.manifest as Partial<ManifestOptions>).short_name = 'Aura';
-  pwaConfig.injectManifest = {
-    minify: true,
-    enableWorkboxModulesLogs: true,
-    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
-  };
-}
+pwaConfig.srcDir = 'src';
+pwaConfig.filename = 'prompt-sw.ts';
+pwaConfig.strategies = 'injectManifest';
+(pwaConfig.manifest as Partial<ManifestOptions>).name = 'Aura Service Worker';
+(pwaConfig.manifest as Partial<ManifestOptions>).short_name = 'Aura';
+pwaConfig.injectManifest = {
+  minify: true,
+  enableWorkboxModulesLogs: true,
+  maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+};
 
-if (reload) {
-  // @ts-expect-error just ignore
-  replaceOptions.__RELOAD_SW__ = 'true';
-}
-
-if (selfDestroying) pwaConfig.selfDestroying = selfDestroying;
+// @ts-expect-error just ignore
+replaceOptions.__RELOAD_SW__ = true;
+// pwaConfig.selfDestroying = true;
 
 export default defineConfig(() => {
   return {

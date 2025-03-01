@@ -71,8 +71,8 @@ export default function VersionCard() {
               onClick={handleUpdate}
               disabled={data === APP_VERSION && !updateAvailable}
             >
-              {updateAvailable ? (
-                'Update Now'
+              {!updateAvailable ? (
+                'Update'
               ) : (
                 <>
                   Update Available <small>{data}</small>
