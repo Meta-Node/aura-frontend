@@ -1,5 +1,5 @@
 import ThemeResolver from '@/components/ui/theme-resolver';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
 import {
   isRouteErrorResponse,
   Links,
@@ -15,7 +15,6 @@ import GlobalSearchModal from '@/components/GlobalSearchModal';
 import { useSelector } from '@/store/hooks';
 import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
 import { useDispatch } from 'react-redux';
-import { APP_STATE } from '@/utils/errors';
 import './i18n';
 import './tailwind.css';
 import '../assets/fonts/fonts.css';
@@ -61,10 +60,6 @@ export function Layout({ children }: PropsWithChildren) {
 export default function App() {
   const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    APP_STATE.isStarted = true;
-  }, []);
 
   return (
     <>
