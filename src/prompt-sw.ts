@@ -13,7 +13,11 @@ self.addEventListener('message', (event: any) => {
 
 const manualPrecache = [{ url: 'index.html', revision: null }];
 
-precacheAndRoute([...self.__WB_MANIFEST, ...manualPrecache]);
+precacheAndRoute(
+  self.__WB_MANIFEST
+    .filter((entry: { url: string }) => entry.url !== 'index.html')
+    .concat(manualPrecache),
+);
 
 cleanupOutdatedCaches();
 
