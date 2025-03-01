@@ -11,7 +11,7 @@ self.addEventListener('message', (event: any) => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
-const manualPrecache = [{ url: '/index.html', revision: null }];
+const manualPrecache = [{ url: 'index.html', revision: null }];
 
 precacheAndRoute([...self.__WB_MANIFEST, ...manualPrecache]);
 
