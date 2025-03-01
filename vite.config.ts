@@ -46,7 +46,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
 
 const replaceOptions = { __DATE__: new Date().toISOString() };
 const reload = true;
-const selfDestroying = process.env.SW_DESTROY === 'true';
+const selfDestroying = true;
 const SW = true;
 
 if (SW) {
@@ -74,6 +74,7 @@ export default defineConfig(() => {
     build: {
       outDir: 'build',
     },
+    base: '/',
     define: {
       'process.env': process.env,
       APP_VERSION: JSON.stringify(process.env.npm_package_version),
