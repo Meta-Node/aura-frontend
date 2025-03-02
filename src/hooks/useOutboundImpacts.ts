@@ -14,7 +14,6 @@ import { getAuraVerification } from './useParseBrightIdVerificationData';
 import { AuraImpact } from '@/api/auranode.service';
 import { RootState } from '@/store';
 
-
 const useOutboundImpacts = (
   ratings: AuraRating[],
   evaluationCategory: EvaluationCategory,
@@ -23,7 +22,7 @@ const useOutboundImpacts = (
   const authData = useSelector(selectAuthData);
   const brightIdBackup = useSelector(selectBrightIdBackup);
   const [impacts, setImpacts] = useState<
-    (AuraImpact & { evaluated: string })[]
+    (AuraImpact & { evaluated: string; subjectScore?: number })[]
   >([]);
   const [triggerFetch, { isFetching }] =
     profileApi.endpoints.getBrightIDProfile.useLazyQuery();
@@ -53,20 +52,19 @@ const useOutboundImpacts = (
             profileData = data;
           }
 
-          let auraImpacts = getAuraVerification(
+          let impacts = getAuraVerification(
             profileData?.verifications,
             evaluationsToEvaluatedCategory[evaluationCategory],
-          )?.impacts;
+          );
 
-          if (
-            !auraImpacts &&
-            evaluationCategory === EvaluationCategory.MANAGER
-          ) {
-            auraImpacts = getAuraVerification(
+          if (!impacts && evaluationCategory === EvaluationCategory.MANAGER) {
+            impacts = getAuraVerification(
               profileData.verifications,
               EvaluationCategory.MANAGER,
-            ) as any;
+            );
           }
+          let auraImpacts = impacts?.impacts;
+          let auraScore = impacts?.score;
 
           const subjectImpact = auraImpacts?.find(
             (i) => i.evaluator === subjectId,
@@ -84,10 +82,11 @@ const useOutboundImpacts = (
               profileInfo?.name ?? profileData?.id?.slice(0, 7) ?? '',
             ...subjectImpact,
             evaluated: rating.toBrightId,
+            subjectScore: auraScore,
             score:
               (Number(rating.rating) > 0 ? 1 : -1) *
               (subjectImpact?.score ?? 0),
-          } as AuraImpact & { evaluated: string };
+          } as AuraImpact & { evaluated: string; subjectScore: number };
         }),
       );
 

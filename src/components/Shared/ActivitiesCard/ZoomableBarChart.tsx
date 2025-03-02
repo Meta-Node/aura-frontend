@@ -50,7 +50,8 @@ const CustomRatingTooltip = ({ payload, label }: TooltipProps<any, any>) => {
 
   const ratingData = payload[0].payload;
 
-  const { score, evaluatorName, evaluated, rating, timestamp } = ratingData;
+  const { impact, evaluatorName, evaluated, rating, timestamp, subjectScore } =
+    ratingData;
 
   return (
     <div className="rounded-md border bg-card p-2">
@@ -58,7 +59,10 @@ const CustomRatingTooltip = ({ payload, label }: TooltipProps<any, any>) => {
         Name: <strong>{evaluatorName || evaluated?.slice(0, 7)}</strong>
       </div>
       <div>
-        Score: <strong>{compactFormat(score)}</strong>
+        Score: <strong>{compactFormat(subjectScore ?? 0)}</strong>
+      </div>
+      <div>
+        Impact: <strong>{compactFormat(impact)}</strong>
       </div>
       <div>
         Confidence:{' '}
@@ -71,7 +75,7 @@ const CustomRatingTooltip = ({ payload, label }: TooltipProps<any, any>) => {
 
 const processAuraRatings = (
   ratings: AuraRating[],
-  impacts: (AuraImpact & { evaluated: string })[],
+  impacts: (AuraImpact & { evaluated: string; subjectScore?: number })[],
 ) => {
   const impactsObj = impacts.reduce(
     (prev, curr) => {
@@ -79,7 +83,10 @@ const processAuraRatings = (
 
       return prev;
     },
-    {} as Record<string, AuraImpact & { evaluated: string }>,
+    {} as Record<
+      string,
+      AuraImpact & { evaluated: string; subjectScore?: number }
+    >,
   );
 
   return ratings.map((rating) => {
@@ -88,8 +95,9 @@ const processAuraRatings = (
     return {
       ...rating,
       color: valueColorMap[rating.rating],
+      subjectScore: impact?.subjectScore,
       score: impact?.score,
-      impact: impact?.impact,
+      impact: impact?.impact ?? 0,
       evaluatorName: impact?.evaluatorName ?? impact?.evaluated.slice(0, 7),
       evaluated: impact?.evaluated,
     };
@@ -134,14 +142,14 @@ export function ZoomableChart({
 
   const maxAbs = useMemo(
     () =>
-      Math.max(...zoomedData.map((item) => Math.abs(Number(item.score ?? 0)))),
+      Math.max(...zoomedData.map((item) => Math.abs(Number(item.impact ?? 0)))),
     [zoomedData],
   );
 
   const scaleBarHeight = useCallback(
-    (rating: string | number) => {
+    (data: any, rating: string | number) => {
       const value = Number(rating);
-      return (value / 4) * (maxAbs * 0.8);
+      return (value / 4) * (Math.abs(data.impact) * 0.8);
     },
     [maxAbs],
   );
@@ -370,7 +378,7 @@ export function ZoomableChart({
             <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
             <Area
               type="monotone"
-              dataKey="score"
+              dataKey="impact"
               stroke={chartConfig.evaluations.color}
               fillOpacity={1}
               dot={{ r: 2, fill: 'white' }}
@@ -379,7 +387,7 @@ export function ZoomableChart({
             />
             <Bar
               maxBarSize={20}
-              dataKey={(data) => scaleBarHeight(data.rating)}
+              dataKey={(data) => scaleBarHeight(data, data.rating)}
               opacity={0.9}
             >
               {zoomedData.map((entry, index) => (
