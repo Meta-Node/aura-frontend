@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -33,6 +34,7 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   return (
     <div className="w-full">
       <p className="font-bold text-black2 dark:text-gray-100">Filters</p>
+      <Separator className="my-5" />
       <FiltersModal
         testidPrefix={'subject-filter'}
         filters={filters}
@@ -42,6 +44,7 @@ function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
       <p className="pb-1 pt-3 font-bold text-black2 dark:text-gray-100">
         Sorts
       </p>
+      <Separator className="my-5" />
       <SortsModal
         testidPrefix={'subject-sort'}
         sorts={sorts}
@@ -224,7 +227,7 @@ export const ActivityListSearch = ({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="py-4">
+            <div className="no-scrollbar max-h-96 overflow-y-auto py-4">
               <FilterAndSortModalBody subjectId={subjectId} />
             </div>
 

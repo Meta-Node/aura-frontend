@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
+import { Separator } from '../ui/separator';
 
 function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
   const {
@@ -38,6 +39,7 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
   return (
     <div>
       <p className="font-bold text-black2 dark:text-gray-100">Filters</p>
+      <Separator className="my-4" />
       <FiltersModal
         includeConnectionFilters={isPlayerMode}
         testidPrefix={'subject-filter'}
@@ -48,6 +50,7 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
       <p className="pb-1 pt-3 font-bold text-black2 dark:text-gray-100">
         Sorts
       </p>
+      <Separator className="my-4" />
       <SortsModal
         includeLastConnectionFilter={isPlayerMode}
         testidPrefix={'subject-sort'}
@@ -307,7 +310,7 @@ export const SubjectListControls = ({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="py-4">
+            <div className="no-scrollbar max-h-96 overflow-y-auto py-4 text-base">
               <FilterAndSortModalBody
                 isPlayerMode={currentViewMode === PreferredView.PLAYER}
               />
