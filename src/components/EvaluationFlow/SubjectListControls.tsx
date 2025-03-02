@@ -243,34 +243,38 @@ export const SubjectListControls = ({
           />
         </div>
       </div>
-      <div className="mb-2 mt-2 text-right text-sm">
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
-          <button className="rounded-lg bg-white-90-card px-4 py-1 dark:bg-button-primary">
-            {' '}
-            <p
-              className="ml-auto cursor-pointer font-medium dark:text-white"
-              onClick={() =>
-                setPreferredView(PreferredView.MANAGER_EVALUATING_MANAGER)
-              }
-            >
-              View Managers
-            </p>
-          </button>
-        )}
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
-          <button className="rounded-lg bg-white-90-card px-4 py-1 dark:bg-button-primary">
-            <p
-              className="ml-auto cursor-pointer font-medium dark:text-white"
-              onClick={() =>
-                setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
-              }
-            >
-              View Trainers
-            </p>
-          </button>
-        )}
-      </div>
-      <div className="mb-3 flex items-center text-lg">
+      {[
+        PreferredView.MANAGER_EVALUATING_MANAGER,
+        PreferredView.MANAGER_EVALUATING_TRAINER,
+      ].includes(currentViewMode) && (
+        <div className="mt-2 flex items-center justify-between text-sm">
+          <p className="font-semibold">
+            Showing{' '}
+            {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER
+              ? 'Trainer '
+              : 'Manager '}{' '}
+            evaluations
+          </p>
+          <Button
+            size="sm"
+            onClick={() =>
+              setPreferredView(
+                currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER
+                  ? PreferredView.MANAGER_EVALUATING_MANAGER
+                  : PreferredView.MANAGER_EVALUATING_TRAINER,
+              )
+            }
+            variant="secondary"
+            className=""
+          >
+            {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER
+              ? 'View Managers'
+              : 'View Trainers'}
+          </Button>
+        </div>
+      )}
+
+      <div className="mb-3 mt-3 flex items-center text-lg">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}

@@ -25,27 +25,35 @@ const ViewTooltip = ({
   view,
   content,
   condition,
+  views,
 }: {
-  view: PreferredView;
+  view?: PreferredView;
   content: string;
   condition: boolean;
+  views?: PreferredView[];
 }) => {
   const { setPreferredView, currentViewMode } = useViewMode();
 
   if (!condition) return null;
+
+  const activeView = views?.find((v) => v === currentViewMode);
 
   return (
     <Tooltip
       content={content}
       data-testid={`hometab-${content}`}
       className={`h-6 w-6 rounded p-1 ${
-        currentViewMode === view
+        currentViewMode === view || activeView
           ? getViewModeBackgroundColorClass(currentViewMode)
           : 'bg-gray100'
       } ml-2 cursor-pointer`}
-      onClick={() => setPreferredView(view)}
+      onClick={() => setPreferredView(view ?? views![0])}
     >
-      <img className="h-4 w-4" src={preferredViewIcon[view]} alt="" />
+      <img
+        className="h-4 w-4"
+        src={preferredViewIcon[view ?? views![0]]}
+        alt=""
+      />
     </Tooltip>
   );
 };
@@ -137,7 +145,10 @@ function HomeHeaderItems() {
         condition={canShowTrainerTooltip}
       />
       <ViewTooltip
-        view={PreferredView.MANAGER_EVALUATING_TRAINER}
+        views={[
+          PreferredView.MANAGER_EVALUATING_TRAINER,
+          PreferredView.MANAGER_EVALUATING_MANAGER,
+        ]}
         content="Manager"
         condition={canShowManagerTooltip}
       />
