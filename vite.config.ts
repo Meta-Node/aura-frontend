@@ -48,6 +48,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
 const replaceOptions = { __DATE__: new Date().toISOString() };
 
 pwaConfig.srcDir = 'src';
+pwaConfig.registerType = 'autoUpdate';
 pwaConfig.filename = 'sw.ts';
 pwaConfig.strategies = 'injectManifest';
 (pwaConfig.manifest as Partial<ManifestOptions>).name = 'Aura Service Worker';
