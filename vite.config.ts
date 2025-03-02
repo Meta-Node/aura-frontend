@@ -9,6 +9,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
     clientsClaim: true,
     skipWaiting: true,
+    navigateFallback: 'index.html',
   },
   base: '/',
   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
@@ -47,7 +48,7 @@ const pwaConfig: Partial<VitePWAOptions> = {
 const replaceOptions = { __DATE__: new Date().toISOString() };
 
 pwaConfig.srcDir = 'src';
-pwaConfig.filename = 'prompt-sw.ts';
+pwaConfig.filename = 'sw.ts';
 pwaConfig.strategies = 'injectManifest';
 (pwaConfig.manifest as Partial<ManifestOptions>).name = 'Aura Service Worker';
 (pwaConfig.manifest as Partial<ManifestOptions>).short_name = 'Aura';
@@ -59,7 +60,7 @@ pwaConfig.injectManifest = {
 
 // @ts-expect-error just ignore
 replaceOptions.__RELOAD_SW__ = true;
-// pwaConfig.selfDestroying = true;
+pwaConfig.selfDestroying = true;
 
 export default defineConfig(() => {
   return {
@@ -72,8 +73,8 @@ export default defineConfig(() => {
     },
     plugins: [
       tsconfigPaths(),
-      !process.env.VITEST && reactRouter(),
       VitePWA(pwaConfig),
+      !process.env.VITEST && reactRouter(),
       replace(replaceOptions),
     ],
     server: {
