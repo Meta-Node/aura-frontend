@@ -18,7 +18,7 @@ export const HeaderBody: FC<
 
   return (
     <>
-      <Link to={RoutePath.HOME} className="mr-2 flex items-center gap-1">
+      <Link to={'/home?tab=evaluate'} className="mr-2 flex items-center gap-1">
         <FaHome className="h-6 w-6" />
       </Link>
       {beforeTitle}

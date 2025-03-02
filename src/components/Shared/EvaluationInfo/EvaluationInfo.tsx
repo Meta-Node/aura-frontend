@@ -17,10 +17,12 @@ export default function EvaluationInfo({
   fromSubjectId,
   toSubjectId,
   evaluationCategory,
+  onClick,
 }: {
   fromSubjectId: string;
   toSubjectId: string;
   evaluationCategory: EvaluationCategory;
+  onClick?: () => void;
 }) {
   const isYourEvaluation = true;
   const { rating, loading, confidenceValue } = useSubjectEvaluationFromContext({
@@ -73,7 +75,8 @@ export default function EvaluationInfo({
 
   return (
     <div
-      className={`flex h-[36px] flex-1 items-center justify-between rounded-md px-3 py-2 text-sm ${
+      onClick={onClick}
+      className={`flex h-[36px] flex-1 cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm ${
         styleValues.bgAndTextColor
       } ${isYourEvaluation ? 'p-1.5' : 'p-2.5'}`}
     >

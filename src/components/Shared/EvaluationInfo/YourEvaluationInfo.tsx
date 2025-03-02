@@ -36,6 +36,7 @@ export const YourEvaluationInfo = ({
         fromSubjectId={authData.brightId}
         toSubjectId={toSubjectId}
         evaluationCategory={evaluationCategory}
+        onClick={() => setShowEvaluationFlow(true)}
       />
       <Button
         onClick={() => setShowEvaluationFlow(true)}
