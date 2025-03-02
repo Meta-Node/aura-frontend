@@ -71,16 +71,16 @@ export default function useFilterAndSort<T>(
                 newValue = newValue.includes(filterId)
                   ? newValue.filter((f) => f !== filterId)
                   : filterCategories[filter.category].type ===
-                    FilterCategoryType.Exclusive
-                  ? [
-                      ...(value?.filter(
-                        (fid) =>
-                          filters.find((f) => f.id === fid)?.category !==
-                          filter.category,
-                      ) || []),
-                      filterId,
-                    ]
-                  : [...(value || []), filterId];
+                      FilterCategoryType.Exclusive
+                    ? [
+                        ...(value?.filter(
+                          (fid) =>
+                            filters.find((f) => f.id === fid)?.category !==
+                            filter.category,
+                        ) || []),
+                        filterId,
+                      ]
+                    : [...(value || []), filterId];
               }
             });
           }

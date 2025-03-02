@@ -56,6 +56,7 @@ export const SubjectsListContextProvider: React.FC<ProviderProps> = ({
       () => [
         AuraSortId.ConnectionLastUpdated,
         // AuraSortId.ConnectionMostEvaluations,
+        AuraSortId.EvaluationConfidence,
         AuraSortId.ConnectionScore,
         AuraSortId.ConnectionRecentEvaluation,
         // AuraSortId.MostMutualConnections,

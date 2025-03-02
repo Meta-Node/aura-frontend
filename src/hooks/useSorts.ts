@@ -110,6 +110,33 @@ export function useSubjectSorts(sortIds: AuraSortId[]) {
             0) -
           (outboundRatings?.find((r) => r.toBrightId === a.id)?.timestamp ?? 0),
       },
+      {
+        id: AuraSortId.EvaluationConfidence,
+        title: 'Confidence',
+        defaultAscending: false,
+        category: SortCategoryId.Default,
+        ascendingLabel: 'Ascending',
+        descendingLabel: 'Descending',
+        func: (a, b) => {
+          const firstRating = outboundRatings?.find(
+            (r) => r.toBrightId === a.id,
+          )?.rating;
+
+          const secondRating = outboundRatings?.find(
+            (r) => r.toBrightId === b.id,
+          )?.rating;
+
+          if (
+            (!firstRating && !secondRating) ||
+            (!Number(firstRating) && !Number(secondRating))
+          )
+            return 0;
+          if (!firstRating || !Number(firstRating)) return -1;
+          if (!secondRating || !Number(secondRating)) return 1;
+
+          return Number(firstRating) - Number(secondRating);
+        },
+      },
       // {
       //   id: AuraSortId.MostMutualConnections,
       //   title: 'Most Mutual Connections (Not Implemented)',
