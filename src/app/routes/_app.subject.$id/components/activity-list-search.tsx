@@ -166,23 +166,29 @@ export const ActivityListSearch = ({
     <>
       <div className="text-right text-sm font-semibold">
         {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
-          <button className="rounded-lg bg-white-90-card px-4 py-1 dark:bg-button-primary">
-            {selectedTab === ProfileTab.ACTIVITY ? (
-              <p
-                className="cursor-pointer font-medium text-white"
-                onClick={() => setSelectedTab(ProfileTab.ACTIVITY_ON_MANAGERS)}
-              >
-                View Managers
-              </p>
-            ) : (
-              <p
-                className="cursor-pointer font-medium text-white"
-                onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
-              >
-                View Trainers
-              </p>
-            )}
-          </button>
+          <div className="flex items-center justify-between">
+            <p>
+              Showing{' '}
+              {selectedTab === ProfileTab.ACTIVITY ? 'Trainer ' : 'Manager '}{' '}
+              evaluations
+            </p>
+            <Button
+              size="sm"
+              onClick={() =>
+                setSelectedTab(
+                  selectedTab === ProfileTab.ACTIVITY
+                    ? ProfileTab.ACTIVITY_ON_MANAGERS
+                    : ProfileTab.ACTIVITY,
+                )
+              }
+              variant="secondary"
+              className=""
+            >
+              {selectedTab === ProfileTab.ACTIVITY
+                ? 'View Managers'
+                : 'View Trainers'}
+            </Button>
+          </div>
         )}
       </div>
       <div className="-mt-3 flex items-center text-lg text-white">
