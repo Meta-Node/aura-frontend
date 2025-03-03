@@ -159,7 +159,7 @@ export class NodeApi {
     const message = stringify(op);
     const signed = nacl.sign.detached(strToUint8Array(message), sk);
     op.sig = uInt8ArrayToB64(signed);
-    return this.submitOp(op, message);
+    return await this.submitOp(op, message);
   }
 
   async submitOp(signedOp: NodeOps, message: string): Promise<SubmittedOp> {

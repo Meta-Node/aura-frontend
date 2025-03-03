@@ -27,7 +27,6 @@ const useOutboundImpacts = (
   const [triggerFetch, { isFetching }] =
     profileApi.endpoints.getBrightIDProfile.useLazyQuery();
 
-  // Filter ratings once
   const filteredRatings = ratings.filter((rating) => rating.rating !== '0');
   const toBrightIds = filteredRatings.map((rating) => rating.toBrightId);
 
@@ -35,7 +34,7 @@ const useOutboundImpacts = (
     toBrightIds.reduce<{ [key: string]: any }>((acc, id) => {
       const selector = profileApi.endpoints.getBrightIDProfile.select({ id });
       const result = selector(state as RootState);
-      acc[id] = result?.data; // Safely access data, undefined if not cached
+      acc[id] = result?.data;
       return acc;
     }, {}),
   );

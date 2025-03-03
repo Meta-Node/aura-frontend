@@ -50,6 +50,7 @@ const EvaluateModalBody = ({
     if (loading || !authData?.brightId) return;
     try {
       const newRating = isYes ? confidence : -1 * confidence;
+
       await submitEvaluation(subjectId, newRating);
       onSubmitted(newRating);
     } catch (e) {
@@ -154,29 +155,14 @@ const EvaluateModalBody = ({
         {prevRating ? (
           <div className="flex gap-3">
             <button
-              className={`flex justify-center transition-all ease-linear ${
+              className={`flex items-center justify-center transition-all ease-linear ${
                 onDelete
                   ? `btn btn--big btn--outlined-big`
                   : `btn btn--big w-full`
               } `}
-              onClick={() => (onDelete ? setOnDelete(false) : submit())}
+              onClick={submit}
             >
-              <p
-                className={`overflow-hidden ${
-                  onDelete ? 'w-20 opacity-100' : 'h-7 !w-0 opacity-0'
-                }`}
-              >
-                Cancel
-              </p>
-              <p
-                data-testid="submit-evaluation"
-                className={`overflow-hidden ${
-                  onDelete ? 'h-7 !w-0 opacity-0' : 'w-44 opacity-100'
-                }`}
-              >
-                {loading ? 'Sending Operation...' : 'Update Evaluation'}
-              </p>
-              {/*{loading && !isEdit ? '...' : 'Submit Evaluation'}*/}
+              {loading ? 'Sending Operation...' : 'Update Evaluation'}
             </button>
             <button
               data-testid="remove-evaluation"

@@ -71,14 +71,15 @@ const pendingStates = [
 
 export const selectPendingOperations = createSelector(
   selectAllOperations,
-  (operations) => operations.filter((op) => pendingStates.includes(op.state)),
+  (operations) =>
+    operations.filter((op) => op && pendingStates.includes(op.state)),
 );
 
 export const selectEvaluateOperations = createSelector(
-  [selectAllOperations],
+  selectAllOperations,
   (operations) =>
     operations.filter(
-      (op) => op.name === 'Evaluate',
+      (op) => op?.name === 'Evaluate',
     ) as EvaluateSubmittedOperation[],
 );
 

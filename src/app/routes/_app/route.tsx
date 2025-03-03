@@ -1,9 +1,7 @@
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router';
 
-const EvaluationOpNotifications = lazy(
-  () => import('@/components/EvaluationOpNotifications'),
-);
+import EvaluationOpNotifications from '@/components/EvaluationOpNotifications';
 
 export default function AppLanding() {
   return (
@@ -12,7 +10,9 @@ export default function AppLanding() {
         <Outlet />
 
         <div className="sticky bottom-2 pl-5 pr-5">
-          <EvaluationOpNotifications />
+          <Suspense>
+            <EvaluationOpNotifications />
+          </Suspense>
         </div>
       </div>
     </div>
