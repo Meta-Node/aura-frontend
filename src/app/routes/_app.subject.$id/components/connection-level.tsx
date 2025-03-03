@@ -1,6 +1,7 @@
 import { NodeApiContext } from 'BrightID/components/NodeApiGate';
 import {
   addOperation,
+  Operation,
   selectOperationByHash,
 } from 'BrightID/reducer/operationsSlice';
 import { operation_states } from 'BrightID/utils/constants';
@@ -33,13 +34,13 @@ export function ConnectionLevel({ subjectId }: { subjectId: string }) {
     if (!level) return;
     console.log(`Setting connection level '${level}'`);
     try {
-      const op = await api.addConnection(
+      const op = (await api.addConnection(
         authData.brightId,
         connection.id,
         level,
         Date.now(),
-      );
-      console.log({ op });
+      )) as Operation;
+      op.state = operation_states.UNKNOWN;
       dispatch(addOperation(op));
       setConnectionOpHash(op.hash);
     } catch (e) {
@@ -59,7 +60,7 @@ export function ConnectionLevel({ subjectId }: { subjectId: string }) {
   }, [authData, connectionOp?.state, dispatch]);
 
   return (
-    <div className="card dark:bg-dark-primary flex flex-col gap-2.5">
+    <div className="card flex flex-col gap-2.5 dark:bg-dark-primary">
       [Only shown in DEV mode]{' '}
       {loading ? (
         <div>Loading...</div>
