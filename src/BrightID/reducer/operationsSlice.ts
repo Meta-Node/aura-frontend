@@ -66,9 +66,10 @@ export const {
   removeManyOperations,
 } = operationsSlice.actions;
 
-// Selectors
-export const selectAllOperations = (state: RootState): Operation[] =>
-  Object.values(state.operations);
+export const selectAllOperations = createSelector(
+  (state: RootState) => state.operations, // Input selector to get operations state
+  (operations: OperationsState): Operation[] => Object.values(operations), // Memoized selector to return all operations
+);
 
 export const selectOperationByHash = (
   state: RootState,
