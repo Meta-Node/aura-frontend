@@ -1,25 +1,16 @@
 import { ToastAction, ToastProvider } from 'components/ui/toast';
 import { useToast } from 'hooks/use-toast';
 import React from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+import { usePWAManager } from '@remix-pwa/client';
 
 const UpdatePrompt = () => {
   const {
-    offlineReady: [, setOfflineReady],
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
-    onRegisteredSW(swUrl, r) {
-      r &&
-        setInterval(() => {
-          console.log('Checking for sw update');
-          r.update();
-        }, 60000);
-    },
-    onRegisterError(error) {
-      console.log('SW registration error', error);
-    },
-  });
+    promptInstall,
+    swRegistration,
+    swUpdate,
+    updateAvailable,
+    userInstallChoice,
+  } = usePWAManager();
 
   const { toast } = useToast();
 
