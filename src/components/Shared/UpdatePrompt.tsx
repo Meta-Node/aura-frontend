@@ -14,28 +14,20 @@ const UpdatePrompt = () => {
 
   const { toast } = useToast();
 
-  const close = () => {
-    setOfflineReady(false);
-    setNeedRefresh(false);
-  };
-
   React.useEffect(() => {
-    if (needRefresh) {
+    if (updateAvailable) {
       toast({
         title: 'New Version Available ↗️',
         description: 'Click update to get the latest features.',
         action: (
-          <ToastAction
-            altText="Update"
-            onClick={() => updateServiceWorker(false)}
-          >
+          <ToastAction altText="Update" onClick={swRegistration?.update}>
             Update
           </ToastAction>
         ),
         duration: Infinity,
       });
     }
-  }, [needRefresh, toast, updateServiceWorker]);
+  }, [updateAvailable, swUpdate, toast]);
 
   return <ToastProvider />;
 };
