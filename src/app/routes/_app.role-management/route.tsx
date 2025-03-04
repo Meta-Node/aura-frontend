@@ -9,6 +9,7 @@ import { SubjectInboundEvaluationsContextProvider } from 'contexts/SubjectInboun
 import { SubjectOutboundEvaluationsContextProvider } from 'contexts/SubjectOutboundEvaluationsContext';
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { RefreshCcw } from 'lucide-react';
 
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import { selectAuthData } from 'store/profile/selectors';
@@ -95,6 +96,9 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
     EvaluationCategory.PLAYER,
   );
 
+  const isAuthorized =
+    !!playerEvaluation.auraLevel && playerEvaluation.auraLevel >= 2;
+
   return (
     <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-card py-[18px] pb-4 pl-5 pr-6">
       <img
@@ -116,7 +120,7 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
           color="text-pastel-green"
         />
       </section>
-      {!playerEvaluation.auraLevel || playerEvaluation.auraLevel < 2 ? (
+      {!isAuthorized ? (
         <>
           <section>
             <div className="mt-2 flex items-center gap-2 text-sm font-medium">
@@ -129,7 +133,23 @@ const TrainerCard: FC<SubjectIdProps> = ({ subjectId }) => {
         </>
       ) : null}
 
-      {!!playerEvaluation.auraLevel && playerEvaluation.auraLevel >= 2 && (
+      <div className="mt-3 flex">
+        {isAuthorized || (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white"
+            onClick={playerEvaluation.refresh}
+            disabled={playerEvaluation.isFetching}
+          >
+            <RefreshCcw
+              className={playerEvaluation.isFetching ? 'animate-spin' : ''}
+              size={16}
+            />
+            Refresh
+          </Button>
+        )}
+      </div>
+      {isAuthorized && (
         <section className="mt-auto flex justify-end">
           {hasTrainerRole ? (
             <Button
@@ -168,6 +188,9 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
 
   const dispatch = useDispatch();
 
+  const hasNotReachedToLevelOne =
+    !trainerEvaluation.auraLevel || trainerEvaluation.auraLevel < 1;
+
   return (
     <div className="relative flex min-h-[150px] cursor-pointer flex-col gap-3.5 rounded-lg bg-card py-[18px] pb-4 pl-5 pr-6">
       <img
@@ -189,7 +212,7 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
           color="text-gray50"
         />
       </section>
-      {!trainerEvaluation.auraLevel || trainerEvaluation.auraLevel < 1 ? (
+      {hasNotReachedToLevelOne ? (
         <>
           <section>
             <div className="mt-2 flex items-center gap-2 text-sm font-medium">
@@ -201,7 +224,23 @@ const ManagerCard: FC<SubjectIdProps> = ({ subjectId }) => {
           </section>
         </>
       ) : null}
-      {!!trainerEvaluation.auraLevel && trainerEvaluation.auraLevel > 1 && (
+      <div className="mt-3 flex">
+        {hasNotReachedToLevelOne && (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white"
+            onClick={trainerEvaluation.refresh}
+            disabled={trainerEvaluation.isFetching}
+          >
+            <RefreshCcw
+              className={trainerEvaluation.isFetching ? 'animate-spin' : ''}
+              size={16}
+            />
+            Refresh
+          </Button>
+        )}
+      </div>
+      {!hasNotReachedToLevelOne && (
         <section className="mt-auto flex justify-end text-black dark:text-white">
           {hasManagerRole ? (
             <Button

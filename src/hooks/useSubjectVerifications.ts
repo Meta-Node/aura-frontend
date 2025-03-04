@@ -45,6 +45,7 @@ export const useSubjectVerifications = (
     auraScore,
     auraImpacts,
     loading: verifications === undefined,
+    isFetching: profileFetch.isFetching,
   };
 };
 
