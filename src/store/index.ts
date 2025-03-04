@@ -22,6 +22,7 @@ import {
   createStateSyncMiddleware,
   initMessageListener,
 } from 'redux-state-sync';
+import { operationsSlice } from '@/BrightID/actions';
 
 const persistConfig = {
   key: 'root',
@@ -56,7 +57,7 @@ export function configureAppStore(preloadedState?: any) {
       PURGE,
       REHYDRATE,
       apiSlice.reducerPath,
-      profileSlice.reducerPath,
+      operationsSlice.reducerPath,
       '__rtkq/unfocused',
       '__rtkq/focused',
     ],

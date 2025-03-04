@@ -104,6 +104,7 @@ function EvaluateOpNotification({
 
 export default function EvaluationOpNotifications() {
   const operations = useSelector(selectEvaluateOperations);
+
   const prevOperationsRef = useRef<EvaluateSubmittedOperation[] | null>(null);
 
   useEffect(() => {

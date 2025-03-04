@@ -5,6 +5,7 @@ import { selectAuthData } from 'store/profile/selectors';
 import { NodeApiContext } from '../BrightID/components/NodeApiGate';
 import {
   addOperation,
+  Operation,
   selectOperationByHash,
 } from '../BrightID/reducer/operationsSlice';
 import { operation_states } from '../BrightID/utils/constants';
@@ -38,7 +39,7 @@ export function useEvaluateSubject(evaluationCategory?: EvaluationCategory) {
       if (!api || !authData) return;
       setLoading(true);
       try {
-        const op = await api.evaluate(
+        const op = (await api.evaluate(
           authData.brightId,
           subjectId,
           newRating < 0 ? EvaluationValue.NEGATIVE : EvaluationValue.POSITIVE,
@@ -46,7 +47,8 @@ export function useEvaluateSubject(evaluationCategory?: EvaluationCategory) {
           'BrightID',
           evaluationCategory ?? currentEvaluationCategory,
           Date.now(),
-        );
+        )) as Operation;
+        op.state = operation_states.UNKNOWN;
         dispatch(addOperation(op));
         setConnectionOpHash(op.hash);
       } catch (e) {

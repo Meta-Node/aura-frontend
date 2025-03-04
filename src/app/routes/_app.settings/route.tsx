@@ -88,7 +88,10 @@ export default function Settings() {
             process.env.REACT_APP_ENABLE_LOGOUT === 'true') && (
             <Card
               className={'cursor-pointer rounded-lg py-3.5 pl-5 pr-2'}
-              onClick={() => dispatch(resetStore())}
+              onClick={() => {
+                dispatch(resetStore());
+                navigate(RoutePath.LOGIN);
+              }}
               data-testid="logout-button"
             >
               <p className="text-[20px] font-medium">Logout</p>

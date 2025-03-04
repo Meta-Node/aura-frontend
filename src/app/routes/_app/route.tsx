@@ -1,9 +1,6 @@
-import { lazy } from 'react';
 import { Outlet } from 'react-router';
 
-const EvaluationOpNotifications = lazy(
-  () => import('@/components/EvaluationOpNotifications'),
-);
+import EvaluationOpNotifications from '@/components/EvaluationOpNotifications';
 
 export default function AppLanding() {
   return (

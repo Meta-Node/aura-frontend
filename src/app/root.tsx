@@ -20,6 +20,7 @@ import './tailwind.css';
 import '../assets/fonts/fonts.css';
 
 import 'swiper/css';
+import DebugToolbar from '@/components/ux/debug-toolbar';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -68,6 +69,8 @@ export default function App() {
         <GlobalSearchModal onClose={() => dispatch(toggleSearchModal())} />
       )}
       <Outlet />
+
+      <DebugToolbar />
       <ThemeResolver />
     </>
   );
