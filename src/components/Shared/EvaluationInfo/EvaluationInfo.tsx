@@ -12,6 +12,7 @@ import {
 } from '../../../hooks/useSubjectVerifications';
 import { EvaluationCategory } from '../../../types/dashboard';
 import LoadingSpinner from '../LoadingSpinner';
+import { formatDuration } from '@/utils/time';
 
 export default function EvaluationInfo({
   fromSubjectId,
@@ -108,6 +109,9 @@ export default function EvaluationInfo({
               ? ` (${(Number(rating.rating) > 0 ? '+' : '') + rating.rating})`
               : ''}
           </span>
+          <small className="ml-3 font-semibold">
+            {rating?.timestamp ? formatDuration(rating?.timestamp) : ''}
+          </small>
         </div>
       </div>
       {rating && (
