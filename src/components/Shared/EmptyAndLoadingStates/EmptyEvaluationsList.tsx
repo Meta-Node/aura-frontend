@@ -1,12 +1,17 @@
+import { Button } from '@/components/ui/button';
 import useViewMode from '@/hooks/useViewMode';
 import { toTitleCase } from '@/utils/text';
+import { FaSearch } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 export const EmptyEvaluationsList = ({
   clearFilter,
   hasFilter,
+  searchString,
 }: {
   clearFilter: () => void;
   hasFilter: boolean;
+  searchString?: string;
 }) => {
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
@@ -27,6 +32,14 @@ export const EmptyEvaluationsList = ({
         >
           Reset view to default
         </p>
+      )}
+      {!!searchString && (
+        <Link to={`/home?search=${searchString}&tab=evaluate`}>
+          <Button variant="link" className="text-blue">
+            <FaSearch />
+            Search in your connections instead
+          </Button>
+        </Link>
       )}
     </div>
   );

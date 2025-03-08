@@ -1,14 +1,19 @@
+import { Button } from '@/components/ui/button';
 import { viewModeToString } from '@/constants';
 import useViewMode from '@/hooks/useViewMode';
 import { evaluationsToEvaluatedCategory } from '@/types/dashboard';
 import { toTitleCase } from '@/utils/text';
+import { FaSearch } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 export const EmptyActivitiesList = ({
   clearSortAndFilter,
   hasFilter,
+  searchString,
 }: {
   clearSortAndFilter: () => void;
   hasFilter: boolean;
+  searchString?: string;
 }) => {
   const { currentEvaluationCategory } = useViewMode();
 
@@ -34,6 +39,14 @@ export const EmptyActivitiesList = ({
         >
           Reset view to default
         </p>
+      )}
+      {!!searchString && (
+        <Link to={`/home?search=${searchString}&tab=evaluate`}>
+          <Button variant="link" className="text-blue">
+            <FaSearch />
+            Search in your connections instead
+          </Button>
+        </Link>
       )}
     </div>
   );
