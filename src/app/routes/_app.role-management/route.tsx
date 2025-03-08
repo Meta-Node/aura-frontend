@@ -17,6 +17,7 @@ import { EvaluationCategory } from 'types/dashboard';
 import { compactFormat } from 'utils/number';
 import DefaultHeader from '@/components/Header/DefaultHeader';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
 
 export default function RoleManagement() {
   const authData = useSelector(selectAuthData);
@@ -24,7 +25,18 @@ export default function RoleManagement() {
 
   return (
     <>
-      <DefaultHeader title="Settings" />
+      <DefaultHeader
+        title="Role Management"
+        beforeTitle={
+          <Link to="/settings">
+            <img
+              className="mr-2 h-6 w-6"
+              src="/assets/images/Header/back.svg"
+              alt=""
+            ></img>
+          </Link>
+        }
+      />
       <SubjectOutboundEvaluationsContextProvider subjectId={subjectId!}>
         <SubjectInboundEvaluationsContextProvider subjectId={subjectId!}>
           <SubjectInboundConnectionsContextProvider subjectId={subjectId!}>
