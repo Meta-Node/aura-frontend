@@ -1,18 +1,20 @@
-/** @type {import('tailwindcss').Config} */
-const tailwindConfig = {
-  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx,css,scss}'],
+import { Config } from 'tailwindcss';
+
+const tailwindConfig: Config = {
+  content: ['./src/**/*.{js,jsx,ts,tsx,css,scss}'],
   theme: {
     extend: {
       animation: {
         'spin-slow': 'spin 2s linear infinite',
         'spin-fast': 'spin 0.5s linear infinite',
+        spotlight: 'spotlight 2s ease .75s 1 forwards',
       },
       transitionProperty: {
         'font-weight': 'font-weight',
         size: 'width, height',
       },
       colors: {
-        "background-light": "#e9e9e9",
+        'background-light': '#e9e9e9',
         'dark-primary': '#18181b',
         gray00: '#393939',
         gray10: '#343434',
@@ -115,6 +117,18 @@ const tailwindConfig = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      keyframes: {
+        spotlight: {
+          '0%': {
+            opacity: '0',
+            transform: 'translate(-72%, -62%) scale(0.5)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translate(-50%,-40%) scale(1)',
+          },
+        },
       },
     },
   },

@@ -155,6 +155,131 @@ export const useImpactEChartOption = (
     shouldFetchImages,
   ]);
 
+  const series = [
+    {
+      color: '#ABCAAE',
+      label:
+        !shouldFetchImages || auraTopImpacts.length > 5
+          ? { show: false, formatter: (params: any) => '' }
+          : {
+              show: true,
+              position: 'top',
+
+              distance: 2,
+              formatter: (params: any) => {
+                return `{img${params.dataIndex}|}`;
+              },
+              rich: auraTopImpacts.reduce(
+                (prev, curr, index) => {
+                  prev[`img${index}`] = {
+                    height: 35,
+                    width: 35,
+                    align: 'center',
+                    backgroundColor: {
+                      image: profileImages[curr.evaluator],
+                    },
+                    borderRadius: 12,
+                    style: {
+                      'border-radius': '12px',
+                      overflow: 'hidden',
+                    },
+                  };
+
+                  return prev;
+                },
+                {} as Record<string, any>,
+              ),
+            },
+      data: auraTopImpacts.map((item) =>
+        item.impact >= 0
+          ? '-'
+          : {
+              value: item.impact,
+              label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : '-'}${item.confidence}) ${(
+                (item.impact / auraSumImpacts) *
+                100
+              ).toFixed(1)}%`,
+              evaluator: item.evaluator,
+              itemStyle: {
+                color: findNearestColor(
+                  item.confidence * (item.impact >= 0 ? 1 : -1),
+                  authData?.brightId === item.evaluator
+                    ? userRatingColorMap
+                    : item.evaluator === focusedSubjectId
+                      ? subjectRatingColorMap
+                      : valueColorMap,
+                ),
+                borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
+              },
+            },
+      ),
+      type: 'bar',
+      barGap: '0',
+      barMaxWidth: 30,
+    },
+    {
+      color: '#ABCAAE',
+      label:
+        !shouldFetchImages || auraTopImpacts.length > 5
+          ? { show: false, formatter: (params: any) => '' }
+          : {
+              show: true,
+              position: 'bottom',
+
+              distance: 2,
+              formatter: (params: any) => {
+                return `{img${params.dataIndex}|}`;
+              },
+              rich: auraTopImpacts.reduce(
+                (prev, curr, index) => {
+                  prev[`img${index}`] = {
+                    height: 35,
+                    width: 35,
+                    align: 'center',
+                    backgroundColor: {
+                      image: profileImages[curr.evaluator],
+                    },
+                    borderRadius: 12,
+                    style: {
+                      'border-radius': '12px',
+                      overflow: 'hidden',
+                    },
+                  };
+
+                  return prev;
+                },
+                {} as Record<string, any>,
+              ),
+            },
+      data: auraTopImpacts.map((item) =>
+        item.impact < 0
+          ? '-'
+          : {
+              value: item.impact,
+              label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : ''}${item.confidence}) ${(
+                (item.impact / auraSumImpacts) *
+                100
+              ).toFixed(1)}%`,
+              evaluator: item.evaluator,
+              itemStyle: {
+                color: findNearestColor(
+                  item.confidence * (item.impact >= 0 ? 1 : -1),
+                  authData?.brightId === item.evaluator
+                    ? userRatingColorMap
+                    : item.evaluator === focusedSubjectId
+                      ? subjectRatingColorMap
+                      : valueColorMap,
+                ),
+                borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
+              },
+            },
+      ),
+      type: 'bar' as const,
+      barGap: '0',
+      barMaxWidth: 30,
+    },
+  ];
+
   const impactChartOption: EChartsOption = useMemo(() => {
     const maxImpact = auraTopImpacts
       ? Math.max(...auraTopImpacts.map((item) => Math.abs(item.impact)))
@@ -210,132 +335,7 @@ export const useImpactEChartOption = (
           return [xPos, yPos];
         },
       },
-      series: [
-        {
-          color: '#ABCAAE',
-          label:
-            !shouldFetchImages || auraTopImpacts.length > 5
-              ? { show: false, formatter: (params: any) => '' }
-              : {
-                  show: true,
-                  position: 'top',
-
-                  distance: 2,
-                  formatter: (params: any) => {
-                    return `{img${params.dataIndex}|}`;
-                  },
-                  rich: auraTopImpacts.reduce(
-                    (prev, curr, index) => {
-                      prev[`img${index}`] = {
-                        height: 35,
-                        width: 35,
-                        align: 'center',
-                        backgroundColor: {
-                          image: profileImages[curr.evaluator],
-                        },
-                        borderRadius: 12,
-                        style: {
-                          'border-radius': '12px',
-                          overflow: 'hidden',
-                        },
-                      };
-
-                      return prev;
-                    },
-                    {} as Record<string, any>,
-                  ),
-                },
-          data: auraTopImpacts.map((item) =>
-            item.impact >= 0
-              ? '-'
-              : {
-                  value: item.impact,
-                  label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : '-'}${item.confidence}) ${(
-                    (item.impact / auraSumImpacts) *
-                    100
-                  ).toFixed(1)}%`,
-                  evaluator: item.evaluator,
-                  itemStyle: {
-                    color: findNearestColor(
-                      item.confidence * (item.impact >= 0 ? 1 : -1),
-                      authData?.brightId === item.evaluator
-                        ? userRatingColorMap
-                        : item.evaluator === focusedSubjectId
-                          ? subjectRatingColorMap
-                          : valueColorMap,
-                    ),
-                    borderRadius:
-                      item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
-                  },
-                },
-          ),
-          type: 'bar',
-          barGap: '0',
-          barMaxWidth: 30,
-        },
-        {
-          color: '#ABCAAE',
-          label:
-            !shouldFetchImages || auraTopImpacts.length > 5
-              ? { show: false, formatter: (params: any) => '' }
-              : {
-                  show: true,
-                  position: 'bottom',
-
-                  distance: 2,
-                  formatter: (params: any) => {
-                    return `{img${params.dataIndex}|}`;
-                  },
-                  rich: auraTopImpacts.reduce(
-                    (prev, curr, index) => {
-                      prev[`img${index}`] = {
-                        height: 35,
-                        width: 35,
-                        align: 'center',
-                        backgroundColor: {
-                          image: profileImages[curr.evaluator],
-                        },
-                        borderRadius: 12,
-                        style: {
-                          'border-radius': '12px',
-                          overflow: 'hidden',
-                        },
-                      };
-
-                      return prev;
-                    },
-                    {} as Record<string, any>,
-                  ),
-                },
-          data: auraTopImpacts.map((item) =>
-            item.impact < 0
-              ? '-'
-              : {
-                  value: item.impact,
-                  label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : ''}${item.confidence}) ${(
-                    (item.impact / auraSumImpacts) *
-                    100
-                  ).toFixed(1)}%`,
-                  evaluator: item.evaluator,
-                  itemStyle: {
-                    color: findNearestColor(
-                      item.confidence * (item.impact >= 0 ? 1 : -1),
-                      authData?.brightId === item.evaluator
-                        ? userRatingColorMap
-                        : item.evaluator === focusedSubjectId
-                          ? subjectRatingColorMap
-                          : valueColorMap,
-                    ),
-                    borderRadius:
-                      item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
-                  },
-                },
-          ),
-          type: 'bar',
-          barGap: '0',
-          barMaxWidth: 30,
-        },
-      ],
+      series,
     };
   }, [
     auraSumImpacts,
