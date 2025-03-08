@@ -1,5 +1,5 @@
 import { skipToken } from '@reduxjs/toolkit/query';
-import { EChartsOption } from 'echarts-for-react/src/types';
+import { BarSeriesOption, EChartsOption } from 'echarts';
 import useParseBrightIdVerificationData from 'hooks/useParseBrightIdVerificationData';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -7,9 +7,7 @@ import { useParams } from 'react-router';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
-
 import { createBlockiesImage, renderImageCover } from '@/utils/image';
-
 import { AuraImpact, AuraImpactRaw } from '../api/auranode.service';
 import {
   findNearestColor,
@@ -22,44 +20,115 @@ import { selectPreferredTheme } from '@/BrightID/actions';
 import { useDispatch } from '@/store/hooks';
 import { getProfilePhoto } from '@/store/api/backup';
 
+// Pray to God for this messy code – may He help us refactor it!
+
+// =========================
+// useSubjectVerifications Hook
+// =========================
 export const useSubjectVerifications = (
   subjectId: string | null | undefined,
   evaluationCategory: EvaluationCategory,
 ) => {
-  const profileFetch = useGetBrightIDProfileQuery(
+  const profileQuery = useGetBrightIDProfileQuery(
     subjectId ? { id: subjectId } : skipToken,
-    {
-      refetchOnMountOrArgChange: true,
-    },
+    { refetchOnMountOrArgChange: true },
+  );
+  const verifications = profileQuery.data?.verifications;
+  const parsedData = useParseBrightIdVerificationData(
+    verifications,
+    evaluationCategory,
   );
 
-  const verifications = profileFetch.data?.verifications;
-
-  const { auraLevel, userHasRecovery, auraScore, auraImpacts } =
-    useParseBrightIdVerificationData(verifications, evaluationCategory);
-
   return {
-    refresh: profileFetch.refetch,
-    auraLevel,
-    userHasRecovery,
-    auraScore,
-    auraImpacts,
+    refresh: profileQuery.refetch,
     loading: verifications === undefined,
-    isFetching: profileFetch.isFetching,
+    isFetching: profileQuery.isFetching,
+    ...parsedData,
   };
 };
 
+// =========================
+// Helper Functions
+// =========================
+
+// Build rich label configuration for image display in chart labels
+const buildRichLabels = (
+  impacts: AuraImpact[],
+  images: Record<string, string | null>,
+) =>
+  impacts.reduce(
+    (acc, curr, index) => {
+      acc[`img${index}`] = {
+        height: 35,
+        width: 35,
+        align: 'center',
+        backgroundColor: { image: images[curr.evaluator] },
+        borderRadius: 12,
+        style: { 'border-radius': '12px', overflow: 'hidden' },
+      };
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
+
+// Compute item style based on evaluator and impact
+const getItemStyle = (
+  item: AuraImpact,
+  borderRadius: number[],
+  authBrightId: string | undefined,
+  focusedSubjectId: string | undefined,
+) => {
+  const colorMap =
+    authBrightId === item.evaluator
+      ? userRatingColorMap
+      : item.evaluator === focusedSubjectId
+        ? subjectRatingColorMap
+        : valueColorMap;
+  return {
+    color: findNearestColor(
+      item.confidence * (item.impact >= 0 ? 1 : -1),
+      colorMap,
+    ),
+    borderRadius,
+  };
+};
+
+// Get label text for an impact item
+const getLabel = (
+  item: AuraImpact,
+  isPositiveSeries: boolean,
+  totalImpact: number,
+) => {
+  const sign = isPositiveSeries
+    ? item.impact >= 0
+      ? '+'
+      : ''
+    : item.impact >= 0
+      ? ''
+      : '-';
+  return `${item.evaluatorName} (${sign}${item.confidence}) ${(
+    (item.impact / totalImpact) *
+    100
+  ).toFixed(1)}%`;
+};
+
+// =========================
+// useImpactEChartOption Hook
+// =========================
 export const useImpactEChartOption = (
   auraImpacts: AuraImpact[] | null,
   shouldFetchImages?: boolean,
-) => {
-  const params = useParams();
+): {
+  impactChartOption: EChartsOption;
+  impactChartSmallOption: EChartsOption;
+} => {
+  const { subjectIdProp: focusedSubjectId } = useParams();
   const preferredTheme = useSelector(selectPreferredTheme);
-  const focusedSubjectId = params.subjectIdProp;
+  const authData = useSelector(selectAuthData);
+  const brightIdBackup = useSelector(selectBrightIdBackup);
   const dispatch = useDispatch();
 
-  const authData = useSelector(selectAuthData);
-
+  // Filter and sort top impacts (max 20)
   const auraTopImpacts = useMemo(
     () =>
       auraImpacts
@@ -69,39 +138,45 @@ export const useImpactEChartOption = (
     [auraImpacts],
   );
 
-  const [profileImages, setProfileImages] = useState(() => {
-    if (auraTopImpacts.length > 5) return {} as Record<string, string | null>;
-
-    return auraTopImpacts.reduce(
-      (prev, curr) => {
-        prev[curr.evaluator] = createBlockiesImage(curr.evaluator);
-
-        return prev;
-      },
-      {} as Record<string, string | null>,
-    );
-  });
-
+  // Sum of all impact values
   const auraSumImpacts = useMemo(
-    () => auraTopImpacts.reduce((prev, curr) => prev + curr.impact, 0),
+    () => auraTopImpacts.reduce((sum, curr) => sum + curr.impact, 0),
     [auraTopImpacts],
   );
-  const brightIdBackup = useSelector(selectBrightIdBackup);
 
+  // Determine if we need to fetch and display images
+  const displayImages =
+    shouldFetchImages &&
+    auraTopImpacts.length <= 5 &&
+    authData &&
+    brightIdBackup;
+
+  // Initialize profile images with blockies if not fetching images
+  const [profileImages, setProfileImages] = useState<
+    Record<string, string | null>
+  >(() => {
+    if (!displayImages) {
+      return auraTopImpacts.reduce(
+        (acc, curr) => {
+          acc[curr.evaluator] = createBlockiesImage(curr.evaluator);
+          return acc;
+        },
+        {} as Record<string, string | null>,
+      );
+    }
+    return {};
+  });
+
+  // Fetch user images when applicable
   useEffect(() => {
-    if (!shouldFetchImages || !authData || !brightIdBackup) return;
+    if (!displayImages) return;
+    const abortController = new AbortController();
+    const key = hash(authData.brightId + authData.password);
 
-    const fetchUserImages = async () => {
-      if (auraTopImpacts.length > 5) return;
-
-      const abortController = new AbortController();
-
-      const key = hash(authData.brightId + authData.password);
-
-      auraTopImpacts.forEach(async (impact) => {
+    const fetchImages = async () => {
+      for (const impact of auraTopImpacts) {
         try {
           let imageData: string;
-
           try {
             const res = await dispatch(
               getProfilePhoto.initiate({
@@ -110,11 +185,8 @@ export const useImpactEChartOption = (
                 password: authData.password,
               }),
             );
-
             const profilePhoto = res.data;
-
-            if (!profilePhoto) throw new Error('No response text for image');
-
+            if (!profilePhoto) throw new Error('No image response');
             imageData = await renderImageCover(
               profilePhoto,
               50,
@@ -129,175 +201,106 @@ export const useImpactEChartOption = (
               preferredTheme,
             );
           }
-
           if (!abortController.signal.aborted) {
-            setProfileImages((prevImages) => ({
-              ...prevImages,
+            setProfileImages((prev) => ({
+              ...prev,
               [impact.evaluator]: imageData,
             }));
           }
         } catch (error) {
           console.error(`Failed to load image for ${impact.evaluator}:`, error);
         }
-      });
-
-      return () => {
-        abortController.abort();
-      };
+      }
     };
 
-    fetchUserImages();
+    fetchImages();
+    return () => abortController.abort();
   }, [
     auraTopImpacts,
     preferredTheme,
     authData,
     brightIdBackup,
-    shouldFetchImages,
+    displayImages,
+    dispatch,
   ]);
 
-  const series = [
-    {
-      color: '#ABCAAE',
-      label:
-        !shouldFetchImages || auraTopImpacts.length > 5
-          ? { show: false, formatter: (params: any) => '' }
-          : {
-              show: true,
-              position: 'top',
+  // Build rich labels if images are available
+  const richLabels = displayImages
+    ? buildRichLabels(auraTopImpacts, profileImages)
+    : {};
 
-              distance: 2,
-              formatter: (params: any) => {
-                return `{img${params.dataIndex}|}`;
-              },
-              rich: auraTopImpacts.reduce(
-                (prev, curr, index) => {
-                  prev[`img${index}`] = {
-                    height: 35,
-                    width: 35,
-                    align: 'center',
-                    backgroundColor: {
-                      image: profileImages[curr.evaluator],
-                    },
-                    borderRadius: 12,
-                    style: {
-                      'border-radius': '12px',
-                      overflow: 'hidden',
-                    },
-                  };
+  const seriesTop: BarSeriesOption = {
+    color: '#ABCAAE',
+    label: displayImages
+      ? {
+          show: true,
+          position: 'top',
+          distance: 2,
+          formatter: (params: any) => `{img${params.dataIndex}|}`,
+          rich: richLabels,
+        }
+      : { show: false, formatter: () => '' },
+    data: auraTopImpacts.map((item) =>
+      item.impact >= 0
+        ? ('-' as any)
+        : {
+            value: item.impact,
+            label: getLabel(item, false, auraSumImpacts),
+            evaluator: item.evaluator,
+            itemStyle: getItemStyle(
+              item,
+              item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
+              authData?.brightId,
+              focusedSubjectId,
+            ),
+          },
+    ),
+    type: 'bar',
+    barGap: '0',
+    barMaxWidth: 30,
+  };
 
-                  return prev;
-                },
-                {} as Record<string, any>,
-              ),
-            },
-      data: auraTopImpacts.map((item) =>
-        item.impact >= 0
-          ? '-'
-          : {
-              value: item.impact,
-              label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : '-'}${item.confidence}) ${(
-                (item.impact / auraSumImpacts) *
-                100
-              ).toFixed(1)}%`,
-              evaluator: item.evaluator,
-              itemStyle: {
-                color: findNearestColor(
-                  item.confidence * (item.impact >= 0 ? 1 : -1),
-                  authData?.brightId === item.evaluator
-                    ? userRatingColorMap
-                    : item.evaluator === focusedSubjectId
-                      ? subjectRatingColorMap
-                      : valueColorMap,
-                ),
-                borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
-              },
-            },
-      ),
-      type: 'bar',
-      barGap: '0',
-      barMaxWidth: 30,
-    },
-    {
-      color: '#ABCAAE',
-      label:
-        !shouldFetchImages || auraTopImpacts.length > 5
-          ? { show: false, formatter: (params: any) => '' }
-          : {
-              show: true,
-              position: 'bottom',
-
-              distance: 2,
-              formatter: (params: any) => {
-                return `{img${params.dataIndex}|}`;
-              },
-              rich: auraTopImpacts.reduce(
-                (prev, curr, index) => {
-                  prev[`img${index}`] = {
-                    height: 35,
-                    width: 35,
-                    align: 'center',
-                    backgroundColor: {
-                      image: profileImages[curr.evaluator],
-                    },
-                    borderRadius: 12,
-                    style: {
-                      'border-radius': '12px',
-                      overflow: 'hidden',
-                    },
-                  };
-
-                  return prev;
-                },
-                {} as Record<string, any>,
-              ),
-            },
-      data: auraTopImpacts.map((item) =>
-        item.impact < 0
-          ? '-'
-          : {
-              value: item.impact,
-              label: `${item.evaluatorName} (${item.impact >= 0 ? '+' : ''}${item.confidence}) ${(
-                (item.impact / auraSumImpacts) *
-                100
-              ).toFixed(1)}%`,
-              evaluator: item.evaluator,
-              itemStyle: {
-                color: findNearestColor(
-                  item.confidence * (item.impact >= 0 ? 1 : -1),
-                  authData?.brightId === item.evaluator
-                    ? userRatingColorMap
-                    : item.evaluator === focusedSubjectId
-                      ? subjectRatingColorMap
-                      : valueColorMap,
-                ),
-                borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
-              },
-            },
-      ),
-      type: 'bar' as const,
-      barGap: '0',
-      barMaxWidth: 30,
-    },
-  ];
+  const seriesBottom: BarSeriesOption = {
+    color: '#ABCAAE',
+    label: displayImages
+      ? {
+          show: true,
+          position: 'bottom',
+          distance: 2,
+          formatter: (params: any) => `{img${params.dataIndex}|}`,
+          rich: richLabels,
+        }
+      : { show: false, formatter: () => '' },
+    data: auraTopImpacts.map((item) =>
+      item.impact < 0
+        ? ('-' as any)
+        : {
+            value: item.impact,
+            label: getLabel(item, true, auraSumImpacts),
+            evaluator: item.evaluator,
+            itemStyle: getItemStyle(
+              item,
+              item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
+              authData?.brightId,
+              focusedSubjectId,
+            ),
+          },
+    ),
+    type: 'bar',
+    barGap: '0',
+    barMaxWidth: 30,
+  };
 
   const impactChartOption: EChartsOption = useMemo(() => {
-    const maxImpact = auraTopImpacts
+    const maxImpact = auraTopImpacts.length
       ? Math.max(...auraTopImpacts.map((item) => Math.abs(item.impact)))
       : 0;
-
     return {
       xAxis: {
         type: 'category',
-        axisLine: {
-          show: true,
-        },
-        axisLabel: {
-          show: false,
-        },
-        axisTick: {
-          // Setting splitLine to null removes the lines indicating x-axis values
-          show: false,
-        },
+        axisLine: { show: true },
+        axisLabel: { show: false },
+        axisTick: { show: false },
       },
       yAxis: {
         type: 'value',
@@ -305,56 +308,36 @@ export const useImpactEChartOption = (
         min: -maxImpact,
         max: maxImpact,
       },
-      grid: {
-        top: 15,
-        bottom: 0,
-        left: 0,
-        right: 0,
-      },
+      grid: { top: 15, bottom: 0, left: 0, right: 0 },
       tooltip: {
         trigger: 'item',
-        formatter: (params: any) => {
-          const { data } = params;
-          return data.label;
-        },
+        formatter: (params: any) => params.data.label,
         position: (point: any, params: any, dom: any, rect: any, size: any) => {
-          // Destructure width from size.viewSize
           const [chartWidth] = size.viewSize;
           const tooltipWidth = dom.offsetWidth;
-
-          // Adjust tooltip position to prevent overflow
           let xPos = point[0];
           const yPos = point[1] - 45;
-
-          // If the tooltip is too close to the right edge, shift it to the left
           if (xPos + tooltipWidth > chartWidth) {
             xPos -= tooltipWidth;
           }
-
-          // Return adjusted position
           return [xPos, yPos];
         },
       },
-      series,
+      series: [seriesTop, seriesBottom],
     };
   }, [
-    auraSumImpacts,
     auraTopImpacts,
+    auraSumImpacts,
     authData?.brightId,
     focusedSubjectId,
     profileImages,
-    shouldFetchImages,
+    displayImages,
   ]);
 
   const impactChartSmallOption = useMemo(
     () => ({
       ...impactChartOption,
-      grid: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-      },
+      grid: { top: 0, bottom: 0, left: 0, right: 0 },
       tooltip: undefined,
       series: [
         {
@@ -363,75 +346,57 @@ export const useImpactEChartOption = (
             value: item.impact,
             label: item.evaluatorName,
             evaluator: item.evaluator,
-            itemStyle: {
-              color:
-                authData?.brightId === item.evaluator
-                  ? '#8341DE'
-                  : findNearestColor(
-                      item.confidence * (item.impact >= 0 ? 1 : -1),
-                      authData?.brightId === item.evaluator
-                        ? userRatingColorMap
-                        : item.evaluator === focusedSubjectId
-                          ? subjectRatingColorMap
-                          : valueColorMap,
-                    ),
-              borderRadius: item.impact >= 0 ? [2, 2, 0, 0] : [0, 0, 2, 2],
-            },
+            itemStyle: getItemStyle(
+              item,
+              item.impact >= 0 ? [2, 2, 0, 0] : [0, 0, 2, 2],
+              authData?.brightId,
+              focusedSubjectId,
+            ),
           })),
-          label: {
-            show: false,
-          },
+          label: { show: false },
           type: 'bar',
           barMaxWidth: 10,
-        },
+        } as BarSeriesOption,
       ],
     }),
     [auraTopImpacts, authData?.brightId, focusedSubjectId, impactChartOption],
   );
 
-  return {
-    impactChartOption,
-    impactChartSmallOption,
-  };
+  return { impactChartOption, impactChartSmallOption };
 };
 
+// =========================
+// useImpactPercentage Hook
+// =========================
 export const useImpactPercentage = (
   auraImpacts: AuraImpactRaw[] | null,
   subjectId: string | null | undefined,
-) => {
-  return useMemo(() => {
-    if (auraImpacts === null || auraImpacts === undefined || !subjectId)
-      return null;
+) =>
+  useMemo(() => {
+    if (!auraImpacts || !subjectId) return null;
     const subjectImpact = auraImpacts.find(
       (i) => i.evaluator === subjectId,
     )?.impact;
     if (!subjectImpact) return 0;
-    return Math.round(
-      Math.abs(subjectImpact * 100) /
-        auraImpacts.reduce((a, c) => a + Math.abs(c.impact), 0),
+    const total = auraImpacts.reduce(
+      (sum, curr) => sum + Math.abs(curr.impact),
+      0,
     );
+    return Math.round((Math.abs(subjectImpact) * 100) / total);
   }, [auraImpacts, subjectId]);
-};
 
-export const useTotalImpact = (auraImpacts: AuraImpactRaw[] | null) => {
-  return useMemo(() => {
-    if (auraImpacts === null || auraImpacts === undefined)
-      return {
-        totalPositiveImpact: null,
-        totalNegativeImpact: null,
-      };
+// =========================
+// useTotalImpact Hook
+// =========================
+export const useTotalImpact = (auraImpacts: AuraImpactRaw[] | null) =>
+  useMemo(() => {
+    if (!auraImpacts)
+      return { totalPositiveImpact: null, totalNegativeImpact: null };
     let totalPositiveImpact = 0;
     let totalNegativeImpact = 0;
     auraImpacts.forEach((i) => {
-      if (i.impact > 0) {
-        totalPositiveImpact += i.impact;
-      } else {
-        totalNegativeImpact += i.impact;
-      }
+      if (i.impact > 0) totalPositiveImpact += i.impact;
+      else totalNegativeImpact += i.impact;
     });
-    return {
-      totalPositiveImpact,
-      totalNegativeImpact,
-    };
+    return { totalPositiveImpact, totalNegativeImpact };
   }, [auraImpacts]);
-};

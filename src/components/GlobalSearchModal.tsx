@@ -26,7 +26,7 @@ const GlobalSearchBody: FC = () => {
         }}
       >
         <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-[10px] border bg-card p-1 text-card-foreground">
-          <div className="card__input flex items-center gap-2 rounded-lg px-3.5">
+          <div className="card__input flex items-center gap-2 rounded-md px-3.5">
             <img
               className="h-4 w-4"
               src="/assets/images/Shared/search-icon.svg"
