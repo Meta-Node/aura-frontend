@@ -32,10 +32,13 @@ import {
 } from 'lucide-react';
 import useOutboundImpacts from '@/hooks/useOutboundImpacts';
 
+import { Skeleton } from '@/components/ui/skeleton';
+
 type ZoomableChartProps = {
   ratings: AuraRating[] | null;
   evaluationCategory: EvaluationCategory;
   subjectId: string;
+  loading: boolean;
 };
 
 const chartConfig = {
@@ -104,10 +107,31 @@ const processAuraRatings = (
   });
 };
 
+export function SkeletonChart() {
+  return (
+    <div className="mb-12 h-52 w-full">
+      <div className="flex h-full flex-col">
+        {/* Button Group Skeleton */}
+        <div className="my-2 flex justify-end gap-2 sm:mb-4">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-6 w-6 rounded-md" />
+          ))}
+        </div>
+
+        {/* Main Chart Area Skeleton */}
+        <div className="relative flex-1">
+          <Skeleton className="h-full w-full rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ZoomableChart({
   evaluationCategory,
   ratings,
   subjectId,
+  loading: ratingsLoading,
 }: ZoomableChartProps) {
   const memoizedRatings = useMemo(() => ratings ?? [], [ratings]);
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
@@ -147,9 +171,8 @@ export function ZoomableChart({
   );
 
   const scaleBarHeight = useCallback(
-    (data: any, rating: string | number) => {
-      const value = Number(rating);
-      return (value / 4) * (Math.abs(data.impact) * 0.8);
+    (data: any) => {
+      return (data.impact / maxAbs) * 4;
     },
     [maxAbs],
   );
@@ -288,6 +311,8 @@ export function ZoomableChart({
     setEndIndex(newEndIndex);
   }, [startIndex, endIndex, chartData]);
 
+  if (isLoading || ratingsLoading) return <SkeletonChart />;
+
   return (
     <ChartContainer config={chartConfig} className="mb-12 h-52 w-full">
       <div
@@ -371,14 +396,14 @@ export function ZoomableChart({
               tick={false}
               style={{ fontSize: '10px', userSelect: 'none' }}
               width={30}
-              domain={[-maxAbs, maxAbs]}
+              domain={[-4, 4]}
               type="number"
             />
             <ChartTooltip content={<CustomRatingTooltip />} />
             <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
             <Area
               type="monotone"
-              dataKey="impact"
+              dataKey="rating"
               stroke={chartConfig.evaluations.color}
               fillOpacity={1}
               dot={{ r: 2, fill: 'white' }}
@@ -387,7 +412,7 @@ export function ZoomableChart({
             />
             <Bar
               maxBarSize={20}
-              dataKey={(data) => scaleBarHeight(data, data.rating)}
+              dataKey={(data) => scaleBarHeight(data)}
               opacity={0.9}
             >
               {zoomedData.map((entry, index) => (
