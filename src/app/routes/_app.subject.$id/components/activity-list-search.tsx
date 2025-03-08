@@ -236,7 +236,6 @@ export const ActivityListSearch = ({
                 variant="outline"
                 onClick={() => {
                   clearSortAndFilter();
-                  setIsModalOpen(false);
                 }}
                 className="w-full flex-1 px-6 py-2 sm:w-auto"
               >
