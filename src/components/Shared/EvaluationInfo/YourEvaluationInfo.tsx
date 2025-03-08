@@ -18,18 +18,7 @@ export const YourEvaluationInfo = ({
   evaluationCategory: EvaluationCategory;
 }) => {
   const authData = useSelector(selectAuthData);
-  const { loading } = useSubjectEvaluationFromContext({
-    fromSubjectId: authData?.brightId,
-    toSubjectId,
-    evaluationCategory,
-  });
   if (!authData) return <></>;
-  if (loading)
-    return (
-      <div>
-        <span className="font-medium">...</span>
-      </div>
-    );
   return (
     <div className="flex gap-2">
       <EvaluationInfo

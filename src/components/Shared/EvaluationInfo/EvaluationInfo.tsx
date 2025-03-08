@@ -13,6 +13,7 @@ import {
 import { EvaluationCategory } from '../../../types/dashboard';
 import LoadingSpinner from '../LoadingSpinner';
 import { formatDuration } from '@/utils/time';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EvaluationInfo({
   fromSubjectId,
@@ -81,59 +82,72 @@ export default function EvaluationInfo({
         styleValues.bgAndTextColor
       } ${isYourEvaluation ? 'p-1.5' : 'p-2.5'}`}
     >
-      <div className="flex items-center gap-0.5">
-        <EvaluationThumb
-          width="17.5px"
-          height="16.63px"
-          rating={rating && Number(rating?.rating)}
-        />
-        <div>
-          <span
-            className="font-medium"
-            data-testid={`${
-              isYourEvaluation ? 'your-' : ''
-            }evaluation-${fromSubjectId}-${toSubjectId}-magnitude`}
-          >
-            {styleValues.text}
-          </span>
-          <span
-            className="font-medium"
-            data-testid={`${
-              isYourEvaluation ? 'your-' : ''
-            }evaluation-${fromSubjectId}-${toSubjectId}-confidence`}
-          >
-            {rating && Number(rating.rating) !== 0 && confidenceValue
-              ? ` - ${confidenceValue}`
-              : ''}
-            {rating?.rating
-              ? ` (${(Number(rating.rating) > 0 ? '+' : '') + rating.rating})`
-              : ''}
-          </span>
-          <small className="ml-3 font-semibold">
-            {rating?.timestamp ? formatDuration(rating?.timestamp) : ''}
-          </small>
-        </div>
-      </div>
-      {rating && (
-        <div className="flex items-center gap-2">
-          {rating.isPending ? (
-            <>
-              <span className="font-medium italic">Pending</span>
-              <LoadingSpinner
-                className="h-[20px] w-[20px]"
-                spinnerClassName={
-                  Math.abs(Number(rating.rating)) > 2
-                    ? 'border-white'
-                    : 'border-gray-950'
-                }
-              />
-            </>
-          ) : (
-            <span className="font-medium">
-              {impactPercentage !== null ? `${impactPercentage}%` : '-'}
-            </span>
+      {loading ? (
+        <>
+          <div className="flex w-full items-center gap-2">
+            <Skeleton className="h-4 w-4 rounded-sm" />{' '}
+            <div className="flex flex-1 flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="ml-1 h-3 w-16" />{' '}
+              </div>
+            </div>
+          </div>
+          <Skeleton className="h-4 w-10" />
+        </>
+      ) : (
+        <>
+          <div className="flex items-center gap-0.5">
+            <EvaluationThumb
+              width="17.5px"
+              height="16.63px"
+              rating={rating && Number(rating?.rating)}
+            />
+            <div>
+              <span
+                className="font-medium"
+                data-testid={`${isYourEvaluation ? 'your-' : ''}evaluation-${fromSubjectId}-${toSubjectId}-magnitude`}
+              >
+                {styleValues.text}
+              </span>
+              <span
+                className="font-medium"
+                data-testid={`${isYourEvaluation ? 'your-' : ''}evaluation-${fromSubjectId}-${toSubjectId}-confidence`}
+              >
+                {rating && Number(rating.rating) !== 0 && confidenceValue
+                  ? ` - ${confidenceValue}`
+                  : ''}
+                {rating?.rating
+                  ? ` (${(Number(rating.rating) > 0 ? '+' : '') + rating.rating})`
+                  : ''}
+              </span>
+              <small className="ml-3 font-semibold">
+                {rating?.timestamp ? formatDuration(rating?.timestamp) : ''}
+              </small>
+            </div>
+          </div>
+          {rating && (
+            <div className="flex items-center gap-2">
+              {rating.isPending ? (
+                <>
+                  <span className="font-medium italic">Pending</span>
+                  <LoadingSpinner
+                    className="h-[20px] w-[20px]"
+                    spinnerClassName={
+                      Math.abs(Number(rating.rating)) > 2
+                        ? 'border-white'
+                        : 'border-gray-950'
+                    }
+                  />
+                </>
+              ) : (
+                <span className="font-medium">
+                  {impactPercentage !== null ? `${impactPercentage}%` : '-'}
+                </span>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
