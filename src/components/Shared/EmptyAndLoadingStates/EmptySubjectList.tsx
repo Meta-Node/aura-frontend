@@ -1,13 +1,17 @@
-import { UserSearchIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FaSearch } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 export const EmptySubjectList = ({
   clearSortAndFilter,
   hasFilter,
+  searchString,
   showConnectionGuide,
 }: {
   clearSortAndFilter: () => void;
   hasFilter: boolean;
   showConnectionGuide?: boolean;
+  searchString?: string;
 }) => {
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-2 py-10">
@@ -38,6 +42,14 @@ export const EmptySubjectList = ({
           )
         )}
       </p>
+      {!!searchString && (
+        <Link to={`/home?search=${searchString}&tab=evaluate`}>
+          <Button variant="link" className="text-blue">
+            <FaSearch />
+            Search in your connections instead
+          </Button>
+        </Link>
+      )}
     </div>
   );
 };

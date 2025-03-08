@@ -202,6 +202,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
     loading: loadingInboundEvaluations,
     selectedFilterIds: inboundEvaluationsSelectedFilterId,
     clearSortAndFilter: clearInboundEvaluationsSortAndFilter,
+    searchString: evaluationSearchString,
   } = useSubjectInboundEvaluationsContext({
     subjectId,
     evaluationCategory: currentEvaluationCategory,
@@ -215,6 +216,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
     clearSortAndFilter: clearInboundConnectionsSortAndFilter,
     selectedSort,
     selectedFilters,
+    searchString,
   } = useSubjectInboundConnectionsContext({
     subjectId,
     evaluationCategory: currentEvaluationCategory,
@@ -225,6 +227,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
     loading: loadingOutboundEvaluations,
     selectedFilterIds: outboundEvaluationsSelectedFilterId,
     clearSortAndFilter: clearOutboundEvaluationsSortAndFilter,
+    searchString: activitySearchString,
   } = useOutboundEvaluationsContext({
     subjectId,
     evaluationCategory:
@@ -421,6 +424,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             />
           ) : (
             <EmptyActivitiesList
+              searchString={activitySearchString}
               hasFilter={outboundEvaluationsSelectedFilterId !== null}
               clearSortAndFilter={clearOutboundEvaluationsSortAndFilter}
             />
@@ -455,6 +459,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             />
           ) : (
             <EmptyEvaluationsList
+              searchString={evaluationSearchString}
               hasFilter={inboundEvaluationsSelectedFilterId !== null}
               clearFilter={clearInboundEvaluationsSortAndFilter}
             />
@@ -486,6 +491,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             />
           ) : (
             <EmptySubjectList
+              searchString={searchString}
               hasFilter={inboundConnectionsSelectedFilterId !== null}
               clearSortAndFilter={clearInboundConnectionsSortAndFilter}
             />
