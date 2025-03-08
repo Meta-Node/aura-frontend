@@ -30,7 +30,13 @@ const UpdatePrompt = () => {
         title: 'New Version Available ↗️',
         description: 'Click update to get the latest features.',
         action: (
-          <ToastAction altText="Update" onClick={swRegistration?.update}>
+          <ToastAction
+            altText="Update"
+            onClick={() => {
+              swRegistration?.update();
+              window.location.reload();
+            }}
+          >
             Update
           </ToastAction>
         ),
