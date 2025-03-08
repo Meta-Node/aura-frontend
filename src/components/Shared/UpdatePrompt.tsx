@@ -25,7 +25,10 @@ const UpdatePrompt = () => {
   );
 
   React.useEffect(() => {
-    if (updateAvailable || (APP_VERSION !== data && !isDevelopment)) {
+    if (
+      updateAvailable ||
+      (!isLoading && APP_VERSION !== data && !isDevelopment)
+    ) {
       toast({
         title: 'New Version Available ↗️',
         description: 'Click update to get the latest features.',
