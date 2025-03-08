@@ -54,7 +54,7 @@
 }
 
 .card {
-  @apply flex flex-1 flex-col justify-center rounded-[10px] bg-card px-[18px] py-4 dark:text-white;
+  @apply flex flex-1 flex-col justify-center rounded-md bg-card px-[18px] py-4 dark:text-white;
 }
 
 .icon {

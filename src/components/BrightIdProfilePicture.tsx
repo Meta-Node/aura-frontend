@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hash } from 'utils/crypto';
 
@@ -7,6 +7,7 @@ import { createBlockiesImage } from '@/utils/image';
 import { selectAuthData } from '../store/profile/selectors';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetProfilePhotoQuery } from '@/store/api/backup';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 
 const DEFAULT_PROFILE_PICTURE = '/assets/images/avatar-thumb.jpg';
 const BrightIdProfilePicture = ({
@@ -31,15 +32,28 @@ const BrightIdProfilePicture = ({
       : skipToken,
   );
 
+  const imageSource = data || imgSrc;
+
   //TODO: use profile name in alt
 
   return (
-    <img
-      {...props}
-      alt={subjectId}
-      className={`${props.className ?? ''} object-cover`}
-      src={data || imgSrc}
-    />
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <img
+          {...props}
+          alt={subjectId}
+          className={`${props.className ?? ''} object-cover transition-transform duration-200 hover:scale-105`}
+          src={imageSource || '/placeholder.svg'}
+        />
+      </HoverCardTrigger>
+      <HoverCardContent className="w-auto p-1">
+        <img
+          src={imageSource}
+          alt={subjectId}
+          className="h-auto max-h-[300px] w-auto max-w-[300px] rounded-md object-cover"
+        />
+      </HoverCardContent>
+    </HoverCard>
   );
 };
 
