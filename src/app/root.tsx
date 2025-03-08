@@ -15,12 +15,12 @@ import GlobalSearchModal from '@/components/GlobalSearchModal';
 import { useSelector } from '@/store/hooks';
 import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
 import { useDispatch } from 'react-redux';
+import DebugToolbar from '@/components/ux/debug-toolbar';
+
 import './i18n';
 import './tailwind.css';
 import '../assets/fonts/fonts.css';
-
 import 'swiper/css';
-import DebugToolbar from '@/components/ux/debug-toolbar';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -44,7 +44,8 @@ export function Layout({ children }: PropsWithChildren) {
         <meta content="#000000" name="theme-color" />
         <meta content="Aura" name="description" />
         <link href="/logo192.png" rel="apple-touch-icon" />
-        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="manifest" href="/manifest.json" />
+
         <link rel="icon" href="/favicon.ico" />
         <title>Aura</title>
         <Meta />

@@ -1,42 +1,44 @@
 import { ToastAction, ToastProvider } from 'components/ui/toast';
 import { useToast } from 'hooks/use-toast';
 import React from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+import { usePWAManager } from '@remix-pwa/client';
+import { useGetAppLatestVersionQuery } from '@/store/api/backup';
+import { skipToken } from '@reduxjs/toolkit/query';
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 const UpdatePrompt = () => {
   const {
-    offlineReady: [, setOfflineReady],
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
-    onRegisteredSW(swUrl, r) {
-      r &&
-        setInterval(() => {
-          console.log('Checking for sw update');
-          r.update();
-        }, 60000);
-    },
-    onRegisterError(error) {
-      console.log('SW registration error', error);
-    },
-  });
+    promptInstall,
+    swRegistration,
+    swUpdate,
+    updateAvailable,
+    userInstallChoice,
+  } = usePWAManager();
 
   const { toast } = useToast();
-
-  const close = () => {
-    setOfflineReady(false);
-    setNeedRefresh(false);
-  };
+  const { data, isLoading } = useGetAppLatestVersionQuery(
+    isDevelopment ? skipToken : undefined,
+    {
+      pollingInterval: 60000,
+    },
+  );
 
   React.useEffect(() => {
-    if (needRefresh) {
+    if (
+      updateAvailable ||
+      (!isLoading && APP_VERSION !== data && !isDevelopment)
+    ) {
       toast({
         title: 'New Version Available ↗️',
         description: 'Click update to get the latest features.',
         action: (
           <ToastAction
             altText="Update"
-            onClick={() => updateServiceWorker(false)}
+            onClick={() => {
+              swRegistration?.update();
+              window.location.reload();
+            }}
           >
             Update
           </ToastAction>
@@ -44,7 +46,7 @@ const UpdatePrompt = () => {
         duration: Infinity,
       });
     }
-  }, [needRefresh, toast, updateServiceWorker]);
+  }, [updateAvailable, data, swUpdate, toast]);
 
   return <ToastProvider />;
 };

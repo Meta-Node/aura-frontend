@@ -2,10 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useGetAppLatestVersionQuery } from '@/store/api/backup';
 import { skipToken } from '@reduxjs/toolkit/query';
+import { usePWAManager } from '@remix-pwa/client';
 import { Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { MdUpdate } from 'react-icons/md';
-import { registerSW } from 'virtual:pwa-register';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -17,31 +16,17 @@ export default function VersionCard() {
     },
   );
 
-  const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [swRegistration, setSwRegistration] = useState(
-    undefined as ServiceWorkerRegistration | undefined,
-  );
-
-  useEffect(() => {
-    if (!isDevelopment) {
-      const updateSW = registerSW({
-        onNeedRefresh() {
-          setUpdateAvailable(true);
-        },
-        onRegistered(registration) {
-          setSwRegistration(registration);
-        },
-        onOfflineReady() {
-          console.log('App is ready to work offline');
-        },
-      });
-    }
-  }, []);
+  const {
+    promptInstall,
+    swRegistration,
+    swUpdate,
+    updateAvailable,
+    userInstallChoice,
+  } = usePWAManager();
 
   const handleUpdate = () => {
     if (swRegistration && swRegistration.waiting) {
-      swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
-
+      swRegistration.update();
       window.location.reload();
     }
   };
