@@ -136,7 +136,6 @@
     "postcss": "^8.4.14",
     "prettier": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "react-router-dom": "^7.2.0",
     "shadcn": "^2.4.0-canary.12",
     "tailwindcss": "^3.2.7",
     "vite": "^6.1.1",
