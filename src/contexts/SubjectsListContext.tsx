@@ -70,6 +70,7 @@ export const SubjectsListContextProvider: React.FC<ProviderProps> = ({
   const connectionsSortedDefault = useMemo(() => {
     if (!brightIdBackup?.connections || loading || myRatings === null)
       return null;
+
     const connections = [...brightIdBackup.connections].sort(
       (a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0),
     );
@@ -77,6 +78,7 @@ export const SubjectsListContextProvider: React.FC<ProviderProps> = ({
     const result = connections.reduce(
       (acc, c) => {
         const ratingIndex = myRatings.findIndex((r) => r.toBrightId === c.id);
+
         if (
           ratingIndex === -1 &&
           (c.level === 'already known' || c.level === 'recovery')

@@ -1,4 +1,4 @@
-import { SubjectCard } from 'components/EvaluationFlow/SubjectCard';
+import { SubjectCardMemo } from 'components/EvaluationFlow/SubjectCard';
 import { SubjectListControls } from 'components/EvaluationFlow/SubjectListControls';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { SubjectInboundEvaluationsContextProvider } from 'contexts/SubjectInboundEvaluationsContext';
@@ -116,9 +116,8 @@ const Home = () => {
                     }
                     className={'flex flex-col gap-3'}
                     items={filteredSubjects}
-                    //TODO: optimize rendering by caching the rendered components
                     renderItem={(conn, index) => (
-                      <SubjectCard
+                      <SubjectCardMemo
                         key={conn.id}
                         index={index}
                         subjectId={conn.id}

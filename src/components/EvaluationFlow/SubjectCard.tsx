@@ -15,6 +15,7 @@ import {
 import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';
 import Tooltip from '../Shared/Tooltip';
 import { Card } from '../ui/card';
+import { memo } from 'react';
 
 export interface SubjectCardSkeletonProps {
   subjectId: string;
@@ -168,3 +169,5 @@ export const SubjectCard = ({ subjectId, index }: SubjectCardSkeletonProps) => {
     </Link>
   );
 };
+
+export const SubjectCardMemo = memo(SubjectCard);
