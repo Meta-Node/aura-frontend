@@ -184,7 +184,7 @@ const ProfileOverview = ({
             }}
             className="body__chart mb-3 w-full"
           />
-          <div className="chart-info mb-5 flex flex-wrap gap-y-2.5">
+          {/* <div className="chart-info mb-5 flex flex-wrap gap-y-2.5">
             <div className="chart-info__item flex w-1/2 items-center gap-1">
               <div className="chart-info__item__color h-[11px] w-[22px] rounded bg-[#E2E2E2]"></div>
               <div className="chart-info__item__text text-xs font-bold">
@@ -209,11 +209,7 @@ const ProfileOverview = ({
                 Very High Confidence
               </div>
             </div>
-          </div>
-          {/*<p className="font-medium italic text-sm text-black">*/}
-          {/*  *This chart displays the top 10 impacts players have on the subject*/}
-          {/*  score*/}
-          {/*</p>*/}
+          </div> */}
         </div>
 
         {isMyPerformance && (
