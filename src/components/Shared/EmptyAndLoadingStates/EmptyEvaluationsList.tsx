@@ -8,7 +8,7 @@ export const EmptyEvaluationsList = ({
   clearFilter: () => void;
   hasFilter: boolean;
 }) => {
-  const { currentEvaluationCategory } = useViewMode();
+  const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-2 py-10">
@@ -18,7 +18,7 @@ export const EmptyEvaluationsList = ({
         className="h-8 w-10"
       />
       <h2 className="text-lg font-medium text-white">
-        No {toTitleCase(currentEvaluationCategory)}s found
+        No {toTitleCase(currentRoleEvaluatorEvaluationCategory)}s found
       </h2>
       {hasFilter && (
         <p

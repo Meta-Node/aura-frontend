@@ -1,4 +1,4 @@
-import { UserSearchIcon } from "lucide-react";
+import { UserSearchIcon } from 'lucide-react';
 
 export const EmptySubjectList = ({
   clearSortAndFilter,
@@ -10,13 +10,17 @@ export const EmptySubjectList = ({
   showConnectionGuide?: boolean;
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center py-10 px-2 gap-2">
-      <UserSearchIcon className="w-10 h-10 mb-1" />
+    <div className="flex flex-col items-center justify-center gap-2 px-2 py-10">
+      <img
+        src="/assets/images/Shared/no-evidence-found.svg"
+        alt="Empty State"
+        className="h-8 w-10"
+      />
       <h2 className="text-lg font-medium">No subjects found</h2>
       <p className="text-center">
         {hasFilter ? (
           <span
-            className="underline cursor-pointer"
+            className="cursor-pointer underline"
             onClick={clearSortAndFilter}
           >
             Reset view to default
@@ -25,7 +29,7 @@ export const EmptySubjectList = ({
           showConnectionGuide && (
             <>
               Open the{' '}
-              <span className="text-bright-l1 hover:underline cursor-pointer">
+              <span className="cursor-pointer text-bright-l1 hover:underline">
                 BrightID
               </span>{' '}
               app to connect with someone. After connecting, you&apos;ll be able

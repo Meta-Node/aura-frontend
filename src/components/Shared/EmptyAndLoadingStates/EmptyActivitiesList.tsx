@@ -15,7 +15,7 @@ export const EmptyActivitiesList = ({
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-2 py-10">
       <img
-        src="/assets/images/Shared/no-activities-found.svg"
+        src="/assets/images/Shared/no-evidence-found.svg"
         alt="Empty State"
         className="h-8 w-10"
       />
