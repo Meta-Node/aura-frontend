@@ -21,7 +21,7 @@ const ActivitiesCard = ({
   ) => void;
   viewMode: PreferredView;
 }) => {
-  const { ratings: outboundRatings } = useOutboundEvaluationsContext({
+  const { ratings: outboundRatings, loading } = useOutboundEvaluationsContext({
     subjectId,
     evaluationCategory: viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
   });
@@ -64,6 +64,7 @@ const ActivitiesCard = ({
               .sort((a, b) => a.timestamp - b.timestamp)
               .slice(0, 20) ?? []
           }
+          loading={loading}
           evaluationCategory={viewModeToViewAs[viewMode]}
           subjectId={subjectId}
         />
