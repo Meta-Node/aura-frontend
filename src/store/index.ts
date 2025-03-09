@@ -23,6 +23,7 @@ import {
   initMessageListener,
 } from 'redux-state-sync';
 import { operationsSlice } from '@/BrightID/actions';
+import { cacheSlice } from './cache';
 
 const persistConfig = {
   key: 'root',
@@ -36,6 +37,7 @@ const rootReducer = withReduxStateSync(
   combineReducers({
     ...reducers,
     profile: profileSlice.reducer,
+    [cacheSlice.reducerPath]: cacheSlice.reducer,
   }),
 );
 
