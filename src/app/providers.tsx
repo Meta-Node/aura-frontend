@@ -1,36 +1,41 @@
-import UpdatePrompt from "@/components/Shared/UpdatePrompt";
-import { Toaster } from "@/components/ui/toaster";
-import { BrowserHistoryContextProvider } from "@/contexts/BrowserHistoryContext";
-import { MyEvaluationsContextProvider } from "@/contexts/MyEvaluationsContext";
-import { RefreshEvaluationsContextProvider } from "@/contexts/RefreshEvaluationsContext";
-import { SubjectsListContextProvider } from "@/contexts/SubjectsListContext";
-import { configureAppStore } from "@/store";
-import { PropsWithChildren } from "react";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/lib/integration/react";
+import UpdatePrompt from '@/components/Shared/UpdatePrompt';
+import { Toaster } from '@/components/ui/toaster';
+import { BrowserHistoryContextProvider } from '@/contexts/BrowserHistoryContext';
+import { MyEvaluationsContextProvider } from '@/contexts/MyEvaluationsContext';
+import { RefreshEvaluationsContextProvider } from '@/contexts/RefreshEvaluationsContext';
+import { SubjectsListContextProvider } from '@/contexts/SubjectsListContext';
+import { configureAppStore } from '@/store';
+import { PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 import NodeApiGateContextProvider from 'BrightID/components/NodeApiGate';
 
-
-const { persistor, store } = configureAppStore()
+const { persistor, store } = configureAppStore();
 
 export default function Providers({ children }: PropsWithChildren) {
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <RefreshEvaluationsContextProvider>
-          <MyEvaluationsContextProvider>
-            <SubjectsListContextProvider>
-              <NodeApiGateContextProvider>
-                <BrowserHistoryContextProvider>
-                  <Toaster />
-                  <UpdatePrompt />
-                  {children}
-                </BrowserHistoryContextProvider>
-              </NodeApiGateContextProvider>
-            </SubjectsListContextProvider>
-          </MyEvaluationsContextProvider>
-        </RefreshEvaluationsContextProvider>
-      </PersistGate>
+      <RefreshEvaluationsContextProvider>
+        <Toaster />
+        <UpdatePrompt />
+        {children}
+      </RefreshEvaluationsContextProvider>
     </Provider>
-  )
+  );
+}
+
+export function AppProviders({ children }: PropsWithChildren) {
+  return (
+    <PersistGate persistor={persistor}>
+      <MyEvaluationsContextProvider>
+        <SubjectsListContextProvider>
+          <NodeApiGateContextProvider>
+            <BrowserHistoryContextProvider>
+              {children}
+            </BrowserHistoryContextProvider>
+          </NodeApiGateContextProvider>
+        </SubjectsListContextProvider>
+      </MyEvaluationsContextProvider>
+    </PersistGate>
+  );
 }

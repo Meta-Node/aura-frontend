@@ -8,7 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router';
-import Providers from './providers';
+import Providers, { AppProviders } from './providers';
 import { Route } from '../../.react-router/types/src/app/+types/root';
 
 import GlobalSearchModal from '@/components/GlobalSearchModal';
@@ -41,7 +41,7 @@ export function Layout({ children }: PropsWithChildren) {
       <head>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="#000000" name="theme-color" />
+        <meta content="#0c0a09" name="theme-color" />
         <meta content="Aura" name="description" />
         <link href="/logo192.png" rel="apple-touch-icon" />
         <link rel="manifest" href="/manifest.json" />
@@ -65,7 +65,7 @@ export default function App() {
   const dispatch = useDispatch();
 
   return (
-    <>
+    <AppProviders>
       {isSearchModalOpen && (
         <GlobalSearchModal onClose={() => dispatch(toggleSearchModal())} />
       )}
@@ -73,7 +73,7 @@ export default function App() {
 
       <DebugToolbar />
       <ThemeResolver />
-    </>
+    </AppProviders>
   );
 }
 
