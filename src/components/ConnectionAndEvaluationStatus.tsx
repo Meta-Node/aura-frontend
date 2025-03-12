@@ -71,14 +71,14 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
         ratingNumber,
       )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
     >
-      {ratingNumber}
       <EvaluationThumb
         width="18px"
         height="18px"
         rating={rating && Number(rating?.rating)}
       />
+      {ratingNumber}
       <p className="text-sm font-bold leading-4">
-        {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
+        {rating?.isPending ? '' : `${confidenceValue} `}
       </p>
       {rating?.isPending && (
         <LoadingSpinner
@@ -167,14 +167,14 @@ export const ConnectionAndEvaluationStatus = ({
               ratingNumber,
             )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
           >
-            {(ratingNumber > 0 ? '+' : '') + ratingNumber}
             <EvaluationThumb
               width="18px"
               height="18px"
               rating={rating && Number(rating?.rating)}
             />
+            {(ratingNumber > 0 ? '+' : '') + ratingNumber}
             <p className="text-sm font-bold leading-4">
-              {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
+              {rating?.isPending ? '' : `${confidenceValue} `}
             </p>
             <small className="text-xs">{impactPercentage}%</small>
             {rating?.isPending && (

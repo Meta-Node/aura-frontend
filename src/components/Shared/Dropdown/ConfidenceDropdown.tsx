@@ -18,7 +18,7 @@ const ConfidenceDropdown = ({
         value: 1,
         label: (
           <p>
-            I have <strong>({isYes ? '+' : '-'}1) Low</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}1 Low</strong> confidence
           </p>
         ),
       },
@@ -26,7 +26,7 @@ const ConfidenceDropdown = ({
         value: 2,
         label: (
           <p>
-            I have <strong>({isYes ? '+' : '-'}2) Medium</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}2 Medium</strong> confidence
           </p>
         ),
       },
@@ -34,7 +34,7 @@ const ConfidenceDropdown = ({
         value: 3,
         label: (
           <p>
-            I have <strong>({isYes ? '+' : '-'}3) High</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}3 High</strong> confidence
           </p>
         ),
       },
@@ -42,7 +42,7 @@ const ConfidenceDropdown = ({
         value: 4,
         label: (
           <p>
-            I have <strong>({isYes ? '+' : '-'}4) Very High</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}4 Very High</strong> confidence
           </p>
         ),
       },
