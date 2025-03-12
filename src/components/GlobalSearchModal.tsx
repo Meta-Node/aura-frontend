@@ -1,5 +1,6 @@
 import { toggleSearchModal } from 'BrightID/actions';
 import Modal from 'components/Shared/Modal';
+import { Search } from 'lucide-react';
 import { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -27,11 +28,7 @@ const GlobalSearchBody: FC = () => {
       >
         <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-[10px] border bg-card p-1 text-card-foreground">
           <div className="card__input flex items-center gap-2 rounded-md px-3.5">
-            <img
-              className="h-4 w-4"
-              src="/assets/images/Shared/search-icon.svg"
-              alt=""
-            />
+            <Search />
             <input
               className="h-11 w-full bg-card text-sm font-medium placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
               type="text"

@@ -2,7 +2,7 @@ import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useSubjectsListContext } from 'contexts/SubjectsListContext';
 import { useMyEvaluations } from 'hooks/useMyEvaluations';
-import { RefreshCcwIcon } from 'lucide-react';
+import { RefreshCcwIcon, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
@@ -232,11 +232,8 @@ export const SubjectListControls = ({
     <>
       <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-lg border bg-card p-1 text-card-foreground dark:bg-dark-primary">
         <div className="card__input flex items-center gap-2 rounded px-3.5">
-          <img
-            className="h-4 w-4"
-            src="/assets/images/Shared/search-icon.svg"
-            alt=""
-          />
+          <Search className="text-stone-700" />
+
           <input
             className="h-11 w-full bg-transparent text-sm font-medium text-card-foreground placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
             type="text"
@@ -339,7 +336,7 @@ export const SubjectListControls = ({
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <span className="ml-auto text-white">
+        <span className="ml-auto">
           (
           {filteredSubjects?.length ??
             brightIdBackup?.connections.length ??

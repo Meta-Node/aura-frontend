@@ -8,7 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router';
-import Providers from './providers';
+import Providers, { AppProviders } from './providers';
 import { Route } from '../../.react-router/types/src/app/+types/root';
 
 import GlobalSearchModal from '@/components/GlobalSearchModal';
@@ -21,6 +21,7 @@ import './i18n';
 import './tailwind.css';
 import '../assets/fonts/fonts.css';
 import 'swiper/css';
+import ErrorBoundryUi from '@/components/error-boundry';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -41,7 +42,7 @@ export function Layout({ children }: PropsWithChildren) {
       <head>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="#000000" name="theme-color" />
+        <meta content="#0c0a09" name="theme-color" />
         <meta content="Aura" name="description" />
         <link href="/logo192.png" rel="apple-touch-icon" />
         <link rel="manifest" href="/manifest.json" />
@@ -52,8 +53,14 @@ export function Layout({ children }: PropsWithChildren) {
         <Links />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+
+          <ThemeResolver />
+        </Providers>
+
         <ScrollRestoration />
+
         <Scripts />
       </body>
     </html>
@@ -65,15 +72,14 @@ export default function App() {
   const dispatch = useDispatch();
 
   return (
-    <>
+    <AppProviders>
       {isSearchModalOpen && (
         <GlobalSearchModal onClose={() => dispatch(toggleSearchModal())} />
       )}
       <Outlet />
 
       <DebugToolbar />
-      <ThemeResolver />
-    </>
+    </AppProviders>
   );
 }
 
@@ -94,14 +100,10 @@ export function ErrorBoundary({ error }: /*Route.ErrorBoundaryProps*/ any) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <ErrorBoundryUi
+      stack={stack}
+      errorTitle={error}
+      isDevelopment={!import.meta.env.DEV}
+    />
   );
 }
