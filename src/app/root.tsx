@@ -21,6 +21,7 @@ import './i18n';
 import './tailwind.css';
 import '../assets/fonts/fonts.css';
 import 'swiper/css';
+import ErrorBoundryUi from '@/components/error-boundry';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -52,8 +53,14 @@ export function Layout({ children }: PropsWithChildren) {
         <Links />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+
+          <ThemeResolver />
+        </Providers>
+
         <ScrollRestoration />
+
         <Scripts />
       </body>
     </html>
@@ -72,7 +79,6 @@ export default function App() {
       <Outlet />
 
       <DebugToolbar />
-      <ThemeResolver />
     </AppProviders>
   );
 }
@@ -94,14 +100,10 @@ export function ErrorBoundary({ error }: /*Route.ErrorBoundaryProps*/ any) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <ErrorBoundryUi
+      stack={stack}
+      errorTitle={error}
+      isDevelopment={!import.meta.env.DEV}
+    />
   );
 }
