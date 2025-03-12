@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from '../ui/dialog';
 import { Separator } from '../ui/separator';
+import { ScrollArea } from '../ui/scroll-area';
 
 function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
   const {
@@ -307,11 +308,11 @@ export const SubjectListControls = ({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="no-scrollbar max-h-96 overflow-y-auto py-4 text-base">
+            <ScrollArea className="max-h-96 py-4 text-base">
               <FilterAndSortModalBody
                 isPlayerMode={currentViewMode === PreferredView.PLAYER}
               />
-            </div>
+            </ScrollArea>
 
             <DialogFooter>
               <Button
