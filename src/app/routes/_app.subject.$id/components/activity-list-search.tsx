@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 function FilterAndSortModalBody({ subjectId }: { subjectId: string }) {
   const {
@@ -227,9 +228,9 @@ export const ActivityListSearch = ({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="no-scrollbar max-h-96 overflow-y-auto py-4">
+            <ScrollArea className="max-h-96 py-4">
               <FilterAndSortModalBody subjectId={subjectId} />
-            </div>
+            </ScrollArea>
 
             <DialogFooter>
               <Button
