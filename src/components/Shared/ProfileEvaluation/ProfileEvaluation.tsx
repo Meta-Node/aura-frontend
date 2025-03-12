@@ -27,7 +27,7 @@ import {
   useSubjectVerifications,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowDownLeft, ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import moment from 'moment';
 import { useMemo } from 'react';
 import {
@@ -397,8 +397,9 @@ const EvidenceInformation = ({
         } text-xs font-medium`}
       >
         <span className="inline-flex items-center gap-1">
-          {evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY ||
-          evidenceType === EvidenceType.CONNECTED ? (
+          {evidenceType === EvidenceType.CONNECTED ? (
+            <ArrowDownRight className="h-4 w-4" />
+          ) : evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY ? (
             <ArrowDownLeft className="h-4 w-4" />
           ) : (
             <ArrowUpRight className="h-4 w-4" />
