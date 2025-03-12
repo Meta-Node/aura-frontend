@@ -61,7 +61,7 @@ const CredibilityDetailsForRole = ({
       subjectId,
       evaluationCategory: roleEvaluationCategory,
     });
-  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
+  const { impactChartOption } = useImpactEChartOption(auraImpacts, true, 12);
   const link = '/subject/' + subjectId;
   const navigate = useNavigate();
 

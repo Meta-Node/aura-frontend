@@ -118,6 +118,7 @@ const getLabel = (
 export const useImpactEChartOption = (
   auraImpacts: AuraImpact[] | null,
   shouldFetchImages?: boolean,
+  maxImagesToShow = 5,
 ): {
   impactChartOption: EChartsOption;
   impactChartSmallOption: EChartsOption;
@@ -147,7 +148,7 @@ export const useImpactEChartOption = (
   // Determine if we need to fetch and display images
   const displayImages =
     shouldFetchImages &&
-    auraTopImpacts.length <= 5 &&
+    auraTopImpacts.length <= maxImagesToShow &&
     authData &&
     brightIdBackup;
 
