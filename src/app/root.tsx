@@ -103,7 +103,7 @@ export function ErrorBoundary({ error }: /*Route.ErrorBoundaryProps*/ any) {
     <ErrorBoundryUi
       stack={stack}
       errorTitle={error}
-      isDevelopment={!import.meta.env.DEV}
+      isDevelopment={import.meta.env.DEV}
     />
   );
 }

@@ -46,6 +46,7 @@ import { ConnectionLevel } from './components/connection-level';
 import { ActivityListSearch } from './components/activity-list-search';
 import { EvidenceListSearch } from './components/evidence-list-search';
 import SubjectProfileHeader from './components/header';
+import { ArrowDownLeft, ArrowDownRight, ArrowUpRight } from 'lucide-react';
 
 const ProfileTabs = ({
   selectedTab,
@@ -81,23 +82,19 @@ const ProfileTabs = ({
         {/*>*/}
         {/*  {option1}*/}
         {/*</p>*/}
-        <Tooltip
+        <button
           onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
           data-testid="table-view-switch-option-one"
-          position="top"
-          content="overall performance"
           className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.OVERVIEW
               ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
               : 'bg-transparent font-medium text-black dark:text-white'
           }`}
-          tooltipClassName="font-normal"
         >
           Overview
-        </Tooltip>
+        </button>
         {currentViewMode === PreferredView.PLAYER ? (
-          <Tooltip
-            content="user's community"
+          <button
             className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.CONNECTIONS
                 ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
@@ -105,14 +102,12 @@ const ProfileTabs = ({
             }`}
             onClick={() => setSelectedTab(ProfileTab.CONNECTIONS)}
             data-testid="table-view-switch-option-one"
-            tooltipClassName="font-normal"
           >
+            <ArrowDownRight className="mr-1 h-4 w-4" />
             Connections
-          </Tooltip>
+          </button>
         ) : (
-          <Tooltip
-            tooltipClassName="font-normal"
-            content="rating history"
+          <button
             className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.ACTIVITY ||
               selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
@@ -122,13 +117,12 @@ const ProfileTabs = ({
             onClick={() => setSelectedTab(ProfileTab.ACTIVITY)}
             data-testid="table-view-switch-option-one"
           >
+            <ArrowDownLeft className="mr-1 h-4 w-4" />
             Activity
-          </Tooltip>
+          </button>
         )}
-        <Tooltip
-          tooltipClassName="font-normal"
-          content="others opinion"
-          className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+        <button
+          className={`flex w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.EVALUATIONS
               ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
               : 'bg-transparent font-medium text-black dark:text-white'
@@ -136,8 +130,9 @@ const ProfileTabs = ({
           onClick={() => setSelectedTab(ProfileTab.EVALUATIONS)}
           data-testid="table-view-switch-option-two"
         >
+          <ArrowUpRight className="mr-1 h-4 w-4" />
           Evaluations
-        </Tooltip>
+        </button>
       </div>
     </div>
   );
