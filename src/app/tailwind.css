@@ -4,7 +4,7 @@
 
 .app_container__dark {
   @apply bg-black3;
-  background-image: url('../public/assets/images/app-background-illustrator.svg');
+  background-image: url('/assets/images/app-background-illustrator.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;

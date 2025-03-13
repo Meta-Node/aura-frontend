@@ -25,8 +25,6 @@ import {
 } from 'types/dashboard';
 import { __DEV__ } from 'utils/env';
 
-import Tooltip from '@/components/Shared/Tooltip';
-
 import { EmptyActivitiesList } from 'components/Shared/EmptyAndLoadingStates/EmptyActivitiesList';
 import { EmptyEvaluationsList } from 'components/Shared/EmptyAndLoadingStates/EmptyEvaluationsList';
 import { EmptySubjectList } from 'components/Shared/EmptyAndLoadingStates/EmptySubjectList';
@@ -68,20 +66,6 @@ const ProfileTabs = ({
           scrollbarColor: '#C9A2FF rgba(209, 213, 219, 0.5)',
         }}
       >
-        {/*<p*/}
-        {/*  className={` absolute w-1/2 top-0 bottom-0 rounded-md ease-in-out ${*/}
-        {/*    isChecked ? 'left-0 right-1/2' : 'right-0 left-1/2'*/}
-        {/*  }`}*/}
-        {/*></p>*/}
-        {/*<p*/}
-        {/*  className={`bg-transparent absolute cursor-pointer w-1/2 h-full flex items-center justify-center left-0 top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${*/}
-        {/*    isChecked ? 'text-white font-bold' : 'text-black font-medium'*/}
-        {/*  }`}*/}
-        {/*  onClick={() => setIsChecked(true)}*/}
-        {/*  data-testid="table-view-switch-option-one"*/}
-        {/*>*/}
-        {/*  {option1}*/}
-        {/*</p>*/}
         <button
           onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
           data-testid="table-view-switch-option-one"

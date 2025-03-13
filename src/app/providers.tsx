@@ -15,27 +15,27 @@ const { persistor, store } = configureAppStore();
 export default function Providers({ children }: PropsWithChildren) {
   return (
     <Provider store={store}>
-      <RefreshEvaluationsContextProvider>
-        <Toaster />
-        <UpdatePrompt />
-        {children}
-      </RefreshEvaluationsContextProvider>
+      <PersistGate persistor={persistor}>
+        <RefreshEvaluationsContextProvider>
+          <Toaster />
+          <UpdatePrompt />
+          {children}
+        </RefreshEvaluationsContextProvider>
+      </PersistGate>
     </Provider>
   );
 }
 
 export function AppProviders({ children }: PropsWithChildren) {
   return (
-    <PersistGate persistor={persistor}>
-      <MyEvaluationsContextProvider>
-        <SubjectsListContextProvider>
-          <NodeApiGateContextProvider>
-            <BrowserHistoryContextProvider>
-              {children}
-            </BrowserHistoryContextProvider>
-          </NodeApiGateContextProvider>
-        </SubjectsListContextProvider>
-      </MyEvaluationsContextProvider>
-    </PersistGate>
+    <MyEvaluationsContextProvider>
+      <SubjectsListContextProvider>
+        <NodeApiGateContextProvider>
+          <BrowserHistoryContextProvider>
+            {children}
+          </BrowserHistoryContextProvider>
+        </NodeApiGateContextProvider>
+      </SubjectsListContextProvider>
+    </MyEvaluationsContextProvider>
   );
 }
