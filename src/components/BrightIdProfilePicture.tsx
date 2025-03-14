@@ -37,7 +37,7 @@ const BrightIdProfilePicture = ({
   //TODO: use profile name in alt
 
   return (
-    <HoverCard>
+    <HoverCard openDelay={100}>
       <HoverCardTrigger asChild>
         <img
           {...props}
