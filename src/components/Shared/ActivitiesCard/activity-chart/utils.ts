@@ -1,6 +1,11 @@
 import { valueColorMap } from '@/constants/chart';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
-import { AuraRating, AuraNodeBrightIdConnection } from '@/types';
+import {
+  AuraRating,
+  AuraNodeBrightIdConnection,
+  BrightIdBackup,
+  BrightIdBackupConnection,
+} from '@/types';
 import {
   EvaluationCategory,
   evaluationsToEvaluatedCategory,
@@ -12,8 +17,18 @@ export const calculateRatingsImpact = (
   evaluations: AuraNodeBrightIdConnection[] | undefined,
   evaluationCategory: EvaluationCategory,
   profileData: ProfileInfo | undefined,
+  brightIdBackup: BrightIdBackup | null,
 ) => {
   if (!evaluations || !profileData) return [];
+
+  const connectionsAsObj = brightIdBackup?.connections.reduce(
+    (prev, curr) => {
+      prev[curr.id] = curr;
+
+      return prev;
+    },
+    {} as Record<string, BrightIdBackupConnection>,
+  );
 
   const outboundProfiles = evaluations?.reduce(
     (prev, curr) => {
@@ -48,7 +63,7 @@ export const calculateRatingsImpact = (
       score: profileImpact?.score,
       impact: score,
       impactPercentage: calculateImpactPercent(impact?.impacts ?? [], score),
-      evaluatorName: rating.toBrightId.slice(0, 7),
+      evaluatorName: connectionsAsObj?.[rating.toBrightId]?.name,
       evaluated: rating.toBrightId,
     };
   });

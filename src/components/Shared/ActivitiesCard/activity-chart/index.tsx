@@ -6,6 +6,8 @@ import { calculateRatingsImpact } from './utils';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 import { AuraRating, AuraNodeBrightIdConnection } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
+import { useSelector } from '@/store/hooks';
+import { selectBrightIdBackup } from '@/store/profile/selectors';
 
 type ActivityChartProps = {
   ratings: AuraRating[] | null;
@@ -38,6 +40,7 @@ export const ActivityChart = ({
   const [endIndex, setEndIndex] = useState<number>(0);
   const [isSelecting, setIsSelecting] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
+  const brightIdBackup = useSelector(selectBrightIdBackup);
 
   const chartData = useMemo(
     () =>
@@ -46,6 +49,7 @@ export const ActivityChart = ({
         outboundEvaluations,
         evaluationCategory,
         profile,
+        brightIdBackup,
       ),
     [memoizedRatings, evaluationCategory, profile, outboundEvaluations],
   );
