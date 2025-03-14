@@ -44,18 +44,41 @@ import { useSelector } from '../../../store/hooks';
 import { selectAuthData } from '../../../store/profile/selectors';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
 import Tooltip from '../Tooltip';
+import { AuraNodeBrightIdConnection } from '@/types';
+import useParseBrightIdVerificationData, {
+  getAuraVerification,
+} from '@/hooks/useParseBrightIdVerificationData';
+import { useGetBrightIDProfileQuery } from '@/store/api/profile';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Verifications } from '@/api/auranode.service';
 
 const ProfileEvaluation = ({
   fromSubjectId,
   toSubjectId,
   onClick,
   evidenceViewMode,
+  connection,
 }: {
   fromSubjectId: string;
   toSubjectId: string;
   onClick: () => void;
   evidenceViewMode: EvidenceViewMode;
+  connection?: AuraNodeBrightIdConnection;
 }) => {
+  const subjectIdToFetch = useMemo(
+    () =>
+      evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
+        ? fromSubjectId
+        : toSubjectId,
+    [evidenceViewMode, fromSubjectId, toSubjectId],
+  );
+
+  console.log(connection);
+
+  const profileFetch = useGetBrightIDProfileQuery(
+    connection ? skipToken : subjectIdToFetch,
+  );
+
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
   const { loading, ratingNumber } = useSubjectEvaluationFromContext({
     fromSubjectId,
@@ -66,6 +89,7 @@ const ProfileEvaluation = ({
         ? currentEvaluationCategory
         : viewModeToViewAs[viewModeToSubjectViewMode[currentViewMode]],
   });
+
   return (
     <div
       onClick={onClick}
@@ -76,6 +100,7 @@ const ProfileEvaluation = ({
       ) : ratingNumber &&
         evidenceViewMode !== EvidenceViewMode.INBOUND_CONNECTION ? (
         <EvaluatedCardBody
+          connection={connection ?? profileFetch.data}
           evidenceViewMode={evidenceViewMode}
           fromSubjectId={fromSubjectId}
           toSubjectId={toSubjectId}
@@ -83,6 +108,7 @@ const ProfileEvaluation = ({
       ) : (
         <ConnectedCardBody
           evidenceViewMode={evidenceViewMode}
+          connection={connection ?? profileFetch.data}
           fromSubjectId={fromSubjectId}
           toSubjectId={toSubjectId}
         />
@@ -94,8 +120,10 @@ const ProfileEvaluation = ({
 const ConnectionInfo = ({
   subjectId,
   evidenceViewMode,
+  connection,
 }: {
   subjectId: string;
+  connection?: { verifications: Verifications };
   evidenceViewMode: EvidenceViewMode;
 }) => {
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
@@ -115,12 +143,18 @@ const ConnectionInfo = ({
     evaluationCategory,
   });
 
-  const { auraImpacts } = useSubjectVerifications(
-    subjectId,
-    evaluationCategory,
+  const verification = useMemo(
+    () => getAuraVerification(connection?.verifications, evaluationCategory),
+    [evaluationCategory, connection],
   );
+
+  const auraImpacts = verification?.impacts;
+
   const authData = useSelector(selectAuthData);
-  const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
+  const impactPercentage = useImpactPercentage(
+    auraImpacts ?? [],
+    authData?.brightId,
+  );
 
   const name = useSubjectName(subjectId);
 
@@ -242,24 +276,37 @@ const UserName = ({ subjectId }: { subjectId: string }) => {
 const UserInformation = ({
   subjectId,
   evidenceViewMode,
+  connection,
 }: {
   subjectId: string;
   evidenceViewMode: EvidenceViewMode;
+  connection?: { verifications: Verifications };
 }) => {
   const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
     useViewMode();
-  const { auraLevel, auraScore, loading } = useSubjectVerifications(
-    subjectId,
-    evidenceViewMode === EvidenceViewMode.INBOUND_CONNECTION
-      ? EvaluationCategory.SUBJECT
-      : evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
-        ? currentRoleEvaluatorEvaluationCategory
-        : viewModeToViewAs[
-            evidenceViewMode === EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-              ? currentViewMode
-              : viewModeToSubjectViewMode[currentViewMode]
-          ],
+
+  const verificartions = useMemo(
+    () =>
+      getAuraVerification(
+        connection?.verifications,
+        evidenceViewMode === EvidenceViewMode.INBOUND_CONNECTION
+          ? EvaluationCategory.SUBJECT
+          : evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
+            ? currentRoleEvaluatorEvaluationCategory
+            : viewModeToViewAs[
+                evidenceViewMode ===
+                EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
+                  ? currentViewMode
+                  : viewModeToSubjectViewMode[currentViewMode]
+              ],
+      ),
+    [evidenceViewMode, connection],
   );
+
+  const auraScore = verificartions?.score;
+
+  const auraLevel = verificartions?.level;
+
   return (
     <div className="mb-1.5 flex items-center justify-between gap-0.5 rounded bg-gray00 p-1 pr-2 text-white">
       <img
@@ -280,8 +327,10 @@ const UserInformation = ({
         alt=""
         className="mx-1 h-3.5 w-3.5"
       />
-      {loading ? (
-        <p
+      <>
+        <Tooltip
+          content="subject level"
+          tooltipClassName="z-10 font-normal"
           className={`level mr-0.5 text-sm font-bold ${
             INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
               ? getViewModeTextColorClass(currentViewMode)
@@ -293,45 +342,25 @@ const UserInformation = ({
                 )
           }`}
         >
-          ...
-        </p>
-      ) : (
-        <>
-          <Tooltip
-            content="subject level"
-            tooltipClassName="z-10 font-normal"
-            className={`level mr-0.5 text-sm font-bold ${
-              INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
-                ? getViewModeTextColorClass(currentViewMode)
-                : getViewModeSubjectTextColorClass(
-                    evidenceViewMode ===
-                      EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-                      ? currentViewMode
-                      : viewModeToSubjectViewMode[currentViewMode],
-                  )
-            }`}
-          >
-            lvl {auraLevel}
-          </Tooltip>
-          <Tooltip
-            content="subject score"
-            tooltipClassName="z-10 font-normal"
-            className={`text-sm font-bold ${
-              INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
-                ? getViewModeTextColorClass(currentViewMode)
-                : getViewModeSubjectTextColorClass(
-                    evidenceViewMode ===
-                      EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-                      ? currentViewMode
-                      : viewModeToSubjectViewMode[currentViewMode],
-                  )
-            }`}
-          >
-            {/*13.4<span className="font-medium">m</span>*/}
-            {auraScore ? compactFormat(auraScore) : '-'}
-          </Tooltip>
-        </>
-      )}
+          lvl {auraLevel}
+        </Tooltip>
+        <Tooltip
+          content="subject score"
+          tooltipClassName="z-10 font-normal"
+          className={`text-sm font-bold ${
+            INBOUND_EVIDENCE_VIEW_MODES.includes(evidenceViewMode)
+              ? getViewModeTextColorClass(currentViewMode)
+              : getViewModeSubjectTextColorClass(
+                  evidenceViewMode ===
+                    EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
+                    ? currentViewMode
+                    : viewModeToSubjectViewMode[currentViewMode],
+                )
+          }`}
+        >
+          {auraScore ? compactFormat(auraScore) : '-'}
+        </Tooltip>
+      </>
     </div>
   );
 };
@@ -339,14 +368,17 @@ const UserInformation = ({
 const Graph = ({
   subjectId,
   evidenceViewMode,
+  connection,
 }: {
   subjectId: string;
   evidenceViewMode: EvidenceViewMode;
+  connection?: { verifications: Verifications };
 }) => {
   const { currentViewMode, currentRoleEvaluatorEvaluationCategory } =
     useViewMode();
-  const { auraImpacts } = useSubjectVerifications(
-    subjectId,
+
+  const { auraImpacts } = useParseBrightIdVerificationData(
+    connection?.verifications,
     evidenceViewMode === EvidenceViewMode.INBOUND_CONNECTION
       ? EvaluationCategory.SUBJECT
       : evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
@@ -357,6 +389,7 @@ const Graph = ({
               : viewModeToSubjectViewMode[currentViewMode]
           ],
   );
+
   const { impactChartSmallOption } = useImpactEChartOption(auraImpacts);
 
   return (
@@ -511,10 +544,12 @@ const EvaluatedCardBody = ({
   fromSubjectId,
   toSubjectId,
   evidenceViewMode,
+  connection,
 }: {
   fromSubjectId: string;
   toSubjectId: string;
   evidenceViewMode: EvidenceViewMode;
+  connection?: { verifications: Verifications };
 }) => {
   const leftCardSide = useMemo(
     () =>
@@ -552,6 +587,7 @@ const EvaluatedCardBody = ({
             }`}
           />
           <ConnectionInfo
+            connection={connection}
             evidenceViewMode={evidenceViewMode}
             subjectId={leftCardSide}
           />
@@ -560,6 +596,7 @@ const EvaluatedCardBody = ({
           <UserName subjectId={leftCardSide} />
           <UserInformation
             subjectId={leftCardSide}
+            connection={connection}
             evidenceViewMode={evidenceViewMode}
           />
           <Tooltip
@@ -570,6 +607,7 @@ const EvaluatedCardBody = ({
               <Graph
                 subjectId={leftCardSide}
                 evidenceViewMode={evidenceViewMode}
+                connection={connection}
               />
             </div>
           </Tooltip>
@@ -659,11 +697,13 @@ const ConnectionInformation = ({
 const ConnectedCardBody = ({
   evidenceViewMode,
   fromSubjectId,
+  connection,
   toSubjectId,
 }: {
   fromSubjectId: string;
   toSubjectId: string;
   evidenceViewMode: EvidenceViewMode;
+  connection?: { verifications: Verifications };
 }) => {
   const leftCardSide = useMemo(
     () =>
@@ -691,6 +731,7 @@ const ConnectedCardBody = ({
             className={`h-[46px] w-[46px] !min-w-[46px] rounded-lg border-2 border-pastel-purple`}
           />
           <ConnectionInfo
+            connection={connection}
             evidenceViewMode={evidenceViewMode}
             subjectId={leftCardSide}
           />
@@ -698,6 +739,7 @@ const ConnectedCardBody = ({
         <div className="flex w-full flex-col gap-0">
           <UserName subjectId={leftCardSide} />
           <UserInformation
+            connection={connection}
             evidenceViewMode={evidenceViewMode}
             subjectId={leftCardSide}
           />
@@ -708,6 +750,7 @@ const ConnectedCardBody = ({
             <div>
               <Graph
                 subjectId={leftCardSide}
+                connection={connection}
                 evidenceViewMode={evidenceViewMode}
               />
             </div>

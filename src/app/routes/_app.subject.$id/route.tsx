@@ -217,15 +217,12 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
 
   const evaluators = useMemo(() => {
     return (
-      evaluations
-        ?.filter((e) => e.rating && Number(e.rating.rating))
-        .map((e) => e.fromSubjectId) || []
+      evaluations?.filter((e) => e.rating && Number(e.rating.rating)) || []
     );
   }, [evaluations]);
 
-  const connectionIds = useMemo(() => {
-    if (selectedSort || selectedFilters)
-      return connections?.map((e) => e.fromSubjectId) || [];
+  const connectionsList = useMemo(() => {
+    if (selectedSort || selectedFilters) return connections || [];
 
     const myConnectionsMap =
       myConnections?.reduce(
@@ -239,41 +236,38 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
       ) ?? {};
 
     return (
-      connections
-        ?.sort((a, b) => {
-          const levelA = a.inboundConnection?.level;
-          const levelB = b.inboundConnection?.level;
+      connections?.sort((a, b) => {
+        const levelA = a.inboundConnection?.level;
+        const levelB = b.inboundConnection?.level;
 
-          const priorityA =
-            (levelA ? connectionLevelPriority[levelA] * 2 : Infinity) +
-            (a.inboundConnection?.id && myConnectionsMap[a.inboundConnection.id]
-              ? -1
-              : 0);
+        const priorityA =
+          (levelA ? connectionLevelPriority[levelA] * 2 : Infinity) +
+          (a.inboundConnection?.id && myConnectionsMap[a.inboundConnection.id]
+            ? -1
+            : 0);
 
-          const priorityB =
-            (levelB ? connectionLevelPriority[levelB] * 2 : Infinity) +
-            (b.inboundConnection?.id && myConnectionsMap[b.inboundConnection.id]
-              ? -1
-              : 0);
+        const priorityB =
+          (levelB ? connectionLevelPriority[levelB] * 2 : Infinity) +
+          (b.inboundConnection?.id && myConnectionsMap[b.inboundConnection.id]
+            ? -1
+            : 0);
 
-          if (priorityA === priorityB) {
-            const timestampA = a.inboundConnection?.timestamp || 0;
-            const timestampB = b.inboundConnection?.timestamp || 0;
+        if (priorityA === priorityB) {
+          const timestampA = a.inboundConnection?.timestamp || 0;
+          const timestampB = b.inboundConnection?.timestamp || 0;
 
-            return timestampB - timestampA;
-          }
+          return timestampB - timestampA;
+        }
 
-          return priorityA - priorityB;
-        })
-        .map((e) => e.fromSubjectId) || []
+        return priorityA - priorityB;
+      }) || []
     );
   }, [selectedSort, selectedFilters, connections, myConnections]);
 
   const evaluateds = useMemo(() => {
     return (
-      outboundEvaluations
-        ?.filter((e) => e.rating && Number(e.rating.rating))
-        .map((e) => e.toSubjectId) || []
+      outboundEvaluations?.filter((e) => e.rating && Number(e.rating.rating)) ||
+      []
     );
   }, [outboundEvaluations]);
 
@@ -308,7 +302,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   }, [currentViewMode, selectedTab]);
 
   return (
-    <div className="page page__dashboard flex flex-col gap-y-4 overflow-x-hidden">
+    <div className="page flex flex-col gap-y-4 overflow-x-hidden">
       {selectedTab !== ProfileTab.OVERVIEW && showEvaluateOverlayCard && (
         <EvaluateOverlayCard
           className={`absolute left-1/2 top-24 z-20 min-h-[89px] w-full max-w-[370px] -translate-x-1/2 md:w-[calc(100vw-40px)]`}
@@ -325,20 +319,6 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
 
       {__DEV__ && <ConnectionLevel subjectId={subjectId} />}
 
-      {/*{loadingMyEvaluation ? (*/}
-      {/*  <div className="card flex flex-col gap-2.5">...</div>*/}
-      {/*) : isEvaluated ? (*/}
-      {/*  <YourEvaluation*/}
-      {/*    subjectId={subjectId}*/}
-      {/*    setShowEvaluationFlow={setShowEvaluationFlow}*/}
-      {/*  />*/}
-      {/*) : (*/}
-      {/*  <NewEvaluationCard*/}
-      {/*    subjectId={subjectId}*/}
-      {/*    setShowEvaluationFlow={setShowEvaluationFlow}*/}
-      {/*  />*/}
-      {/*)}*/}
-      {/* if role is not player then show activities card */}
       <Modal
         title="Help: Understanding the Evidence Section"
         isOpen={isHelpModalOpen}
@@ -377,29 +357,31 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
             <InfiniteScrollLocal
               className={'-mb-5 flex h-full w-full flex-col gap-2.5 pb-5'}
               items={evaluateds}
-              renderItem={(evaluated) => (
-                <ProfileEvaluation
-                  evidenceViewMode={
-                    selectedTab === ProfileTab.ACTIVITY
-                      ? EvidenceViewMode.OUTBOUND_ACTIVITY
-                      : EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
-                  }
-                  onClick={() =>
-                    setCredibilityDetailsProps({
-                      subjectId: evaluated,
-                      evaluationCategory:
-                        selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
-                          ? EvaluationCategory.MANAGER
-                          : viewModeToViewAs[
-                              viewModeToSubjectViewMode[currentViewMode]
-                            ],
-                    })
-                  }
-                  key={evaluated}
-                  fromSubjectId={subjectId}
-                  toSubjectId={evaluated}
-                />
-              )}
+              renderItem={(evaluated) => {
+                return (
+                  <ProfileEvaluation
+                    evidenceViewMode={
+                      selectedTab === ProfileTab.ACTIVITY
+                        ? EvidenceViewMode.OUTBOUND_ACTIVITY
+                        : EvidenceViewMode.OUTBOUND_ACTIVITY_ON_MANAGERS
+                    }
+                    onClick={() =>
+                      setCredibilityDetailsProps({
+                        subjectId: evaluated.toSubjectId,
+                        evaluationCategory:
+                          selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
+                            ? EvaluationCategory.MANAGER
+                            : viewModeToViewAs[
+                                viewModeToSubjectViewMode[currentViewMode]
+                              ],
+                      })
+                    }
+                    key={evaluated.toSubjectId}
+                    fromSubjectId={subjectId}
+                    toSubjectId={evaluated.toSubjectId}
+                  />
+                );
+              }}
             />
           ) : (
             <EmptyActivitiesList
@@ -421,16 +403,17 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
               renderItem={(evaluator) => {
                 return (
                   <ProfileEvaluation
+                    connection={evaluator.inboundConnection!}
                     evidenceViewMode={EvidenceViewMode.INBOUND_EVALUATION}
                     onClick={() =>
                       setCredibilityDetailsProps({
-                        subjectId: evaluator,
+                        subjectId: evaluator.fromSubjectId,
                         evaluationCategory:
                           currentRoleEvaluatorEvaluationCategory,
                       })
                     }
-                    key={evaluator}
-                    fromSubjectId={evaluator}
+                    key={evaluator.fromSubjectId}
+                    fromSubjectId={evaluator.fromSubjectId}
                     toSubjectId={subjectId}
                   />
                 );
@@ -449,24 +432,27 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
           <ConnectionListSearch subjectId={subjectId} />
           {loadingInboundConnections ? (
             <LoadingList />
-          ) : connectionIds.length > 0 ? (
+          ) : connectionsList.length > 0 ? (
             <InfiniteScrollLocal
               className={'-mb-5 flex h-full w-full flex-col gap-2.5 pb-5'}
-              items={connectionIds}
-              renderItem={(connectionId) => (
-                <ProfileEvaluation
-                  evidenceViewMode={EvidenceViewMode.INBOUND_CONNECTION}
-                  onClick={() =>
-                    setCredibilityDetailsProps({
-                      subjectId: connectionId,
-                      evaluationCategory: EvaluationCategory.SUBJECT,
-                    })
-                  }
-                  key={connectionId}
-                  fromSubjectId={connectionId}
-                  toSubjectId={subjectId}
-                />
-              )}
+              items={connectionsList}
+              renderItem={(connection) => {
+                return (
+                  <ProfileEvaluation
+                    connection={connection.inboundConnection!}
+                    evidenceViewMode={EvidenceViewMode.INBOUND_CONNECTION}
+                    onClick={() =>
+                      setCredibilityDetailsProps({
+                        subjectId: connection.fromSubjectId,
+                        evaluationCategory: EvaluationCategory.SUBJECT,
+                      })
+                    }
+                    key={connection.fromSubjectId}
+                    fromSubjectId={connection.fromSubjectId}
+                    toSubjectId={subjectId}
+                  />
+                );
+              }}
             />
           ) : (
             <EmptySubjectList
