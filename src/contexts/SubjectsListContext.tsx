@@ -71,7 +71,13 @@ export const SubjectsListContextProvider: React.FC<ProviderProps> = ({
     if (!brightIdBackup?.connections || loading || myRatings === null)
       return null;
 
-    const connections = [...brightIdBackup.connections].sort(
+    const uniqueConnections = [
+      ...new Map(
+        brightIdBackup.connections.map((item) => [item.id, item]),
+      ).values(),
+    ];
+
+    const connections = uniqueConnections.sort(
       (a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0),
     );
 
