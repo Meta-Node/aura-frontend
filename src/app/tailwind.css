@@ -177,3 +177,7 @@
   background-size: 10px 10px;
   background-repeat: repeat;
 }
+
+.input-wrapper-focus {
+  @apply transition-all focus-within:ring-2 focus-within:ring-stone-200 dark:focus-within:ring-stone-700;
+}

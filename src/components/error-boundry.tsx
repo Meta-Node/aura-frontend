@@ -45,7 +45,7 @@ export default function ErrorBoundryUi({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
 
         <div className="app relative">
-          <div className="page page__dashboard flex flex-col gap-y-4 overflow-x-hidden">
+          <div className="page flex flex-col gap-y-4 overflow-x-hidden">
             <div className="mt-20 p-2 leading-loose">
               <h3 className="text-3xl font-semibold">
                 {!isDevelopment ? 'Wait What?' : 'Wait, What the Sigma?'}

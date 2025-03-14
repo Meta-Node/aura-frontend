@@ -18,7 +18,7 @@ const Dashboard = () => {
 
   const dispatch = useDispatch();
   return (
-    <div className="page page__dashboard">
+    <div className="page">
       <div className="row mb-4">
         <div className="card">
           <p className="text-sm">Domain</p>
