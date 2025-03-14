@@ -45,7 +45,7 @@ export default function ErrorBoundryUi({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
 
         <div className="app relative">
-          <div className="page page__dashboard flex flex-col gap-y-4 overflow-x-hidden">
+          <div className="page flex flex-col gap-y-4 overflow-x-hidden">
             <div className="mt-20 p-2 leading-loose">
               <h3 className="text-3xl font-semibold">
                 {!isDevelopment ? 'Wait What?' : 'Wait, What the Sigma?'}
@@ -80,8 +80,8 @@ export default function ErrorBoundryUi({
               {isDevelopment || (
                 <>
                   <p className="mt-4">
-                    Please don't make us aware of this error by not sharing it
-                    inside our discord channel:
+                    Please make us aware of this error by sharing it inside our
+                    discord channel:
                   </p>
                   <Link target="_blank" to="https://discord.gg/y24xeXq7mj">
                     <Card className="mt-5 flex cursor-pointer items-center gap-2 rounded-lg py-3.5 pl-5 pr-5">
@@ -96,9 +96,11 @@ export default function ErrorBoundryUi({
             {isDevelopment ? (
               <ErrorDetails stack={stack} title={errorTitle} />
             ) : (
-              <ErrorRestoreActions />
+              <></>
             )}
           </div>
+
+          <ErrorRestoreActions />
         </div>
       </div>
     </>

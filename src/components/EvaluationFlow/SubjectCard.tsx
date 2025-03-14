@@ -83,8 +83,9 @@ export const SubjectCard = ({ subjectId, index }: SubjectCardSkeletonProps) => {
     auraScore ?? 0,
   );
 
-  if (loading)
+  if (loading) {
     return <SubjectCardSkeleton index={index} subjectId={subjectId} />;
+  }
 
   return (
     <Link

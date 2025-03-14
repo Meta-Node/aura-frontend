@@ -32,7 +32,7 @@ import { useDispatch, useSelector } from 'store/hooks';
 import { loginThunk } from 'store/profile/actions';
 import { copyToClipboard } from 'utils/copyToClipboard';
 import { __DEV__ } from 'utils/env';
-
+import platform from 'platform';
 import { FadeIn } from '../../../../components/animations';
 import CustomTrans from '../../../../components/CustomTrans';
 
@@ -108,10 +108,11 @@ const RecoveryCodeScreen = () => {
     runEffect();
   }, [action, dispatch, id]);
 
-  // set QRCode and SVG
   useEffect(() => {
     if (recoveryData.channel.url && recoveryData.aesKey) {
       const channelUrl = recoveryData.channel.url;
+      const deviceInfo = platform.description ?? navigator.userAgent;
+
       const newQrUrl = buildRecoveryChannelQrUrl({
         aesKey: recoveryData.aesKey,
         url: channelUrl.href.startsWith('/')
@@ -121,9 +122,8 @@ const RecoveryCodeScreen = () => {
           : channelUrl,
         t: urlTypesOfActions[action],
         changePrimaryDevice: false,
-        name: 'Aura',
+        name: `Aura - ${deviceInfo}`,
       });
-      console.log(`new qrCode url: ${newQrUrl.href}`);
       setQrUrl(newQrUrl);
     }
   }, [action, recoveryData.aesKey, recoveryData.channel.url]);

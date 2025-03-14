@@ -1,43 +1,5 @@
 import { MigrationManifest } from 'redux-persist';
-
 import { PreferredView } from '@/types/dashboard';
-
-// TODO: migrate to redux persist idb storage
-// import localforage from 'localforage';
-// import createIdbStorage from '@piotr-cz/redux-persist-idb-storage/src';
-
-// async function migrateLocalForageData() {
-//   try {
-//     const allKeys = await localforage.keys();
-//     const migratedData = {} as Record<string, string | null>;
-
-//     for (const key of allKeys) {
-//       migratedData[key] = await localforage.getItem(key);
-//     }
-
-//     return migratedData;
-//   } catch (error) {
-//     console.error('Migration error:', error);
-//     return null;
-//   }
-// }
-
-// const idbStorage = createIdbStorage({
-//   name: 'AuraStorage',
-//   storeName: 'keyval',
-// });
-
-// async function migrateToIDBStorage(): Promise<any> {
-//   const migratedData = await migrateLocalForageData();
-//   if (migratedData) {
-//     for (const [key, value] of Object.entries(migratedData)) {
-//       await idbStorage.setItem(key, value);
-//     }
-//     console.log('Migration complete.');
-//   }
-
-//   return migratedData;
-// }
 
 export const migrations: MigrationManifest = {
   1: (oldState: any) => {

@@ -4,6 +4,7 @@ import { PlayerHistorySequenceType } from 'types';
 import { RoutePath } from 'types/router';
 
 import { subjectViewAsIconColored } from '../../constants';
+import { Fragment } from 'react/jsx-runtime';
 
 export const PlayerHistorySequence = ({
   playerHistorySequence,
@@ -22,12 +23,12 @@ export const PlayerHistorySequence = ({
         }}
       >
         {playerHistorySequence.map((item, i) => (
-          <>
+          <Fragment key={i}>
             <PlayerHistoryItem item={item} />
             {i !== playerHistorySequence.length - 1 && (
               <img src="/assets/images/Header/play-icon.svg" alt="" />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

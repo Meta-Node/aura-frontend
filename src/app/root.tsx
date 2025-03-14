@@ -16,12 +16,12 @@ import { useSelector } from '@/store/hooks';
 import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
 import { useDispatch } from 'react-redux';
 import DebugToolbar from '@/components/ux/debug-toolbar';
+import ErrorBoundryUi from '@/components/error-boundry';
 
 import './i18n';
 import './tailwind.css';
 import '../assets/fonts/fonts.css';
 import 'swiper/css';
-import ErrorBoundryUi from '@/components/error-boundry';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

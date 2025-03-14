@@ -118,17 +118,18 @@ const ProfileOverview = ({
         {hasHeader && (
           <div className="mb-4 text-lg font-bold text-black">{title}</div>
         )}
-        <ActivitiesCard
-          subjectId={subjectId}
-          onLastEvaluationClick={setCredibilityDetailsProps}
-          viewMode={viewMode}
-        />
+
+        {viewMode === PreferredView.PLAYER || (
+          <ActivitiesCard
+            subjectId={subjectId}
+            onLastEvaluationClick={setCredibilityDetailsProps}
+            viewMode={viewMode}
+          />
+        )}
         <div className="flex flex-col gap-1.5">
-          {viewMode !== PreferredView.PLAYER && (
-            <div className="text-xl font-semibold">
-              {viewModeToString[viewMode]} Evaluations
-            </div>
-          )}
+          <div className="text-xl font-semibold">
+            {viewModeToString[viewMode]} Evaluations
+          </div>
           <div className="header__info flex flex-col gap-1">
             <ShowData
               title="Evaluations"

@@ -231,7 +231,7 @@ export const SubjectListControls = ({
 
   return (
     <>
-      <div className="flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-lg border bg-card p-1 text-card-foreground dark:bg-dark-primary">
+      <div className="input-wrapper-focus flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-lg border bg-card p-1 text-card-foreground">
         <div className="card__input flex items-center gap-2 rounded px-3.5">
           <Search className="text-stone-700" />
 

@@ -4,7 +4,7 @@
 
 .app_container__dark {
   @apply bg-black3;
-  background-image: url('../public/assets/images/app-background-illustrator.svg');
+  background-image: url('/assets/images/app-background-illustrator.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -176,4 +176,8 @@
   background: radial-gradient(circle, #e9e9e9 1px, transparent 1px);
   background-size: 10px 10px;
   background-repeat: repeat;
+}
+
+.input-wrapper-focus {
+  @apply transition-all focus-within:ring-2 focus-within:ring-stone-200 dark:focus-within:ring-stone-700;
 }

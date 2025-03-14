@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 const DomainOverview = () => {
   return (
-    <div className="page page__dashboard">
+    <div className="page">
       <div className="row mb-4">
         <div className="card">
           <span className="row">

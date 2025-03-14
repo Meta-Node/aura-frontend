@@ -19,12 +19,8 @@ export const backupApiSlice = createApi({
   }),
   extractRehydrationInfo(action, { reducerPath }): any {
     if (isHydrateAction(action)) {
-      if (!action.payload) {
-        return undefined;
-      }
-
-      if (action.key === 'root') {
-        return action.payload[reducerPath];
+      if (action.key === 'root' && action.payload) {
+        // return action.payload[reducerPath];
       }
     }
 
