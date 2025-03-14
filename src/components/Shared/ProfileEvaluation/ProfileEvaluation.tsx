@@ -73,8 +73,6 @@ const ProfileEvaluation = ({
     [evidenceViewMode, fromSubjectId, toSubjectId],
   );
 
-  console.log(connection);
-
   const profileFetch = useGetBrightIDProfileQuery(
     connection ? skipToken : subjectIdToFetch,
   );
