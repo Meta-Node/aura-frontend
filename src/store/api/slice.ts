@@ -27,6 +27,8 @@ export const apiSlice = createApi({
         >;
         const queries = payload.queries;
 
+        console.log('REHYDRATE', payload);
+
         return {
           ...payload,
           queries: Object.keys(queries).reduce(
