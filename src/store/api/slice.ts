@@ -17,22 +17,32 @@ export const apiSlice = createApi({
     baseUrl: AURA_NODE_URL_PROXY,
     mode: 'no-cors',
   }),
+
+  tagTypes: ['BrightID'],
   extractRehydrationInfo(action, { reducerPath }): any {
     if (isHydrateAction(action)) {
-      if (!action.payload) {
-        return undefined;
-      }
+      if (action.key === 'root' && action.payload) {
+        const payload = action.payload[reducerPath] as ReturnType<
+          typeof apiSlice.reducer
+        >;
+        const queries = payload.queries;
 
-      if (action.key === 'root') {
-        return action.payload[reducerPath];
-      }
+        return {
+          ...payload,
+          queries: Object.keys(queries).reduce(
+            (prev, curr) => {
+              if (queries[curr]?.data) {
+                prev[curr] = queries[curr];
+              }
 
-      // if (action.payload[reducerPath]) {
-      //   return action.payload[reducerPath];
-      // }
+              return prev;
+            },
+            {} as Record<string, any>,
+          ),
+          subscriptions: {},
+        };
+      }
     }
-
-    return undefined;
   },
 
   endpoints: () => ({}),

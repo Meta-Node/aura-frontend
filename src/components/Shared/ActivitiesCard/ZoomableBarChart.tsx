@@ -19,10 +19,12 @@ import {
 } from '@/components/ui/chart';
 import { MdRefresh } from 'react-icons/md';
 import { formatDuration } from '@/utils/time';
-import { AuraRating } from '@/types';
-import { EvaluationCategory } from '@/types/dashboard';
+import { AuraNodeBrightIdConnection, AuraRating } from '@/types';
+import {
+  EvaluationCategory,
+  evaluationsToEvaluatedCategory,
+} from '@/types/dashboard';
 import { valueColorMap } from '@/constants/chart';
-import { AuraImpact } from '@/api/auranode.service';
 import { compactFormat } from '@/utils/number';
 import {
   ArrowLeftIcon,
@@ -30,15 +32,18 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from 'lucide-react';
-import useOutboundImpacts from '@/hooks/useOutboundImpacts';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
+import { calculateImpact, calculateImpactPercent } from '@/utils/score';
 
 type ZoomableChartProps = {
   ratings: AuraRating[] | null;
   evaluationCategory: EvaluationCategory;
   subjectId: string;
   loading: boolean;
+  outboundEvaluations?: AuraNodeBrightIdConnection[];
+  profile?: ProfileInfo;
 };
 
 const chartConfig = {
@@ -47,7 +52,6 @@ const chartConfig = {
     color: 'hsl(var(--primary))',
   },
 } satisfies ChartConfig;
-
 const CustomRatingTooltip = ({ payload, label }: TooltipProps<any, any>) => {
   if (!payload || payload.length === 0) return null;
 
@@ -78,31 +82,47 @@ const CustomRatingTooltip = ({ payload, label }: TooltipProps<any, any>) => {
 
 const processAuraRatings = (
   ratings: AuraRating[],
-  impacts: (AuraImpact & { evaluated: string; subjectScore?: number })[],
+  evaluations: AuraNodeBrightIdConnection[] | undefined,
+  evaluationCategory: EvaluationCategory,
+  profileData: ProfileInfo | undefined,
 ) => {
-  const impactsObj = impacts.reduce(
+  if (!evaluations || !profileData) return [];
+
+  const outboundProfiles = evaluations?.reduce(
     (prev, curr) => {
-      prev[curr.evaluated] = curr;
+      prev[curr.id] = curr;
 
       return prev;
     },
-    {} as Record<
-      string,
-      AuraImpact & { evaluated: string; subjectScore?: number }
-    >,
+    {} as Record<string, AuraNodeBrightIdConnection>,
+  );
+
+  const profileImpact = getAuraVerification(
+    profileData.verifications,
+    evaluationCategory,
   );
 
   return ratings.map((rating) => {
-    const impact = impactsObj[rating.toBrightId];
+    const ratingProfile = outboundProfiles[rating.toBrightId];
 
+    const impact = getAuraVerification(
+      ratingProfile.verifications,
+      evaluationsToEvaluatedCategory[evaluationCategory],
+    );
+
+    const score = calculateImpact(
+      profileImpact?.score ?? 0,
+      Number(rating.rating),
+    );
     return {
       ...rating,
       color: valueColorMap[rating.rating],
-      subjectScore: impact?.subjectScore,
-      score: impact?.score,
-      impact: impact?.impact ?? 0,
-      evaluatorName: impact?.evaluatorName ?? impact?.evaluated.slice(0, 7),
-      evaluated: impact?.evaluated,
+      subjectScore: impact?.score,
+      score: profileImpact?.score,
+      impact: score,
+      impactPercentage: calculateImpactPercent(impact?.impacts ?? [], score),
+      evaluatorName: rating.toBrightId.slice(0, 7),
+      evaluated: rating.toBrightId,
     };
   });
 };
@@ -111,14 +131,12 @@ export function SkeletonChart() {
   return (
     <div className="mb-12 h-52 w-full">
       <div className="flex h-full flex-col">
-        {/* Button Group Skeleton */}
         <div className="my-2 flex justify-end gap-2 sm:mb-4">
           {[...Array(5)].map((_, i) => (
             <Skeleton key={i} className="h-6 w-6 rounded-md" />
           ))}
         </div>
 
-        {/* Main Chart Area Skeleton */}
         <div className="relative flex-1">
           <Skeleton className="h-full w-full rounded-lg" />
         </div>
@@ -132,6 +150,8 @@ export function ZoomableChart({
   ratings,
   subjectId,
   loading: ratingsLoading,
+  outboundEvaluations,
+  profile,
 }: ZoomableChartProps) {
   const memoizedRatings = useMemo(() => ratings ?? [], [ratings]);
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
@@ -141,17 +161,15 @@ export function ZoomableChart({
   const [isSelecting, setIsSelecting] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const { impacts, isLoading } = useOutboundImpacts(
-    memoizedRatings,
-    evaluationCategory,
-    subjectId,
-  );
-
   const chartData = useMemo(() => {
-    return processAuraRatings(ratings ?? [], impacts);
-  }, [memoizedRatings, impacts]);
+    return processAuraRatings(
+      ratings ?? [],
+      outboundEvaluations,
+      evaluationCategory,
+      profile,
+    );
+  }, [memoizedRatings, evaluationCategory, profile, outboundEvaluations]);
 
-  // Initialize or reset the view when chartData changes
   useEffect(() => {
     if (chartData.length > 0) {
       setStartIndex(0);
@@ -159,7 +177,6 @@ export function ZoomableChart({
     }
   }, [chartData]);
 
-  // Slice the data based on current indices
   const zoomedData = useMemo(() => {
     return chartData.slice(startIndex, endIndex + 1);
   }, [chartData, startIndex, endIndex]);
@@ -172,12 +189,11 @@ export function ZoomableChart({
 
   const scaleBarHeight = useCallback(
     (data: any) => {
-      return (data.impact / maxAbs) * 4;
+      return data.impactPercentage * 4;
     },
     [maxAbs],
   );
 
-  // Mouse event handlers using indices
   const handleMouseDown = useCallback(
     (e: any) => {
       if (e && e.activePayload && e.activePayload[0]) {
@@ -214,13 +230,11 @@ export function ZoomableChart({
     setIsSelecting(false);
   }, [refAreaLeft, refAreaRight]);
 
-  // Reset to full view
   const handleReset = useCallback(() => {
     setStartIndex(0);
     setEndIndex(chartData.length - 1);
   }, [chartData]);
 
-  // Handle zooming with wheel or pinch
   const handleZoom = useCallback(
     (
       e: React.WheelEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
@@ -280,7 +294,6 @@ export function ZoomableChart({
     setEndIndex((prev) => Math.min(prev + 1, chartData.length - 1));
   }, [startIndex, endIndex, chartData]);
 
-  // Pan left
   const panLeft = useCallback(() => {
     const currentRange = endIndex - startIndex;
     const shift = 1;
@@ -294,7 +307,6 @@ export function ZoomableChart({
     setEndIndex(newEndIndex);
   }, [startIndex, endIndex, chartData]);
 
-  // Pan right
   const panRight = useCallback(() => {
     const currentRange = endIndex - startIndex;
     const shift = Math.round(currentRange * 0.1);
@@ -311,7 +323,7 @@ export function ZoomableChart({
     setEndIndex(newEndIndex);
   }, [startIndex, endIndex, chartData]);
 
-  if (isLoading || ratingsLoading) return <SkeletonChart />;
+  if (ratingsLoading) return <SkeletonChart />;
 
   return (
     <ChartContainer config={chartConfig} className="mb-12 h-52 w-full">
@@ -401,15 +413,6 @@ export function ZoomableChart({
             />
             <ChartTooltip content={<CustomRatingTooltip />} />
             <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
-            <Area
-              type="monotone"
-              dataKey="rating"
-              stroke={chartConfig.evaluations.color}
-              fillOpacity={1}
-              dot={{ r: 2, fill: 'white' }}
-              fill="url(#colorEvaluations)"
-              isAnimationActive={false}
-            />
             <Bar
               maxBarSize={20}
               dataKey={(data) => scaleBarHeight(data)}
@@ -419,6 +422,18 @@ export function ZoomableChart({
                 <Cell radius={2} key={`cell-${index}`} fill={entry.color} />
               ))}
             </Bar>
+
+            <Area
+              type="monotone"
+              dataKey="rating"
+              stroke={chartConfig.evaluations.color}
+              fillOpacity={1}
+              dot={{ r: 2, fill: 'white' }}
+              fill="url(#colorEvaluations)"
+              z={10}
+              isAnimationActive={false}
+            />
+
             {refAreaLeft !== null && refAreaRight !== null && (
               <ReferenceArea
                 x1={chartData[Math.min(refAreaLeft, refAreaRight)].timestamp}

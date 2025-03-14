@@ -8,7 +8,9 @@ import {
 } from '../../../constants';
 import { CredibilityDetailsProps } from '../../../types';
 import { PreferredView } from '../../../types/dashboard';
-import { ZoomableChart } from './ZoomableBarChart';
+import { useGetBrightIDProfileQuery } from '@/store/api/profile';
+import { useGetOutboundConnectionsQuery } from '@/store/api/connections';
+import { ActivityChart } from './activity-chart';
 
 const ActivitiesCard = ({
   subjectId,
@@ -25,6 +27,9 @@ const ActivitiesCard = ({
     subjectId,
     evaluationCategory: viewModeToViewAs[viewModeToSubjectViewMode[viewMode]],
   });
+
+  const { data, isLoading } = useGetOutboundConnectionsQuery({ id: subjectId });
+  const profileFetch = useGetBrightIDProfileQuery(subjectId);
 
   const outboundActiveRatings = useMemo(
     () => outboundRatings?.filter((r) => Number(r.rating)),
@@ -56,7 +61,7 @@ const ActivitiesCard = ({
             </div>
           </div>
         </div>
-        <ZoomableChart
+        <ActivityChart
           key={viewMode}
           ratings={
             outboundRatings
@@ -64,22 +69,12 @@ const ActivitiesCard = ({
               .sort((a, b) => a.timestamp - b.timestamp)
               .slice(0, 20) ?? []
           }
-          loading={loading}
+          outboundEvaluations={data}
+          loading={loading || profileFetch.isLoading}
+          profile={profileFetch.data}
           evaluationCategory={viewModeToViewAs[viewMode]}
           subjectId={subjectId}
         />
-        {/* <ChartWithZoom /> */}
-        {/* <ActivityChart
-          key={viewMode}
-          ratings={
-            outboundRatings
-              ?.filter((r) => r.rating !== '0')
-              .sort((a, b) => a.timestamp - b.timestamp)
-              .slice(0, 20) ?? []
-          }
-          evaluationCategory={viewModeToViewAs[viewMode]}
-          subjectId={subjectId}
-        /> */}
       </div>
     </>
   );

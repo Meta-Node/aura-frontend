@@ -20,19 +20,12 @@ import { selectPreferredTheme } from '@/BrightID/actions';
 import { useDispatch } from '@/store/hooks';
 import { getProfilePhoto } from '@/store/api/backup';
 
-// Pray to God for this messy code – may He help us refactor it!
-
-// =========================
-// useSubjectVerifications Hook
-// =========================
 export const useSubjectVerifications = (
   subjectId: string | null | undefined,
   evaluationCategory: EvaluationCategory,
 ) => {
-  const profileQuery = useGetBrightIDProfileQuery(
-    subjectId ? { id: subjectId } : skipToken,
-    { refetchOnMountOrArgChange: true },
-  );
+  const profileQuery = useGetBrightIDProfileQuery(subjectId ?? skipToken);
+
   const verifications = profileQuery.data?.verifications;
   const parsedData = useParseBrightIdVerificationData(
     verifications,
@@ -47,11 +40,6 @@ export const useSubjectVerifications = (
   };
 };
 
-// =========================
-// Helper Functions
-// =========================
-
-// Build rich label configuration for image display in chart labels
 const buildRichLabels = (
   impacts: AuraImpact[],
   images: Record<string, string | null>,
@@ -71,7 +59,6 @@ const buildRichLabels = (
     {} as Record<string, any>,
   );
 
-// Compute item style based on evaluator and impact
 const getItemStyle = (
   item: AuraImpact,
   borderRadius: number[],
@@ -93,7 +80,6 @@ const getItemStyle = (
   };
 };
 
-// Get label text for an impact item
 const getLabel = (
   item: AuraImpact,
   isPositiveSeries: boolean,
@@ -112,9 +98,6 @@ const getLabel = (
   ).toFixed(1)}%`;
 };
 
-// =========================
-// useImpactEChartOption Hook
-// =========================
 export const useImpactEChartOption = (
   auraImpacts: AuraImpact[] | null,
   shouldFetchImages?: boolean,
@@ -129,7 +112,6 @@ export const useImpactEChartOption = (
   const brightIdBackup = useSelector(selectBrightIdBackup);
   const dispatch = useDispatch();
 
-  // Filter and sort top impacts (max 20)
   const auraTopImpacts = useMemo(
     () =>
       auraImpacts
@@ -139,20 +121,17 @@ export const useImpactEChartOption = (
     [auraImpacts],
   );
 
-  // Sum of all impact values
   const auraSumImpacts = useMemo(
     () => auraTopImpacts.reduce((sum, curr) => sum + curr.impact, 0),
     [auraTopImpacts],
   );
 
-  // Determine if we need to fetch and display images
   const displayImages =
     shouldFetchImages &&
     auraTopImpacts.length <= maxImagesToShow &&
     authData &&
     brightIdBackup;
 
-  // Initialize profile images with blockies if not fetching images
   const [profileImages, setProfileImages] = useState<
     Record<string, string | null>
   >(() => {
@@ -168,7 +147,6 @@ export const useImpactEChartOption = (
     return {};
   });
 
-  // Fetch user images when applicable
   useEffect(() => {
     if (!displayImages) return;
     const abortController = new AbortController();
@@ -225,7 +203,6 @@ export const useImpactEChartOption = (
     dispatch,
   ]);
 
-  // Build rich labels if images are available
   const richLabels = displayImages
     ? buildRichLabels(auraTopImpacts, profileImages)
     : {};
@@ -366,9 +343,6 @@ export const useImpactEChartOption = (
   return { impactChartOption, impactChartSmallOption };
 };
 
-// =========================
-// useImpactPercentage Hook
-// =========================
 export const useImpactPercentage = (
   auraImpacts: AuraImpactRaw[] | null,
   subjectId: string | null | undefined,
@@ -386,9 +360,6 @@ export const useImpactPercentage = (
     return Math.round((Math.abs(subjectImpact) * 100) / total);
   }, [auraImpacts, subjectId]);
 
-// =========================
-// useTotalImpact Hook
-// =========================
 export const useTotalImpact = (auraImpacts: AuraImpactRaw[] | null) =>
   useMemo(() => {
     if (!auraImpacts)

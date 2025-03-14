@@ -7,8 +7,27 @@ import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
 
 import { userLevelPoints } from '../constants/levels';
-import { AuraRating } from '@/types';
 import { AuraImpactRaw } from '@/api/auranode.service';
+
+export const calculateImpact = (score: number, rating: number) => {
+  if (rating > 0) {
+    return score * rating;
+  }
+
+  return rating * score * 4;
+};
+
+export const calculateImpactPercent = (
+  impacts: AuraImpactRaw[],
+  score: number,
+) => {
+  const sumImpacts = impacts.reduce(
+    (prev, curr) => Math.abs(curr.impact) + prev,
+    0,
+  );
+  if (!sumImpacts) return 0;
+  return score / sumImpacts;
+};
 
 export const calculateRemainingScoreToNextLevel = (
   view: EvaluationCategory,

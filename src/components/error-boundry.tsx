@@ -80,8 +80,8 @@ export default function ErrorBoundryUi({
               {isDevelopment || (
                 <>
                   <p className="mt-4">
-                    Please don't make us aware of this error by not sharing it
-                    inside our discord channel:
+                    Please make us aware of this error by sharing it inside our
+                    discord channel:
                   </p>
                   <Link target="_blank" to="https://discord.gg/y24xeXq7mj">
                     <Card className="mt-5 flex cursor-pointer items-center gap-2 rounded-lg py-3.5 pl-5 pr-5">
@@ -96,9 +96,11 @@ export default function ErrorBoundryUi({
             {isDevelopment ? (
               <ErrorDetails stack={stack} title={errorTitle} />
             ) : (
-              <ErrorRestoreActions />
+              <></>
             )}
           </div>
+
+          <ErrorRestoreActions />
         </div>
       </div>
     </>

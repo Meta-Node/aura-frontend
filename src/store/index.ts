@@ -8,8 +8,11 @@ import {
   PERSIST,
   PURGE,
   REHYDRATE,
+  PersistedState,
+  PAUSE,
+  FLUSH,
+  REGISTER,
 } from 'redux-persist';
-import localForage from 'localforage';
 
 import reducers from 'BrightID/reducer';
 import { __DEV__ } from 'utils/env';
@@ -24,14 +27,67 @@ import {
 } from 'redux-state-sync';
 import { operationsSlice } from '@/BrightID/actions';
 import { cacheSlice } from './cache';
+import localforage from 'localforage';
+
+const migrationManifest = createMigrate(migrations, { debug: __DEV__ });
+
+const migrateDbFromDeserializedToSerialized = async () => {
+  const localforageDbVersion = await localforage.getItem('version');
+
+  if (Number(localforageDbVersion) >= dbVersion) return;
+
+  const dbKey = `persist:${persistConfig.key}`;
+
+  const persistData: Record<string, unknown> | null =
+    await localforage.getItem(dbKey);
+
+  if (!persistData) return;
+
+  for (const key in persistData) {
+    if (typeof persistData[key] === 'string') {
+      try {
+        persistData[key] = JSON.parse(persistData[key]);
+      } catch {
+        continue;
+      }
+    }
+  }
+
+  await localforage.setItem('version', 1);
+  await localforage.setItem(dbKey, persistData);
+
+  return persistData;
+};
+
+const persistIgnoredActions = [
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+];
 
 const persistConfig = {
   key: 'root',
   version: 4,
-  storage: localForage,
+  storage: localforage,
   blacklist: ['recoveryData'],
-  migrate: createMigrate(migrations, { debug: __DEV__ }),
+  migrate: async (state: PersistedState, currentVersion: number) => {
+    const data = (await migrateDbFromDeserializedToSerialized()) ?? state;
+
+    return await migrationManifest(data as PersistedState, currentVersion);
+  },
+  serialize: false,
+  deserialize: false,
 };
+
+localforage.config({
+  storeName: 'keyvaluepairs',
+  name: 'localforage',
+});
+
+const dbVersion = 1;
 
 const rootReducer = withReduxStateSync(
   combineReducers({
@@ -43,11 +99,6 @@ const rootReducer = withReduxStateSync(
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-localForage.config({
-  storeName: 'keyvaluepairs',
-  name: 'localforage',
-});
-
 export function configureAppStore(preloadedState?: any) {
   const syncMiddleware = createStateSyncMiddleware({
     channel: 'AURA_UPDATE_CHANNEL',
@@ -55,10 +106,9 @@ export function configureAppStore(preloadedState?: any) {
       type: typeof window !== 'undefined' ? 'localstorage' : 'native',
     },
     blacklist: [
-      PERSIST,
-      PURGE,
-      REHYDRATE,
+      ...persistIgnoredActions,
       apiSlice.reducerPath,
+      backupApiSlice.reducerPath,
       operationsSlice.reducerPath,
       '__rtkq/unfocused',
       '__rtkq/focused',
@@ -69,16 +119,7 @@ export function configureAppStore(preloadedState?: any) {
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [
-            'persist/PERSIST',
-            'persist/REHYDRATE',
-            'recoveryData/setRecoveryChannel',
-            'recoveryData/init',
-            apiSlice.reducerPath,
-          ],
-          ignoredPaths: ['recoveryData'],
-        },
+        serializableCheck: false,
         immutableCheck: false,
       }).concat(
         apiSlice.middleware,
