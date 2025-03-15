@@ -12,6 +12,7 @@ import {
 import EvaluationsChartTooltip from './chart-tooltip';
 import { ChartTooltip } from '@/components/ui/chart';
 import { ChartAreaProps } from '../../ActivitiesCard/activity-chart/chart-area';
+import { cn } from '@/lib/utils';
 
 export interface EvaluationChartAreaProps extends ChartAreaProps {}
 
@@ -24,6 +25,7 @@ export const EvaluationsChartArea = ({
   handleMouseMove,
   handleMouseUp,
   zoomedData,
+  onBarClick,
 }: EvaluationChartAreaProps) => (
   <ResponsiveContainer width="100%" height="100%">
     <ComposedChart
@@ -59,7 +61,13 @@ export const EvaluationsChartArea = ({
         opacity={0.9}
       >
         {zoomedData.map((entry, index) => (
-          <Cell radius={2} key={`cell-${index}`} fill={entry.color} />
+          <Cell
+            className={cn(onBarClick && 'cursor-pointer')}
+            radius={entry.borderRadius}
+            onClick={onBarClick?.bind(null, entry)}
+            key={`cell-${index}`}
+            fill={entry.color}
+          />
         ))}
       </Bar>
       <Area

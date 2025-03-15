@@ -19,6 +19,7 @@ import { EvaluationCategory } from '../types/dashboard';
 import { selectPreferredTheme } from '@/BrightID/actions';
 import { useDispatch } from '@/store/hooks';
 import { getProfilePhoto } from '@/store/api/backup';
+import { getBarChartColor } from '@/utils/connection';
 
 export const useSubjectVerifications = (
   subjectId: string | null | undefined,
@@ -58,27 +59,6 @@ const buildRichLabels = (
     },
     {} as Record<string, any>,
   );
-
-const getItemStyle = (
-  item: AuraImpact,
-  borderRadius: number[],
-  authBrightId: string | undefined,
-  focusedSubjectId: string | undefined,
-) => {
-  const colorMap =
-    authBrightId === item.evaluator
-      ? userRatingColorMap
-      : item.evaluator === focusedSubjectId
-        ? subjectRatingColorMap
-        : valueColorMap;
-  return {
-    color: findNearestColor(
-      item.confidence * (item.impact >= 0 ? 1 : -1),
-      colorMap,
-    ),
-    borderRadius,
-  };
-};
 
 const getLabel = (
   item: AuraImpact,
@@ -225,9 +205,8 @@ export const useImpactEChartOption = (
             value: item.impact,
             label: getLabel(item, false, auraSumImpacts),
             evaluator: item.evaluator,
-            itemStyle: getItemStyle(
+            itemStyle: getBarChartColor(
               item,
-              item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
               authData?.brightId,
               focusedSubjectId,
             ),
@@ -256,9 +235,8 @@ export const useImpactEChartOption = (
             value: item.impact,
             label: getLabel(item, true, auraSumImpacts),
             evaluator: item.evaluator,
-            itemStyle: getItemStyle(
+            itemStyle: getBarChartColor(
               item,
-              item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
               authData?.brightId,
               focusedSubjectId,
             ),
@@ -324,9 +302,8 @@ export const useImpactEChartOption = (
             value: item.impact,
             label: item.evaluatorName,
             evaluator: item.evaluator,
-            itemStyle: getItemStyle(
+            itemStyle: getBarChartColor(
               item,
-              item.impact >= 0 ? [2, 2, 0, 0] : [0, 0, 2, 2],
               authData?.brightId,
               focusedSubjectId,
             ),

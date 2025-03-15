@@ -9,14 +9,15 @@ import { EvaluationCategory } from '@/types/dashboard';
 import { useSelector } from '@/store/hooks';
 import { selectBrightIdBackup } from '@/store/profile/selectors';
 
-type ActivityChartProps = {
+export interface ActivityChartProps {
   ratings: AuraRating[] | null;
   evaluationCategory: EvaluationCategory;
   subjectId: string;
   loading: boolean;
   outboundEvaluations?: AuraNodeBrightIdConnection[];
   profile?: ProfileInfo;
-};
+  onBarClick?: (entry: any) => void;
+}
 
 const chartConfig = {
   evaluations: {
@@ -32,6 +33,7 @@ export const ActivityChart = ({
   loading: ratingsLoading,
   outboundEvaluations,
   profile,
+  onBarClick,
 }: ActivityChartProps) => {
   const memoizedRatings = useMemo(() => ratings ?? [], [ratings]);
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
@@ -207,6 +209,7 @@ export const ActivityChart = ({
           handleMouseMove={handleMouseMove}
           handleMouseUp={handleMouseUp}
           zoomedData={zoomedData}
+          onBarClick={onBarClick}
         />
       </div>
     </ChartContainer>

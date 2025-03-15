@@ -9,11 +9,12 @@ import { useSelector } from '@/store/hooks';
 import { selectBrightIdBackup } from '@/store/profile/selectors';
 import { AuraImpact } from '@/api/auranode.service';
 
-type EvaluationsChartProps = {
+export interface EvaluationsChartProps {
   evaluationCategory: EvaluationCategory;
   loading: boolean;
   impacts?: AuraImpact[];
-};
+  onBarClick?: (entry: any) => void;
+}
 
 const chartConfig = {
   evaluations: {
@@ -26,6 +27,7 @@ export const EvaluationsChart = ({
   evaluationCategory,
   loading: impactsLoading,
   impacts,
+  onBarClick,
 }: EvaluationsChartProps) => {
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
   const [refAreaRight, setRefAreaRight] = useState<number | null>(null);
@@ -199,6 +201,7 @@ export const EvaluationsChart = ({
           handleMouseMove={handleMouseMove}
           handleMouseUp={handleMouseUp}
           zoomedData={zoomedData}
+          onBarClick={onBarClick}
         />
       </div>
     </ChartContainer>

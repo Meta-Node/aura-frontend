@@ -78,17 +78,11 @@ const ProfileOverview = ({
     () =>
       (auraImpacts ?? [])
         .filter((item) => item.impact > 0)
-        .sort((a, b) => b.impact - a.impact),
+        .sort((a, b) => a.impact - b.impact),
     [auraImpacts],
   );
 
-  // const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
-
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
-
-  // const { toggleFiltersById } = useSubjectInboundEvaluationsContext({
-  //   subjectId,
-  // });
 
   const authData = useSelector(selectAuthData);
 
@@ -97,27 +91,13 @@ const ProfileOverview = ({
   //   showEvidenceList?.();
   // };
 
-  // const onChartClick = (params: any) => {
-  //   if (params.componentType === 'graphic') {
-  //     console.log(
-  //       'Profile image clicked:',
-  //       params.event.target.style.data.evaluator,
-  //     );
-  //     setCredibilityDetailsProps({
-  //       subjectId: params.event.target.style.data.evaluator,
-  //       evaluationCategory:
-  //         viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
-  //     });
-  //   }
-  //   if (params.componentType === 'series') {
-  //     console.log('Bar clicked:', params.data.evaluator);
-  //     setCredibilityDetailsProps({
-  //       subjectId: params.data.evaluator,
-  //       evaluationCategory:
-  //         viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
-  //     });
-  //   }
-  // };
+  const onChartClick = (params: any) => {
+    setCredibilityDetailsProps({
+      subjectId: params.evaluated,
+      evaluationCategory:
+        viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+    });
+  };
 
   return (
     <>
@@ -138,6 +118,7 @@ const ProfileOverview = ({
             subjectId={subjectId}
             onLastEvaluationClick={setCredibilityDetailsProps}
             viewMode={viewMode}
+            onBarChartClick={onChartClick}
           />
         )}
         <div className="flex flex-col gap-1.5">
@@ -195,6 +176,7 @@ const ProfileOverview = ({
           <EvaluationsChart
             evaluationCategory={viewModeToViewAs[viewMode]}
             loading={loading}
+            onBarClick={onChartClick}
             impacts={auraImpactsSorted}
           />
           {/* <ReactECharts

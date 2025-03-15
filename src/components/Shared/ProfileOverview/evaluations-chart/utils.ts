@@ -1,7 +1,10 @@
 import { AuraImpact } from '@/api/auranode.service';
-import { valueColorMap } from '@/constants/chart';
-import { BrightIdBackup, BrightIdBackupConnection } from '@/types';
+import { BrightIdBackup } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
+import {
+  getBarChartColor,
+  prepareBrightIdProfileResolver,
+} from '@/utils/connection';
 import { calculateImpactPercent } from '@/utils/score';
 
 export const calculateRatingsImpact = (
@@ -11,14 +14,7 @@ export const calculateRatingsImpact = (
 ) => {
   if (!impacts) return [];
 
-  const connectionsAsObj = brightIdBackup?.connections.reduce(
-    (prev, curr) => {
-      prev[curr.id] = curr;
-
-      return prev;
-    },
-    {} as Record<string, BrightIdBackupConnection>,
-  );
+  const resolver = prepareBrightIdProfileResolver(brightIdBackup);
 
   const inboundImpacts = impacts?.reduce(
     (prev, curr) => {
@@ -34,10 +30,10 @@ export const calculateRatingsImpact = (
 
     return {
       ...impact,
-      color: valueColorMap[impact.confidence],
+      ...getBarChartColor(impact, brightIdBackup?.userData.id, undefined),
       subjectScore: ratingProfile.score,
       impactPercentage: calculateImpactPercent(impacts, impact.impact),
-      evaluatorName: connectionsAsObj?.[impact.evaluator]?.name,
+      evaluatorName: resolver(impact.evaluator).name,
       evaluated: impact.evaluator,
     };
   });
