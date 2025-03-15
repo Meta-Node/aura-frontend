@@ -3,7 +3,7 @@ import EvaluateOverlayCard from 'components/EvaluationFlow/EvaluateOverlayCard';
 import EvaluationFlow from 'components/EvaluationFlow/EvaluationFlow';
 import InfiniteScrollLocal from 'components/InfiniteScrollLocal';
 import Modal from 'components/Shared/Modal';
-import ProfileEvaluation from 'components/Shared/ProfileEvaluation/ProfileEvaluation';
+import ProfileEvaluation from '@/components/Shared/ProfileEvaluation';
 import {
   SubjectInboundEvaluationsContextProvider,
   useSubjectInboundEvaluationsContext,
