@@ -7,11 +7,15 @@ import {
   useTotalImpact,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router';
 import { selectAuthData } from 'store/profile/selectors';
-import { PreferredView, ProfileTab } from 'types/dashboard';
+import {
+  evaluationsToEvaluatedCategory,
+  PreferredView,
+  ProfileTab,
+} from 'types/dashboard';
 
 import {
   Dialog,
@@ -30,6 +34,7 @@ import { compactFormat } from '../../../utils/number';
 import ActivitiesCard from '../ActivitiesCard';
 import ChartViewHelpModal from '@/app/routes/_app.subject.$id/components/chart-view-help-modal';
 import LevelProgress from '@/app/routes/_app.home/components/LevelProgress';
+import { EvaluationsChart } from './evaluations-chart';
 
 const ProfileOverview = ({
   subjectId,
@@ -62,48 +67,57 @@ const ProfileOverview = ({
     subjectId,
     evaluationCategory: viewModeToViewAs[viewMode],
   });
-  const { auraScore, auraImpacts } = useSubjectVerifications(
+  const { auraScore, auraImpacts, loading } = useSubjectVerifications(
     subjectId,
     viewModeToViewAs[viewMode],
   );
   const { totalPositiveImpact, totalNegativeImpact } =
     useTotalImpact(auraImpacts);
-  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
+
+  const auraImpactsSorted = useMemo(
+    () =>
+      (auraImpacts ?? [])
+        .filter((item) => item.impact > 0)
+        .sort((a, b) => b.impact - a.impact),
+    [auraImpacts],
+  );
+
+  // const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
 
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
-  const { toggleFiltersById } = useSubjectInboundEvaluationsContext({
-    subjectId,
-  });
+  // const { toggleFiltersById } = useSubjectInboundEvaluationsContext({
+  //   subjectId,
+  // });
 
   const authData = useSelector(selectAuthData);
 
-  const setEvidenceListFilter = (filterId: AuraFilterId) => {
-    toggleFiltersById([filterId], true);
-    showEvidenceList?.();
-  };
+  // const setEvidenceListFilter = (filterId: AuraFilterId) => {
+  //   toggleFiltersById([filterId], true);
+  //   showEvidenceList?.();
+  // };
 
-  const onChartClick = (params: any) => {
-    if (params.componentType === 'graphic') {
-      console.log(
-        'Profile image clicked:',
-        params.event.target.style.data.evaluator,
-      );
-      setCredibilityDetailsProps({
-        subjectId: params.event.target.style.data.evaluator,
-        evaluationCategory:
-          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
-      });
-    }
-    if (params.componentType === 'series') {
-      console.log('Bar clicked:', params.data.evaluator);
-      setCredibilityDetailsProps({
-        subjectId: params.data.evaluator,
-        evaluationCategory:
-          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
-      });
-    }
-  };
+  // const onChartClick = (params: any) => {
+  //   if (params.componentType === 'graphic') {
+  //     console.log(
+  //       'Profile image clicked:',
+  //       params.event.target.style.data.evaluator,
+  //     );
+  //     setCredibilityDetailsProps({
+  //       subjectId: params.event.target.style.data.evaluator,
+  //       evaluationCategory:
+  //         viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+  //     });
+  //   }
+  //   if (params.componentType === 'series') {
+  //     console.log('Bar clicked:', params.data.evaluator);
+  //     setCredibilityDetailsProps({
+  //       subjectId: params.data.evaluator,
+  //       evaluationCategory:
+  //         viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+  //     });
+  //   }
+  // };
 
   return (
     <>
@@ -178,13 +192,18 @@ const ProfileOverview = ({
               />
             </button>
           </div>
-          <ReactECharts
+          <EvaluationsChart
+            evaluationCategory={viewModeToViewAs[viewMode]}
+            loading={loading}
+            impacts={auraImpactsSorted}
+          />
+          {/* <ReactECharts
             option={impactChartOption}
             onEvents={{
               click: onChartClick, // Attach click event
             }}
             className="body__chart mb-3 w-full"
-          />
+          /> */}
           {/* <div className="chart-info mb-5 flex flex-wrap gap-y-2.5">
             <div className="chart-info__item flex w-1/2 items-center gap-1">
               <div className="chart-info__item__color h-[11px] w-[22px] rounded bg-[#E2E2E2]"></div>

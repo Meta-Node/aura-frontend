@@ -9,21 +9,13 @@ import {
   ResponsiveContainer,
   ReferenceArea,
 } from 'recharts';
-import ActivityChartTooltip from './chart-tooltip';
+import EvaluationsChartTooltip from './chart-tooltip';
 import { ChartTooltip } from '@/components/ui/chart';
+import { ChartAreaProps } from '../../ActivitiesCard/activity-chart/chart-area';
 
-export interface ChartAreaProps {
-  data: any[];
-  refAreaLeft: number | null;
-  refAreaRight: number | null;
-  scaleBarHeight: (data: any) => number;
-  handleMouseDown: (e: any) => void;
-  handleMouseMove: (e: any) => void;
-  handleMouseUp: () => void;
-  zoomedData: any[];
-}
+export interface EvaluationChartAreaProps extends ChartAreaProps {}
 
-export const ActivityChartArea = ({
+export const EvaluationsChartArea = ({
   data,
   refAreaLeft,
   refAreaRight,
@@ -32,7 +24,7 @@ export const ActivityChartArea = ({
   handleMouseMove,
   handleMouseUp,
   zoomedData,
-}: ChartAreaProps) => (
+}: EvaluationChartAreaProps) => (
   <ResponsiveContainer width="100%" height="100%">
     <ComposedChart
       data={zoomedData}
@@ -58,7 +50,7 @@ export const ActivityChartArea = ({
         domain={[-4, 4]}
         type="number"
       />
-      <ChartTooltip content={<ActivityChartTooltip />} />
+      <ChartTooltip content={<EvaluationsChartTooltip />} />
 
       <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
       <Bar
@@ -72,7 +64,7 @@ export const ActivityChartArea = ({
       </Bar>
       <Area
         type="monotone"
-        dataKey="rating"
+        dataKey="confidence"
         stroke="hsl(var(--primary))"
         fillOpacity={1}
         dot={{ r: 2, fill: 'white' }}
@@ -93,4 +85,4 @@ export const ActivityChartArea = ({
   </ResponsiveContainer>
 );
 
-export default ActivityChartArea;
+export default EvaluationsChartArea;
