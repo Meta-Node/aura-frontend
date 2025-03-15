@@ -36,12 +36,18 @@ const migrateDbFromDeserializedToSerialized = async () => {
 
   if (Number(localforageDbVersion) >= dbVersion) return;
 
+  console.log('Appliying db migration');
+
   const dbKey = `persist:${persistConfig.key}`;
 
-  const persistData: Record<string, unknown> | null =
+  let persistData: Record<string, unknown> | null =
     await localforage.getItem(dbKey);
 
   if (!persistData) return;
+
+  if (typeof persistData === 'string') {
+    persistData = JSON.parse(persistData);
+  }
 
   for (const key in persistData) {
     if (typeof persistData[key] === 'string') {
