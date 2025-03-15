@@ -28,19 +28,9 @@ export default function ErrorBoundryUi({
   const [isCopiedMessage, setCopiedMessage] = useState(false);
 
   return (
-    <>
+    <div className="bg-background-light dark:bg-background">
       <div
-        style={
-          !isDevelopment
-            ? {}
-            : {
-                background:
-                  'linear-gradient(90deg, hsla(0,0%,25%,0.5) 1px, transparent 1px), linear-gradient(hsla(0,0%,25%,0.5) 1px, transparent 1px)',
-                backgroundSize: '20px 20px',
-                backgroundRepeat: 'repeat',
-              }
-        }
-        className={`bg-circle-dots relative bg-background-light dark:bg-background`}
+        className={`${!isDevelopment ? 'bg-circle-dots' : 'bg-lines'} relative`}
       >
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
 
@@ -103,7 +93,7 @@ export default function ErrorBoundryUi({
           <ErrorRestoreActions />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
