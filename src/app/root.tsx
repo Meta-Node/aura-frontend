@@ -52,7 +52,7 @@ export function Layout({ children }: PropsWithChildren) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="selection:bg-[#ffa080]">
         <Providers>
           {children}
 
