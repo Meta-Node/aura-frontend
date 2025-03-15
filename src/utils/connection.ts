@@ -55,12 +55,13 @@ export const getBarChartColor = (
       : item.evaluator === focusedSubjectId
         ? subjectRatingColorMap
         : valueColorMap;
+
   return {
     color: findNearestColor(
       item.confidence * (item.impact >= 0 ? 1 : -1),
       colorMap,
     ),
-    borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [0, 0, 4, 4],
+    borderRadius: item.impact >= 0 ? [4, 4, 0, 0] : [4, 4, 0, 0],
   };
 };
 

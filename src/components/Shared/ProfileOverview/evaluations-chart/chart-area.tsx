@@ -13,8 +13,51 @@ import EvaluationsChartTooltip from './chart-tooltip';
 import { ChartTooltip } from '@/components/ui/chart';
 import { ChartAreaProps } from '../../ActivitiesCard/activity-chart/chart-area';
 import { cn } from '@/lib/utils';
+import BrightIdProfilePicture from '@/components/BrightIdProfilePicture';
+import { FC } from 'react';
 
 export interface EvaluationChartAreaProps extends ChartAreaProps {}
+
+const maxImageSize = 40;
+const minImageSize = 16;
+const maxNumberOfImages = 20;
+
+function calculateImageSize(numberOfImages: number) {
+  if (numberOfImages < 1 || numberOfImages > maxNumberOfImages) {
+    return 0;
+  }
+
+  const sizeRange = maxImageSize - minImageSize;
+  const sizePerImage = sizeRange / (maxNumberOfImages - 1);
+  const imageSize = maxImageSize - sizePerImage * (numberOfImages - 1);
+
+  return imageSize;
+}
+
+export const ImageLabel: FC<any> = ({ x, y, payload, data }) => {
+  if (data.length > maxNumberOfImages) return null;
+
+  const item = data[payload.index];
+
+  const imageSize = calculateImageSize(data.length);
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <foreignObject
+        width={imageSize}
+        height={imageSize}
+        x={-imageSize / 2}
+        y={-91 - imageSize / 2 + (Math.sign(item.impact) * imageSize) / 2}
+      >
+        <BrightIdProfilePicture
+          withoutHover
+          className="rounded"
+          subjectId={item.evaluated}
+        />
+      </foreignObject>
+    </g>
+  );
+};
 
 export const EvaluationsChartArea = ({
   data,
@@ -41,7 +84,7 @@ export const EvaluationsChartArea = ({
         tickLine={false}
         axisLine={false}
         style={{ fontSize: '10px', userSelect: 'none' }}
-        tick={false}
+        tick={<ImageLabel data={zoomedData} />}
       />
       <YAxis
         tickLine={false}

@@ -12,6 +12,7 @@ import {
 import ActivityChartTooltip from './chart-tooltip';
 import { ChartTooltip } from '@/components/ui/chart';
 import { cn } from '@/lib/utils';
+import { ImageLabel } from '../../ProfileOverview/evaluations-chart/chart-area';
 
 export interface ChartAreaProps {
   data: any[];
@@ -50,7 +51,7 @@ export const ActivityChartArea = ({
           tickLine={false}
           axisLine={false}
           style={{ fontSize: '10px', userSelect: 'none' }}
-          tick={false}
+          tick={<ImageLabel data={zoomedData} />}
         />
         <YAxis
           tickLine={false}

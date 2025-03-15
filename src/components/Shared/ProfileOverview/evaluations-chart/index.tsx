@@ -36,7 +36,6 @@ export const EvaluationsChart = ({
   const [isSelecting, setIsSelecting] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
   const brightIdBackup = useSelector(selectBrightIdBackup);
-
   const chartData = useMemo(
     () => calculateRatingsImpact(impacts, evaluationCategory, brightIdBackup),
     [evaluationCategory, brightIdBackup, impacts],

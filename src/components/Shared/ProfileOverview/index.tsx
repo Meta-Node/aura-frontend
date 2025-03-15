@@ -77,7 +77,7 @@ const ProfileOverview = ({
   const auraImpactsSorted = useMemo(
     () =>
       (auraImpacts ?? [])
-        .filter((item) => item.impact > 0)
+        .filter((item) => item.impact !== 0)
         .sort((a, b) => a.impact - b.impact),
     [auraImpacts],
   );
