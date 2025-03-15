@@ -16,10 +16,13 @@ import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';
 import Tooltip from '../Shared/Tooltip';
 import { Card } from '../ui/card';
 import { memo } from 'react';
+import { Verifications } from '@/api/auranode.service';
+import useParseBrightIdVerificationData from '@/hooks/useParseBrightIdVerificationData';
 
 export interface SubjectCardSkeletonProps {
   subjectId: string;
   index?: string | number;
+  verifications?: Verifications;
 }
 
 export const SubjectCardSkeleton = ({
@@ -68,13 +71,17 @@ export const SubjectCardSkeleton = ({
     </div>
   );
 };
-export const SubjectCard = ({ subjectId, index }: SubjectCardSkeletonProps) => {
+export const SubjectCard = ({
+  subjectId,
+  index,
+  verifications,
+}: SubjectCardSkeletonProps) => {
   const name = useSubjectName(subjectId);
 
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
 
-  const { auraLevel, auraScore, auraImpacts, loading } =
-    useSubjectVerifications(subjectId, currentEvaluationCategory);
+  const { auraLevel, auraScore, auraImpacts } =
+    useParseBrightIdVerificationData(verifications, currentEvaluationCategory);
 
   const { impactChartSmallOption } = useImpactEChartOption(auraImpacts);
 
@@ -82,10 +89,6 @@ export const SubjectCard = ({ subjectId, index }: SubjectCardSkeletonProps) => {
     currentEvaluationCategory,
     auraScore ?? 0,
   );
-
-  if (loading) {
-    return <SubjectCardSkeleton index={index} subjectId={subjectId} />;
-  }
 
   return (
     <Link

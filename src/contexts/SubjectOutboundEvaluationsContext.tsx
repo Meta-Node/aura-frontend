@@ -88,6 +88,7 @@ export const SubjectOutboundEvaluationsContextProvider: React.FC<
           outboundConnection: outboundConnections.find(
             (c) => c.id === r.fromBrightId,
           ),
+          verifications: r.verifications,
         }));
       outboundConnections.forEach((c) => {
         const notRated = ratings.findIndex((r) => r.toBrightId === c.id) === -1;

@@ -357,6 +357,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
               renderItem={(evaluated) => {
                 return (
                   <ProfileEvaluation
+                    connection={evaluated}
                     evidenceViewMode={
                       selectedTab === ProfileTab.ACTIVITY
                         ? EvidenceViewMode.OUTBOUND_ACTIVITY
@@ -400,7 +401,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
               renderItem={(evaluator) => {
                 return (
                   <ProfileEvaluation
-                    connection={evaluator.inboundConnection!}
+                    connection={evaluator}
                     evidenceViewMode={EvidenceViewMode.INBOUND_EVALUATION}
                     onClick={() =>
                       setCredibilityDetailsProps({
@@ -436,7 +437,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
               renderItem={(connection) => {
                 return (
                   <ProfileEvaluation
-                    connection={connection.inboundConnection!}
+                    connection={connection}
                     evidenceViewMode={EvidenceViewMode.INBOUND_CONNECTION}
                     onClick={() =>
                       setCredibilityDetailsProps({

@@ -118,6 +118,7 @@ const Home = () => {
                     items={filteredSubjects}
                     renderItem={(conn, index) => (
                       <SubjectCardMemo
+                        verifications={conn.verifications}
                         key={conn.id}
                         index={index}
                         subjectId={conn.id}

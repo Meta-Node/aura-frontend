@@ -112,6 +112,7 @@ export type AuraRating = {
   updatedAt: string;
   category: EvaluationCategory;
   isPending: boolean;
+  verifications?: Verifications;
 };
 
 export type AuraInboundConnectionAndRatingData = {
@@ -119,6 +120,7 @@ export type AuraInboundConnectionAndRatingData = {
   name?: string;
   rating?: AuraRating;
   inboundConnection?: AuraNodeBrightIdConnection;
+  verifications: Verifications;
 };
 
 export type AuraOutboundConnectionAndRatingData = {
@@ -126,6 +128,7 @@ export type AuraOutboundConnectionAndRatingData = {
   name?: string;
   rating?: AuraRating;
   outboundConnection?: AuraNodeBrightIdConnection;
+  verifications: Verifications;
 };
 
 export type AuraRatingRetrieveResponse = {

@@ -93,6 +93,7 @@ export const SubjectInboundEvaluationsContextProvider: React.FC<
         inboundConnection: inboundConnections.find(
           (c) => c.id === r.fromBrightId,
         ),
+        verificartions: r.verifications,
       }),
     );
     inboundConnections.forEach((c) => {

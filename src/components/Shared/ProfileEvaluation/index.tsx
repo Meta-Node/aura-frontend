@@ -5,14 +5,11 @@ import {
 } from 'constants/index';
 import { useSubjectEvaluationFromContext } from 'hooks/useSubjectEvaluation';
 import useViewMode from 'hooks/useViewMode';
-import { useMemo } from 'react';
 import { EvidenceViewMode } from 'types/dashboard';
 
-import { AuraNodeBrightIdConnection } from '@/types';
-import { useGetBrightIDProfileQuery } from '@/store/api/profile';
-import { skipToken } from '@reduxjs/toolkit/query';
 import ConnectedCardBody from './connected-card-body';
 import EvaluatedCardBody from './evaluated-card-body';
+import { Verifications } from '@/api/auranode.service';
 
 const ProfileEvaluation = ({
   fromSubjectId,
@@ -25,20 +22,8 @@ const ProfileEvaluation = ({
   toSubjectId: string;
   onClick: () => void;
   evidenceViewMode: EvidenceViewMode;
-  connection?: AuraNodeBrightIdConnection;
+  connection?: { verifications: Verifications };
 }) => {
-  const subjectIdToFetch = useMemo(
-    () =>
-      evidenceViewMode === EvidenceViewMode.INBOUND_EVALUATION
-        ? fromSubjectId
-        : toSubjectId,
-    [evidenceViewMode, fromSubjectId, toSubjectId],
-  );
-
-  const profileFetch = useGetBrightIDProfileQuery(
-    connection ? skipToken : subjectIdToFetch,
-  );
-
   const { currentViewMode, currentEvaluationCategory } = useViewMode();
   const { loading, ratingNumber } = useSubjectEvaluationFromContext({
     fromSubjectId,
@@ -60,7 +45,7 @@ const ProfileEvaluation = ({
       ) : ratingNumber &&
         evidenceViewMode !== EvidenceViewMode.INBOUND_CONNECTION ? (
         <EvaluatedCardBody
-          connection={connection ?? profileFetch.data}
+          connection={connection}
           evidenceViewMode={evidenceViewMode}
           fromSubjectId={fromSubjectId}
           toSubjectId={toSubjectId}
@@ -68,7 +53,7 @@ const ProfileEvaluation = ({
       ) : (
         <ConnectedCardBody
           evidenceViewMode={evidenceViewMode}
-          connection={connection ?? profileFetch.data}
+          connection={connection}
           fromSubjectId={fromSubjectId}
           toSubjectId={toSubjectId}
         />

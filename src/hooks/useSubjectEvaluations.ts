@@ -197,6 +197,7 @@ export const useOutboundEvaluations = ({
                 updatedAt: new Date(e.modified || c.timestamp).toISOString(),
                 timestamp: e.modified || c.timestamp,
                 isPending: false,
+                verifications: c.verifications,
               })) ?? []),
           ),
         [] as AuraRating[],
