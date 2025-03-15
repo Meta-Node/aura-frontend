@@ -10,18 +10,20 @@ import { CredibilityDetailsProps } from '../../../types';
 import { PreferredView } from '../../../types/dashboard';
 import { useGetBrightIDProfileQuery } from '@/store/api/profile';
 import { useGetOutboundConnectionsQuery } from '@/store/api/connections';
-import { ActivityChart } from './activity-chart';
+import { ActivityChart, ActivityChartProps } from './activity-chart';
 
 const ActivitiesCard = ({
   subjectId,
   onLastEvaluationClick,
   viewMode,
+  onBarChartClick,
 }: {
   subjectId: string;
   onLastEvaluationClick: (
     credibilityDetailsProps: CredibilityDetailsProps,
   ) => void;
   viewMode: PreferredView;
+  onBarChartClick?: ActivityChartProps['onBarClick'];
 }) => {
   const { ratings: outboundRatings, loading } = useOutboundEvaluationsContext({
     subjectId,
@@ -74,6 +76,7 @@ const ActivitiesCard = ({
           profile={profileFetch.data}
           evaluationCategory={viewModeToViewAs[viewMode]}
           subjectId={subjectId}
+          onBarClick={onBarChartClick}
         />
       </div>
     </>

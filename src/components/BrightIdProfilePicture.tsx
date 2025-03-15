@@ -12,9 +12,11 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 const DEFAULT_PROFILE_PICTURE = '/assets/images/avatar-thumb.jpg';
 const BrightIdProfilePicture = ({
   subjectId,
+  withoutHover = false,
   ...props
 }: React.HTMLAttributes<HTMLImageElement> & {
   subjectId: string | undefined;
+  withoutHover?: boolean;
 }) => {
   const imgSrc = useMemo(
     () =>
@@ -33,6 +35,16 @@ const BrightIdProfilePicture = ({
   );
 
   const imageSource = data || imgSrc;
+
+  if (withoutHover)
+    return (
+      <img
+        {...props}
+        alt={subjectId}
+        className={`${props.className ?? ''} object-cover`}
+        src={imageSource || '/placeholder.svg'}
+      />
+    );
 
   //TODO: use profile name in alt
 

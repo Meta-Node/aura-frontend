@@ -1,15 +1,17 @@
-import { valueColorMap } from '@/constants/chart';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import {
   AuraRating,
   AuraNodeBrightIdConnection,
   BrightIdBackup,
-  BrightIdBackupConnection,
 } from '@/types';
 import {
   EvaluationCategory,
   evaluationsToEvaluatedCategory,
 } from '@/types/dashboard';
+import {
+  getBarChartColor,
+  prepareBrightIdProfileResolver,
+} from '@/utils/connection';
 import { calculateImpact, calculateImpactPercent } from '@/utils/score';
 
 export const calculateRatingsImpact = (
@@ -21,14 +23,7 @@ export const calculateRatingsImpact = (
 ) => {
   if (!evaluations || !profileData) return [];
 
-  const connectionsAsObj = brightIdBackup?.connections.reduce(
-    (prev, curr) => {
-      prev[curr.id] = curr;
-
-      return prev;
-    },
-    {} as Record<string, BrightIdBackupConnection>,
-  );
+  const resolver = prepareBrightIdProfileResolver(brightIdBackup);
 
   const outboundProfiles = evaluations?.reduce(
     (prev, curr) => {
@@ -56,14 +51,23 @@ export const calculateRatingsImpact = (
       profileImpact?.score ?? 0,
       Number(rating.rating),
     );
+
     return {
       ...rating,
-      color: valueColorMap[rating.rating],
+      ...getBarChartColor(
+        {
+          confidence: Number(rating.rating),
+          evaluator: rating.toBrightId,
+          impact: Math.abs(score),
+        },
+        brightIdBackup?.userData.id,
+        undefined,
+      ),
       subjectScore: impact?.score,
       score: profileImpact?.score,
       impact: score,
       impactPercentage: calculateImpactPercent(impact?.impacts ?? [], score),
-      evaluatorName: connectionsAsObj?.[rating.toBrightId]?.name,
+      evaluatorName: resolver(rating.toBrightId).name,
       evaluated: rating.toBrightId,
     };
   });

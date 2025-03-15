@@ -29,6 +29,7 @@ import { HorizontalProgressBar } from './Shared/HorizontalProgressBar';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import BrightIdProfilePicture from './BrightIdProfilePicture';
+import { Skeleton } from './ui/skeleton';
 
 const views = [
   EvaluationCategory.SUBJECT,
@@ -270,7 +271,7 @@ const CredibilityDetails = ({
           className={`mb-5 min-h-[52px] w-full rounded-lg p-1 px-1.5 py-1.5`}
         >
           <div
-            className={`flex h-full min-w-full flex-row gap-1 overflow-x-auto overflow-y-hidden pb-1`}
+            className={`flex h-full min-w-full flex-row gap-2 overflow-x-auto overflow-y-hidden pb-1`}
             // TODO: refactor this to tailwindcss class and values
             style={{
               scrollbarWidth: 'thin',
@@ -278,10 +279,10 @@ const CredibilityDetails = ({
             }}
           >
             {views.map((_, key) => (
-              <p
+              <Skeleton
                 key={key}
-                className={`flex h-9 w-full min-w-[100px] animate-pulse cursor-pointer items-center justify-center gap-1 rounded-md bg-gray100 transition-all duration-300 ease-in-out`}
-              ></p>
+                className={`flex h-9 w-full min-w-[100px] animate-pulse cursor-pointer items-center justify-center rounded-md`}
+              ></Skeleton>
             ))}
           </div>
         </div>

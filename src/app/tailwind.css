@@ -178,6 +178,22 @@
   background-repeat: repeat;
 }
 
+.dark .bg-lines {
+  background:
+    linear-gradient(90deg, hsla(0, 0%, 25%, 0.7) 1px, transparent 1px),
+    linear-gradient(hsla(0, 0%, 25%, 0.7) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-repeat: repeat;
+}
+
+.bg-lines {
+  background:
+    linear-gradient(90deg, hsla(0, 0%, 25%, 0.1) 1px, transparent 1px),
+    linear-gradient(hsla(0, 0%, 25%, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-repeat: repeat;
+}
+
 .input-wrapper-focus {
   @apply transition-all focus-within:ring-2 focus-within:ring-stone-200 dark:focus-within:ring-stone-700;
 }

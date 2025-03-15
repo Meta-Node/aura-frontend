@@ -173,7 +173,7 @@ export const EvidenceListSearch = ({ subjectId }: { subjectId: string }) => {
 
   return (
     <>
-      <div className="mb-3 mt-3 flex items-center text-lg text-white">
+      <div className="mb-3 mt-3 flex items-center text-lg">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}

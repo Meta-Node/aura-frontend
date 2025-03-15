@@ -40,7 +40,6 @@ import { selectAuthData } from 'store/profile/selectors';
 import { CredibilityDetailsProps } from 'types';
 import { ConnectionListSearch } from './components/connection-list-search';
 import EvidenceHelpModal from './components/evidence-help-modal';
-import { ConnectionLevel } from './components/connection-level';
 import { ActivityListSearch } from './components/activity-list-search';
 import { EvidenceListSearch } from './components/evidence-list-search';
 import SubjectProfileHeader from './components/header';
@@ -316,8 +315,6 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
         setShowEvaluationFlow={setShowEvaluationFlow}
         setSelectedTab={setSelectedTab}
       />
-
-      {__DEV__ && <ConnectionLevel subjectId={subjectId} />}
 
       <Modal
         title="Help: Understanding the Evidence Section"

@@ -4,18 +4,15 @@ import ChartArea from './chart-area';
 import SkeletonChart from './sekeleton-chart';
 import { calculateRatingsImpact } from './utils';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import { AuraRating, AuraNodeBrightIdConnection } from '@/types';
 import { EvaluationCategory } from '@/types/dashboard';
 import { useSelector } from '@/store/hooks';
 import { selectBrightIdBackup } from '@/store/profile/selectors';
+import { AuraImpact } from '@/api/auranode.service';
 
-export interface ActivityChartProps {
-  ratings: AuraRating[] | null;
+export interface EvaluationsChartProps {
   evaluationCategory: EvaluationCategory;
-  subjectId: string;
   loading: boolean;
-  outboundEvaluations?: AuraNodeBrightIdConnection[];
-  profile?: ProfileInfo;
+  impacts?: AuraImpact[];
   onBarClick?: (entry: any) => void;
 }
 
@@ -26,16 +23,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export const ActivityChart = ({
+export const EvaluationsChart = ({
   evaluationCategory,
-  ratings,
-  subjectId,
-  loading: ratingsLoading,
-  outboundEvaluations,
-  profile,
+  loading: impactsLoading,
+  impacts,
   onBarClick,
-}: ActivityChartProps) => {
-  const memoizedRatings = useMemo(() => ratings ?? [], [ratings]);
+}: EvaluationsChartProps) => {
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
   const [refAreaRight, setRefAreaRight] = useState<number | null>(null);
   const [startIndex, setStartIndex] = useState<number>(0);
@@ -43,17 +36,9 @@ export const ActivityChart = ({
   const [isSelecting, setIsSelecting] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
   const brightIdBackup = useSelector(selectBrightIdBackup);
-
   const chartData = useMemo(
-    () =>
-      calculateRatingsImpact(
-        ratings ?? [],
-        outboundEvaluations,
-        evaluationCategory,
-        profile,
-        brightIdBackup,
-      ),
-    [memoizedRatings, evaluationCategory, profile, outboundEvaluations],
+    () => calculateRatingsImpact(impacts, evaluationCategory, brightIdBackup),
+    [evaluationCategory, brightIdBackup, impacts],
   );
 
   useEffect(() => {
@@ -70,12 +55,18 @@ export const ActivityChart = ({
 
   const maxAbs = useMemo(
     () =>
-      Math.max(...zoomedData.map((item) => Math.abs(Number(item.impact ?? 0)))),
+      Math.max(
+        ...zoomedData.map((item) =>
+          Math.abs(Number(item.impactPercentage ?? 0)),
+        ),
+      ),
     [zoomedData],
   );
 
   const scaleBarHeight = useCallback(
-    (data: any) => data.impactPercentage * 4,
+    (data: any) => {
+      return (data.impactPercentage / maxAbs) * 4;
+    },
     [maxAbs],
   );
 
@@ -163,7 +154,7 @@ export const ActivityChart = ({
     [startIndex, endIndex, chartData],
   );
 
-  if (ratingsLoading) return <SkeletonChart />;
+  if (impactsLoading) return <SkeletonChart />;
 
   return (
     <ChartContainer config={chartConfig} className="mb-12 h-52 w-full">
