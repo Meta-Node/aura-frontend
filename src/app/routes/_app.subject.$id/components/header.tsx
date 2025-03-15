@@ -16,7 +16,6 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 
 const views = [
-  EvaluationCategory.SUBJECT,
   EvaluationCategory.PLAYER,
   EvaluationCategory.TRAINER,
   EvaluationCategory.MANAGER,
@@ -138,7 +137,7 @@ export function SubjectHeaderBody({ subjectId }: { subjectId: string }) {
   });
 
   const authorizedTabs = useMemo(() => {
-    const tabs = [EvaluationCategory.SUBJECT];
+    const tabs = [];
 
     if ((playerActivity.ratings?.length ?? 0) > 0)
       tabs.push(EvaluationCategory.PLAYER);
@@ -159,6 +158,24 @@ export function SubjectHeaderBody({ subjectId }: { subjectId: string }) {
 
   return (
     <>
+      <Tooltip
+        className={`rounded p-1 ${
+          currentEvaluationCategory === EvaluationCategory.SUBJECT
+            ? viewModeSubjectBackgroundColorClass[currentViewMode]
+            : 'bg-gray100'
+        } ml-2 cursor-pointer`}
+        position="bottom"
+        content={viewsLabel[EvaluationCategory.SUBJECT]}
+        onClick={() => updateViewAs(EvaluationCategory.SUBJECT)}
+        data-testid={`subject-view-${viewsLabel[EvaluationCategory.SUBJECT]}`}
+      >
+        <img
+          className="h-4 w-4"
+          src={subjectViewAsIcon[EvaluationCategory.SUBJECT]}
+          alt=""
+        />
+      </Tooltip>
+
       {isLoading
         ? views.map((_, key) => (
             <div
