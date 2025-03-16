@@ -8,10 +8,7 @@ import { Link } from 'react-router';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
-import {
-  useImpactEChartOption,
-  useSubjectVerifications,
-} from '../../hooks/useSubjectVerifications';
+import { useImpactEChartOption } from '../../hooks/useSubjectVerifications';
 import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';
 import Tooltip from '../Shared/Tooltip';
 import { Card } from '../ui/card';

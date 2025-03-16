@@ -437,7 +437,7 @@ const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
               renderItem={(connection) => {
                 return (
                   <ProfileEvaluation
-                    connection={connection}
+                    connection={connection.inboundConnection}
                     evidenceViewMode={EvidenceViewMode.INBOUND_CONNECTION}
                     onClick={() =>
                       setCredibilityDetailsProps({
