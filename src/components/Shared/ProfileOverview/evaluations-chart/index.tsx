@@ -104,7 +104,7 @@ export const EvaluationsChart = ({
 
   const handleReset = useCallback(() => {
     setStartIndex(0);
-    setEndIndex(chartData.length - 1);
+    setEndIndex(Math.min(chartData.length - 1, 19));
   }, [chartData]);
 
   const handleZoom = useCallback(

@@ -68,8 +68,7 @@ const ActivitiesCard = ({
           ratings={
             outboundRatings
               ?.filter((r) => r.rating !== '0')
-              .sort((a, b) => a.timestamp - b.timestamp)
-              .slice(0, 20) ?? []
+              .sort((a, b) => a.timestamp - b.timestamp) ?? []
           }
           outboundEvaluations={data}
           loading={loading || profileFetch.isLoading}

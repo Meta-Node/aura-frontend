@@ -86,11 +86,6 @@ const ProfileOverview = ({
 
   const authData = useSelector(selectAuthData);
 
-  // const setEvidenceListFilter = (filterId: AuraFilterId) => {
-  //   toggleFiltersById([filterId], true);
-  //   showEvidenceList?.();
-  // };
-
   const onChartClick = (params: any) => {
     setCredibilityDetailsProps({
       subjectId: params.evaluated,

@@ -59,7 +59,7 @@ export const ActivityChart = ({
   useEffect(() => {
     if (chartData.length > 0) {
       setStartIndex(0);
-      setEndIndex(chartData.length - 1);
+      setEndIndex(Math.min(chartData.length - 1, 19));
     }
   }, [chartData]);
 

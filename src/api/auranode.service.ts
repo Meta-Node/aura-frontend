@@ -1,5 +1,4 @@
 import { EvaluationCategory } from '../types/dashboard';
-import { auraBrightIdNodeApi } from './index';
 
 export interface AuraImpactRaw {
   evaluator: string;

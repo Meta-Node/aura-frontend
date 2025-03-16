@@ -27,7 +27,6 @@ export const calculateRatingsImpact = (
 
   return impacts.map((impact) => {
     const ratingProfile = inboundImpacts[impact.evaluator];
-
     return {
       ...impact,
       ...getBarChartColor(impact, brightIdBackup?.userData.id, undefined),

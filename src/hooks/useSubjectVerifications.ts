@@ -9,12 +9,6 @@ import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import { hash } from 'utils/crypto';
 import { createBlockiesImage, renderImageCover } from '@/utils/image';
 import { AuraImpact, AuraImpactRaw } from '../api/auranode.service';
-import {
-  findNearestColor,
-  subjectRatingColorMap,
-  userRatingColorMap,
-  valueColorMap,
-} from '../constants/chart';
 import { EvaluationCategory } from '../types/dashboard';
 import { selectPreferredTheme } from '@/BrightID/actions';
 import { useDispatch } from '@/store/hooks';
