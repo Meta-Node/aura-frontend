@@ -26,6 +26,7 @@ import { getAuraVerification } from '../hooks/useParseBrightIdVerificationData';
 import useViewMode from '../hooks/useViewMode';
 import { EvaluationCategory } from '../types/dashboard';
 import { useRefreshEvaluationsContext } from './RefreshEvaluationsContext';
+import { Verifications } from '@/api/auranode.service';
 
 type SubjectInboundEvaluationsContextType = ReturnType<
   typeof useInboundEvaluations
@@ -93,7 +94,7 @@ export const SubjectInboundEvaluationsContextProvider: React.FC<
         inboundConnection: inboundConnections.find(
           (c) => c.id === r.fromBrightId,
         ),
-        verificartions: r.verifications,
+        verifications: r.verifications!,
       }),
     );
     inboundConnections.forEach((c) => {
@@ -104,6 +105,7 @@ export const SubjectInboundEvaluationsContextProvider: React.FC<
           name: brightIdBackup.connections.find((conn) => conn.id === c.id)
             ?.name,
           inboundConnection: c,
+          verifications: c.verifications,
         });
       }
     });
