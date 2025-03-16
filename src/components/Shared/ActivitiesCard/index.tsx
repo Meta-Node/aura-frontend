@@ -11,6 +11,7 @@ import { PreferredView } from '../../../types/dashboard';
 import { useGetBrightIDProfileQuery } from '@/store/api/profile';
 import { useGetOutboundConnectionsQuery } from '@/store/api/connections';
 import { ActivityChart, ActivityChartProps } from './activity-chart';
+import { ArrowDownLeft } from 'lucide-react';
 
 const ActivitiesCard = ({
   subjectId,
@@ -40,7 +41,8 @@ const ActivitiesCard = ({
 
   return (
     <>
-      <div className="mb-4 text-xl font-semibold">
+      <div className="mb-4 flex items-center gap-2 text-xl font-semibold">
+        <ArrowDownLeft className="h-5 w-5" />
         {viewModeSubjectString[viewMode]} Activity
       </div>
       <div>

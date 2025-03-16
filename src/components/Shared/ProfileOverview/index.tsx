@@ -35,6 +35,7 @@ import ActivitiesCard from '../ActivitiesCard';
 import ChartViewHelpModal from '@/app/routes/_app.subject.$id/components/chart-view-help-modal';
 import LevelProgress from '@/app/routes/_app.home/components/LevelProgress';
 import { EvaluationsChart } from './evaluations-chart';
+import { ArrowUpRight } from 'lucide-react';
 
 const ProfileOverview = ({
   subjectId,
@@ -117,7 +118,8 @@ const ProfileOverview = ({
           />
         )}
         <div className="flex flex-col gap-1.5">
-          <div className="text-xl font-semibold">
+          <div className="flex items-center gap-2 text-xl font-semibold">
+            <ArrowUpRight className="h-5 w-5" />
             {viewModeToString[viewMode]} Evaluations
           </div>
           <div className="header__info flex flex-col gap-1">
