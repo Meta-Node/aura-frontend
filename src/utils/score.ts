@@ -7,6 +7,27 @@ import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
 
 import { userLevelPoints } from '../constants/levels';
+import { AuraImpactRaw } from '@/api/auranode.service';
+
+export const calculateImpact = (score: number, rating: number) => {
+  if (rating > 0) {
+    return score * rating;
+  }
+
+  return rating * score * 4;
+};
+
+export const calculateImpactPercent = (
+  impacts: AuraImpactRaw[],
+  score: number,
+) => {
+  const sumImpacts = impacts.reduce(
+    (prev, curr) => Math.abs(curr.impact) + prev,
+    0,
+  );
+  if (!sumImpacts) return 0;
+  return score / sumImpacts;
+};
 
 export const calculateRemainingScoreToNextLevel = (
   view: EvaluationCategory,
@@ -27,9 +48,7 @@ export const calculateUserScorePercentage = (
 ) => {
   const selectedCategoryLevel = userLevelPoints[view];
 
-  const highestLevelStart =
-    // selectedCategoryLevel.find((item) => item > score) ??
-    selectedCategoryLevel.at(-1);
+  const highestLevelStart = selectedCategoryLevel.at(-1);
 
   if (highestLevelStart === undefined) return 100;
 
@@ -41,7 +60,7 @@ export const calculateUserScorePercentage = (
       100,
     );
 
-    return width;
+    return width - 50;
   }
 
   return -1;
@@ -54,7 +73,7 @@ export const useLevelupProgress = ({
 }) => {
   const authData = useSelector(selectAuthData);
 
-  const subjectId = authData!.brightId;
+  const subjectId = authData?.brightId;
 
   const playerEvaluation = useSubjectVerifications(
     subjectId,
@@ -115,4 +134,33 @@ export const useLevelupProgress = ({
     reason: '',
     percent: 0,
   };
+};
+
+export const calculateSubjectScore = (
+  category: EvaluationCategory,
+  ratings: AuraImpactRaw[],
+) => {
+  const selectedCategoryLevel = userLevelPoints[category];
+  const score = ratings.reduce((prev, item) => (item.score ?? 0) + prev, 0);
+
+  const currentLevel = selectedCategoryLevel.findIndex((item) => item > score);
+
+  return currentLevel;
+
+  // switch (category) {
+  //   case EvaluationCategory.SUBJECT:
+  //     return currentLevel;
+
+  //   case EvaluationCategory.PLAYER:
+  //     return currentLevel;
+
+  //   case EvaluationCategory.TRAINER:
+
+  //     return currentLevel;
+
+  //   case EvaluationCategory.MANAGER:
+  //     return currentLevel;
+  // }
+
+  // return -1;
 };

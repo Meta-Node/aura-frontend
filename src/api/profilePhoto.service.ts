@@ -26,6 +26,7 @@ export const clearAllProfilePhotoCache = async () => {
   }
 };
 
+/** @deprecated use redux query toolkit backup profile fetch */
 export async function pullProfilePhoto(
   key: string,
   brightId: string,

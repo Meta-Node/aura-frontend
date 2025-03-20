@@ -36,3 +36,12 @@ export enum EvidenceType {
   EVALUATED,
   CONNECTED,
 }
+
+export const evaluationsToEvaluatedCategory: Record<
+  string,
+  EvaluationCategory
+> = {
+  player: EvaluationCategory.SUBJECT,
+  trainer: EvaluationCategory.PLAYER,
+  manager: EvaluationCategory.TRAINER,
+};

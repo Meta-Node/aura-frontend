@@ -31,8 +31,8 @@ const EvaluateOverlayCard = ({
   if (authData?.brightId === subjectId) return null;
 
   return (
-    <div className={`card bg-white dark:dark-primary ${className}`}>
-      <div className="card--header flex justify-between w-full items-center">
+    <div className={`card dark:dark-primary border bg-white ${className}`}>
+      <div className="card--header flex w-full items-center justify-between">
         <div className="card--header__left flex gap-4">
           <BrightIdProfilePicture
             className={`card--header__left__avatar rounded-full border-[3px] ${
@@ -61,7 +61,7 @@ const EvaluateOverlayCard = ({
         </div>
         <div
           onClick={() => setShowEvaluationFlow(true)}
-          className="flex flex-col justify-center cursor-pointer items-center btn min-w-[90px] py-2 rounded-md"
+          className="btn flex min-w-[90px] cursor-pointer flex-col items-center justify-center rounded-md py-2"
         >
           <img
             src="/assets/images/SubjectProfile/subject-evaluation.svg"

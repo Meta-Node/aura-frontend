@@ -1,5 +1,4 @@
 import { MigrationManifest } from 'redux-persist';
-
 import { PreferredView } from '@/types/dashboard';
 
 export const migrations: MigrationManifest = {

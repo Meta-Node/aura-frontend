@@ -11,6 +11,13 @@ import {
 } from '../constants';
 import LoadingSpinner from './Shared/LoadingSpinner';
 import Tooltip from './Shared/Tooltip';
+import {
+  useImpactPercentage,
+  useSubjectVerifications,
+} from '@/hooks/useSubjectVerifications';
+import { useSelector } from '@/store/hooks';
+import { selectAuthData } from '@/store/profile/selectors';
+import useViewMode from '@/hooks/useViewMode';
 
 export type SubjectIdProps = {
   subjectId: string;
@@ -30,7 +37,7 @@ export const ConnectionStatus: FC<SubjectIdProps> = ({ subjectId }) => {
   }
 
   return (
-    <div className="inline-flex gap-1 p-2 rounded-md bg-soft-bright dark:bg-dark-bright">
+    <div className="inline-flex gap-1 rounded-md bg-soft-bright p-2 dark:bg-dark-bright">
       {inboundConnectionInfo &&
         connectionLevelIcons[inboundConnectionInfo.level] && (
           <img
@@ -43,7 +50,7 @@ export const ConnectionStatus: FC<SubjectIdProps> = ({ subjectId }) => {
           />
         )}
       {!ratingNumber && (
-        <p className="font-medium text-black text-sm">
+        <p className="text-sm font-medium text-black">
           {inboundConnectionInfo?.level}
         </p>
       )}
@@ -60,22 +67,22 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
 
   return ratingNumber ? (
     <div
-      className={`flex gap-1 items-center rounded-md ${getBgClassNameOfAuraRatingNumber(
+      className={`flex items-center gap-1 rounded-md ${getBgClassNameOfAuraRatingNumber(
         ratingNumber,
-      )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} py-2.5 px-3`}
+      )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
     >
-      {ratingNumber}
       <EvaluationThumb
         width="18px"
         height="18px"
         rating={rating && Number(rating?.rating)}
       />
-      <p className="font-bold text-sm leading-4">
-        {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
+      {ratingNumber}
+      <p className="text-sm font-bold leading-4">
+        {rating?.isPending ? '' : `${confidenceValue} `}
       </p>
       {rating?.isPending && (
         <LoadingSpinner
-          className="w-[18px] h-[18px] ml-1"
+          className="ml-1 h-[18px] w-[18px]"
           spinnerClassName={
             Math.abs(Number(rating.rating)) > 2
               ? 'border-white'
@@ -90,12 +97,12 @@ export const EvaluationStatus = ({ subjectId }: { subjectId: string }) => {
 };
 
 export const connectionLevelColors: Record<ConnectionLevel, string> = {
-  'reported': '#FF4B31',   
-  'suspicious': '#FF7831',  
-  'recovery': '#FFA131',   
-  'already known': '#FFC585', 
-  'just met': '#FFB85C',   
-  'aura only': '#FFE8D4',  
+  reported: '#FF4B31',
+  suspicious: '#FF7831',
+  recovery: '#FFA131',
+  'already known': '#FFC585',
+  'just met': '#FFB85C',
+  'aura only': '#FFE8D4',
 };
 
 export const ConnectionAndEvaluationStatus = ({
@@ -109,54 +116,70 @@ export const ConnectionAndEvaluationStatus = ({
     myConnectionToSubject: inboundConnectionInfo,
     myConfidenceValueInThisSubjectRating: confidenceValue,
   } = useMyEvaluationsContext({ subjectId });
+  const authData = useSelector(selectAuthData);
+  const { currentViewMode, currentEvaluationCategory } = useViewMode();
+
+  const { auraImpacts } = useSubjectVerifications(
+    subjectId,
+    currentEvaluationCategory,
+  );
+
+  const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
 
   const name = useSubjectName(subjectId);
 
   return (
-    <div className="w-full items-center flex gap-1">
+    <div className="flex w-full items-center gap-1">
       <Tooltip
         tooltipClassName="text-sm !w-52 !whitespace-normal"
         position="right"
         content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
       >
-        <div className="flex gap-1 p-2 rounded-md" style={{ backgroundColor: inboundConnectionInfo?.level ? connectionLevelColors[inboundConnectionInfo.level] : '#FFB85C' }}>
-          {inboundConnectionInfo &&
-            connectionLevelIcons[inboundConnectionInfo.level] && (
-              <img
-                src={`/assets/images/Shared/${
-                  connectionLevelIcons[inboundConnectionInfo.level]
-                }.svg`}
-                alt=""
-                width="20px"
-                height="20px"
-              />
-            )}
+        <div
+          className="flex gap-1 rounded-md p-2"
+          style={{
+            backgroundColor: inboundConnectionInfo?.level
+              ? connectionLevelColors[inboundConnectionInfo.level]
+              : '#FFB85C',
+          }}
+        >
+          {inboundConnectionInfo && inboundConnectionInfo.level && (
+            <img
+              src={`/assets/images/Shared/${
+                connectionLevelIcons[inboundConnectionInfo.level]
+              }.svg`}
+              alt=""
+              width="20px"
+              height="20px"
+            />
+          )}
           {!ratingNumber && (
-            <p className="font-medium text-black text-sm">
+            <p className="text-sm font-medium text-black">
               {inboundConnectionInfo?.level}
             </p>
-          )}
+          )}{' '}
         </div>
       </Tooltip>
       {ratingNumber ? (
         <Tooltip content={`Your evaluation of ${name}`}>
           <div
-            className={`flex gap-1 items-center rounded-md ${getBgClassNameOfAuraRatingNumber(
+            className={`flex items-center gap-1 rounded-md ${getBgClassNameOfAuraRatingNumber(
               ratingNumber,
-            )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} py-2.5 px-3`}
+            )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
           >
-            {ratingNumber}
             <EvaluationThumb
               width="18px"
               height="18px"
               rating={rating && Number(rating?.rating)}
             />
-            <p className="font-bold text-sm leading-4">
-              {rating?.isPending ? '' : `${confidenceValue} `}({ratingNumber})
+            {(ratingNumber > 0 ? '+' : '') + ratingNumber}
+            <p className="text-sm font-bold leading-4">
+              {rating?.isPending ? '' : `${confidenceValue} `}
             </p>
+            <small className="text-xs">{impactPercentage}%</small>
             {rating?.isPending && (
               <LoadingSpinner
-                className="w-[18px] h-[18px] ml-1"
+                className="ml-1 h-[18px] w-[18px]"
                 spinnerClassName={
                   Math.abs(Number(rating.rating)) > 2
                     ? 'border-white'

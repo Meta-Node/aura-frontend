@@ -2,9 +2,9 @@ import { FiltersModal } from 'components/EvaluationFlow/FiltersModal';
 import { SortsModal } from 'components/EvaluationFlow/SortsModal';
 import { useSubjectsListContext } from 'contexts/SubjectsListContext';
 import { useMyEvaluations } from 'hooks/useMyEvaluations';
-import { RefreshCcwIcon } from 'lucide-react';
+import { RefreshCcwIcon, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 import { cn } from '@/lib/utils';
 
@@ -16,6 +16,16 @@ import { PreferredView } from '../../types/dashboard';
 import Dropdown from '../Shared/Dropdown';
 import Modal from '../Shared/Modal';
 import { Button } from '../ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Separator } from '../ui/separator';
+import { ScrollArea } from '../ui/scroll-area';
 
 function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
   const {
@@ -29,7 +39,8 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
 
   return (
     <div>
-      <p className="text-black2 dark:text-gray-100 font-bold">Filters</p>
+      <p className="font-bold text-black2 dark:text-gray-100">Filters</p>
+      <Separator className="my-4" />
       <FiltersModal
         includeConnectionFilters={isPlayerMode}
         testidPrefix={'subject-filter'}
@@ -37,9 +48,10 @@ function FilterAndSortModalBody({ isPlayerMode }: { isPlayerMode: boolean }) {
         selectedFilterIds={selectedFilterIds}
         toggleFiltersById={toggleFiltersById}
       />
-      <p className="text-black2 dark:text-gray-100 font-bold pt-3 pb-1">
+      <p className="pb-1 pt-3 font-bold text-black2 dark:text-gray-100">
         Sorts
       </p>
+      <Separator className="my-4" />
       <SortsModal
         includeLastConnectionFilter={isPlayerMode}
         testidPrefix={'subject-sort'}
@@ -219,15 +231,12 @@ export const SubjectListControls = ({
 
   return (
     <>
-      <div className="bg-card dark:bg-dark-primary text-card-foreground rounded-lg p-1 flex-1 flex flex-col justify-center gap-4 max-h-[175px]">
-        <div className="card__input flex gap-2 items-center rounded px-3.5">
-          <img
-            className="w-4 h-4"
-            src="/assets/images/Shared/search-icon.svg"
-            alt=""
-          />
+      <div className="input-wrapper-focus flex max-h-[175px] flex-1 flex-col justify-center gap-4 rounded-lg border bg-card p-1 text-card-foreground">
+        <div className="card__input flex items-center gap-2 rounded px-3.5">
+          <Search className="text-stone-700" />
+
           <input
-            className="w-full font-medium bg-transparent text-card-foreground dark:placeholder:text-gray-50 placeholder-black2 text-sm h-11 focus:outline-none"
+            className="h-11 w-full bg-transparent text-sm font-medium text-card-foreground placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
             type="text"
             placeholder="Subject name or ID ..."
             value={searchString}
@@ -235,34 +244,38 @@ export const SubjectListControls = ({
           />
         </div>
       </div>
-      <div className="text-right text-sm mb-2 mt-2">
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER && (
-          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
-            {' '}
-            <p
-              className="ml-auto font-medium cursor-pointer text-white"
-              onClick={() =>
-                setPreferredView(PreferredView.MANAGER_EVALUATING_MANAGER)
-              }
-            >
-              View Managers
-            </p>
-          </button>
-        )}
-        {currentViewMode === PreferredView.MANAGER_EVALUATING_MANAGER && (
-          <button className="rounded-lg px-4 py-1 bg-white-90-card dark:bg-button-primary">
-            <p
-              className="ml-auto font-medium cursor-pointer text-white"
-              onClick={() =>
-                setPreferredView(PreferredView.MANAGER_EVALUATING_TRAINER)
-              }
-            >
-              View Trainers
-            </p>
-          </button>
-        )}
-      </div>
-      <div className="text-lg flex mb-3 items-center">
+      {[
+        PreferredView.MANAGER_EVALUATING_MANAGER,
+        PreferredView.MANAGER_EVALUATING_TRAINER,
+      ].includes(currentViewMode) && (
+        <div className="mt-2 flex items-center justify-between text-sm">
+          <p className="font-semibold">
+            Showing{' '}
+            {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER
+              ? 'Trainer '
+              : 'Manager '}{' '}
+            evaluations
+          </p>
+          <Button
+            size="sm"
+            onClick={() =>
+              setPreferredView(
+                currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER
+                  ? PreferredView.MANAGER_EVALUATING_MANAGER
+                  : PreferredView.MANAGER_EVALUATING_TRAINER,
+              )
+            }
+            variant="secondary"
+            className=""
+          >
+            {currentViewMode === PreferredView.MANAGER_EVALUATING_TRAINER
+              ? 'View Managers'
+              : 'View Trainers'}
+          </Button>
+        </div>
+      )}
+
+      <div className="mb-3 mt-3 flex items-center text-lg">
         <Dropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={setIsDropdownOpen}
@@ -271,17 +284,60 @@ export const SubjectListControls = ({
           onItemClick={(item) => item.onClick()}
           className="h-10"
         />
-        <Modal
-          title="Custom View"
-          isOpen={isModalOpen}
-          closeModalHandler={() => setIsModalOpen(false)}
-          className="select-button-with-modal__modal"
+        <Dialog
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          aria-labelledby="custom-view-title"
         >
-          <FilterAndSortModalBody
-            isPlayerMode={currentViewMode === PreferredView.PLAYER}
-          />
-        </Modal>
-        <span className="ml-auto text-white">
+          <DialogContent
+            className="max-w-md sm:max-w-lg"
+            aria-describedby="custom-view-description"
+          >
+            <DialogHeader>
+              <DialogTitle
+                id="custom-view-title"
+                className="text-xl font-semibold"
+              >
+                Custom View
+              </DialogTitle>
+              <DialogDescription
+                id="custom-view-description"
+                className="text-sm text-muted-foreground"
+              >
+                Customize your view with filters and sorting options
+              </DialogDescription>
+            </DialogHeader>
+
+            <ScrollArea className="max-h-96 py-4 text-base">
+              <FilterAndSortModalBody
+                isPlayerMode={currentViewMode === PreferredView.PLAYER}
+              />
+            </ScrollArea>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  clearSortAndFilter();
+                }}
+                className="w-full flex-1 px-6 py-2 sm:w-auto"
+              >
+                Clear
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full flex-1 px-6 py-2 sm:w-auto"
+                data-testid="subject-sort-option-Confidence-ascending"
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+              >
+                Ok
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <span className="ml-auto">
           (
           {filteredSubjects?.length ??
             brightIdBackup?.connections.length ??
@@ -305,7 +361,7 @@ export const SubjectListControls = ({
         >
           <RefreshCcwIcon
             className={cn(
-              'w-7 h-7 cursor-pointer',
+              'h-7 w-7 cursor-pointer',
               (loading || contextLoading) && 'animate-spin',
             )}
           />

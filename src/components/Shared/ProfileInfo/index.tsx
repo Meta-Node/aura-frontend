@@ -17,10 +17,10 @@ import { connectionLevelIcons } from 'utils/connection';
 import { compactFormat } from 'utils/number';
 import { calculateUserScorePercentage } from 'utils/score';
 
-import NewEvaluationCard from '../../../pages/SubjectProfile/NewEvaluationCard';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
 import { YourEvaluationInfo } from '../EvaluationInfo/YourEvaluationInfo';
 import { HorizontalProgressBar } from '../HorizontalProgressBar';
+import NewEvaluationCard from '@/app/routes/_app.subject.$id/components/new-evaluation-card';
 
 export const ProfileInfo = ({
   isPerformance = false,
@@ -41,6 +41,7 @@ export const ProfileInfo = ({
     subjectId,
     currentEvaluationCategory,
   );
+
   const name = useSubjectName(subjectId);
   const inboundEvaluationsContext = useContext(
     SubjectInboundEvaluationsContext,
@@ -83,8 +84,8 @@ export const ProfileInfo = ({
   const isVisitingYourPage = authData?.brightId === subjectId;
 
   return (
-    <div className="card border dark:bg-dark-primary flex flex-col gap-3">
-      <div className="card--header flex justify-between w-full items-center">
+    <div className="card flex flex-col gap-3 border dark:bg-dark-primary">
+      <div className="card--header flex w-full items-center justify-between">
         <div className="card--header__left flex gap-4">
           <BrightIdProfilePicture
             key={subjectId}
@@ -94,7 +95,7 @@ export const ProfileInfo = ({
             subjectId={subjectId}
           />
           <div className="card--header__left__info flex flex-col justify-center">
-            <h3 className="text-lg font-medium leading-5 truncate">{name}</h3>
+            <h3 className="truncate text-lg font-medium leading-5">{name}</h3>
             <div className="flex gap-1">
               <span className="text-sm">
                 Level: <strong>{auraLevel}</strong>
@@ -105,7 +106,7 @@ export const ProfileInfo = ({
                     connectionLevelIcons[myConnectionToSubject.level]
                   }.svg`}
                   alt=""
-                  className="w-5 ml-2"
+                  className="ml-2 w-5"
                 />
               )}
             </div>
@@ -115,7 +116,7 @@ export const ProfileInfo = ({
           </div>
         </div>
 
-        <div className="flex flex-col gap-1.5 items-end text-sm dark:text-white text-black min-w-[90px]">
+        <div className="flex min-w-[90px] flex-col items-end gap-1.5 text-sm text-black dark:text-white">
           {userHasRecovery !== null && (
             <div
               onClick={() => {
@@ -128,20 +129,20 @@ export const ProfileInfo = ({
               }}
               className={`${
                 userHasRecovery
-                  ? 'bg-orange text-white font-bold'
+                  ? 'bg-orange font-bold text-white'
                   : 'bg-gray-300 text-black'
               } ${
                 userHasRecovery && !isPerformance && inboundEvaluationsContext
                   ? 'cursor-pointer'
                   : ''
-              } px-2 py-1.5 rounded`}
+              } rounded px-2 py-1.5`}
             >
               <p className="text-xs">
                 {userHasRecovery ? 'Has Recovery' : 'No Recovery'}
               </p>
             </div>
           )}
-          <p className="text-sm font-light truncate">
+          <p className="truncate text-sm font-light">
             Last Activity: <span className="font-medium">{lastActivity}</span>
           </p>
         </div>

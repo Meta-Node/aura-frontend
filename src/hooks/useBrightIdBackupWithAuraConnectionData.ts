@@ -1,32 +1,99 @@
+import { setBulkSubjectsCache } from '@/store/cache';
+import { selectCachedProfiles } from '@/store/cache/selectors';
+import { useDispatch } from '@/store/hooks';
+import { getBrightIdBackupThunk } from '@/store/profile/actions';
+import { hash } from '@/utils/crypto';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectBrightIdBackup } from 'store/profile/selectors';
+import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import {
   AuraNodeBrightIdConnectionWithBackupData,
   BrightIdBackupWithAuraConnectionData,
 } from 'types';
 
 export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBackupWithAuraConnectionData | null {
+  const dispatch = useDispatch();
   const brightIdBackup = useSelector(selectBrightIdBackup);
+  const authData = useSelector(selectAuthData);
+  const cachedBrightIdProfiles = useSelector(selectCachedProfiles);
   const { myConnections } = useMyEvaluationsContext();
 
-  return useMemo(() => {
-    if (brightIdBackup === null || !myConnections) return null;
+  const [loading, setLoading] = useState(false);
+  const [isExhausted, setIsExhausted] = useState(false);
 
-    const connections: AuraNodeBrightIdConnectionWithBackupData[] = [];
-    myConnections.forEach((c) => {
-      const connectionInBrightIdBackup = brightIdBackup.connections.find(
-        (mc) => mc.id === c.id,
+  const backupConnectionKeys = useMemo(() => {
+    return (
+      brightIdBackup?.connections.reduce(
+        (acc, conn) => {
+          acc[conn.id] = conn;
+          return acc;
+        },
+        {} as Record<string, any>,
+      ) || {}
+    );
+  }, [brightIdBackup]);
+
+  const refreshBrightIdBackup = useCallback(async () => {
+    if (!authData) return;
+    setLoading(true);
+    await dispatch(
+      getBrightIdBackupThunk({
+        authKey: hash(authData.brightId + authData.password),
+      }),
+    );
+    setLoading(false);
+  }, [authData, dispatch]);
+
+  useEffect(() => {
+    if (loading || !myConnections) return;
+
+    const shouldFetch = myConnections.some(
+      (conn) =>
+        !cachedBrightIdProfiles[conn.id] &&
+        conn.level !== 'aura only' &&
+        !backupConnectionKeys[conn.id],
+    );
+
+    if (!shouldFetch) {
+      setIsExhausted(false);
+      return;
+    }
+
+    if (isExhausted) return;
+
+    refreshBrightIdBackup().then(() => {
+      const connectionTimestamps = myConnections.reduce(
+        (acc, conn) => {
+          acc[conn.id] = Date.now();
+          return acc;
+        },
+        {} as Record<string, number>,
       );
-      connections.push({
-        ...connectionInBrightIdBackup,
-        ...c,
-      });
+
+      dispatch(setBulkSubjectsCache(connectionTimestamps));
     });
-    return {
-      ...brightIdBackup,
-      connections,
-    };
-  }, [brightIdBackup, myConnections]);
+
+    setIsExhausted(true);
+  }, [
+    loading,
+    myConnections,
+    refreshBrightIdBackup,
+    backupConnectionKeys,
+    isExhausted,
+    cachedBrightIdProfiles,
+    dispatch,
+  ]);
+
+  return useMemo(() => {
+    if (!brightIdBackup || !myConnections) return null;
+
+    const connections: AuraNodeBrightIdConnectionWithBackupData[] =
+      myConnections.map((conn) => ({
+        ...backupConnectionKeys[conn.id],
+        ...conn,
+      }));
+
+    return { ...brightIdBackup, connections };
+  }, [brightIdBackup, myConnections, backupConnectionKeys]);
 }

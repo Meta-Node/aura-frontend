@@ -1,26 +1,17 @@
-import { decryptData } from 'utils/crypto';
-
 import { apiSlice } from './slice';
 
 export const profileApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
-    getBrightIDProfile: build.query<ProfileInfo, { id: string }>({
-      query: ({ id }) => ({
+    getBrightIDProfile: build.query<ProfileInfo, string>({
+      query: (id) => ({
         url: `/brightid/v6/users/${id}/profile`,
       }),
+      keepUnusedDataFor: 60,
       transformResponse: (res: UserProfileRes) => res.data,
+      providesTags: (res) =>
+        res?.id ? [{ type: 'BrightID' as const, id: res.id }] : [],
     }),
 
-    getProfilePhoto: build.query<
-      string,
-      { key: string; brightId: string; password: string }
-    >({
-      query: ({ brightId, key }) => ({
-        url: `/backups/${key}/${brightId}`,
-      }),
-      transformResponse: (response: string, meta, args) =>
-        decryptData(response, args.password),
-    }),
     getConnections: build.query<
       ConnectionInfo[],
       { id: number; direction: 'inbound' | 'outbound' }
@@ -28,16 +19,14 @@ export const profileApi = apiSlice.injectEndpoints({
       query: ({ direction, id }) => ({
         url: `/users/${id}/connections/${direction}`,
       }),
-
       transformResponse: (res: UserConnectionsRes) => res.data.connections,
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {
   useGetConnectionsQuery,
   useGetBrightIDProfileQuery,
-  useGetProfilePhotoQuery,
-  useLazyGetProfilePhotoQuery,
-  useLazyGetBrightIDProfileQuery
+  useLazyGetBrightIDProfileQuery,
 } = profileApi;

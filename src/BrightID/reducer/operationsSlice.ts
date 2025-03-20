@@ -1,8 +1,4 @@
-import {
-  createEntityAdapter,
-  createSelector,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { RESET_STORE } from 'BrightID/actions/resetStore';
 import {
   LOCAL_OPERATION_KEEP_THRESHOLD,
@@ -18,32 +14,46 @@ export type Operation = SubmittedOp & {
 
 export type EvaluateSubmittedOperation = Operation & EvaluateOp;
 
-const operationsAdapter = createEntityAdapter({
-  selectId: (op: Operation) => op.hash,
-});
+export type OperationsState = {
+  [hash: string]: Operation;
+};
 
-const operationsSlice = createSlice({
+const initialState: OperationsState = {};
+
+export const operationsSlice = createSlice({
   name: 'operations',
-  initialState: operationsAdapter.getInitialState(),
+  initialState,
   reducers: {
-    addOperation: {
-      reducer: operationsAdapter.addOne,
-      prepare: (operation: SubmittedOp) => {
-        return {
-          payload: {
-            ...operation,
-            state: operation_states.UNKNOWN,
-          },
-        };
-      },
+    addOperation: (state, action: PayloadAction<Operation>) => {
+      const op = action.payload;
+      state[op.hash] = op;
     },
-    removeOperation: operationsAdapter.removeOne,
-    resetOperations: operationsAdapter.removeAll,
-    updateOperation: operationsAdapter.updateOne,
-    removeManyOperations: operationsAdapter.removeMany,
+    removeOperation: (state, action: PayloadAction<string>) => {
+      const hash = action.payload;
+      delete state[hash];
+    },
+    resetOperations: () => {
+      return {};
+    },
+    updateOperation: (
+      state,
+      action: PayloadAction<{ id: string; changes: Partial<Operation> }>,
+    ) => {
+      const { id, changes } = action.payload;
+      if (state[id]) {
+        // @ts-ignore
+        state[id] = { ...state[id], ...changes };
+      }
+    },
+    removeManyOperations: (state, action: PayloadAction<string[]>) => {
+      const ids = action.payload;
+      ids.forEach((id) => {
+        delete state[id];
+      });
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STORE, operationsAdapter.removeAll);
+    builder.addCase(RESET_STORE, () => ({}));
   },
 });
 
@@ -51,17 +61,20 @@ const operationsSlice = createSlice({
 export const {
   addOperation,
   updateOperation,
-  // removeOperation,
-  // resetOperations,
+  removeOperation,
+  resetOperations,
   removeManyOperations,
 } = operationsSlice.actions;
 
-// export selectors
-export const {
-  selectById: selectOperationByHash,
-  selectAll: selectAllOperations,
-  selectTotal: selectOperationsTotal,
-} = operationsAdapter.getSelectors((state: RootState) => state.operations);
+export const selectAllOperations = createSelector(
+  (state: RootState) => state.operations, // Input selector to get operations state
+  (operations: OperationsState): Operation[] => Object.values(operations), // Memoized selector to return all operations
+);
+
+export const selectOperationByHash = (
+  state: RootState,
+  hash: string,
+): Operation | undefined => state.operations[hash];
 
 const pendingStates = [
   operation_states.UNKNOWN,
@@ -71,14 +84,15 @@ const pendingStates = [
 
 export const selectPendingOperations = createSelector(
   selectAllOperations,
-  (operations) => operations.filter((op) => pendingStates.includes(op.state)),
+  (operations: Operation[]) =>
+    operations.filter((op) => op && pendingStates.includes(op.state)),
 );
 
 export const selectEvaluateOperations = createSelector(
-  [selectAllOperations],
-  (operations) =>
+  selectAllOperations,
+  (operations: Operation[]) =>
     operations.filter(
-      (op) => op.name === 'Evaluate',
+      (op) => op?.name === 'Evaluate',
     ) as EvaluateSubmittedOperation[],
 );
 
@@ -88,14 +102,12 @@ const outdatedStates = [
   operation_states.EXPIRED,
 ];
 
-/* Return IDs of operation entries that are outdated and can be removed from state */
 export const selectOutdatedOperations = createSelector(
   selectAllOperations,
-  (operations) => {
+  (operations: Operation[]) => {
     const now = Date.now();
     return operations
       .filter((op) => {
-        // prefer postTimestamp for calculation but use timestamp as fallback solution
         const timestamp = op.postTimestamp || op.timestamp;
         return (
           outdatedStates.includes(op.state) &&

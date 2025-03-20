@@ -42,7 +42,6 @@ interface ProviderProps {
   children: ReactNode;
 }
 
-// Define the Provider component
 export const SubjectInboundConnectionsContextProvider: React.FC<
   ProviderProps
 > = ({ subjectId, children }) => {
@@ -80,6 +79,7 @@ export const SubjectInboundConnectionsContextProvider: React.FC<
         inboundConnection: inboundConnections.find(
           (c) => c.id === r.fromBrightId,
         ),
+        verificartions: r.verifications,
       }),
     );
     inboundConnections.forEach((c) => {

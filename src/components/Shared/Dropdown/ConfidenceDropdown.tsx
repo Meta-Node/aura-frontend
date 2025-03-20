@@ -5,8 +5,10 @@ import Dropdown from './index';
 const ConfidenceDropdown = ({
   confidence,
   setConfidence,
+  isYes,
 }: {
   confidence: number;
+  isYes: boolean;
   setConfidence: (value: number) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -16,7 +18,7 @@ const ConfidenceDropdown = ({
         value: 1,
         label: (
           <p>
-            I have <strong>Low</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}1 Low</strong> confidence
           </p>
         ),
       },
@@ -24,7 +26,7 @@ const ConfidenceDropdown = ({
         value: 2,
         label: (
           <p>
-            I have <strong>Medium</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}2 Medium</strong> confidence
           </p>
         ),
       },
@@ -32,7 +34,7 @@ const ConfidenceDropdown = ({
         value: 3,
         label: (
           <p>
-            I have <strong>High</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}3 High</strong> confidence
           </p>
         ),
       },
@@ -40,12 +42,12 @@ const ConfidenceDropdown = ({
         value: 4,
         label: (
           <p>
-            I have <strong>Very High</strong> confidence
+            I have <strong>{isYes ? '+' : '-'}4 Very High</strong> confidence
           </p>
         ),
       },
     ],
-    [],
+    [isYes],
   );
 
   const [selectedItem, setSelectedItem] = useState(options[0]);

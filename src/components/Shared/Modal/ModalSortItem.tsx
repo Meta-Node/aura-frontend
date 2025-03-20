@@ -1,5 +1,6 @@
 import { ModalItem } from 'components/Shared/Modal/ModalItem';
 import { AuraSortId, AuraSortOption } from 'hooks/useSorts';
+import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import * as React from 'react';
 
 interface ModalSortItemProps<T> extends React.HTMLAttributes<HTMLDivElement> {
@@ -31,9 +32,11 @@ export function ModalSortItem<T>({
       isSelected={isSelectedSort(item.id, isAscending)}
       onClick={() => setSelectedSort(item.id, isAscending)}
       icon={
-        isAscending
-          ? '/assets/images/Shared/arrow-up-icon'
-          : '/assets/images/Shared/arrow-down-icon'
+        isAscending ? (
+          <ArrowUpIcon className="h-4 w-4" />
+        ) : (
+          <ArrowDownIcon className="h-4 w-4" />
+        )
       }
       className="flex-1"
       {...props}

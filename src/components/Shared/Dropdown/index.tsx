@@ -30,13 +30,15 @@ export default function Dropdown<T extends DropdownItem>({
 }) {
   return (
     <Select
+      open={isDropdownOpen}
+      onOpenChange={setIsDropdownOpen}
       onValueChange={(e) => {
         onItemClick(items.find((item) => item.value?.toString() === e)!);
       }}
       value={selectedItem.value?.toString()}
     >
       <SelectTrigger
-        className={`${className} w-auto text-foreground bg-background dark:bg-dark-primary`}
+        className={`${className} w-auto bg-background text-foreground dark:bg-dark-primary`}
       >
         <SelectValue />
       </SelectTrigger>
@@ -45,7 +47,10 @@ export default function Dropdown<T extends DropdownItem>({
           <SelectItem
             data-testid={`dropdown-option-${item.value}`}
             key={item.value}
-            onClick={() => onItemClick(item)}
+            onMouseDown={() => {
+              onItemClick(item);
+              setIsDropdownOpen(false);
+            }}
             value={item.value.toString()}
           >
             {item.label}

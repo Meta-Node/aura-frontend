@@ -11,9 +11,12 @@ export const connectionsApi = apiSlice.injectEndpoints({
       query: ({ id }) => ({
         url: `/brightid/v6/users/${id}/connections/outbound?withVerifications=true`,
       }),
+      keepUnusedDataFor: 30,
       transformResponse: (res: AuraNodeConnectionsResponse) =>
         res.data.connections,
-      keepUnusedDataFor: 30,
+      providesTags: (response) =>
+        response?.map((item) => ({ id: item.id, type: 'BrightID' as const })) ??
+        [],
     }),
     getInboundConnections: build.query<
       AuraNodeBrightIdConnection[],
@@ -25,6 +28,9 @@ export const connectionsApi = apiSlice.injectEndpoints({
       transformResponse: (res: AuraNodeConnectionsResponse) =>
         res.data.connections,
       keepUnusedDataFor: 30,
+      providesTags: (response) =>
+        response?.map((item) => ({ id: item.id, type: 'BrightID' as const })) ??
+        [],
     }),
   }),
 });

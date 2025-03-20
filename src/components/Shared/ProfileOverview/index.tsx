@@ -7,12 +7,15 @@ import {
   useTotalImpact,
 } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
-import LevelProgress from 'pages/Home/components/LevelProgress';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import { selectAuthData } from 'store/profile/selectors';
-import { PreferredView, ProfileTab } from 'types/dashboard';
+import {
+  evaluationsToEvaluatedCategory,
+  PreferredView,
+  ProfileTab,
+} from 'types/dashboard';
 
 import {
   Dialog,
@@ -20,7 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import ChartViewHelpModal from '@/pages/SubjectProfile/ChartViewHelpModal';
 
 import {
   viewModeToEvaluatorViewMode,
@@ -30,6 +32,10 @@ import {
 import { CredibilityDetailsProps } from '../../../types';
 import { compactFormat } from '../../../utils/number';
 import ActivitiesCard from '../ActivitiesCard';
+import ChartViewHelpModal from '@/app/routes/_app.subject.$id/components/chart-view-help-modal';
+import LevelProgress from '@/app/routes/_app.home/components/LevelProgress';
+import { EvaluationsChart } from './evaluations-chart';
+import { ArrowUpRight } from 'lucide-react';
 
 const ProfileOverview = ({
   subjectId,
@@ -62,47 +68,31 @@ const ProfileOverview = ({
     subjectId,
     evaluationCategory: viewModeToViewAs[viewMode],
   });
-  const { auraScore, auraImpacts } = useSubjectVerifications(
+  const { auraScore, auraImpacts, loading } = useSubjectVerifications(
     subjectId,
     viewModeToViewAs[viewMode],
   );
   const { totalPositiveImpact, totalNegativeImpact } =
     useTotalImpact(auraImpacts);
-  const { impactChartOption } = useImpactEChartOption(auraImpacts, true);
+
+  const auraImpactsSorted = useMemo(
+    () =>
+      (auraImpacts ?? [])
+        .filter((item) => item.impact !== 0)
+        .sort((a, b) => a.impact - b.impact),
+    [auraImpacts],
+  );
 
   const { currentRoleEvaluatorEvaluationCategory } = useViewMode();
 
-  const { toggleFiltersById } = useSubjectInboundEvaluationsContext({
-    subjectId,
-  });
-
   const authData = useSelector(selectAuthData);
 
-  const setEvidenceListFilter = (filterId: AuraFilterId) => {
-    toggleFiltersById([filterId], true);
-    showEvidenceList?.();
-  };
-
   const onChartClick = (params: any) => {
-    if (params.componentType === 'graphic') {
-      console.log(
-        'Profile image clicked:',
-        params.event.target.style.data.evaluator,
-      );
-      setCredibilityDetailsProps({
-        subjectId: params.event.target.style.data.evaluator,
-        evaluationCategory:
-          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
-      });
-    }
-    if (params.componentType === 'series') {
-      console.log('Bar clicked:', params.data.evaluator);
-      setCredibilityDetailsProps({
-        subjectId: params.data.evaluator,
-        evaluationCategory:
-          viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
-      });
-    }
+    setCredibilityDetailsProps({
+      subjectId: params.evaluated,
+      evaluationCategory:
+        viewModeToViewAs[viewModeToEvaluatorViewMode[viewMode]],
+    });
   };
 
   return (
@@ -114,21 +104,24 @@ const ProfileOverview = ({
             subjectId={subjectId}
           />
         )}
-      <div className="card !px-2 md:!px-4 dark:bg-dark-primary">
+      <div className="card border px-2 dark:bg-dark-primary md:px-4">
         {hasHeader && (
-          <div className=" mb-4 font-bold text-lg text-black">{title}</div>
+          <div className="mb-4 text-lg font-bold text-black">{title}</div>
         )}
-        <ActivitiesCard
-          subjectId={subjectId}
-          onLastEvaluationClick={setCredibilityDetailsProps}
-          viewMode={viewMode}
-        />
+
+        {viewMode === PreferredView.PLAYER || (
+          <ActivitiesCard
+            subjectId={subjectId}
+            onLastEvaluationClick={setCredibilityDetailsProps}
+            viewMode={viewMode}
+            onBarChartClick={onChartClick}
+          />
+        )}
         <div className="flex flex-col gap-1.5">
-          {viewMode !== PreferredView.PLAYER && (
-            <div className="font-semibold text-xl">
-              {viewModeToString[viewMode]} Evaluations
-            </div>
-          )}
+          <div className="flex items-center gap-2 text-xl font-semibold">
+            <ArrowUpRight className="h-5 w-5" />
+            {viewModeToString[viewMode]} Evaluations
+          </div>
           <div className="header__info flex flex-col gap-1">
             <ShowData
               title="Evaluations"
@@ -164,56 +157,58 @@ const ProfileOverview = ({
               <ChartViewHelpModal />
             </DialogContent>
           </Dialog>
-          <div className="body__info flex gap-2 w-full">
+          <div className="body__info flex w-full gap-2">
             <div className="font-medium">Evaluation Impact:</div>
             <button
               onClick={() => setIsChartHelpModalOpen(true)}
-              className="underline text-sm text-gray00 dark:text-gray-400"
+              className="text-sm text-gray00 underline dark:text-gray-400"
             >
               <img
-                className="cursor-pointer w-5 h-5"
+                className="h-5 w-5 cursor-pointer"
                 src="/assets/images/SubjectProfile/evidence-info-icon.svg"
                 alt="help"
               />
             </button>
           </div>
-          <ReactECharts
+          <EvaluationsChart
+            evaluationCategory={viewModeToViewAs[viewMode]}
+            loading={loading}
+            onBarClick={onChartClick}
+            impacts={auraImpactsSorted}
+          />
+          {/* <ReactECharts
             option={impactChartOption}
             onEvents={{
               click: onChartClick, // Attach click event
             }}
-            className="body__chart w-full mb-3"
-          />
-          <div className="chart-info flex flex-wrap gap-y-2.5 mb-5">
-            <div className="chart-info__item flex items-center gap-1 w-1/2">
-              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#E2E2E2]"></div>
+            className="body__chart mb-3 w-full"
+          /> */}
+          {/* <div className="chart-info mb-5 flex flex-wrap gap-y-2.5">
+            <div className="chart-info__item flex w-1/2 items-center gap-1">
+              <div className="chart-info__item__color h-[11px] w-[22px] rounded bg-[#E2E2E2]"></div>
               <div className="chart-info__item__text text-xs font-bold">
                 Low Confidence
               </div>
             </div>
-            <div className="chart-info__item flex items-center gap-1 w-1/2">
-              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#B5B5B5]"></div>
+            <div className="chart-info__item flex w-1/2 items-center gap-1">
+              <div className="chart-info__item__color h-[11px] w-[22px] rounded bg-[#B5B5B5]"></div>
               <div className="chart-info__item__text text-xs font-bold">
                 Medium Confidence
               </div>
             </div>
-            <div className="chart-info__item flex items-center gap-1 w-1/2">
-              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#7A7A7A]"></div>
+            <div className="chart-info__item flex w-1/2 items-center gap-1">
+              <div className="chart-info__item__color h-[11px] w-[22px] rounded bg-[#7A7A7A]"></div>
               <div className="chart-info__item__text text-xs font-bold">
                 High Confidence
               </div>
             </div>
-            <div className="chart-info__item flex items-center gap-1 w-1/2">
-              <div className="chart-info__item__color w-[22px] h-[11px] rounded bg-[#404040]"></div>
+            <div className="chart-info__item flex w-1/2 items-center gap-1">
+              <div className="chart-info__item__color h-[11px] w-[22px] rounded bg-[#404040]"></div>
               <div className="chart-info__item__text text-xs font-bold">
                 Very High Confidence
               </div>
             </div>
-          </div>
-          {/*<p className="font-medium italic text-sm text-black">*/}
-          {/*  *This chart displays the top 10 impacts players have on the subject*/}
-          {/*  score*/}
-          {/*</p>*/}
+          </div> */}
         </div>
 
         {isMyPerformance && (
@@ -251,7 +246,7 @@ const ShowData = ({
   details: string | number | null | undefined;
 }) => {
   return (
-    <div className="flex justify-between w-full">
+    <div className="flex w-full justify-between">
       <div className="font-medium">{title}:</div>
       <div>
         <span className="font-medium">{value} </span>

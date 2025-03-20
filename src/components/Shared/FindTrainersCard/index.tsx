@@ -14,10 +14,10 @@ import {
 } from '../../../hooks/useSubjectEvaluations';
 import { useSubjectName } from '../../../hooks/useSubjectName';
 import { useSubjectVerifications } from '../../../hooks/useSubjectVerifications';
-import LinkCard from '../../../pages/Home/LinkCard';
 import { PreferredView } from '../../../types/dashboard';
 import { connectionLevelIcons } from '../../../utils/connection';
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
+import LinkCard from '@/app/routes/_app.home/components/LinkCard';
 
 const FindTrainersCard = ({ subjectId }: { subjectId: string }) => {
   return (
@@ -195,9 +195,8 @@ const PotentialEvaluatorBrief = ({
             {connectionInfo ? (
               <div className="flex items-center gap-1">
                 <img
-                  src={`/assets/images/Shared/${
-                    connectionLevelIcons[connectionInfo.level]
-                  }.svg`}
+                  src={`/assets/images/Shared/${connectionLevelIcons[connectionInfo.level]
+                    }.svg`}
                   alt=""
                   className="inline mr-0.5"
                   width={20}

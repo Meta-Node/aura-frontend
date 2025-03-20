@@ -9,6 +9,8 @@ import {
 export const useSubjectName = (
   subjectId: string | null | undefined,
 ): string => {
+  if (!subjectId) return '';
+
   const authData = useSelector(selectAuthData);
   const brightIdBackup = useSelector(selectBrightIdBackup);
 

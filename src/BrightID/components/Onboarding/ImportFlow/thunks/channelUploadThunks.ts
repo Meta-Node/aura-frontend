@@ -1,4 +1,4 @@
-import { pullProfilePhoto } from 'api/profilePhoto.service';
+import { getProfilePhoto } from '@/store/api/backup';
 import ChannelAPI from 'BrightID/api/channelService';
 import { IMPORT_PREFIX, RECOVERY_CHANNEL_TTL } from 'BrightID/utils/constants';
 import { encryptData } from 'BrightID/utils/cryptoHelper';
@@ -10,12 +10,18 @@ import { hash } from 'utils/crypto';
 export const getUserInfo = async (
   user: RootState['user'],
   authData: AuthData,
+  _dispatch: AppDispatch,
 ) => {
-  const photo = await pullProfilePhoto(
-    hash(user.id + authData.password),
-    user.id,
-    authData.password,
+  const result = await _dispatch(
+    getProfilePhoto.initiate({
+      brightId: user.id,
+      key: hash(user.id + authData.password),
+      password: authData.password,
+    }),
   );
+
+  const photo = result.data;
+
   return {
     id: user.id,
     name: user.name,
@@ -47,7 +53,10 @@ export const uploadAllInfoAfter =
 
       console.log('uploading user info');
 
-      const encrypted = encryptData(await getUserInfo(user, authData), aesKey);
+      const encrypted = encryptData(
+        await getUserInfo(user, authData, _dispatch),
+        aesKey,
+      );
       const userDataId = `${IMPORT_PREFIX}userinfo_${user.id}:${b64ToUrlSafeB64(
         signingKey,
       )}`;

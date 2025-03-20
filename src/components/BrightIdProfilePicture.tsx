@@ -1,64 +1,71 @@
-import { pullProfilePhoto } from 'api/profilePhoto.service';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hash } from 'utils/crypto';
 
 import { createBlockiesImage } from '@/utils/image';
 
-import {
-  selectAuthData,
-  selectBrightIdBackup,
-} from '../store/profile/selectors';
+import { selectAuthData } from '../store/profile/selectors';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { useGetProfilePhotoQuery } from '@/store/api/backup';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 
 const DEFAULT_PROFILE_PICTURE = '/assets/images/avatar-thumb.jpg';
 const BrightIdProfilePicture = ({
   subjectId,
+  withoutHover = false,
   ...props
 }: React.HTMLAttributes<HTMLImageElement> & {
   subjectId: string | undefined;
+  withoutHover?: boolean;
 }) => {
-  const [imgSrc, setImgSrc] = useState(
-    subjectId ? createBlockiesImage(subjectId) : DEFAULT_PROFILE_PICTURE,
+  const imgSrc = useMemo(
+    () =>
+      subjectId ? createBlockiesImage(subjectId) : DEFAULT_PROFILE_PICTURE,
+    [subjectId],
   );
   const authData = useSelector(selectAuthData);
-  const brightIdBackup = useSelector(selectBrightIdBackup);
-  useEffect(() => {
-    let mounted = true;
+  const { data } = useGetProfilePhotoQuery(
+    authData && subjectId
+      ? {
+          brightId: subjectId,
+          key: hash(authData.brightId + authData.password),
+          password: authData.password,
+        }
+      : skipToken,
+  );
 
-    async function f() {
-      if (!authData || !subjectId || !brightIdBackup) return;
-      if (
-        subjectId !== authData.brightId &&
-        !brightIdBackup.connections.find((conn) => conn.id === subjectId)
-      )
-        return;
-      try {
-        const profilePhoto = await pullProfilePhoto(
-          hash(authData.brightId + authData.password),
-          subjectId,
-          authData.password,
-        );
-        if (mounted) setImgSrc(profilePhoto);
-      } catch (e) {
-        // console.log(e);
-        setImgSrc(createBlockiesImage(subjectId));
-      }
-    }
+  const imageSource = data || imgSrc;
 
-    f();
-    return () => {
-      mounted = false;
-    };
-  }, [authData, brightIdBackup, subjectId]);
+  if (withoutHover)
+    return (
+      <img
+        {...props}
+        alt={subjectId}
+        className={`${props.className ?? ''} object-cover`}
+        src={imageSource || '/placeholder.svg'}
+      />
+    );
 
   //TODO: use profile name in alt
+
   return (
-    <img
-      {...props}
-      alt={subjectId}
-      className={`${props.className ?? ''} object-cover`}
-      src={imgSrc}
-    />
+    <HoverCard openDelay={100}>
+      <HoverCardTrigger asChild>
+        <img
+          {...props}
+          alt={subjectId}
+          className={`${props.className ?? ''} object-cover transition-transform duration-200 hover:scale-105`}
+          src={imageSource || '/placeholder.svg'}
+        />
+      </HoverCardTrigger>
+      <HoverCardContent className="w-auto p-1">
+        <img
+          src={imageSource}
+          alt={subjectId}
+          className="h-auto max-h-[300px] w-auto max-w-[300px] rounded-md object-cover"
+        />
+      </HoverCardContent>
+    </HoverCard>
   );
 };
 
