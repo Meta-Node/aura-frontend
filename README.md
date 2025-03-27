@@ -1,4 +1,4 @@
-# Aura: Decentralized Expert Evaluation Platform
+# Aura: Decentralized Expert Evaluation Platform 
 
 Aura is a decentralized platform where experts assess each other and evaluate subjects across various domains, producing digital attestations that bring authenticity to online activities. 
 
