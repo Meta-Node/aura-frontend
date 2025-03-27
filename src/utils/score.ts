@@ -42,6 +42,8 @@ export const calculateRemainingScoreToNextLevel = (
   return highestLevelStart - score;
 };
 
+export const maximumScoreTobeReached = 4_000_000_000;
+
 export const calculateUserScorePercentage = (
   view: EvaluationCategory,
   score: number,
@@ -50,20 +52,22 @@ export const calculateUserScorePercentage = (
 
   const highestLevelStart = selectedCategoryLevel.at(-1);
 
+  const halfMax = maximumScoreTobeReached / 2;
+
   if (highestLevelStart === undefined) return 100;
 
   if (score === 0) return 0;
 
-  if (score > 0) {
-    const width = Math.min(
-      (Math.log(score) / Math.log(highestLevelStart * 100)) * 100,
-      100,
-    );
+  if (score < 0) return -1;
 
-    return width - 50;
-  }
+  if (score <= halfMax) return (30 * score) / halfMax;
 
-  return -1;
+  const logWidth = Math.min(
+    (Math.log(score - halfMax) / Math.log(halfMax)) * 100,
+    100,
+  );
+
+  return Math.min(30 + (logWidth / 100) * 70, 100);
 };
 
 export const useLevelupProgress = ({
