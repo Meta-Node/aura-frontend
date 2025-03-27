@@ -89,6 +89,7 @@ export const ActivityChartArea = ({
           fill="url(#colorEvaluations)"
           z={10}
           isAnimationActive={false}
+          strokeWidth={2}
         />
         {refAreaLeft !== null && refAreaRight !== null && (
           <ReferenceArea

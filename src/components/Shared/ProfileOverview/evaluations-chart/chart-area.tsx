@@ -122,6 +122,7 @@ export const EvaluationsChartArea = ({
         dot={{ r: zoomedData.length > 50 ? 1 : 2, fill: 'white' }}
         fill="url(#colorEvaluations)"
         z={10}
+        strokeWidth={2}
         isAnimationActive={false}
       />
       {refAreaLeft !== null && refAreaRight !== null && (
