@@ -30,6 +30,7 @@ import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import BrightIdProfilePicture from './BrightIdProfilePicture';
 import { Skeleton } from './ui/skeleton';
+import { EvaluationsChart } from './Shared/ProfileOverview/evaluations-chart';
 
 const views = [
   EvaluationCategory.SUBJECT,
@@ -62,7 +63,13 @@ const CredibilityDetailsForRole = ({
       subjectId,
       evaluationCategory: roleEvaluationCategory,
     });
-  const { impactChartOption } = useImpactEChartOption(auraImpacts, true, 12);
+  const auraImpactsSorted = useMemo(
+    () =>
+      (auraImpacts ?? [])
+        .filter((item) => item.impact !== 0)
+        .sort((a, b) => a.impact - b.impact),
+    [auraImpacts],
+  );
   const link = '/subject/' + subjectId;
   const navigate = useNavigate();
 
@@ -182,15 +189,16 @@ const CredibilityDetailsForRole = ({
           </span>
         )}
       </div>
-      {/* <EvaluationFlow
-        showEvaluationFlow={showEvaluationFlow}
-        setShowEvaluationFlow={setShowEvaluationFlow}
-        subjectId={subjectId}
-      /> */}
-      <ReactECharts
-        style={{ height: '110px' }}
-        option={impactChartOption}
-        className="body__chart mb-5 mt-2 w-full"
+      <EvaluationsChart
+        evaluationCategory={roleEvaluationCategory}
+        loading={loading}
+        impacts={auraImpactsSorted}
+        onBarClick={(entry: any) => {
+          onClose();
+          navigate(
+            `/subject/${entry.evaluated}?viewas=${roleEvaluationCategory}`,
+          );
+        }}
       />
       <Link
         to={link + '?viewas=' + roleEvaluationCategory}
