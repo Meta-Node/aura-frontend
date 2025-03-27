@@ -1,44 +1,42 @@
 import { ToastAction, ToastProvider } from 'components/ui/toast';
 import { useToast } from 'hooks/use-toast';
 import React from 'react';
-import { usePWAManager } from '@remix-pwa/client';
-import { useGetAppLatestVersionQuery } from '@/store/api/backup';
-import { skipToken } from '@reduxjs/toolkit/query';
-
-const isDevelopment = process.env.NODE_ENV === 'development';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const UpdatePrompt = () => {
   const {
-    promptInstall,
-    swRegistration,
-    swUpdate,
-    updateAvailable,
-    userInstallChoice,
-  } = usePWAManager();
+    offlineReady: [, setOfflineReady],
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegisteredSW(swUrl, r) {
+      r &&
+        setInterval(() => {
+          console.log('Checking for sw update');
+          r.update();
+        }, 60000);
+    },
+    onRegisterError(error) {
+      console.log('SW registration error', error);
+    },
+  });
 
   const { toast } = useToast();
-  const { data, isLoading } = useGetAppLatestVersionQuery(
-    isDevelopment ? skipToken : undefined,
-    {
-      pollingInterval: 60000,
-    },
-  );
+
+  const close = () => {
+    setOfflineReady(false);
+    setNeedRefresh(false);
+  };
 
   React.useEffect(() => {
-    if (
-      updateAvailable ||
-      (!isLoading && APP_VERSION !== data && !isDevelopment)
-    ) {
+    if (needRefresh) {
       toast({
         title: 'New Version Available ↗️',
         description: 'Click update to get the latest features.',
         action: (
           <ToastAction
             altText="Update"
-            onClick={() => {
-              swRegistration?.update();
-              window.location.reload();
-            }}
+            onClick={() => updateServiceWorker(false)}
           >
             Update
           </ToastAction>
@@ -46,7 +44,7 @@ const UpdatePrompt = () => {
         duration: Infinity,
       });
     }
-  }, [updateAvailable, data, swUpdate, toast]);
+  }, [needRefresh, toast, updateServiceWorker]);
 
   return <ToastProvider />;
 };

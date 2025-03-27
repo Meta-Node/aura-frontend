@@ -26,7 +26,13 @@
     "strictNullChecks": true,
     "target": "ESNext",
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo/build",
-    "types": ["@types/node", "vite/client", "vitest/globals"],
+    "types": [
+      "@vite-pwa/remix/remix-sw",
+      "vite-plugin-pwa/client",
+      "@types/node",
+      "vite/client",
+      "vitest/globals"
+    ],
     "useUnknownInCatchVariables": false,
     "paths": {
       "@/*": ["./*"]
@@ -37,7 +43,7 @@
     "__tests__/**/*",
     "src/**/*",
     "src/**/*.json",
-    "vite-env.d.ts",
+    "*.d.ts",
     "node_modules/vite-plugin-pwa/client.d.ts"
   ]
 }
