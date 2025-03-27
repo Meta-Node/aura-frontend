@@ -167,8 +167,8 @@ export const ErrorRestoreActions = () => {
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                Removes temporary stored data. This might resolve without
-                affecting your local stored data.
+                Removes temporary stored data. This might resolve the issue
+                without affecting your local stored data.
               </p>
             </div>
           </div>
