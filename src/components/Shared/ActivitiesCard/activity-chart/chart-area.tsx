@@ -81,7 +81,7 @@ export const ActivityChartArea = ({
           ))}
         </Bar>
         <Area
-          type="monotone"
+          type="linear"
           dataKey="rating"
           stroke="hsl(var(--primary))"
           fillOpacity={1}

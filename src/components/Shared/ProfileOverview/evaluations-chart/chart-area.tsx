@@ -116,7 +116,7 @@ export const EvaluationsChartArea = ({
         ))}
       </Bar>
       <Area
-        type="monotone"
+        type="linear"
         dataKey="confidence"
         stroke="hsl(var(--primary))"
         fillOpacity={1}
