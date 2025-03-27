@@ -37,6 +37,7 @@ export default defineConfig(() => {
           suppressWarnings: true,
         },
         swOptions: {},
+        includeManifestIcons: false,
         workbox: {
           maximumFileSizeToCacheInBytes: 5242880,
           clientsClaim: true,
@@ -49,25 +50,26 @@ export default defineConfig(() => {
           short_name: 'Aura',
           description: 'Aura web app',
           theme_color: '#0c0a09',
+          start_url: '/',
           icons: [
             {
-              src: '/assets/images/pwa/aura-image-256x256.png',
+              src: '/assets/images/pwa/aura-256x256.png',
               sizes: '256x256',
               type: 'image/png',
               purpose: 'any maskable',
             },
             {
-              src: '/assets/images/pwa/aura-image-192x192.png',
+              src: '/assets/images/pwa/aura-192x192.png',
               sizes: '192x192',
               type: 'image/png',
             },
             {
-              src: '/assets/images/pwa/aura-image-512x512.png',
+              src: '/assets/images/pwa/aura-512x512.png',
               sizes: '512x512',
               type: 'image/png',
             },
             {
-              src: '/assets/images/pwa/aura-image-256x256.png',
+              src: '/assets/images/pwa/aura-256x256.png',
               sizes: '256x256',
               type: 'image/png',
             },

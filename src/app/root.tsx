@@ -45,7 +45,6 @@ export function Layout({ children }: PropsWithChildren) {
         <meta content="#0c0a09" name="theme-color" />
         <meta content="Aura" name="description" />
         <link href="/logo192.png" rel="apple-touch-icon" />
-        <link rel="manifest" href="/manifest.json" />
 
         <link rel="icon" href="/favicon.ico" />
         <title>Aura</title>
