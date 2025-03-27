@@ -34,7 +34,7 @@ function calculateImageSize(numberOfImages: number) {
   return imageSize;
 }
 
-export const ImageLabel: FC<any> = ({ x, y, payload, data }) => {
+export const ImageLabel: FC<any> = ({ x, y, payload, data, onBarClick }) => {
   if (data.length > maxNumberOfImages) return null;
 
   const item = data[payload.index];
@@ -51,7 +51,8 @@ export const ImageLabel: FC<any> = ({ x, y, payload, data }) => {
       >
         <BrightIdProfilePicture
           withoutHover
-          className="rounded"
+          onClick={onBarClick?.bind(null, item)}
+          className={cn('rounded', onBarClick && 'cursor-pointer')}
           subjectId={item.evaluated}
         />
       </foreignObject>
@@ -84,7 +85,7 @@ export const EvaluationsChartArea = ({
         tickLine={false}
         axisLine={false}
         style={{ fontSize: '10px', userSelect: 'none' }}
-        tick={<ImageLabel data={zoomedData} />}
+        tick={<ImageLabel onBarClick={onBarClick} data={zoomedData} />}
       />
       <YAxis
         tickLine={false}
@@ -95,7 +96,7 @@ export const EvaluationsChartArea = ({
         domain={[-4, 4]}
         type="number"
       />
-      <ChartTooltip content={<EvaluationsChartTooltip />} />
+      <ChartTooltip cursor={false} content={<EvaluationsChartTooltip />} />
 
       <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
       <Bar

@@ -86,6 +86,7 @@ export const EvaluationsChart = ({
       if (isSelecting && e?.activePayload?.[0]) {
         const index = chartData.indexOf(e.activePayload[0].payload);
         if (index !== -1) setRefAreaRight(index);
+      } else {
       }
     },
     [isSelecting, chartData],

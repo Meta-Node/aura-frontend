@@ -62,7 +62,7 @@ export const ActivityChartArea = ({
           domain={[-4, 4]}
           type="number"
         />
-        <ChartTooltip content={<ActivityChartTooltip />} />
+        <ChartTooltip cursor={false} content={<ActivityChartTooltip />} />
 
         <ReferenceLine y={0} stroke="gray" strokeWidth={1} />
         <Bar
