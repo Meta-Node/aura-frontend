@@ -58,8 +58,8 @@ export const ActivityChart = ({
 
   useEffect(() => {
     if (chartData.length > 0) {
-      setStartIndex(0);
-      setEndIndex(Math.min(chartData.length - 1, 19));
+      setStartIndex(Math.max(chartData.length - 20, 0));
+      setEndIndex(chartData.length - 1);
     }
   }, [chartData]);
 
@@ -112,7 +112,7 @@ export const ActivityChart = ({
   }, [refAreaLeft, refAreaRight]);
 
   const handleReset = useCallback(() => {
-    setStartIndex(0);
+    setStartIndex(Math.max(chartData.length - 20, 0));
     setEndIndex(chartData.length - 1);
   }, [chartData]);
 
@@ -178,21 +178,25 @@ export const ActivityChart = ({
           onReset={handleReset}
           onZoomIn={() => {
             if (startIndex < endIndex - 1) {
-              setStartIndex((prev) => Math.min(prev + 1, endIndex - 1));
+              setStartIndex((prev) => Math.min(prev + 3, endIndex - 1));
             } else {
               setEndIndex((prev) => Math.min(prev + 1, chartData.length - 1));
             }
           }}
           onZoomOut={() => {
             if (startIndex !== 0)
-              setStartIndex((prev) => Math.max(prev - 1, 0));
+              setStartIndex((prev) => Math.max(prev - 3, 0));
             else
               setEndIndex((prev) => Math.min(prev + 1, chartData.length - 1));
           }}
-          onPanLeft={() => setStartIndex((prev) => Math.max(prev - 1, 0))}
-          onPanRight={() =>
-            setEndIndex((prev) => Math.min(prev + 1, chartData.length - 1))
-          }
+          onPanLeft={() => {
+            setStartIndex((prev) => Math.max(prev - 1, 0));
+            setEndIndex((prev) => Math.max(prev - 1, 0));
+          }}
+          onPanRight={() => {
+            setEndIndex((prev) => Math.min(prev + 1, chartData.length - 1));
+            setStartIndex((prev) => Math.min(prev + 1, chartData.length - 1));
+          }}
           disabledZoomIn={startIndex === endIndex - 1}
           disabledZoomOut={
             startIndex === 0 && endIndex === chartData.length - 1

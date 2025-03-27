@@ -51,7 +51,7 @@ export const ActivityChartArea = ({
           tickLine={false}
           axisLine={false}
           style={{ fontSize: '10px', userSelect: 'none' }}
-          tick={<ImageLabel data={zoomedData} />}
+          tick={<ImageLabel onBarClick={onBarClick} data={zoomedData} />}
         />
         <YAxis
           tickLine={false}

@@ -50,6 +50,7 @@ export const ImageLabel: FC<any> = ({ x, y, payload, data, onBarClick }) => {
         y={-91 - imageSize / 2 + (Math.sign(item.impact) * imageSize) / 2}
       >
         <BrightIdProfilePicture
+          key={`${item.evaluated}.${item.id}`}
           withoutHover
           onClick={onBarClick?.bind(null, item)}
           className={cn('rounded', onBarClick && 'cursor-pointer')}
