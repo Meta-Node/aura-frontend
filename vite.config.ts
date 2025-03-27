@@ -1,10 +1,13 @@
 import replace from '@rollup/plugin-replace';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+import { ReactRouterVitePWA } from './plugins/sw';
 import { reactRouter } from '@react-router/dev/vite';
-import { remixPWA } from '@remix-pwa/dev';
 
 const replaceOptions = { __DATE__: new Date().toISOString() };
+
+const { ReactRouterVitePWAPlugin } = ReactRouterVitePWA();
 
 export default defineConfig(() => {
   return {
@@ -17,8 +20,60 @@ export default defineConfig(() => {
     },
     plugins: [
       tsconfigPaths(),
-      remixPWA(),
       !process.env.VITEST && reactRouter(),
+      ReactRouterVitePWAPlugin({
+        srcDir: 'src',
+        base: '/',
+        filename: 'prompt-sw.ts',
+        strategies: 'injectManifest',
+        injectManifest: {
+          globPatterns: ['**/*.{js,html,css,png,svg,ico}'],
+          enableWorkboxModulesLogs: true,
+          maximumFileSizeToCacheInBytes: 5242880,
+        },
+        devOptions: {
+          enabled: true,
+          type: 'module',
+          suppressWarnings: true,
+        },
+        swOptions: {},
+        workbox: {
+          maximumFileSizeToCacheInBytes: 5242880,
+          clientsClaim: true,
+          skipWaiting: true,
+        },
+        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+        manifest: {
+          display: 'standalone',
+          name: 'Aura Service Worker',
+          short_name: 'Aura',
+          description: 'Aura web app',
+          theme_color: '#0c0a09',
+          icons: [
+            {
+              src: '/assets/images/pwa/aura-image-256x256.png',
+              sizes: '256x256',
+              type: 'image/png',
+              purpose: 'any maskable',
+            },
+            {
+              src: '/assets/images/pwa/aura-image-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: '/assets/images/pwa/aura-image-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+            {
+              src: '/assets/images/pwa/aura-image-256x256.png',
+              sizes: '256x256',
+              type: 'image/png',
+            },
+          ],
+        },
+      }),
       replace(replaceOptions),
     ],
     server: {
