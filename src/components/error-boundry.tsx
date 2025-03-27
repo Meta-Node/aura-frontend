@@ -43,8 +43,8 @@ export default function ErrorBoundryUi({
               <img
                 className="mx-auto my-10 rounded-md"
                 src="/assets/images/error.webp"
-                width={350}
-                height={350}
+                width={200}
+                height={200}
                 alt="code error"
               />
               <div className="flex items-center justify-between">
@@ -88,9 +88,8 @@ export default function ErrorBoundryUi({
             ) : (
               <></>
             )}
+            <ErrorRestoreActions />
           </div>
-
-          <ErrorRestoreActions />
         </div>
       </div>
     </div>
@@ -129,43 +128,114 @@ export const ErrorRestoreActions = () => {
 
   return (
     <>
-      <div className="mt-2 text-xl">
-        Here are some ways to recover your state
-      </div>
-      <div className="mt-1 flex flex-wrap items-center justify-center gap-2 md:flex-nowrap">
-        <Link to="/home">
-          <Button>
-            <HomeIcon />
-            Home
-          </Button>
-        </Link>
-        <Button onClick={onClearCache} variant="secondary">
-          <DatabaseIcon />
-          Clear your cache
-        </Button>
-        <Button onClick={() => setShowConfirm(true)} variant="destructive">
-          <TrashIcon />
-          Clear your data
-        </Button>
-      </div>
-
-      <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
-        <DialogContent>
-          <DialogTitle>Delete data</DialogTitle>
-          <DialogDescription></DialogDescription>
-          <p className="text-lg">Are you sure you want to delete all data?</p>
-          <DialogFooter>
-            <div className="mt-4 flex justify-center gap-4">
-              <Button onClick={() => setShowConfirm(false)} variant="secondary">
-                Cancel
-              </Button>
-              <Button onClick={onClearData} variant="destructive">
-                Yes, Delete
-              </Button>
+      <div className="mt-2">
+        <div className="text-xl font-semibold">State Recovery Options</div>
+        <div className="mt-4 space-y-6">
+          {/* Home Navigation Option */}
+          <div className="flex items-start gap-4">
+            <span className="text-lg font-medium">1.</span>
+            <div className="flex flex-1 flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <p className="font-medium">Navigate to Home</p>
+                <Link to="/home">
+                  <Button className="gap-2">
+                    <HomeIcon className="h-4 w-4" />
+                    Home
+                  </Button>
+                </Link>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                This will return you to the homepage. Use this first if you're
+                experiencing navigation issues or unexpected behavior.
+              </p>
             </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+
+          {/* Clear Cache Option */}
+          <div className="flex items-start gap-4">
+            <span className="text-lg font-medium">2.</span>
+            <div className="flex flex-1 flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <p className="font-medium">Clear Application Cache</p>
+                <Button
+                  onClick={onClearCache}
+                  variant="secondary"
+                  className="gap-2"
+                >
+                  <DatabaseIcon className="h-4 w-4" />
+                  Clear Cache
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Removes temporary stored data. This might resolve without
+                affecting your local stored data.
+              </p>
+            </div>
+          </div>
+
+          {/* Clear Data Option */}
+          <div className="flex items-start gap-4">
+            <span className="text-lg font-medium">3.</span>
+            <div className="flex flex-1 flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <p className="font-medium">Clear All Data</p>
+                <Button
+                  onClick={() => setShowConfirm(true)}
+                  variant="destructive"
+                  className="gap-2"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                  Clear Data
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Permanently deletes all stored information and logs you out. Use
+                as a last resort.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Clear Data Dialog */}
+        <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
+          <DialogContent>
+            <DialogTitle className="text-destructive">
+              Confirm Permanent Deletion
+            </DialogTitle>
+            <DialogDescription>
+              <div className="space-y-2">
+                <p>This action will:</p>
+                <ul className="list-disc pl-6 text-muted-foreground">
+                  <li>Delete all account information</li>
+                  <li>Remove all application settings</li>
+                  <li>Clear cached data and preferences</li>
+                </ul>
+                <p className="pt-2 font-medium">
+                  This operation cannot be undone. Continue?
+                </p>
+              </div>
+            </DialogDescription>
+            <DialogFooter>
+              <div className="flex justify-end gap-3">
+                <Button
+                  onClick={() => setShowConfirm(false)}
+                  variant="secondary"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={onClearData}
+                  variant="destructive"
+                  className="gap-2"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                  Confirm Permanent Deletion
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </>
   );
 };
