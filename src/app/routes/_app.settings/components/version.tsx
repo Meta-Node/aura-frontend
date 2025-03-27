@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useGetAppLatestVersionQuery } from '@/store/api/backup';
 import { skipToken } from '@reduxjs/toolkit/query';
-import { usePWAManager } from '@remix-pwa/client';
 import { Loader2 } from 'lucide-react';
 import { MdUpdate } from 'react-icons/md';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -17,18 +17,24 @@ export default function VersionCard() {
   );
 
   const {
-    promptInstall,
-    swRegistration,
-    swUpdate,
-    updateAvailable,
-    userInstallChoice,
-  } = usePWAManager();
+    offlineReady: [, setOfflineReady],
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegisteredSW(swUrl, r) {
+      r &&
+        setInterval(() => {
+          console.log('Checking for sw update');
+          r.update();
+        }, 60000);
+    },
+    onRegisterError(error) {
+      console.log('SW registration error', error);
+    },
+  });
 
   const handleUpdate = () => {
-    if (swRegistration && swRegistration.waiting) {
-      swRegistration.update();
-      window.location.reload();
-    }
+    updateServiceWorker(true);
   };
 
   return (
@@ -54,9 +60,9 @@ export default function VersionCard() {
           ) : (
             <Button
               onClick={handleUpdate}
-              disabled={data === APP_VERSION && !updateAvailable}
+              disabled={data === APP_VERSION && !needRefresh}
             >
-              {!updateAvailable ? (
+              {!needRefresh ? (
                 'Update'
               ) : (
                 <>
