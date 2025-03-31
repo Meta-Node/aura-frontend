@@ -1,4 +1,4 @@
-import { AuraImpact } from '@/api/auranode.service';
+import { AuraImpact, Verifications } from '@/api/auranode.service';
 import { EvaluationCategory } from '@/types/dashboard';
 import { hash } from '@/utils/crypto';
 import {
@@ -197,7 +197,7 @@ export const mockedBrightIdProfileData = {
           },
         ],
       },
-    ],
+    ] as Verifications,
     recoveryConnections: [],
     connectionsNum: 11,
     groupsNum: 0,
@@ -209,7 +209,7 @@ export const mockedBrightIdProfileData = {
 };
 
 export const findRoleVerification = (verificationName: string) => {
-  return mockedBrightIdProfileData.data.verifications[0].domains[0].categories.find(
+  return mockedBrightIdProfileData.data.verifications[0].domains![0].categories.find(
     (item) => item.name === verificationName,
   );
 };

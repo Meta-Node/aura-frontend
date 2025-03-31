@@ -36,8 +36,6 @@ const migrateDbFromDeserializedToSerialized = async () => {
 
   if (Number(localforageDbVersion) >= dbVersion) return;
 
-  console.log('Appliying db migration');
-
   const dbKey = `persist:${persistConfig.key}`;
 
   let persistData: Record<string, unknown> | null =
@@ -106,20 +104,25 @@ const rootReducer = withReduxStateSync(
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export function configureAppStore(preloadedState?: any) {
-  const syncMiddleware = createStateSyncMiddleware({
-    channel: 'AURA_UPDATE_CHANNEL',
-    broadcastChannelOption: {
-      type: typeof window !== 'undefined' ? 'localstorage' : 'native',
-    },
-    blacklist: [
-      ...persistIgnoredActions,
-      apiSlice.reducerPath,
-      backupApiSlice.reducerPath,
-      operationsSlice.reducerPath,
-      '__rtkq/unfocused',
-      '__rtkq/focused',
-    ],
-  });
+  const middlewares = [apiSlice.middleware, backupApiSlice.middleware];
+
+  if (!process.env.VITEST) {
+    const syncMiddleware = createStateSyncMiddleware({
+      channel: 'AURA_UPDATE_CHANNEL',
+      broadcastChannelOption: {
+        type: typeof window !== 'undefined' ? 'localstorage' : 'native',
+      },
+      blacklist: [
+        ...persistIgnoredActions,
+        apiSlice.reducerPath,
+        backupApiSlice.reducerPath,
+        operationsSlice.reducerPath,
+        '__rtkq/unfocused',
+        '__rtkq/focused',
+      ],
+    });
+    middlewares.push(syncMiddleware as Middleware);
+  }
 
   const store = configureStore({
     reducer: persistedReducer,
@@ -127,11 +130,7 @@ export function configureAppStore(preloadedState?: any) {
       getDefaultMiddleware({
         serializableCheck: false,
         immutableCheck: false,
-      }).concat(
-        apiSlice.middleware,
-        backupApiSlice.middleware,
-        syncMiddleware as Middleware,
-      ),
+      }).concat(...middlewares),
     preloadedState,
   });
 

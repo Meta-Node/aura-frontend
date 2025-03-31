@@ -49,7 +49,9 @@ export function renderWithRouterAndRedux(
           TEST_BRIGHT_PASSWORD,
         ),
         preferredView: PreferredView.PLAYER,
+        ...(extendedOptions.redux?.preloadedState ?? {}),
       } as ProfileState,
+      ...extendedOptions.redux?.preloadedState,
     }).store,
     ...renderOptions
   } = extendedOptions.redux ?? {};

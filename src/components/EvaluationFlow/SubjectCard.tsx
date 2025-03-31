@@ -172,3 +172,5 @@ export const SubjectCard = ({
 };
 
 export const SubjectCardMemo = memo(SubjectCard);
+
+SubjectCardMemo.displayName = 'SubjectCard';

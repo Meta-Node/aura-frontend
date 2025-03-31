@@ -1,4 +1,5 @@
-import { decryptData } from '@/utils/crypto';
+import { BrightIdBackup } from '@/types';
+import { decryptData, decryptUserData, hash } from '@/utils/crypto';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Action } from 'redux';
 import { REHYDRATE } from 'redux-persist';
@@ -37,6 +38,22 @@ export const backupApiSlice = createApi({
       }),
       keepUnusedDataFor: 0,
     }),
+    getProfileData: build.query<
+      BrightIdBackup,
+      { brightId: string; password: string }
+    >({
+      query: ({ brightId, password }) => ({
+        url: `/brightid/backups/${hash(brightId + password)}/data`,
+        method: 'GET',
+        responseHandler: 'text',
+      }),
+      extraOptions: {
+        maxRetries: 0,
+      },
+      transformResponse: (response: string, meta, args) => {
+        return decryptUserData(response, args.password) as BrightIdBackup;
+      },
+    }),
     getProfilePhoto: build.query<
       string,
       { key: string; brightId: string; password: string }
@@ -67,4 +84,5 @@ export const {
   useLazyGetProfilePhotoQuery,
   useGetAppLatestVersionQuery,
   useLazyGetAppLatestVersionQuery,
+  useGetProfileDataQuery,
 } = backupApiSlice;

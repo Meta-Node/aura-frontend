@@ -84,7 +84,11 @@ describe('Subject card functionality', () => {
       renderWithRouterAndRedux(
         <RefreshEvaluationsContextProvider>
           <MyEvaluationsContextProvider>
-            <SubjectCard index={0} subjectId={TEST_BRIGHT_ID} />
+            <SubjectCard
+              verifications={mockedBrightIdProfileData.data.verifications}
+              index={0}
+              subjectId={TEST_BRIGHT_ID}
+            />
           </MyEvaluationsContextProvider>
         </RefreshEvaluationsContextProvider>,
         {

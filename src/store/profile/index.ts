@@ -48,13 +48,9 @@ export const profileSlice = createSlice({
     builder
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.authData = action.payload;
-        console.log('loginThunk.fulfilled');
-        console.log(state);
       })
       .addCase(getBrightIdBackupThunk.fulfilled, (state, action) => {
         state.brightIdBackupEncrypted = action.payload;
-        console.log('getBrightIdBackupThunk.fulfilled');
-        console.log(state);
       })
       .addMatcher(
         (action) => action.type === RESET_STORE,
