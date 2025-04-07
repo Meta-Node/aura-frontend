@@ -221,7 +221,10 @@ const RecoveryCodeScreen = () => {
   return (
     <div className="page flex min-h-screen flex-col !px-[22px] !pt-[90px] pb-4">
       {importedUserData ? (
-        <section className="content mb-6 pl-5 pr-12">
+        <section
+          data-testid="login-download-state"
+          className="content mb-6 pl-5 pr-12"
+        >
           <p className="mb-6 text-5xl font-black text-white">Login</p>
           <p className="text-lg font-medium text-white">
             Downloading backup data...
@@ -255,7 +258,7 @@ const RecoveryCodeScreen = () => {
             href={universalLink}
             target="_blank"
             rel="noreferrer"
-            data-testid={universalLink && 'import-universal-link'}
+            data-testid={universalLink && 'import-universal-qr-code'}
           >
             {universalLink && (
               <FadeIn delay={0.2}>
@@ -309,8 +312,10 @@ const RecoveryCodeScreen = () => {
           <FadeIn delay={0.35}>
             <footer className="flex justify-between text-sm text-gray90">
               <span className="flex gap-1">
-                {/* <p className="font-light">Version</p>
-                <p className="">2.1</p> */}
+                <p className="font-light">Version</p>
+                <p data-testid="app-version" className="">
+                  {APP_VERSION}
+                </p>
               </span>
               <span className="flex gap-1">
                 <p className="text-gray50">Powered by:</p>
