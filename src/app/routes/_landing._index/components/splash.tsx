@@ -10,7 +10,12 @@ const Spalsh = () => {
     <div className="page flex min-h-screen flex-col !px-[22px] !pt-[90px] pb-4">
       <section className="content pl-5 pr-12">
         <FadeIn delay={0.1}>
-          <p className="mb-3 text-5xl font-black text-white">Aura</p>
+          <p
+            data-testid="login-title"
+            className="mb-3 text-5xl font-black text-white"
+          >
+            Aura
+          </p>
         </FadeIn>
         <FadeIn delay={0.15}>
           <p className="mb-9 text-2xl font-black text-white">
