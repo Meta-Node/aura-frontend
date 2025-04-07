@@ -120,4 +120,14 @@ describe('Subject card functionality', () => {
       ).toHaveAttribute('href', `/subject/${TEST_BRIGHT_ID}`);
     });
   });
+
+  it('Should navigate to the subject page when clicking the component', () => {});
 });
+
+describe('Connection type states', () => {});
+
+describe('Evaluation States', () => {});
+
+describe('Score bar progress', () => {});
+
+describe('Top evaluations chart', () => {});
