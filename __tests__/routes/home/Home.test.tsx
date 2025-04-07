@@ -6,8 +6,8 @@ import {
   makeMockOutboundInterceptor,
   mockProfilePhoto,
   profileInterceptor,
-} from '../utils/api/server';
-import { renderWithRouterAndRedux } from '../utils/app';
+} from '../../utils/api/server';
+import { renderWithRouterAndRedux } from '../../utils/app';
 import { MyEvaluationsContextProvider } from '@/contexts/MyEvaluationsContext';
 import { RefreshEvaluationsContextProvider } from '@/contexts/RefreshEvaluationsContext';
 import HomePage from '@/app/routes/_app.home/route';
@@ -16,7 +16,7 @@ import {
   generateRandomBrightIdConnectionBackup,
   mockedBrightIdProfileData,
   TEST_BRIGHT_ID,
-} from '../utils/api/profile';
+} from '../../utils/api/profile';
 import { http, HttpResponse } from 'msw';
 import * as profileActions from '@/store/profile/actions';
 import { waitFor } from '@testing-library/react';
