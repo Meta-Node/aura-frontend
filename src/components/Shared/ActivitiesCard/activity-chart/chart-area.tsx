@@ -72,6 +72,7 @@ export const ActivityChartArea = ({
         >
           {zoomedData.map((entry, index) => (
             <Cell
+              data-testid={`activity-chart-bar-cell-${entry.evaluated}`}
               className={cn(onBarClick && 'cursor-pointer')}
               onClick={onBarClick?.bind(null, entry)}
               radius={entry.borderRadius}
@@ -81,6 +82,7 @@ export const ActivityChartArea = ({
           ))}
         </Bar>
         <Area
+          data-testid="activity-chart-area"
           type="linear"
           dataKey="rating"
           stroke="hsl(var(--primary))"

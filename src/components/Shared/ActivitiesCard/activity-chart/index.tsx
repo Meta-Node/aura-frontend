@@ -13,7 +13,7 @@ export interface ActivityChartProps {
   ratings: AuraRating[] | null;
   evaluationCategory: EvaluationCategory;
   subjectId: string;
-  loading: boolean;
+  loading?: boolean;
   outboundEvaluations?: AuraNodeBrightIdConnection[];
   profile?: ProfileInfo;
   onBarClick?: (entry: any) => void;
@@ -168,6 +168,7 @@ export const ActivityChart = ({
   return (
     <ChartContainer config={chartConfig} className="mb-12 h-52 w-full">
       <div
+        data-testid="activity-chart-container"
         className="h-full"
         onWheel={handleZoom}
         onTouchMove={handleZoom}

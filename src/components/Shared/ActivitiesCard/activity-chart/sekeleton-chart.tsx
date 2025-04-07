@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
 const SkeletonChart = () => (
-  <div className="mb-12 h-52 w-full">
+  <div data-testid="chart-loading-skeleton" className="mb-12 h-52 w-full">
     <div className="flex h-full flex-col">
       <div className="my-2 flex justify-end gap-2 sm:mb-4">
         {[...Array(5)].map((_, i) => (

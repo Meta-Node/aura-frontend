@@ -41,7 +41,6 @@ export const calculateRatingsImpact = (
 
   return ratings.map((rating) => {
     const ratingProfile = outboundProfiles[rating.toBrightId];
-
     const impact = getAuraVerification(
       ratingProfile.verifications,
       evaluationsToEvaluatedCategory[evaluationCategory],

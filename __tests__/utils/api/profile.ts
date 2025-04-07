@@ -148,7 +148,7 @@ export const findProfileCategory = (profile: any, name: string) => {
 
 export const generateMockedProfile = (
   brightId = generateRandomBrightId(),
-  categories: any[],
+  categories: any[] | null = null,
 ) => {
   return {
     id: brightId,
@@ -161,7 +161,7 @@ export const generateMockedProfile = (
         domains: [
           {
             name: 'BrightID',
-            categories: categories,
+            categories: categories ?? [],
           },
         ],
       },
@@ -202,7 +202,7 @@ export const mockedBrightIdProfileData = {
     connectionsNum: 11,
     groupsNum: 0,
     reports: [],
-    createdAt: new Date(),
+    createdAt: new Date().getTime(),
     signingKeys: [],
     requiredRecoveryNum: 2,
   },

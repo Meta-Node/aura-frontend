@@ -30,8 +30,9 @@ const ZoomControls = ({
   disabledPanLeft,
   disabledPanRight,
 }: ZoomControlsProps) => (
-  <div className="my-2 flex justify-end sm:mb-4">
+  <div data-testid="chart-controls" className="my-2 flex justify-end sm:mb-4">
     <Button
+      data-testid="chart-reset-button"
       variant="ghost"
       size="icon"
       onClick={onReset}
@@ -41,6 +42,7 @@ const ZoomControls = ({
       <MdRefresh className="h-2 w-2" />
     </Button>
     <Button
+      data-testid="chart-zoom-in-button"
       size="icon"
       className="h-6 w-6 text-xs sm:text-sm"
       variant="ghost"
@@ -50,6 +52,7 @@ const ZoomControls = ({
       <ZoomInIcon className="h-2 w-2" />
     </Button>
     <Button
+      data-testid="chart-zoom-out-button"
       size="icon"
       className="h-6 w-6 text-xs sm:text-sm"
       variant="ghost"
@@ -59,6 +62,7 @@ const ZoomControls = ({
       <ZoomOutIcon className="h-2 w-2" />
     </Button>
     <Button
+      data-testid="chart-pan-left-button"
       size="icon"
       className="h-6 w-6 text-xs sm:text-sm"
       variant="ghost"
@@ -68,6 +72,7 @@ const ZoomControls = ({
       <ArrowLeftIcon className="h-2 w-2" />
     </Button>
     <Button
+      data-testid="chart-pan-right-button"
       size="icon"
       className="h-6 w-6 text-xs sm:text-sm"
       variant="ghost"
