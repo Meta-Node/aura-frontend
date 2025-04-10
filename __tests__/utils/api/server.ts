@@ -28,12 +28,12 @@ export const mockProfilePhoto = http.get(
 );
 
 export const inboundEmptyInterceptor = http.get(
-  `/auranode-test/brightid/v6/users/${TEST_BRIGHT_ID}/connections/outbound`,
+  `/auranode-test/brightid/v6/users/${TEST_BRIGHT_ID}/connections/inbound`,
   () => HttpResponse.json(mockInboundData),
 );
 
 export const outboundEmptyInterceptor = http.get(
-  `/auranode-test/brightid/v6/users/${TEST_BRIGHT_ID}/connections/inbound `,
+  `/auranode-test/brightid/v6/users/${TEST_BRIGHT_ID}/connections/outbound `,
   () => HttpResponse.json(mockOutboundData),
 );
 

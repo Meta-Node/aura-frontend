@@ -14,7 +14,8 @@ export const generateRandomBrightId = () =>
   Math.random().toString(36).slice(2, 16);
 
 export const generateRandomBrightIdConnectionBackup = (
-  incomingLevel = 'already known',
+  incomingLevel: ConnectionLevel = 'already known',
+  level: ConnectionLevel = 'just met',
 ) => {
   return {
     id: generateRandomBrightId(),
@@ -25,7 +26,7 @@ export const generateRandomBrightIdConnectionBackup = (
     },
     status: 'verified', // static status
     notificationToken: 'TOKEN', // static token
-    level: 'just met', // static level
+    level,
     socialMedia: [], // empty array for simplicity
     verifications: [
       {

@@ -93,6 +93,7 @@ export const SubjectCard = ({
       data-testid={`subject-card-${subjectId}`}
     >
       <Card
+        data-testid={`subject-card-${subjectId}-${index}`}
         className={`b-4 flex w-full !flex-row items-center !justify-between gap-1 p-4`}
       >
         <div
