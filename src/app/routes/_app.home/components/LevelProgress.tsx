@@ -176,7 +176,9 @@ const LevelProgress: FC<{
             {compactFormat(remainingScore)}
           </span>
           <span className="text-lg font-medium">to</span>
-          <span className={`text-lg whitespace-nowrap font-semibold ${getLevelTextColor()}`}>
+          <span
+            className={`whitespace-nowrap text-lg font-semibold ${getLevelTextColor()}`}
+          >
             Level {(auraLevel ?? 0) + 1}
           </span>
         </>
@@ -193,13 +195,13 @@ const LevelProgress: FC<{
 
     return (
       <>
-        <p className="text-sm break-words">
+        <p className="break-words text-sm">
           {isValidatedForNextLevel.reason}
 
           {!!isValidatedForNextLevel.checklists?.length && (
             <>
               <small
-                className="ml-2 underline font-semibold cursor-pointer"
+                className="ml-2 cursor-pointer font-semibold underline"
                 onClick={() => setIsRequirementsModalOpen(true)}
               >
                 more
@@ -220,7 +222,9 @@ const LevelProgress: FC<{
           )}
         </p>
         <span className="text-lg font-medium">to</span>
-        <span className={`text-lg whitespace-nowrap w-24 font-semibold ${getLevelTextColor()}`}>
+        <span
+          className={`w-24 whitespace-nowrap text-lg font-semibold ${getLevelTextColor()}`}
+        >
           Level {(auraLevel ?? 0) + 1}
         </span>
       </>
@@ -228,28 +232,28 @@ const LevelProgress: FC<{
   };
 
   return (
-    <div className="card dark:bg-dark-primary relative">
-      <div className="absolute top-0 right-0">
+    <div className="card relative dark:bg-dark-primary">
+      <div className="absolute right-0 top-0">
         <img src={getViewModeUpArrowIcon(currentViewMode)} alt="" />
       </div>
-      <div className="flex flex-row gap-4 w-full items-end">
+      <div className="flex w-full flex-row items-end gap-4">
         {ratingsToBeDoneCount === 0 && (
           <div
             className={`flex flex-col items-center gap-1 rounded-[6px] bg-opacity-50 ${getViewModeBackgroundColorClass(
               currentViewMode,
             )} px-2.5 py-2`}
           >
-            <div className="font-bold text-sm">Level</div>
-            <div className="font-black text-2xl leading-6 text-center">
+            <div className="text-sm font-bold">Level</div>
+            <div className="text-center text-2xl font-black leading-6">
               {auraLevel ?? '-'}
             </div>
           </div>
         )}
-        <div className="flex flex-col w-full gap-3.5">
+        <div className="flex w-full flex-col gap-3.5">
           <div className="flex flex-row items-center gap-1">
             {renderLevelProgressText()}
           </div>
-          <div className="w-full relative bg-gray30 dark:bg-button-primary mb-3 rounded-full h-4">
+          <div className="relative mb-3 h-4 w-full rounded-full bg-gray30 dark:bg-button-primary">
             <small className="absolute top-full mt-1">
               score:{' '}
               <span className="font-semibold">
@@ -259,7 +263,7 @@ const LevelProgress: FC<{
             <div
               className={`absolute ${getViewModeBackgroundColorClass(
                 currentViewMode,
-              )} rounded-full h-full`}
+              )} h-full rounded-full`}
               style={{
                 width: `${
                   remainingScore > 0 || isValidatedForNextLevel.progress

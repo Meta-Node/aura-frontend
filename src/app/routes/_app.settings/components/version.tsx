@@ -62,7 +62,7 @@ export default function VersionCard() {
               onClick={handleUpdate}
               disabled={data === APP_VERSION && !needRefresh}
             >
-              {data === APP_VERSION && !needRefresh ? (
+              {!needRefresh ? (
                 'Already latest'
               ) : (
                 <>
