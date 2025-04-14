@@ -297,8 +297,8 @@ export const SubjectListControls = ({
           >
             <DialogHeader>
               <DialogTitle
-                id="custom-view-title"
                 className="text-xl font-semibold"
+                data-testid="custom-view-title"
               >
                 Custom View
               </DialogTitle>

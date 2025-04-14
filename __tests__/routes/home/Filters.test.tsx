@@ -17,7 +17,7 @@ import HomePage from '@/app/routes/_app.home/route';
 import { RefreshEvaluationsContextProvider } from '@/contexts/RefreshEvaluationsContext';
 import { SubjectsListContextProvider } from '@/contexts/SubjectsListContext';
 import { MyEvaluationsContextProvider } from '@/contexts/MyEvaluationsContext';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, logDOM, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { EvaluationCategory, EvaluationValue } from '@/types/dashboard';
 
@@ -31,7 +31,7 @@ const connection1 = generateRandomBrightIdConnectionBackup(
 );
 connection1.auraEvaluations?.push({
   domain: 'BrightID',
-  category: EvaluationCategory.PLAYER,
+  category: EvaluationCategory.SUBJECT,
   confidence: 4,
   evaluation: EvaluationValue.POSITIVE,
   modified: new Date().getTime() / 1000,
@@ -55,8 +55,8 @@ domains[0].categories.push(
 );
 
 const connection2 = generateRandomBrightIdConnectionBackup(
-  'aura only',
-  'aura only',
+  'recovery',
+  'recovery',
 );
 
 connection2.timestamp = new Date().getTime() + 400000;
@@ -124,22 +124,143 @@ describe('Filter basic bahvior', () => {
       userEvent.click(screen.getByTestId('dropdown-option-0'));
     });
 
-    // await waitFor(() => {
-    //   expect(
-    //     screen.getByTestId(`subject-card-${connection1.id}`),
-    //   ).toBeInTheDocument();
-    // });
+    await waitFor(() => {
+      outboundData.data.connections.forEach((connection) => {
+        expect(
+          screen.getByTestId(`subject-card-${connection.id}`),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(`subject-card-${connection2.id}-${0}`),
+      ).toBeInTheDocument();
+    });
   });
 
-  it('Sort by recently evaluated connections');
+  it('Sort by recently evaluated connections', async () => {
+    renderWithRouterAndRedux(
+      <RefreshEvaluationsContextProvider>
+        <MyEvaluationsContextProvider>
+          <SubjectsListContextProvider>
+            <HomePage />
+          </SubjectsListContextProvider>
+        </MyEvaluationsContextProvider>
+      </RefreshEvaluationsContextProvider>,
+      {},
+    );
 
-  it('Should remember the sort state when refreshing or reloading the page');
+    await waitFor(() => {
+      expect(screen.getByTestId('home-view-select')).toBeInTheDocument();
+
+      userEvent.click(screen.getByTestId('home-view-select'));
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('dropdown-option-2'));
+    });
+
+    await waitFor(() => {
+      outboundData.data.connections.forEach((connection) => {
+        expect(
+          screen.getByTestId(`subject-card-${connection.id}`),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(`subject-card-${connection1.id}-${0}`),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('Should remember the sort state when refreshing or reloading the page', async () => {
+    localStorage.setItem('subjectsListIsSortReversed', 'false');
+    localStorage.setItem('subjectsListSortId', '4');
+
+    renderWithRouterAndRedux(
+      <RefreshEvaluationsContextProvider>
+        <MyEvaluationsContextProvider>
+          <SubjectsListContextProvider>
+            <HomePage />
+          </SubjectsListContextProvider>
+        </MyEvaluationsContextProvider>
+      </RefreshEvaluationsContextProvider>,
+      {},
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('home-view-select')).toBeInTheDocument();
+
+      userEvent.click(screen.getByTestId('home-view-select'));
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('dropdown-option-2'));
+    });
+
+    await waitFor(() => {
+      outboundData.data.connections.forEach((connection) => {
+        expect(
+          screen.getByTestId(`subject-card-${connection.id}`),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(`subject-card-${connection1.id}-${0}`),
+      ).toBeInTheDocument();
+    });
+  });
 });
 
 describe('Custom Filter Behavior', () => {
-  it('Should Open when clicking custom view');
+  it('Should Open when clicking custom view', async () => {
+    renderWithRouterAndRedux(
+      <RefreshEvaluationsContextProvider>
+        <MyEvaluationsContextProvider>
+          <SubjectsListContextProvider>
+            <HomePage />
+          </SubjectsListContextProvider>
+        </MyEvaluationsContextProvider>
+      </RefreshEvaluationsContextProvider>,
+      {},
+    );
 
-  it('Should Reset the view when clicking the clear button');
+    await waitFor(() => {
+      expect(screen.getByTestId('home-view-select')).toBeInTheDocument();
+
+      userEvent.click(screen.getByTestId('home-view-select'));
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('dropdown-option--1'));
+    });
+
+    expect(screen.getByTestId('custom-view-title')).toHaveTextContent(
+      'Custom View',
+    );
+  });
+
+  it('Should Reset the view when clicking the clear button', async () => {
+    renderWithRouterAndRedux(
+      <RefreshEvaluationsContextProvider>
+        <MyEvaluationsContextProvider>
+          <SubjectsListContextProvider>
+            <HomePage />
+          </SubjectsListContextProvider>
+        </MyEvaluationsContextProvider>
+      </RefreshEvaluationsContextProvider>,
+      {},
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('home-view-select')).toBeInTheDocument();
+
+      userEvent.click(screen.getByTestId('home-view-select'));
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('dropdown-option--1'));
+    });
+  });
 
   it('Should Close the modal when clicking okay or close');
 

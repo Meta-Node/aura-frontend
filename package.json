@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test-vite": "vitest",
-    "test:ui-vite": "vitest --ui"
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",
@@ -54,7 +54,6 @@
     "i18next": "22.4.10",
     "isbot": "^5",
     "localforage": "1.10.0",
-    "lru-cache": "^11.1.0",
     "lucide-react": "^0.474.0",
     "moment": "2.29.1",
     "platform": "^1.3.6",

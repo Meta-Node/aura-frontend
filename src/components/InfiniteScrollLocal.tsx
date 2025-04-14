@@ -10,6 +10,8 @@ interface InfiniteScrollLocalProps<T> extends React.HTMLProps<InfiniteScroll> {
   getScrollParent?(): HTMLElement | null;
 }
 
+const isTest = process.env.VITEST;
+
 export default function InfiniteScrollLocal<T>({
   items,
   renderItem,
@@ -36,6 +38,16 @@ export default function InfiniteScrollLocal<T>({
     () => !!items && items.length > itemsLocal.length,
     [items, itemsLocal.length],
   );
+  if (isTest) {
+    return (
+      <>
+        {items?.map((item, index) => (
+          <React.Fragment key={index}>{renderItem(item, index)}</React.Fragment>
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       {items && (

@@ -54,7 +54,7 @@ export const progressSections = [
   1_500_000_000,
   2_500_000_000,
   maximumScoreTobeReached,
-];
+]; // TODO: make this based on percentage of the maximum score
 
 export const calculateUserScorePercentage = (
   view: EvaluationCategory,
