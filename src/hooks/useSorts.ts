@@ -190,14 +190,14 @@ export function useInboundEvaluationsSorts(sortIds: AuraSortId[]) {
             getAuraVerification(
               b.inboundConnection.verifications,
               viewAsToEvaluatorViewAs[b.rating.category],
-            )?.level) ||
+            )?.score) ||
             0) -
           ((a.inboundConnection &&
             a.rating &&
             getAuraVerification(
               a.inboundConnection.verifications,
               viewAsToEvaluatorViewAs[a.rating.category],
-            )?.level) ||
+            )?.score) ||
             0),
       },
     ];
