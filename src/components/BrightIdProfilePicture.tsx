@@ -39,6 +39,9 @@ const BrightIdProfilePicture = ({
   if (withoutHover)
     return (
       <img
+        data-testid={
+          data ? `picture-${subjectId}` : `picture-${subjectId}-blocky`
+        }
         {...props}
         alt={subjectId}
         className={`${props.className ?? ''} object-cover`}
@@ -53,6 +56,7 @@ const BrightIdProfilePicture = ({
       <HoverCardTrigger asChild>
         <img
           {...props}
+          data-testid={`picture-${subjectId}`}
           alt={subjectId}
           className={`${props.className ?? ''} object-cover transition-transform duration-200 hover:scale-105`}
           src={imageSource || '/placeholder.svg'}
@@ -60,6 +64,7 @@ const BrightIdProfilePicture = ({
       </HoverCardTrigger>
       <HoverCardContent className="w-auto p-1">
         <img
+          data-testid={`picture-${subjectId}`}
           src={imageSource}
           alt={subjectId}
           className="h-auto max-h-[300px] w-auto max-w-[300px] rounded-md object-cover"
