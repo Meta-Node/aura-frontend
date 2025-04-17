@@ -31,7 +31,8 @@
       "vite-plugin-pwa/client",
       "@types/node",
       "vite/client",
-      "vitest/globals"
+      "vitest/globals",
+      "vite-plugin-glsl/ext"
     ],
     "useUnknownInCatchVariables": false,
     "paths": {

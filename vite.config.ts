@@ -1,7 +1,7 @@
 import replace from '@rollup/plugin-replace';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-
+import glsl from 'vite-plugin-glsl';
 import { ReactRouterVitePWA } from './plugins/sw';
 import { reactRouter } from '@react-router/dev/vite';
 
@@ -19,6 +19,9 @@ export default defineConfig(() => {
       APP_VERSION: JSON.stringify(process.env.npm_package_version),
     },
     plugins: [
+      glsl({
+        include: ['**/*.glsl', '**/*.vs', '**/*.fs'],
+      }),
       tsconfigPaths(),
       !process.env.VITEST && reactRouter(),
       ReactRouterVitePWAPlugin({
@@ -32,7 +35,7 @@ export default defineConfig(() => {
           maximumFileSizeToCacheInBytes: 5242880,
         },
         devOptions: {
-          enabled: true,
+          enabled: false,
           type: 'module',
           suppressWarnings: true,
         },

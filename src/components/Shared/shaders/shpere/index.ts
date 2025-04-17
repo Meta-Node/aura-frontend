@@ -6,26 +6,38 @@ import fragmentShader from './fragment.glsl';
 import vertexShader from './vertex.glsl';
 
 export class Sphere {
-  constructor($wrapper) {
+  private $wrapper: HTMLElement;
+  private scene!: THREE.Scene;
+  private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
+  private texture!: THREE.Texture;
+  private geometry!: THREE.SphereGeometry;
+  private material!: THREE.MeshBasicMaterial;
+  private glowMaterial!: THREE.ShaderMaterial;
+  private sphere!: THREE.Mesh;
+  private glow!: THREE.Mesh;
+  private width!: number;
+  private height!: number;
+
+  constructor($wrapper: HTMLElement) {
     this.$wrapper = $wrapper;
     this.bounds();
     this.texture = new THREE.TextureLoader().load(
-      '/images/bg-cubemap.jpg',
+      '/assets/images/bg-cubemap.jpg',
       () => {
         this.init();
       },
     );
   }
 
-  bounds() {
-    const methods = ['animate', 'resize'];
-
-    methods.forEach((m) => {
+  private bounds() {
+    ['animate', 'resize'].forEach((m) => {
+      // @ts-expect-error TS doesn't narrow this[m] type, but it's safe here
       this[m] = this[m].bind(this);
     });
   }
 
-  init() {
+  private init() {
     this.scene = new THREE.Scene();
 
     this.renderer = new THREE.WebGLRenderer({
@@ -40,11 +52,10 @@ export class Sphere {
     this.$wrapper.appendChild(this.renderer.domElement);
 
     this.createMesh();
-
     raf.on(this.animate);
   }
 
-  setupCamera() {
+  private setupCamera() {
     this.camera = new THREE.PerspectiveCamera(
       75,
       this.width / this.height,
@@ -61,7 +72,7 @@ export class Sphere {
     });
   }
 
-  createMesh() {
+  private createMesh() {
     this.geometry = new THREE.SphereGeometry(1, 64, 64);
 
     this.glowMaterial = new THREE.ShaderMaterial({
@@ -90,11 +101,11 @@ export class Sphere {
     });
   }
 
-  resize() {
+  public resize() {
     if (!this.$wrapper) return;
-    const { width, height } = window.getComputedStyle(this.$wrapper);
-    this.width = parseInt(width) * 1.61;
-    this.height = parseInt(height) * 1.61;
+    const styles = window.getComputedStyle(this.$wrapper);
+    this.width = parseInt(styles.width) * 1.61;
+    this.height = parseInt(styles.height) * 1.61;
 
     this.setupCamera();
 
@@ -102,17 +113,17 @@ export class Sphere {
     this.renderer.setSize(this.width, this.height);
   }
 
-  animate() {
+  public animate() {
     this.renderer.render(this.scene, this.camera);
     this.sphere.rotation.y += 0.01;
     this.glow.rotation.y += 0.01;
   }
 
-  destroy() {
-    this.geometry && this.geometry.dispose();
-    this.material && this.material.dispose();
-    this.glowMaterial && this.glowMaterial.dispose();
-    this.texture && this.texture.dispose();
+  public destroy() {
+    this.geometry?.dispose();
+    this.material?.dispose();
+    this.glowMaterial?.dispose();
+    this.texture?.dispose();
 
     raf.off(this.animate);
     resize.off(this.resize);

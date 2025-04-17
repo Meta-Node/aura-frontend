@@ -20,6 +20,7 @@ import DefaultHeader from '@/components/Header/DefaultHeader';
 import VersionCard from './components/version';
 import LogoutButton from './components/logout';
 import ToggleTheme from './components/theme-toggle';
+import SphereComponent from './components/sphere-component';
 
 export default function Settings() {
   const navigate = useNavigate();
