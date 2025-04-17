@@ -238,6 +238,7 @@ export const SubjectListControls = ({
           <input
             className="h-11 w-full bg-transparent text-sm font-medium text-card-foreground placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
             type="text"
+            data-testid="home-searchbar"
             placeholder="Subject name or ID ..."
             value={searchString}
             onChange={(e) => setSearchString(e.target.value)}
@@ -283,6 +284,7 @@ export const SubjectListControls = ({
           selectedItem={selectedItem}
           onItemClick={(item) => item.onClick()}
           className="h-10"
+          data-testid="home-view-select"
         />
         <Dialog
           open={isModalOpen}
@@ -295,8 +297,8 @@ export const SubjectListControls = ({
           >
             <DialogHeader>
               <DialogTitle
-                id="custom-view-title"
                 className="text-xl font-semibold"
+                data-testid="custom-view-title"
               >
                 Custom View
               </DialogTitle>
@@ -317,6 +319,7 @@ export const SubjectListControls = ({
             <DialogFooter>
               <Button
                 variant="outline"
+                data-testid="custom-view-clear-button"
                 onClick={() => {
                   clearSortAndFilter();
                 }}
@@ -327,7 +330,7 @@ export const SubjectListControls = ({
               <Button
                 variant="secondary"
                 className="w-full flex-1 px-6 py-2 sm:w-auto"
-                data-testid="subject-sort-option-Confidence-ascending"
+                data-testid="custom-view-ok-button"
                 onClick={() => {
                   setIsModalOpen(false);
                 }}
@@ -337,7 +340,7 @@ export const SubjectListControls = ({
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <span className="ml-auto">
+        <span data-testid="home-subject-results" className="ml-auto">
           (
           {filteredSubjects?.length ??
             brightIdBackup?.connections.length ??

@@ -20,7 +20,12 @@ export const EmptySubjectList = ({
         alt="Empty State"
         className="h-8 w-10"
       />
-      <h2 className="text-lg font-medium">No subjects found</h2>
+      <h2
+        data-testid="subject-list-no-result-text"
+        className="text-lg font-medium"
+      >
+        No subjects found
+      </h2>
       <p className="text-center">
         {hasFilter ? (
           <span

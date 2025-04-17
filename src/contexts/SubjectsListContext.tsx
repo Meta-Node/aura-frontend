@@ -1,5 +1,4 @@
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import useBrightIdBackupWithUpdatedConnectionData from 'hooks/useBrightIdBackupWithAuraConnectionData';
 import useFilterAndSort from 'hooks/useFilterAndSort';
 import {
   AuraFilterId,
@@ -9,6 +8,7 @@ import {
 import { AuraSortId, AuraSortOptions, useSubjectSorts } from 'hooks/useSorts';
 import React, { createContext, ReactNode, useContext, useMemo } from 'react';
 import { AuraNodeBrightIdConnectionWithBackupData } from 'types';
+import useBrightIdBackupWithUpdatedConnectionData from 'hooks/useBrightIdBackupWithAuraConnectionData';
 
 // Define the context
 const SubjectsListContext = createContext<

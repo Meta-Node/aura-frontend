@@ -98,8 +98,6 @@ let channelIntervalId: IntervalId;
 let checkInProgress = false;
 
 export const pollImportChannel = () => async (dispatch: AppDispatch) => {
-  clearInterval(channelIntervalId);
-
   channelIntervalId = setInterval(() => {
     if (!checkInProgress) {
       checkInProgress = true;
@@ -114,7 +112,14 @@ export const pollImportChannel = () => async (dispatch: AppDispatch) => {
     }
   }, CHANNEL_POLL_INTERVAL);
 
+  const id = channelIntervalId;
+
   console.log(`start polling sync/import channel (${channelIntervalId})`);
+
+  return () => {
+    clearInterval(id);
+    console.log(`Stopped polling with ID ${id}`);
+  };
 };
 
 export const clearImportChannel = () => {

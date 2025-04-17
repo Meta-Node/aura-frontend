@@ -1,4 +1,4 @@
-import { AuraImpact } from '@/api/auranode.service';
+import { AuraImpact, Verifications } from '@/api/auranode.service';
 import { EvaluationCategory } from '@/types/dashboard';
 import { hash } from '@/utils/crypto';
 import {
@@ -14,7 +14,8 @@ export const generateRandomBrightId = () =>
   Math.random().toString(36).slice(2, 16);
 
 export const generateRandomBrightIdConnectionBackup = (
-  incomingLevel = 'already known',
+  incomingLevel: ConnectionLevel = 'already known',
+  level: ConnectionLevel = 'just met',
 ) => {
   return {
     id: generateRandomBrightId(),
@@ -25,7 +26,7 @@ export const generateRandomBrightIdConnectionBackup = (
     },
     status: 'verified', // static status
     notificationToken: 'TOKEN', // static token
-    level: 'just met', // static level
+    level,
     socialMedia: [], // empty array for simplicity
     verifications: [
       {
@@ -148,7 +149,7 @@ export const findProfileCategory = (profile: any, name: string) => {
 
 export const generateMockedProfile = (
   brightId = generateRandomBrightId(),
-  categories: any[],
+  categories: any[] | null = null,
 ) => {
   return {
     id: brightId,
@@ -161,7 +162,7 @@ export const generateMockedProfile = (
         domains: [
           {
             name: 'BrightID',
-            categories: categories,
+            categories: categories ?? [],
           },
         ],
       },
@@ -197,19 +198,19 @@ export const mockedBrightIdProfileData = {
           },
         ],
       },
-    ],
+    ] as Verifications,
     recoveryConnections: [],
     connectionsNum: 11,
     groupsNum: 0,
     reports: [],
-    createdAt: new Date(),
+    createdAt: new Date().getTime(),
     signingKeys: [],
     requiredRecoveryNum: 2,
   },
 };
 
 export const findRoleVerification = (verificationName: string) => {
-  return mockedBrightIdProfileData.data.verifications[0].domains[0].categories.find(
+  return mockedBrightIdProfileData.data.verifications[0].domains![0].categories.find(
     (item) => item.name === verificationName,
   );
 };

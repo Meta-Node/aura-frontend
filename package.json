@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test-vite": "vitest",
-    "test:ui-vite": "vitest --ui"
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",

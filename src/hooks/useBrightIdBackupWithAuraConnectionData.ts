@@ -11,13 +11,14 @@ import {
   AuraNodeBrightIdConnectionWithBackupData,
   BrightIdBackupWithAuraConnectionData,
 } from 'types';
+import { useMyEvaluations } from './useMyEvaluations';
 
 export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBackupWithAuraConnectionData | null {
   const dispatch = useDispatch();
   const brightIdBackup = useSelector(selectBrightIdBackup);
   const authData = useSelector(selectAuthData);
   const cachedBrightIdProfiles = useSelector(selectCachedProfiles);
-  const { myConnections } = useMyEvaluationsContext();
+  const { myConnections } = useMyEvaluations();
 
   const [loading, setLoading] = useState(false);
   const [isExhausted, setIsExhausted] = useState(false);
@@ -47,7 +48,6 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
 
   useEffect(() => {
     if (loading || !myConnections) return;
-
     const shouldFetch = myConnections.some(
       (conn) =>
         !cachedBrightIdProfiles[conn.id] &&
@@ -59,8 +59,8 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
       setIsExhausted(false);
       return;
     }
-
     if (isExhausted) return;
+    setIsExhausted(true);
 
     refreshBrightIdBackup().then(() => {
       const connectionTimestamps = myConnections.reduce(
@@ -73,8 +73,6 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
 
       dispatch(setBulkSubjectsCache(connectionTimestamps));
     });
-
-    setIsExhausted(true);
   }, [
     loading,
     myConnections,

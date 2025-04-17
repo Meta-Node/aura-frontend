@@ -65,13 +65,15 @@ const RecoveryCodeScreen = () => {
   const step = useSelector(selectRecoveryStep);
 
   useEffect(() => {
+    let cleanupIntervalFn: CallableFunction;
+
     const runImportEffect = async () => {
       // create publicKey, secretKey, aesKey for user
       await dispatch(setupRecovery());
       // create channel and upload new publicKey to be added as a new signing key by the scanner
       await dispatch(createRecoveryChannel(window.location.origin));
       // start polling channel to get connections/groups/blindsigs info
-      dispatch(pollImportChannel());
+      cleanupIntervalFn = await dispatch(pollImportChannel());
     };
     const runSyncEffect = async () => {
       // create a new aesKey
@@ -81,7 +83,7 @@ const RecoveryCodeScreen = () => {
       // added after lastSyncTime to the channel
       await dispatch(createSyncChannel());
       // start polling channel to get new connections/groups/blindsigs info
-      dispatch(pollImportChannel());
+      cleanupIntervalFn = await dispatch(pollImportChannel());
     };
 
     async function runEffect() {
@@ -106,6 +108,10 @@ const RecoveryCodeScreen = () => {
     }
 
     runEffect();
+
+    return () => {
+      cleanupIntervalFn?.();
+    };
   }, [action, dispatch, id]);
 
   useEffect(() => {
@@ -215,7 +221,10 @@ const RecoveryCodeScreen = () => {
   return (
     <div className="page flex min-h-screen flex-col !px-[22px] !pt-[90px] pb-4">
       {importedUserData ? (
-        <section className="content mb-6 pl-5 pr-12">
+        <section
+          data-testid="login-download-state"
+          className="content mb-6 pl-5 pr-12"
+        >
           <p className="mb-6 text-5xl font-black text-white">Login</p>
           <p className="text-lg font-medium text-white">
             Downloading backup data...
@@ -225,7 +234,12 @@ const RecoveryCodeScreen = () => {
         <>
           <section className="content mb-6 pl-5 pr-12">
             <FadeIn delay={0.1}>
-              <p className="mb-6 text-5xl font-black text-white">Login</p>
+              <p
+                data-testid="recovery-title"
+                className="mb-6 text-5xl font-black text-white"
+              >
+                Login
+              </p>
             </FadeIn>
             <FadeIn delay={0.15}>
               <p className="text-lg font-medium text-white">
@@ -244,7 +258,7 @@ const RecoveryCodeScreen = () => {
             href={universalLink}
             target="_blank"
             rel="noreferrer"
-            data-testid={universalLink && 'import-universal-link'}
+            data-testid={universalLink && 'import-universal-qr-code'}
           >
             {universalLink && (
               <FadeIn delay={0.2}>
@@ -275,8 +289,8 @@ const RecoveryCodeScreen = () => {
             </FadeIn>
           </a>
 
-          <FadeIn delay={0.3} className="actions mb-auto pb-24 text-center">
-            <section className="actions mb-auto pb-24 text-center">
+          <FadeIn delay={0.3} className="actions mb-auto pb-16 text-center">
+            <section className="actions mb-auto pb-16 text-center">
               <span className="flex w-full items-center justify-between gap-2 rounded-lg bg-gray00 py-2 pl-3 pr-2.5">
                 <a
                   href={universalLink}
@@ -298,8 +312,10 @@ const RecoveryCodeScreen = () => {
           <FadeIn delay={0.35}>
             <footer className="flex justify-between text-sm text-gray90">
               <span className="flex gap-1">
-                {/* <p className="font-light">Version</p>
-                <p className="">2.1</p> */}
+                <p className="font-light">Version</p>
+                <p data-testid="app-version" className="">
+                  {APP_VERSION}
+                </p>
               </span>
               <span className="flex gap-1">
                 <p className="text-gray50">Powered by:</p>

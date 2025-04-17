@@ -52,6 +52,7 @@ export default function DefaultHeader({
         {children}
         <span className="header-right ml-auto flex items-center">
           <button
+            data-testid="global-search-btn"
             onClick={() => dispatch(toggleSearchModal())}
             className="header-icon mr-4 dark:text-white"
           >

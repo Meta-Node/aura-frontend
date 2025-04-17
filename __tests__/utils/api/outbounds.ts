@@ -1,3 +1,44 @@
+import { Verifications } from '@/api/auranode.service';
+import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
+import { EvaluationCategory } from '@/types/dashboard';
+import { calculateImpact } from '@/utils/score';
+
+export const generateOutboundEvaluationConnection = (
+  fromBright: { id: string },
+  toBright: { id: string; verifications: Verifications },
+  evaluationCategory: EvaluationCategory,
+  score: number,
+  rating: number,
+) => {
+  const verifications = getAuraVerification(
+    toBright.verifications,
+    evaluationCategory,
+  );
+
+  if (!verifications)
+    throw new Error('Verifications must exist in the brightid profile');
+
+  const impact = calculateImpact(score, rating);
+
+  verifications.score += impact;
+
+  verifications.impacts.push({
+    confidence: rating,
+    evaluator: fromBright.id,
+    impact,
+    score,
+    level: 1,
+  });
+
+  return {
+    id: toBright.id,
+    level: 'aura only' as ConnectionLevel,
+    reportReason: null,
+    timestamp: 1601240998431,
+    verifications: toBright.verifications,
+  };
+};
+
 export const outboundEvaluationsSampleData = {
   data: {
     connections: [
@@ -289,250 +330,6 @@ export const outboundEvaluationsSampleData = {
             block: 30173280,
             timestamp: 1740433854493,
             hash: 'StZX6z4j-bgjDHXMdTZ7KTLyGxrT3TyRO6E2B6YYvRM',
-          },
-        ],
-      },
-      {
-        id: 'Gpa50jxFhKxeLddgs1egppmwQCDhb_z6FsOX5UAEHfs',
-        level: 'just met',
-        reportReason: null,
-        timestamp: 1601240998431,
-        verifications: [
-          {
-            name: 'Aura',
-            block: 30173280,
-            timestamp: 1740433826802,
-            domains: [
-              {
-                name: 'BrightID',
-                categories: [
-                  {
-                    name: 'player',
-                    score: 48976623.55391067,
-                    level: 1,
-                    impacts: [
-                      {
-                        evaluator:
-                          'HxZfz3ipSp0rHsOhJQlievFqjV3DnU8BE6vhqNSecBM',
-                        level: null,
-                        score: null,
-                        confidence: 1,
-                        impact: 0,
-                      },
-                      {
-                        evaluator:
-                          '1Ix6_UTI9FzFD9JVYeX7L-7P0cSt0uBEzoUBK_CL8QY',
-                        level: 2,
-                        score: 11702617.28153414,
-                        confidence: 1,
-                        impact: 11702617.28153414,
-                      },
-                      {
-                        evaluator:
-                          'IRfPAiw08wPgDyQRfJwSB7e3RkYm1So0YE-pzbSCAlA',
-                        level: null,
-                        score: null,
-                        confidence: 1,
-                        impact: 0,
-                      },
-                      {
-                        evaluator:
-                          'v5mibmGr9W08lhCI1exZr4PLt4VV7s-nVoJXOVlN2kg',
-                        level: 2,
-                        score: 16176149.369096812,
-                        confidence: 1,
-                        impact: 16176149.369096812,
-                      },
-                      {
-                        evaluator:
-                          'xqmMHQMnBdakxs3sXXjy7qVqPoXmhhwOt4c_z1tSPwM',
-                        level: 2,
-                        score: 21097856.903279718,
-                        confidence: 1,
-                        impact: 21097856.903279718,
-                      },
-                    ],
-                  },
-                  {
-                    name: 'subject',
-                    score: 5383516845.183392,
-                    level: 4,
-                    impacts: [
-                      {
-                        evaluator:
-                          '09w4r-qB7nfooRBN0_FmM9r5SwWfwpIn-x1rNTfE6IA',
-                        level: 3,
-                        score: 203002315.72423297,
-                        confidence: 4,
-                        impact: 812009262.8969319,
-                      },
-                      {
-                        evaluator:
-                          'VM-DY1Gpl6jvuxHjMRjt8eHDcUh1pxCj5KQXR2714yU',
-                        level: 2,
-                        score: 99915223.05616462,
-                        confidence: 2,
-                        impact: 199830446.11232924,
-                      },
-                      {
-                        evaluator:
-                          'OeNllgD2Q2K845Z_ANwah_9yTbJ5PFpvyY8zITkOuFs',
-                        level: 3,
-                        score: 197049394.99992335,
-                        confidence: 2,
-                        impact: 394098789.9998467,
-                      },
-                      {
-                        evaluator:
-                          'AWtJ0wj7j1sFkZStsh6n3UvXsX3pGj9Oqgw2xMF9B_Y',
-                        level: 3,
-                        score: 152720819.208647,
-                        confidence: 3,
-                        impact: 458162457.62594104,
-                      },
-                      {
-                        evaluator:
-                          'AsjAK5gJ68SMYvGfCAuROsMrJQ0_83ZS92xy94LlfIA',
-                        level: 3,
-                        score: 302332518.53370947,
-                        confidence: 2,
-                        impact: 604665037.0674189,
-                      },
-                      {
-                        evaluator:
-                          'UxYHGX4JtnUrYTZzVqbTLu9Azw5hAfDK1X7DLXp7_tQ',
-                        level: 3,
-                        score: 244479365.61455446,
-                        confidence: 2,
-                        impact: 488958731.2291089,
-                      },
-                      {
-                        evaluator:
-                          'HxZfz3ipSp0rHsOhJQlievFqjV3DnU8BE6vhqNSecBM',
-                        level: 1,
-                        score: 100652472.08204281,
-                        confidence: 2,
-                        impact: 201304944.16408563,
-                      },
-                      {
-                        evaluator:
-                          '1Ix6_UTI9FzFD9JVYeX7L-7P0cSt0uBEzoUBK_CL8QY',
-                        level: 3,
-                        score: 130206694.59939781,
-                        confidence: 1,
-                        impact: 130206694.59939781,
-                      },
-                      {
-                        evaluator:
-                          'IRfPAiw08wPgDyQRfJwSB7e3RkYm1So0YE-pzbSCAlA',
-                        level: 1,
-                        score: 49061216.23156212,
-                        confidence: 2,
-                        impact: 98122432.46312425,
-                      },
-                      {
-                        evaluator:
-                          'v5mibmGr9W08lhCI1exZr4PLt4VV7s-nVoJXOVlN2kg',
-                        level: 3,
-                        score: 301995876.24125063,
-                        confidence: 2,
-                        impact: 603991752.4825013,
-                      },
-                      {
-                        evaluator:
-                          'xqmMHQMnBdakxs3sXXjy7qVqPoXmhhwOt4c_z1tSPwM',
-                        level: 3,
-                        score: 283726707.50423574,
-                        confidence: 3,
-                        impact: 851180122.5127072,
-                      },
-                      {
-                        evaluator:
-                          '7puQsSqow9VRNGDTdhg7NIBe7pvRaPWN-xWhgTvOLo8',
-                        level: 3,
-                        score: 180328724.67666632,
-                        confidence: 3,
-                        impact: 540986174.029999,
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            name: 'Seed',
-            block: 30173280,
-            timestamp: 1740433826887,
-            hash: 'pSkCXXDejOC0Q2UBTUvuAyXeFZ0gm3EfDil_xfodzng',
-          },
-          {
-            name: 'SeedConnected',
-            rank: 12,
-            connected: [
-              '-z6lbLFK4yxj1YmrUz7dYttceEg1XWZRoD_V8xE8qC0',
-              '---U49atc2d-z0HFP_0-qeml3rsj_I7Nsd7QA5aP7mc',
-              'weKyDO9uEPz-KzO13IupiCzT40fgKhETD2kKuX3ZoqA',
-              'GYGbx74q6-pYRG4UHNfrMVyZ6ZIZQYUCSHhlBGkvBjE',
-              'ufl4PdK91Qf_1Efb61chYN6Sa6BZjU8mjPSqBbrDhDk',
-              'hWIVtbx4VcSVAY1_r1bIH66QvS9RNFXJWGKTy_c5qxY',
-              'PbtXC7NF5bhiyrDoCShlg3iKK3d9bto_uxg9B4BGv9E',
-              'aM4xs1M1MB42ApdYrEQyOBQX2hzdsSGHZ1oiXPq6K5A',
-              'bSGdH_RTE9CbHvBpx3Y08OUE0cw7fexp7y0M-9pD4S0',
-              'jutFlbXP0eJnJ2sPT8aibSYdYVde9XQZ_i-z96N9r1w',
-              'vPmP-pkagrl02LrGgIaFf4aimR4rTrbnIcYT5t7q2w4',
-              'sVYW_wqVAxaoT2K1Va9duLjQ1jmgnUuvVP82bPDrAL8',
-            ],
-            communities: [
-              '-z6lbLFK4yxj1YmrUz7dYttceEg1XWZRoD_V8xE8qC0',
-              '---U49atc2d-z0HFP_0-qeml3rsj_I7Nsd7QA5aP7mc',
-              'weKyDO9uEPz-KzO13IupiCzT40fgKhETD2kKuX3ZoqA',
-              'GYGbx74q6-pYRG4UHNfrMVyZ6ZIZQYUCSHhlBGkvBjE',
-              'ufl4PdK91Qf_1Efb61chYN6Sa6BZjU8mjPSqBbrDhDk',
-              'hWIVtbx4VcSVAY1_r1bIH66QvS9RNFXJWGKTy_c5qxY',
-              'PbtXC7NF5bhiyrDoCShlg3iKK3d9bto_uxg9B4BGv9E',
-              'aM4xs1M1MB42ApdYrEQyOBQX2hzdsSGHZ1oiXPq6K5A',
-              'bSGdH_RTE9CbHvBpx3Y08OUE0cw7fexp7y0M-9pD4S0',
-              'jutFlbXP0eJnJ2sPT8aibSYdYVde9XQZ_i-z96N9r1w',
-              'vPmP-pkagrl02LrGgIaFf4aimR4rTrbnIcYT5t7q2w4',
-              'sVYW_wqVAxaoT2K1Va9duLjQ1jmgnUuvVP82bPDrAL8',
-            ],
-            reported: [],
-            block: 30173280,
-            timestamp: 1740433831821,
-            hash: 'LyK_nPa1t7zznaE6kz8-TYJTpOSJz1wPpzSTb5nnHv8',
-          },
-          {
-            name: 'SeedConnectedWithFriend',
-            friend: null,
-            block: 30173280,
-            timestamp: 1740433850176,
-            hash: 'x3BXk3BOSvjUGSIiJM10dLvFnTSv6ll9h0jX8qDgBjo',
-          },
-          {
-            name: 'BrightID',
-            block: 30173280,
-            timestamp: 1740433854322,
-            hash: 'dTtShzMKc-TR2xs61vc1nsod1PspaX359cjkBzemX1U',
-          },
-          {
-            name: 'SocialRecoverySetup',
-            block: 30173280,
-            timestamp: 1740433872014,
-            hash: 'hKKfSDiOyVK9eNpjkT-8gvLW9p9KERhXIU-RqHXUjBY',
-          },
-          {
-            name: 'Bitu',
-            releaseTime: 1653882066611,
-            linksNum: 20,
-            confirmedScore: 20,
-            directReports: {},
-            indirectReports: {},
-            reportedConnections: {},
-            score: 19,
-            block: 30173280,
-            timestamp: 1740433875234,
-            hash: 'u4sr2uQgL8qsoNUTo9gX11YI417qzCMpfK1m7bOi1Bg',
           },
         ],
       },

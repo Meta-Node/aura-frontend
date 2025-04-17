@@ -20,6 +20,7 @@ export default function Dropdown<T extends DropdownItem>({
   items,
   onItemClick,
   className,
+  ...props
 }: {
   isDropdownOpen: boolean;
   setIsDropdownOpen: (isOpen: boolean) => void;
@@ -38,6 +39,7 @@ export default function Dropdown<T extends DropdownItem>({
       value={selectedItem.value?.toString()}
     >
       <SelectTrigger
+        {...props}
         className={`${className} w-auto bg-background text-foreground dark:bg-dark-primary`}
       >
         <SelectValue />

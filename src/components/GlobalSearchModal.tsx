@@ -1,9 +1,16 @@
-import { toggleSearchModal } from 'BrightID/actions';
+import { selectIsSearchModalOpen, toggleSearchModal } from 'BrightID/actions';
 import Modal from 'components/Shared/Modal';
 import { Search } from 'lucide-react';
 import { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from './ui/dialog';
+import { useSelector } from '@/store/hooks';
 
 const GlobalSearchBody: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
@@ -32,6 +39,7 @@ const GlobalSearchBody: FC = () => {
             <input
               className="h-11 w-full bg-card text-sm font-medium placeholder-black2 focus:outline-none dark:placeholder:text-gray-50"
               type="text"
+              data-testid="global-search-input"
               autoFocus
               placeholder="Subject name or ID ..."
               value={searchString}
@@ -40,6 +48,7 @@ const GlobalSearchBody: FC = () => {
           </div>
         </div>
         <button
+          data-testid="global-search-submit"
           type="submit"
           className="h-11 rounded-[10px] bg-pastel-purple px-4 text-sm font-bold text-white hover:bg-pastel-purple/80 dark:bg-primary-d1 dark:hover:bg-primary-d1/80"
         >
@@ -50,15 +59,23 @@ const GlobalSearchBody: FC = () => {
   );
 };
 
-const GlobalSearchModal = ({ onClose }: { onClose: () => void }) => {
+const GlobalSearchModal = ({}: {}) => {
+  const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
+  const dispatch = useDispatch();
+
   return (
-    <Modal
-      isOpen={true}
-      closeModalHandler={onClose}
-      title="Search From your connections"
+    <Dialog
+      open={isSearchModalOpen}
+      onOpenChange={() => dispatch(toggleSearchModal())}
     >
-      <GlobalSearchBody />
-    </Modal>
+      <DialogContent>
+        <DialogTitle data-testid="global-search-modal-title">
+          Global Search
+        </DialogTitle>
+        <DialogDescription>Search From your connections</DialogDescription>
+        <GlobalSearchBody />
+      </DialogContent>
+    </Dialog>
   );
 };
 

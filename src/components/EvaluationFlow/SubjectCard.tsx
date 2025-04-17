@@ -93,6 +93,7 @@ export const SubjectCard = ({
       data-testid={`subject-card-${subjectId}`}
     >
       <Card
+        data-testid={`subject-card-${subjectId}-${index}`}
         className={`b-4 flex w-full !flex-row items-center !justify-between gap-1 p-4`}
       >
         <div
@@ -139,7 +140,11 @@ export const SubjectCard = ({
               {progress < 0 ? (
                 '😈'
               ) : (
-                <HorizontalProgressBar className="w-36" percentage={progress} />
+                <HorizontalProgressBar
+                  data-testid={`subject-${subjectId}-score-progress-${progress}`}
+                  className="w-36"
+                  percentage={progress}
+                />
               )}
             </div>
           </div>
@@ -172,3 +177,5 @@ export const SubjectCard = ({
 };
 
 export const SubjectCardMemo = memo(SubjectCard);
+
+SubjectCardMemo.displayName = 'SubjectCard';

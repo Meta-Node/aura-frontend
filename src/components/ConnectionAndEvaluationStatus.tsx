@@ -149,6 +149,7 @@ export const ConnectionAndEvaluationStatus = ({
                 connectionLevelIcons[inboundConnectionInfo.level]
               }.svg`}
               alt=""
+              data-testid={`subject-${subjectId}-connection-${inboundConnectionInfo.level}`}
               width="20px"
               height="20px"
             />
@@ -163,6 +164,7 @@ export const ConnectionAndEvaluationStatus = ({
       {ratingNumber ? (
         <Tooltip content={`Your evaluation of ${name}`}>
           <div
+            data-testid={`subject-${subjectId}-evaluation`}
             className={`flex items-center gap-1 rounded-md ${getBgClassNameOfAuraRatingNumber(
               ratingNumber,
             )} ${getTextClassNameOfAuraRatingNumber(ratingNumber)} px-3 py-2.5`}
@@ -172,7 +174,11 @@ export const ConnectionAndEvaluationStatus = ({
               height="18px"
               rating={rating && Number(rating?.rating)}
             />
-            {(ratingNumber > 0 ? '+' : '') + ratingNumber}
+            <span
+              data-testid={`subject-${subjectId}-evaluation-${ratingNumber}`}
+            >
+              {(ratingNumber > 0 ? '+' : '') + ratingNumber}
+            </span>
             <p className="text-sm font-bold leading-4">
               {rating?.isPending ? '' : `${confidenceValue} `}
             </p>
