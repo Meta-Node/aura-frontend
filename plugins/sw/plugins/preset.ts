@@ -49,7 +49,7 @@ export function ReactRouterPreset(): ReactRouterPresetType {
           viteConfig: import('vite').ResolvedConfig;
         }) {
           const remixPwaBuildPlugin = viteConfig.plugins.find(
-            (plugin) => plugin.name === 'vite-pwa:reactrouter:build',
+            (plugin) => plugin.name === 'vite-pwa:remix:build',
           ) as BuildPluginType;
 
           if (!remixPwaBuildPlugin)
