@@ -260,11 +260,78 @@ describe('Custom Filter Behavior', () => {
     await act(() => {
       userEvent.click(screen.getByTestId('dropdown-option--1'));
     });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('custom-view-title')).toBeInTheDocument();
+      expect(screen.getByTestId('custom-view-title')).toHaveTextContent(
+        'Custom View',
+      );
+    });
   });
 
-  it('Should Close the modal when clicking okay or close');
+  it('Should Close the modal when clicking okay', async () => {
+    renderWithRouterAndRedux(
+      <RefreshEvaluationsContextProvider>
+        <MyEvaluationsContextProvider>
+          <SubjectsListContextProvider>
+            <HomePage />
+          </SubjectsListContextProvider>
+        </MyEvaluationsContextProvider>
+      </RefreshEvaluationsContextProvider>,
+      {},
+    );
 
-  it('Should filter by level');
+    await waitFor(() => {
+      expect(screen.getByTestId('home-view-select')).toBeInTheDocument();
+
+      userEvent.click(screen.getByTestId('home-view-select'));
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('dropdown-option--1'));
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('custom-view-clear-button'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('custom-view-ok-button')).toBeInTheDocument();
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('custom-view-ok-button'));
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('custom-view-ok-button'),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('custom-view-title')).not.toBeInTheDocument();
+    });
+  });
+
+  it('Should filter by level', async () => {
+    renderWithRouterAndRedux(
+      <RefreshEvaluationsContextProvider>
+        <MyEvaluationsContextProvider>
+          <SubjectsListContextProvider>
+            <HomePage />
+          </SubjectsListContextProvider>
+        </MyEvaluationsContextProvider>
+      </RefreshEvaluationsContextProvider>,
+      {},
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('home-view-select')).toBeInTheDocument();
+
+      userEvent.click(screen.getByTestId('home-view-select'));
+    });
+
+    await act(() => {
+      userEvent.click(screen.getByTestId('dropdown-option--1'));
+    });
+  });
 
   it('Should filter by your evaluation ');
 

@@ -319,6 +319,7 @@ export const SubjectListControls = ({
             <DialogFooter>
               <Button
                 variant="outline"
+                data-testid="custom-view-clear-button"
                 onClick={() => {
                   clearSortAndFilter();
                 }}
@@ -329,7 +330,7 @@ export const SubjectListControls = ({
               <Button
                 variant="secondary"
                 className="w-full flex-1 px-6 py-2 sm:w-auto"
-                data-testid="subject-sort-option-Confidence-ascending"
+                data-testid="custom-view-ok-button"
                 onClick={() => {
                   setIsModalOpen(false);
                 }}

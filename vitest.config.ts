@@ -8,4 +8,8 @@ export default defineConfig({
     globals: true,
     setupFiles: './__tests__/setup.ts',
   },
+  define: {
+    APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    'process.env': process.env,
+  },
 });

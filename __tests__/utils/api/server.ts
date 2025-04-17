@@ -54,3 +54,8 @@ export const makeMockInboundInterceptor = (
     `/auranode-test/brightid/v6/users/${brightId}/connections/inbound`,
     () => HttpResponse.json(data),
   );
+
+export const makeMockProfileData = (data: any) =>
+  http.get(`/auranode-test/brightid/v6/users/${TEST_BRIGHT_ID}/profile`, () =>
+    HttpResponse.json(data),
+  );
