@@ -87,8 +87,6 @@ export const SubjectCard = ({
     auraScore ?? 0,
   );
 
-  console.log(`subject-card-${subjectId}-${index}`);
-
   return (
     <Link
       to={'/subject/' + subjectId}
@@ -142,7 +140,11 @@ export const SubjectCard = ({
               {progress < 0 ? (
                 '😈'
               ) : (
-                <HorizontalProgressBar className="w-36" percentage={progress} />
+                <HorizontalProgressBar
+                  data-testid={`subject-${subjectId}-score-progress-${progress}`}
+                  className="w-36"
+                  percentage={progress}
+                />
               )}
             </div>
           </div>

@@ -6,7 +6,6 @@ import {
 } from '../utils/api/profile';
 import ProfileHeaderCard from '@/app/routes/_app.home/components/ProfileHeaderCard';
 import { act, screen, waitFor } from '@testing-library/react';
-import { setGlobalOrigin } from 'undici';
 import { compactFormat } from '@/utils/number';
 import { calculateUserScorePercentage } from '@/utils/score';
 import { EvaluationCategory } from '@/types/dashboard';
