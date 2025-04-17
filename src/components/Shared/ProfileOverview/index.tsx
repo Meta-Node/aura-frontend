@@ -79,7 +79,7 @@ const ProfileOverview = ({
     () =>
       (auraImpacts ?? [])
         .filter((item) => item.impact !== 0)
-        .sort((a, b) => a.impact - b.impact),
+        .sort((a, b) => b.impact - a.impact),
     [auraImpacts],
   );
 
