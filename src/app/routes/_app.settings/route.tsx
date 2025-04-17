@@ -1,26 +1,18 @@
 import { BsTwitterX } from 'react-icons/bs';
-import { FaDiscord, FaMoon, FaSun } from 'react-icons/fa';
+import { FaDiscord } from 'react-icons/fa';
 import { FaHandsHelping } from 'react-icons/fa';
 import { MdOutlineSecurity } from 'react-icons/md';
 import { SiGitbook } from 'react-icons/si';
-import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router';
 
 import { Card } from '@/components/ui/card';
 
-import {
-  resetStore,
-  selectPreferredTheme,
-  setPrefferedTheme,
-} from 'BrightID/actions';
-import { useDispatch } from 'store/hooks';
 import { RoutePath } from 'types/router';
 import { __DEV__ } from 'utils/env';
 import DefaultHeader from '@/components/Header/DefaultHeader';
 import VersionCard from './components/version';
 import LogoutButton from './components/logout';
 import ToggleTheme from './components/theme-toggle';
-import SphereComponent from './components/sphere-component';
 
 export default function Settings() {
   const navigate = useNavigate();
