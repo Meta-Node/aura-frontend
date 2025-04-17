@@ -68,7 +68,7 @@ const ProfileTabs = ({
         <button
           onClick={() => setSelectedTab(ProfileTab.OVERVIEW)}
           data-testid="table-view-switch-option-one"
-          className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+          className={`flex h-[38px] w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
             selectedTab === ProfileTab.OVERVIEW
               ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
               : 'bg-transparent font-medium text-black dark:text-white'
@@ -78,7 +78,7 @@ const ProfileTabs = ({
         </button>
         {currentViewMode === PreferredView.PLAYER ? (
           <button
-            className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+            className={`flex h-[38px] w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.CONNECTIONS
                 ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
                 : 'bg-transparent font-medium text-black dark:text-white'
@@ -91,7 +91,7 @@ const ProfileTabs = ({
           </button>
         ) : (
           <button
-            className={`flex h-full w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
+            className={`flex min-h-max w-full min-w-[100px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 ease-in-out ${
               selectedTab === ProfileTab.ACTIVITY ||
               selectedTab === ProfileTab.ACTIVITY_ON_MANAGERS
                 ? 'background bg-button-primary font-bold text-white dark:bg-slate-200 dark:text-black'
