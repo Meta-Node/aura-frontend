@@ -2,12 +2,6 @@
 
 [![Tests](https://github.com/Meta-Node/aura-frontend/actions/workflows/test.yml/badge.svg)](https://github.com/Meta-Node/aura-frontend/actions/workflows/test.yml)
 
-![Coverage](https://codecov.io/gh/user/repo/branch/main/graph/badge.svg)
-
-![License](https://img.shields.io/github/license/user/repo)
-
-![Chat](https://img.shields.io/discord/y24xeXq7mj)
-
 Aura is a decentralized platform where experts assess each other and evaluate subjects across various domains, producing digital attestations that bring authenticity to online activities.
 
 ## Features
