@@ -27,7 +27,6 @@ import { ConnectionAndEvaluationStatus } from '@/components/ConnectionAndEvaluat
 import { getRandomElement } from '@/utils/array';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { calculateUserScorePercentage } from '@/utils/score';
-import { http, HttpResponse } from 'msw';
 
 const createOutboundMockedData = (count = 1) => {
   const mockedOutboundData = {

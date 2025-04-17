@@ -24,7 +24,9 @@ describe('Levelup requirements states', () => {
   it('Level 3 manager requirements');
 });
 
-describe('Progress to levelup', () => {});
+describe('Progress to levelup', () => {
+  it('Should render the correct progress for a subject');
+});
 
 describe('Default progressbar', () => {
   it('Should show the correct progress');
