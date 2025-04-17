@@ -188,8 +188,9 @@ const EvaluateModalBody = ({
         ) : (
           <button
             data-testid="submit-evaluation"
-            className="btn btn--big w-full"
+            className="btn btn--big w-full disabled:opacity-60"
             onClick={submit}
+            disabled={loading}
           >
             {loading ? 'Sending Operation...' : 'Submit Evaluation'}
           </button>
