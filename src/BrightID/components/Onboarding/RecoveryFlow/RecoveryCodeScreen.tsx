@@ -117,7 +117,10 @@ const RecoveryCodeScreen = () => {
   useEffect(() => {
     if (recoveryData.channel.url && recoveryData.aesKey) {
       const channelUrl = recoveryData.channel.url;
-      const deviceInfo = platform.description ?? navigator.userAgent;
+      const browser = platform.name;
+      const os = platform.os?.family;
+
+      const deviceInfo = `${browser} - ${os}`;
 
       const newQrUrl = buildRecoveryChannelQrUrl({
         aesKey: recoveryData.aesKey,
