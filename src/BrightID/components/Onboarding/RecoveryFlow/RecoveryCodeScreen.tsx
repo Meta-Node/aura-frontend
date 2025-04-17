@@ -119,8 +119,13 @@ const RecoveryCodeScreen = () => {
       const channelUrl = recoveryData.channel.url;
       const browser = platform.name;
       const os = platform.os?.family;
+      const now = new Date();
+      const monthYear = now.toLocaleString('en-US', {
+        month: 'short',
+        year: 'numeric',
+      });
 
-      const deviceInfo = `${browser} - ${os}`;
+      const deviceInfo = `${browser} ${os} ${monthYear}`;
 
       const newQrUrl = buildRecoveryChannelQrUrl({
         aesKey: recoveryData.aesKey,
@@ -131,7 +136,7 @@ const RecoveryCodeScreen = () => {
           : channelUrl,
         t: urlTypesOfActions[action],
         changePrimaryDevice: false,
-        name: `Aura - ${deviceInfo}`,
+        name: `Aura ${deviceInfo}`,
       });
       setQrUrl(newQrUrl);
     }
