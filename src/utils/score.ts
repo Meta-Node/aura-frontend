@@ -45,16 +45,8 @@ export const calculateRemainingScoreToNextLevel = (
 export const maximumScoreTobeReached = 4_000_000_000;
 
 export const progressSections = [
-  35_000,
-  500_000,
-  5_000_000,
-  100_000_000,
-  300_000_000,
-  800_000_000,
-  1_500_000_000,
-  2_500_000_000,
-  maximumScoreTobeReached,
-]; // TODO: make this based on percentage of the maximum score
+  0.00000875, 500_000, 0.000125, 0.025, 0.075, 0.2, 0.375, 0.625, 1,
+];
 
 export const calculateUserScorePercentage = (
   view: EvaluationCategory,
@@ -65,11 +57,18 @@ export const calculateUserScorePercentage = (
 
   if (score > maximumScoreTobeReached) return 100;
 
-  const sectionsPassed = progressSections.filter((item) => item < score);
+  const sectionsPassed = progressSections.filter((percentage) => {
+    const item = percentage * maximumScoreTobeReached;
+
+    return item < score;
+  });
+
+  const currentSection =
+    progressSections[sectionsPassed.length] * maximumScoreTobeReached;
 
   return (
     (sectionsPassed.length / progressSections.length) * 100 +
-    (score / progressSections[sectionsPassed.length]) * progressSections.length
+    (score / currentSection) * progressSections.length
   );
 };
 
