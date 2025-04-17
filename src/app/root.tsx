@@ -67,14 +67,9 @@ export function Layout({ children }: PropsWithChildren) {
 }
 
 export default function App() {
-  const isSearchModalOpen = useSelector(selectIsSearchModalOpen);
-  const dispatch = useDispatch();
-
   return (
     <AppProviders>
-      {isSearchModalOpen && (
-        <GlobalSearchModal onClose={() => dispatch(toggleSearchModal())} />
-      )}
+      <GlobalSearchModal />
       <Outlet />
 
       <DebugToolbar />

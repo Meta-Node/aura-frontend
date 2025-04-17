@@ -21,7 +21,6 @@ import { http, HttpResponse } from 'msw';
 import * as profileActions from '@/store/profile/actions';
 import { waitFor } from '@testing-library/react';
 import useBrightIdBackupWithUpdatedConnectionData from 'hooks/useBrightIdBackupWithAuraConnectionData';
-import { selectCachedProfiles } from '@/store/cache/selectors';
 
 export const customConnectionsInterceptor = http.get(
   `/auranode-test/brightid/v6/users/${TEST_BRIGHT_ID}/profile`,

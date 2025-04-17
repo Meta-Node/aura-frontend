@@ -87,6 +87,8 @@ export const SubjectCard = ({
     auraScore ?? 0,
   );
 
+  console.log(`subject-card-${subjectId}-${index}`);
+
   return (
     <Link
       to={'/subject/' + subjectId}
