@@ -93,9 +93,9 @@ export function useSubjectSorts(sortIds: AuraSortId[]) {
         defaultAscending: true,
         category: SortCategoryId.Default,
         func: (a, b) =>
-          (getAuraVerification(a.verifications, currentEvaluationCategory)
-            ?.score ?? 0) -
           (getAuraVerification(b.verifications, currentEvaluationCategory)
+            ?.score ?? 0) -
+          (getAuraVerification(a.verifications, currentEvaluationCategory)
             ?.score ?? 0),
       },
       {
