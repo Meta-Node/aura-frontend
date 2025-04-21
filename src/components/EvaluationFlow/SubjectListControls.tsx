@@ -14,7 +14,6 @@ import useViewMode from '../../hooks/useViewMode';
 import { AuraFilterDropdownOption } from '../../types';
 import { PreferredView } from '../../types/dashboard';
 import Dropdown from '../Shared/Dropdown';
-import Modal from '../Shared/Modal';
 import { Button } from '../ui/button';
 import {
   Dialog,

@@ -38,7 +38,7 @@ export default function ErrorBoundryUi({
           <div className="page flex flex-col gap-y-4 overflow-x-hidden">
             <div className="mt-20 p-2 leading-loose">
               <h3 className="text-3xl font-semibold">
-                {!isDevelopment ? 'Wait What?' : 'Wait, What the Sigma?'}
+                Someting wrong happened!
               </h3>
               <img
                 className="mx-auto my-10 rounded-md"
@@ -145,8 +145,8 @@ export const ErrorRestoreActions = () => {
                 </Link>
               </div>
               <p className="text-sm text-muted-foreground">
-                This will return you to the homepage. Use this first if you're
-                experiencing navigation issues or unexpected behavior.
+                This will return you to the homepage. Use this first if you{"'"}
+                re experiencing navigation issues or unexpected behavior.
               </p>
             </div>
           </div>
