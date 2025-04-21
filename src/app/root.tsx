@@ -12,9 +12,6 @@ import Providers, { AppProviders } from './providers';
 import { Route } from '../../.react-router/types/src/app/+types/root';
 
 import GlobalSearchModal from '@/components/GlobalSearchModal';
-import { useSelector } from '@/store/hooks';
-import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
-import { useDispatch } from 'react-redux';
 import DebugToolbar from '@/components/ux/debug-toolbar';
 import ErrorBoundryUi from '@/components/error-boundry';
 

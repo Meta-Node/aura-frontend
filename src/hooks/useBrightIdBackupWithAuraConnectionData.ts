@@ -3,7 +3,6 @@ import { selectCachedProfiles } from '@/store/cache/selectors';
 import { useDispatch } from '@/store/hooks';
 import { getBrightIdBackupThunk } from '@/store/profile/actions';
 import { hash } from '@/utils/crypto';
-import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
@@ -21,7 +20,7 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
   const { myConnections } = useMyEvaluations();
 
   const [loading, setLoading] = useState(false);
-  const [isExhausted, setIsExhausted] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
 
   const backupConnectionKeys = useMemo(() => {
     return (
@@ -37,6 +36,7 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
 
   const refreshBrightIdBackup = useCallback(async () => {
     if (!authData) return;
+
     setLoading(true);
     await dispatch(
       getBrightIdBackupThunk({
@@ -47,7 +47,14 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
   }, [authData, dispatch]);
 
   useEffect(() => {
-    if (loading || !myConnections) return;
+    if (
+      loading ||
+      hasFetched ||
+      !myConnections?.length ||
+      !cachedBrightIdProfiles
+    )
+      return;
+
     const shouldFetch = myConnections.some(
       (conn) =>
         !cachedBrightIdProfiles[conn.id] &&
@@ -55,12 +62,9 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
         !backupConnectionKeys[conn.id],
     );
 
-    if (!shouldFetch) {
-      setIsExhausted(false);
-      return;
-    }
-    if (isExhausted) return;
-    setIsExhausted(true);
+    if (!shouldFetch) return;
+
+    setHasFetched(true);
 
     refreshBrightIdBackup().then(() => {
       const connectionTimestamps = myConnections.reduce(
@@ -75,11 +79,11 @@ export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBacku
     });
   }, [
     loading,
-    myConnections,
-    refreshBrightIdBackup,
-    backupConnectionKeys,
-    isExhausted,
+    hasFetched,
+    myConnections?.length,
     cachedBrightIdProfiles,
+    backupConnectionKeys,
+    refreshBrightIdBackup,
     dispatch,
   ]);
 

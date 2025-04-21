@@ -23,7 +23,6 @@ import {
   PreferredView,
   ProfileTab,
 } from 'types/dashboard';
-import { __DEV__ } from 'utils/env';
 
 import { EmptyActivitiesList } from 'components/Shared/EmptyAndLoadingStates/EmptyActivitiesList';
 import { EmptyEvaluationsList } from 'components/Shared/EmptyAndLoadingStates/EmptyEvaluationsList';
