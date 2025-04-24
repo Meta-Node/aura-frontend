@@ -23,7 +23,7 @@ export class Sphere {
     this.$wrapper = $wrapper;
     this.bounds();
     this.texture = new THREE.TextureLoader().load(
-      '/assets/images/bg-cubemap.jpg',
+      '/assets/images/bg-cubemap.png',
       () => {
         this.init();
       },
