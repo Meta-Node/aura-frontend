@@ -45,7 +45,7 @@ export const calculateRemainingScoreToNextLevel = (
 export const maximumScoreTobeReached = 4_000_000_000;
 
 export const progressSections = [
-  0.00000875, 500_000, 0.000125, 0.025, 0.075, 0.2, 0.375, 0.625, 1,
+  0.00000875, 0.000125, 0.025, 0.075, 0.2, 0.375, 0.625, 1,
 ];
 
 export const calculateUserScorePercentage = (

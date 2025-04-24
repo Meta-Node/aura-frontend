@@ -47,10 +47,21 @@ export const generateRandomBrightIdConnectionBackup = (
       },
     ],
     timestamp: Date.now(),
-    incomingLevel: incomingLevel,
+    incomingLevel,
     reportReason: null,
     auraEvaluations: [],
   } as AuraNodeBrightIdConnection;
+};
+
+export const addPlayerRuleWithCategoryToConnection = (
+  connection: BrightIdBackupConnection,
+  category: EvaluationCategory,
+  impacts: AuraImpact[],
+  level = 1,
+) => {
+  connection.verifications![0].domains![0]!.categories.push(
+    createSubjectCategory(category, impacts, level),
+  );
 };
 
 export const createDomainFromBrightIdConenction = (
@@ -77,7 +88,7 @@ export const createSubjectCategory = (
   return {
     name: category,
     score: impacts.reduce((prev, curr) => (curr.score ?? 0) + prev, 0),
-    level: level,
+    level,
     impacts,
   };
 };

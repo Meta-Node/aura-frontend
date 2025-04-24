@@ -8,11 +8,11 @@ import { Link, useNavigate } from 'react-router';
 import { Card } from '@/components/ui/card';
 
 import { RoutePath } from 'types/router';
-import { __DEV__ } from 'utils/env';
 import DefaultHeader from '@/components/Header/DefaultHeader';
 import VersionCard from './components/version';
 import LogoutButton from './components/logout';
 import ToggleTheme from './components/theme-toggle';
+import SphereComponent from './components/sphere-component';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function Settings() {
     <>
       <DefaultHeader title="Settings" />
       <div className="page flex w-full flex-1 flex-col gap-4 pt-4 dark:text-white">
-        <section className="flex w-full flex-col gap-4">
+        <section className="mt-20 flex w-full flex-col gap-4">
           <Card
             className="flex cursor-pointer items-center gap-2 rounded-lg py-3.5 pl-5 pr-2"
             onClick={() => navigate(RoutePath.ROLE_MANAGEMENT)}
@@ -59,6 +59,7 @@ export default function Settings() {
           <VersionCard />
 
           <LogoutButton />
+          <SphereComponent />
         </section>
       </div>
     </>

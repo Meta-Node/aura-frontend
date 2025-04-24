@@ -6,9 +6,10 @@ export default function SphereComponent({ className }: { className?: string }) {
   useEffect(() => {
     let sphere: any;
     let initialized = false;
+    let isMounted = true;
 
     import('@/components/Shared/shaders/shpere').then(({ Sphere }) => {
-      if (!sphereWrapper.current || initialized) return;
+      if (!sphereWrapper.current || initialized || !isMounted) return;
       sphereWrapper.current.innerHTML = '';
 
       initialized = true;
@@ -16,6 +17,7 @@ export default function SphereComponent({ className }: { className?: string }) {
     });
 
     return () => {
+      isMounted = false;
       sphere?.destroy();
     };
   }, []);
@@ -23,7 +25,7 @@ export default function SphereComponent({ className }: { className?: string }) {
   return (
     <div
       ref={sphereWrapper}
-      className={cn('mx-auto h-40 w-40', className)}
+      className={cn('mx-auto h-20 w-20', className)}
     ></div>
   );
 }
