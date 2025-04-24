@@ -1,6 +1,7 @@
 import { BrightIdBackupConnection } from '@/types';
 import { setupServer } from 'msw/node';
 import {
+  addPlayerRuleWithCategoryToConnection,
   createSubjectCategory,
   generateEvaluationImpact,
   generateRandomBrightIdConnectionBackup,
@@ -17,7 +18,7 @@ import HomePage from '@/app/routes/_app.home/route';
 import { RefreshEvaluationsContextProvider } from '@/contexts/RefreshEvaluationsContext';
 import { SubjectsListContextProvider } from '@/contexts/SubjectsListContext';
 import { MyEvaluationsContextProvider } from '@/contexts/MyEvaluationsContext';
-import { act, logDOM, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { EvaluationCategory, EvaluationValue } from '@/types/dashboard';
 
@@ -53,10 +54,37 @@ domains[0].categories.push(
     1,
   ),
 );
+addPlayerRuleWithCategoryToConnection(
+  connection1,
+  EvaluationCategory.SUBJECT,
+  [
+    generateEvaluationImpact(
+      TEST_BRIGHT_ID,
+      Math.floor(Math.random() * 100000),
+      4,
+      Math.floor(Math.random() * 100000),
+    ),
+  ],
+  1,
+);
 
 const connection2 = generateRandomBrightIdConnectionBackup(
   'recovery',
   'recovery',
+);
+
+addPlayerRuleWithCategoryToConnection(
+  connection2,
+  EvaluationCategory.SUBJECT,
+  [
+    generateEvaluationImpact(
+      TEST_BRIGHT_ID,
+      Math.floor(Math.random() * 100000),
+      4,
+      Math.floor(Math.random() * 100000),
+    ),
+  ],
+  2,
 );
 
 connection2.timestamp = new Date().getTime() + 400000;
@@ -65,13 +93,43 @@ const connection3 = generateRandomBrightIdConnectionBackup(
   'just met',
   'already known',
 );
+
+addPlayerRuleWithCategoryToConnection(
+  connection3,
+  EvaluationCategory.SUBJECT,
+  [],
+  0,
+);
+
 const connection4 = generateRandomBrightIdConnectionBackup(
   'recovery',
   'just met',
 );
+addPlayerRuleWithCategoryToConnection(
+  connection4,
+  EvaluationCategory.SUBJECT,
+  [],
+  4,
+);
+
 const connection5 = generateRandomBrightIdConnectionBackup(
   'recovery',
   'suspicious',
+);
+
+connection5.auraEvaluations?.push({
+  domain: 'BrightID',
+  category: EvaluationCategory.SUBJECT,
+  confidence: 4,
+  evaluation: EvaluationValue.NEGATIVE,
+  modified: new Date().getTime() / 1000,
+});
+
+addPlayerRuleWithCategoryToConnection(
+  connection5,
+  EvaluationCategory.SUBJECT,
+  [],
+  -1,
 );
 
 mockedOutboundData.data.connections.push(
@@ -310,7 +368,7 @@ describe('Custom Filter Behavior', () => {
     });
   });
 
-  it('Should filter by level', async () => {
+  it('Should filter by level 1', async () => {
     renderWithRouterAndRedux(
       <RefreshEvaluationsContextProvider>
         <MyEvaluationsContextProvider>
@@ -328,12 +386,36 @@ describe('Custom Filter Behavior', () => {
       userEvent.click(screen.getByTestId('home-view-select'));
     });
 
-    await act(() => {
+    act(() => {
       userEvent.click(screen.getByTestId('dropdown-option--1'));
     });
-  });
 
-  it('Should filter by your evaluation ');
+    act(() => {
+      userEvent.click(screen.getByTestId('subject-filter-option-Level0'));
+      // userEvent.click(screen.getByTestId('subject-filter-option-Level0'));
+    });
+    act(() => {
+      userEvent.click(screen.getByTestId('custom-view-ok-button'));
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`subject-card-${connection3.id}-${0}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`subject-card-${connection5.id}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`subject-card-${connection4.id}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`subject-card-${connection2.id}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`subject-card-${connection1.id}`),
+      ).not.toBeInTheDocument();
+    });
+  });
 
   it('Should filter by connection type ');
 
