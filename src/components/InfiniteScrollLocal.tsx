@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { JSX, useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 interface InfiniteScrollLocalProps<T> extends React.HTMLProps<InfiniteScroll> {
@@ -19,19 +19,42 @@ export default function InfiniteScrollLocal<T>({
   ...props
 }: InfiniteScrollLocalProps<T>) {
   const [itemsLocal, setItemsLocal] = useState<T[]>([]);
+  const itemsRef = useRef<typeof items>(null);
+  const isInitialLoadRef = useRef(true);
+
+  // Only reset itemsLocal when items reference changes
   useEffect(() => {
-    setItemsLocal([]);
+    // Check if items has actually changed (not just a re-render)
+    if (items !== itemsRef.current) {
+      itemsRef.current = items;
+      setItemsLocal([]);
+      isInitialLoadRef.current = true;
+    }
   }, [items]);
 
   const loadMore = useCallback(() => {
     if (!items) return;
-    setItemsLocal((itemsLocalPrev) => [
-      ...itemsLocalPrev,
-      ...items.slice(
-        itemsLocalPrev.length,
-        itemsLocalPrev.length + (pageSize ?? 10),
-      ),
-    ]);
+
+    // Prevent multiple loadMore calls during initial load
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+      // Load initial batch
+      setItemsLocal(items.slice(0, pageSize ?? 10));
+    } else {
+      // Load next batch
+      setItemsLocal((itemsLocalPrev) => {
+        // Avoid duplicate loads
+        if (itemsLocalPrev.length >= items.length) return itemsLocalPrev;
+
+        return [
+          ...itemsLocalPrev,
+          ...items.slice(
+            itemsLocalPrev.length,
+            itemsLocalPrev.length + (pageSize ?? 10),
+          ),
+        ];
+      });
+    }
   }, [items, pageSize]);
 
   const hasMore = useMemo(
@@ -56,7 +79,7 @@ export default function InfiniteScrollLocal<T>({
           pageStart={0}
           loadMore={loadMore}
           hasMore={hasMore}
-          initialLoad={true}
+          initialLoad={isInitialLoadRef.current}
           useWindow={false}
         >
           {itemsLocal.map((item, index) => (
