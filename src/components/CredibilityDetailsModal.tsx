@@ -1,9 +1,7 @@
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
-import ReactECharts from 'echarts-for-react';
 import { useInboundEvaluations } from 'hooks/useSubjectEvaluations';
 import { useSubjectName } from 'hooks/useSubjectName';
 import {
-  useImpactEChartOption,
   useImpactPercentage,
   useSubjectVerifications,
 } from 'hooks/useSubjectVerifications';

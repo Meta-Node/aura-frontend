@@ -150,7 +150,10 @@ export const SubjectCard = ({
           </div>
 
           <div className="mt-auto">
-            <ConnectionAndEvaluationStatus subjectId={subjectId} />
+            <ConnectionAndEvaluationStatus
+              auraImpacts={auraImpacts ?? []}
+              subjectId={subjectId}
+            />
           </div>
         </div>
         <div className="evaluation-right flex flex-col items-end gap-2">

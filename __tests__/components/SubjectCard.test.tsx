@@ -1,5 +1,5 @@
 import { SubjectCard } from '@/components/EvaluationFlow/SubjectCard';
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 import { renderWithRouterAndRedux } from '../utils/app';
 import {
@@ -23,7 +23,6 @@ import {
 import { BrightIdBackupConnection } from '@/types';
 import { EvaluationCategory, EvaluationValue } from '@/types/dashboard';
 import { compactFormat } from '@/utils/number';
-import { ConnectionAndEvaluationStatus } from '@/components/ConnectionAndEvaluationStatus';
 import { getRandomElement } from '@/utils/array';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { calculateUserScorePercentage } from '@/utils/score';
@@ -182,8 +181,10 @@ describe('Connection type states', () => {
     renderWithRouterAndRedux(
       <RefreshEvaluationsContextProvider>
         <MyEvaluationsContextProvider>
-          {outboundData.data.connections.map((connection) => (
-            <ConnectionAndEvaluationStatus
+          {outboundData.data.connections.map((connection, key) => (
+            <SubjectCard
+              verifications={connection.verifications}
+              index={key}
               subjectId={connection.id}
               key={connection.id}
             />
@@ -232,7 +233,9 @@ describe('Evaluation State', () => {
       <RefreshEvaluationsContextProvider>
         <MyEvaluationsContextProvider>
           {outboundData.data.connections.map((connection, key) => (
-            <ConnectionAndEvaluationStatus
+            <SubjectCard
+              verifications={connection.verifications}
+              index={key}
               subjectId={connection.id}
               key={connection.id}
             />

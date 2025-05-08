@@ -1,8 +1,5 @@
 import { useSubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
-import ReactECharts from 'echarts-for-react';
-import { AuraFilterId } from 'hooks/useFilters';
 import {
-  useImpactEChartOption,
   useSubjectVerifications,
   useTotalImpact,
 } from 'hooks/useSubjectVerifications';
@@ -11,11 +8,7 @@ import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router';
 import { selectAuthData } from 'store/profile/selectors';
-import {
-  evaluationsToEvaluatedCategory,
-  PreferredView,
-  ProfileTab,
-} from 'types/dashboard';
+import { PreferredView, ProfileTab } from 'types/dashboard';
 
 import {
   Dialog,

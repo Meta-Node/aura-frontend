@@ -1,22 +1,10 @@
-import {
-  selectHasManagerRole,
-  selectTrainerRole,
-  toggleManagerRole,
-  toggleTrainerRole,
-} from 'BrightID/actions';
 import { SubjectInboundConnectionsContextProvider } from 'contexts/SubjectInboundConnectionsContext';
 import { SubjectInboundEvaluationsContextProvider } from 'contexts/SubjectInboundEvaluationsContext';
 import { SubjectOutboundEvaluationsContextProvider } from 'contexts/SubjectOutboundEvaluationsContext';
-import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RefreshCcw } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
-import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import { selectAuthData } from 'store/profile/selectors';
-import { EvaluationCategory } from 'types/dashboard';
-import { compactFormat } from 'utils/number';
 import DefaultHeader from '@/components/Header/DefaultHeader';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
 import PlayerRoleCard from './components/player-role-card';
 import TrainerRoleCard from './components/trainer-role-card';

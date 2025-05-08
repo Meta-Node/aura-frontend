@@ -11,13 +11,10 @@ import {
 } from '../constants';
 import LoadingSpinner from './Shared/LoadingSpinner';
 import Tooltip from './Shared/Tooltip';
-import {
-  useImpactPercentage,
-  useSubjectVerifications,
-} from '@/hooks/useSubjectVerifications';
+import { useImpactPercentage } from '@/hooks/useSubjectVerifications';
 import { useSelector } from '@/store/hooks';
 import { selectAuthData } from '@/store/profile/selectors';
-import useViewMode from '@/hooks/useViewMode';
+import { AuraImpact } from '@/api/auranode.service';
 
 export type SubjectIdProps = {
   subjectId: string;
@@ -107,8 +104,10 @@ export const connectionLevelColors: Record<ConnectionLevel, string> = {
 
 export const ConnectionAndEvaluationStatus = ({
   subjectId,
+  auraImpacts,
 }: {
   subjectId: string;
+  auraImpacts: AuraImpact[];
 }) => {
   const {
     myRatingToSubject: rating,
@@ -117,12 +116,6 @@ export const ConnectionAndEvaluationStatus = ({
     myConfidenceValueInThisSubjectRating: confidenceValue,
   } = useMyEvaluationsContext({ subjectId });
   const authData = useSelector(selectAuthData);
-  const { currentViewMode, currentEvaluationCategory } = useViewMode();
-
-  const { auraImpacts } = useSubjectVerifications(
-    subjectId,
-    currentEvaluationCategory,
-  );
 
   const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
 
