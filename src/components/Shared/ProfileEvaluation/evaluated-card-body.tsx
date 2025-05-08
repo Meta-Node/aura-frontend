@@ -1,6 +1,5 @@
 import UserName from './user-name';
 import UserInformation from './user-information';
-import SmallGraphCard from './graph';
 import BrightIdProfilePicture from '@/components/BrightIdProfilePicture';
 import { EvidenceType, EvidenceViewMode } from '@/types/dashboard';
 import { Verifications } from '@/api/auranode.service';
