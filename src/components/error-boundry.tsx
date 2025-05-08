@@ -38,7 +38,7 @@ export default function ErrorBoundryUi({
           <div className="page flex flex-col gap-y-4 overflow-x-hidden">
             <div className="mt-20 p-2 leading-loose">
               <h3 className="text-3xl font-semibold">
-                Someting wrong happened!
+                Something wrong happened!
               </h3>
               <img
                 className="mx-auto my-10 rounded-md"

@@ -233,10 +233,8 @@ const RecoveryCodeScreen = () => {
           data-testid="login-download-state"
           className="content mb-6 pl-5 pr-12"
         >
-          <p className="mb-6 text-5xl font-black text-white">Login</p>
-          <p className="text-lg font-medium text-white">
-            Downloading backup data...
-          </p>
+          <p className="mb-6 text-5xl font-black">Login</p>
+          <p className="text-lg font-medium">Downloading backup data...</p>
         </section>
       ) : (
         <>
@@ -244,13 +242,13 @@ const RecoveryCodeScreen = () => {
             <FadeIn delay={0.1}>
               <p
                 data-testid="recovery-title"
-                className="mb-6 text-5xl font-black text-white"
+                className="mb-6 text-5xl font-black"
               >
                 Login
               </p>
             </FadeIn>
             <FadeIn delay={0.15}>
-              <p className="text-lg font-medium text-white">
+              <p className="text-lg font-medium">
                 <span className="hidden md:block">
                   <CustomTrans i18nKey="login.topDescriptionDesktop" />
                 </span>
@@ -287,11 +285,11 @@ const RecoveryCodeScreen = () => {
 
             <FadeIn delay={0.25} className="flex items-center gap-2">
               <hr className="h-[1px] w-12" />
-              <p className="text-white">Or</p>
+              <p className="">Or</p>
               <hr className="h-[1px] w-12" />
             </FadeIn>
             <FadeIn delay={0.25}>
-              <p className="text-lg font-medium text-white">
+              <p className="text-lg font-medium">
                 Open the Link below on your phone
               </p>
             </FadeIn>
