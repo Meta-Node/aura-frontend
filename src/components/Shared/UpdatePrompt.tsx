@@ -36,7 +36,7 @@ const UpdatePrompt = () => {
         action: (
           <ToastAction
             altText="Update"
-            onClick={() => updateServiceWorker(false)}
+            onClick={() => updateServiceWorker(true)}
           >
             Update
           </ToastAction>
