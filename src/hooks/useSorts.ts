@@ -185,18 +185,18 @@ export function useInboundEvaluationsSorts(sortIds: AuraSortId[]) {
         category: SortCategoryId.Default,
         defaultAscending: true,
         func: (a, b) =>
-          ((b.inboundConnection &&
-            b.rating &&
-            getAuraVerification(
-              b.inboundConnection.verifications,
-              viewAsToEvaluatorViewAs[b.rating.category],
-            )?.score) ||
-            0) -
           ((a.inboundConnection &&
             a.rating &&
             getAuraVerification(
               a.inboundConnection.verifications,
               viewAsToEvaluatorViewAs[a.rating.category],
+            )?.score) ||
+            0) -
+          ((b.inboundConnection &&
+            b.rating &&
+            getAuraVerification(
+              b.inboundConnection.verifications,
+              viewAsToEvaluatorViewAs[b.rating.category],
             )?.score) ||
             0),
       },
