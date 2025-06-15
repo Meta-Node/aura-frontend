@@ -1,7 +1,7 @@
 import { BsTwitterX } from 'react-icons/bs';
 import { FaDiscord } from 'react-icons/fa';
 import { FaHandsHelping } from 'react-icons/fa';
-import { MdOutlineSecurity } from 'react-icons/md';
+import { MdContactMail, MdOutlineSecurity } from 'react-icons/md';
 import { SiGitbook } from 'react-icons/si';
 import { Link, useNavigate } from 'react-router';
 
