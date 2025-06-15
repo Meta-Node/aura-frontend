@@ -21,12 +21,6 @@ export default function Settings() {
       <DefaultHeader title="Settings" />
       <div className="page flex w-full flex-1 flex-col gap-4 pt-4 dark:text-white">
         <section className="mt-20 flex w-full flex-col gap-4">
-          <Link to="/contact-info">
-            <Card className="flex cursor-pointer items-center gap-2 rounded-lg py-3.5 pl-5 pr-2">
-              <MdContactMail size={20} />
-              <p className="text-[20px] font-medium">Your Contact info</p>
-            </Card>
-          </Link>
           <Card
             className="flex cursor-pointer items-center gap-2 rounded-lg py-3.5 pl-5 pr-2"
             onClick={() => navigate(RoutePath.ROLE_MANAGEMENT)}
