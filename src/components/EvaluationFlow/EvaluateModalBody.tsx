@@ -11,6 +11,7 @@ import { EvaluationCategory, PreferredView } from '@/types/dashboard';
 
 import useViewMode from '../../hooks/useViewMode';
 import CustomTrans from '../CustomTrans';
+import { useToast } from '@/hooks/use-toast';
 
 const EvaluateModalBody = ({
   subjectId,
@@ -36,6 +37,8 @@ const EvaluateModalBody = ({
     [myRatingObject],
   );
 
+  const toast = useToast();
+
   useEffect(() => {
     if (!prevRating) return;
     setIsYes(prevRating > 0);
@@ -54,7 +57,14 @@ const EvaluateModalBody = ({
       await submitEvaluation(subjectId, newRating);
       onSubmitted(newRating);
     } catch (e) {
-      alert(String(e));
+      toast.toast({
+        title: 'Error',
+        description:
+          'Failed to submit evaluation' +
+          (e instanceof Error ? `: ${e.message}` : String(e)),
+        variant: 'destructive',
+        duration: 5000,
+      });
     }
   }, [
     authData,

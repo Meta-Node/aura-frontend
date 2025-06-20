@@ -14,7 +14,7 @@ export const profileApi = apiSlice.injectEndpoints({
 
     getConnections: build.query<
       ConnectionInfo[],
-      { id: number; direction: 'inbound' | 'outbound' }
+      { id: string; direction: 'inbound' | 'outbound' }
     >({
       query: ({ direction, id }) => ({
         url: `/users/${id}/connections/${direction}`,
