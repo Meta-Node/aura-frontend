@@ -71,27 +71,7 @@ export const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   const [showEvaluateOverlayCard, setShowEvaluateOverlayCard] = useState(false);
   const [credibilityDetailsProps, setCredibilityDetailsProps] =
     useState<CredibilityDetailsProps | null>(null);
-  const handleScroll = () => {
-    const scrollPosition =
-      document.getElementsByClassName('page')[0]?.scrollTop; // => scroll position
-    if (scrollPosition > 100) {
-      setShowEvaluateOverlayCard(true);
-    } else {
-      setShowEvaluateOverlayCard(false);
-    }
-  };
 
-  useEffect(() => {
-    handleScroll();
-    document
-      .getElementsByClassName('page')[0]
-      ?.addEventListener('scroll', handleScroll);
-    return () => {
-      document
-        .getElementsByClassName('page')[0]
-        ?.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
   const {
     currentViewMode,
     currentEvaluationCategory,

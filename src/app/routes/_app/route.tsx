@@ -2,8 +2,26 @@ import { Outlet } from 'react-router';
 
 import EvaluationOpNotifications from '@/components/EvaluationOpNotifications';
 import { IS_PRODUCTION } from '@/utils/env';
+import { useDispatch } from '@/store/hooks';
+import { useEffect } from 'react';
+import { fetchNotificationsThunk } from '@/store/notifications';
 
 export default function AppLanding() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchNotificationsThunk());
+
+    const interval = setInterval(
+      () => {
+        dispatch(fetchNotificationsThunk());
+      },
+      5 * 60 * 1000,
+    );
+
+    return () => clearInterval(interval);
+  }, [dispatch]);
+
   return (
     <div className="bg-background-light dark:bg-background">
       <div

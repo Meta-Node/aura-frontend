@@ -29,7 +29,7 @@ export const useSubjectVerifications = (
 
   return {
     refresh: profileQuery.refetch,
-    loading: verifications === undefined,
+    loading: profileQuery.isLoading,
     isFetching: profileQuery.isFetching,
     ...parsedData,
   };
