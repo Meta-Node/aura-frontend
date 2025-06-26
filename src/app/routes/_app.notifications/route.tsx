@@ -13,6 +13,7 @@ import { RootState } from '@/store';
 import {
   fetchNotificationsThunk,
   Notification,
+  notificationsSelector,
   notificationsSlice,
 } from '@/store/notifications';
 import { Button } from '@/components/ui/button';
@@ -65,9 +66,7 @@ function getIcon(notification: Notification) {
 
 export default function NotificationsPage() {
   const dispatch = useDispatch();
-  const notifications = useSelector(
-    (state: RootState) => state.notifications.items,
-  );
+  const notifications = useSelector(notificationsSelector);
   const loading = useSelector(
     (state: RootState) => state.notifications.loading,
   );

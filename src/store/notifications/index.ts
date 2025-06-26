@@ -1,4 +1,9 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  createSelector,
+} from '@reduxjs/toolkit';
 import { RESET_STORE } from 'BrightID/actions';
 import { profileApi } from '../api/profile';
 import { RootState } from '..';
@@ -84,10 +89,10 @@ export const fetchNotificationsThunk = createAsyncThunk(
       })(dispatch, getState, {});
 
     response.data?.forEach((item) => {
-      notificationsSlice.actions.updateProfileState(item);
+      dispatch(notificationsSlice.actions.updateProfileState(item));
     });
 
-    return state.notifications.items;
+    return;
   },
 );
 
@@ -367,9 +372,9 @@ export const notificationsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchNotificationsThunk.fulfilled, (state, action) => {
+      .addCase(fetchNotificationsThunk.fulfilled, (state) => {
         state.loading = false;
-        state.items = action.payload || [];
+        // Do not overwrite state.items here
         state.lastFetched = Date.now();
       })
       .addCase(fetchNotificationsThunk.rejected, (state, action) => {
@@ -382,3 +387,19 @@ export const notificationsSlice = createSlice({
       );
   },
 });
+
+export const notificationsSelector = createSelector(
+  (state: RootState) => state.notifications,
+  (notifications) => notifications.items,
+);
+
+export const {
+  markAsRead,
+  markAllAsRead,
+  removeNotification,
+  clearAllNotifications,
+  trackProfile,
+  untrackProfile,
+  addEvaluation,
+  updateProfileState,
+} = notificationsSlice.actions;
