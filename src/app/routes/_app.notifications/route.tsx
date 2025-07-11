@@ -23,6 +23,12 @@ import { cn } from '@/lib/utils';
 import DefaultHeader from '@/components/Header/DefaultHeader';
 import { useDispatch, useSelector } from '@/store/hooks';
 import { useMyEvaluations } from '@/hooks/useMyEvaluations';
+import { BrightIdBackup, BrightIdBackupConnection } from '@/types';
+import useBrightIdBackupWithAuraConnectionData, {
+  useBrightIdBackupConnectionResolver,
+} from '@/hooks/useBrightIdBackupWithAuraConnectionData';
+import { selectAuthData } from '@/store/profile/selectors';
+import { shortenBrightIdName } from '@/utils/connection';
 
 const iconMap = {
   level: {
@@ -67,12 +73,63 @@ function getIcon(notification: Notification) {
   return <LucideBell />;
 }
 
+export function parseTitleAndDescription(
+  description: string,
+  type: 'evaluation' | 'level' | 'score',
+  profileId: string,
+  resolve: (key: string) => BrightIdBackupConnection,
+  brightId: string | undefined,
+  to?: string,
+) {
+  switch (type) {
+    case 'evaluation':
+      if (to === brightId) {
+        return (
+          (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
+          ' Evaluated You'
+        );
+      }
+
+      return (
+        (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
+        ' Evaluated ' +
+        (resolve(to!)?.name ?? shortenBrightIdName(to!))
+      );
+
+    case 'level':
+      if (profileId === brightId) {
+        return 'Your ' + description;
+      }
+
+      return (
+        (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
+        ' ' +
+        description
+      );
+
+    case 'score':
+      if (profileId === brightId) {
+        return 'Your ' + description;
+      }
+
+      return (
+        (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
+        ' ' +
+        description
+      );
+  }
+}
+
 export default function NotificationsPage() {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
   const loading = useSelector(
     (state: RootState) => state.notifications.loading,
   );
+
+  const authData = useSelector(selectAuthData);
+
+  const { resolve } = useBrightIdBackupConnectionResolver();
 
   const { getState } = useStore();
 
@@ -104,13 +161,17 @@ export default function NotificationsPage() {
               <div className="flex-shrink-0">{getIcon(n)}</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 text-lg font-semibold">
-                  {n.title}
+                  {parseTitleAndDescription(
+                    n.description,
+                    n.changeType,
+                    n.profileId,
+                    resolve,
+                    authData?.brightId,
+                    n.to,
+                  )}
                   <span className="text-xs text-muted-foreground">
                     [{n.evaluationCategory}]
                   </span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {n.description}
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">
                   {new Date(n.createdAt).toLocaleString()}

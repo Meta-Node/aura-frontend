@@ -363,7 +363,6 @@ export const notificationsSlice = createSlice({
             newCat.level !== oldCat.level &&
             shouldNotifyOnChange('level', oldCat.level, newCat.level)
           ) {
-            console.log({ oldCat: oldCat.level, newCat: newCat.level, cat });
             state.items.push(
               generateNotification(
                 id,

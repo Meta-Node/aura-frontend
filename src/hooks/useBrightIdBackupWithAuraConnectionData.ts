@@ -8,9 +8,30 @@ import { useSelector } from 'react-redux';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
 import {
   AuraNodeBrightIdConnectionWithBackupData,
+  BrightIdBackupConnection,
   BrightIdBackupWithAuraConnectionData,
 } from 'types';
 import { useMyEvaluations } from './useMyEvaluations';
+
+export function useBrightIdBackupConnectionResolver() {
+  const brightIdBackup = useSelector(selectBrightIdBackup);
+
+  const backupConnectionKeys = useMemo(() => {
+    return (
+      brightIdBackup?.connections.reduce(
+        (acc, conn) => {
+          acc[conn.id] = conn;
+          return acc;
+        },
+        {} as Record<string, BrightIdBackupConnection>,
+      ) || {}
+    );
+  }, [brightIdBackup]);
+
+  return {
+    resolve: (key: string) => backupConnectionKeys[key],
+  };
+}
 
 export default function useBrightIdBackupWithAuraConnectionData(): BrightIdBackupWithAuraConnectionData | null {
   const dispatch = useDispatch();
