@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import {
   LucideBell,
-  LucideStar,
   LucideTrendingUp,
   LucideTrendingDown,
   LucideArrowUp,
@@ -11,7 +10,6 @@ import {
 import { Card } from '@/components/ui/card';
 import { RootState } from '@/store';
 import {
-  fetchNotificationsThunk,
   Notification,
   notificationsSelector,
   notificationsSlice,
@@ -23,10 +21,8 @@ import { cn } from '@/lib/utils';
 import DefaultHeader from '@/components/Header/DefaultHeader';
 import { useDispatch, useSelector } from '@/store/hooks';
 import { useMyEvaluations } from '@/hooks/useMyEvaluations';
-import { BrightIdBackup, BrightIdBackupConnection } from '@/types';
-import useBrightIdBackupWithAuraConnectionData, {
-  useBrightIdBackupConnectionResolver,
-} from '@/hooks/useBrightIdBackupWithAuraConnectionData';
+import { BrightIdBackupConnection } from '@/types';
+import { useBrightIdBackupConnectionResolver } from '@/hooks/useBrightIdBackupWithAuraConnectionData';
 import { selectAuthData } from '@/store/profile/selectors';
 import { shortenBrightIdName } from '@/utils/connection';
 
