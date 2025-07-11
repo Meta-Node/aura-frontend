@@ -6,12 +6,12 @@ import {
 } from '@reduxjs/toolkit';
 import { RESET_STORE } from 'BrightID/actions';
 import { profileApi } from '../api/profile';
-import { RootState } from '..';
+import { AppDispatch, RootState } from '..';
 import { Verifications } from '@/api/auranode.service';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { EvaluationCategory } from '@/types/dashboard';
 import { connectionsApi } from '../api/connections';
-import { AuraNodeBrightIdConnection } from '@/types';
+import { AuraNodeBrightIdConnection, AuraRating } from '@/types';
 
 export const NOTIFICATION_THRESHOLDS = {
   LEVEL_CHANGE: 1, // Notify on any level change
@@ -68,14 +68,57 @@ const initialNotificationsState: NotificationsState = {
   error: null,
 };
 
-// Async thunk for fetching notifications
+export const triggerNotificationFetch = async (
+  getState: () => unknown,
+  dispatch: AppDispatch,
+  myRatings: AuraRating[],
+) => {
+  const state = getState() as RootState;
+
+  if (!state.profile.authData) return;
+
+  const lastFetched = state.notifications.lastFetched;
+
+  if (lastFetched && Date.now() - lastFetched < 2.5 * 60 * 1000) {
+    return;
+  }
+
+  const trackedProfiles = state.notifications.trackedProfiles;
+
+  const response =
+    await connectionsApi.endpoints.getInboundConnections.initiate({
+      id: state.profile.authData.brightId,
+    })(dispatch, getState, {});
+
+  response.data?.forEach((item) => {
+    dispatch(
+      notificationsSlice.actions.updateProfileState({
+        connection: item,
+        myRatings,
+      }),
+    );
+  });
+
+  const user = await profileApi.endpoints.getBrightIDProfile.initiate(
+    state.profile.authData.brightId!,
+  )(dispatch, getState, {});
+
+  dispatch(
+    notificationsSlice.actions.updateProfileState({
+      connection: user.data!,
+      myRatings,
+    }),
+  );
+
+  return;
+};
+
 export const fetchNotificationsThunk = createAsyncThunk(
   'notifications/fetch',
   async (_, { getState, dispatch }) => {
     const state = getState() as RootState;
     if (!state.profile.authData) return;
 
-    // Prevent fetch if lastFetched is less than 2.5 minutes ago
     const lastFetched = state.notifications.lastFetched;
     if (lastFetched && Date.now() - lastFetched < 2.5 * 60 * 1000) {
       return state.notifications.items;
@@ -89,14 +132,20 @@ export const fetchNotificationsThunk = createAsyncThunk(
       })(dispatch, getState, {});
 
     response.data?.forEach((item) => {
-      dispatch(notificationsSlice.actions.updateProfileState(item));
+      dispatch(
+        notificationsSlice.actions.updateProfileState({
+          connection: item,
+          myRatings: [],
+        }),
+      );
     });
+
+    dispatch(notificationsSlice.actions.updateLastFetched());
 
     return;
   },
 );
 
-// Helper function to check if change meets threshold
 const shouldNotifyOnChange = (
   changeType: 'level' | 'score' | 'evaluation',
   oldValue: number,
@@ -115,7 +164,7 @@ const shouldNotifyOnChange = (
         absoluteChange >= NOTIFICATION_THRESHOLDS.MIN_SCORE_CHANGE
       );
     case 'evaluation':
-      return true; // Always notify on evaluation changes
+      return true;
   }
 };
 
@@ -178,6 +227,9 @@ export const notificationsSlice = createSlice({
       state.items.forEach((notification) => {
         notification.read = true;
       });
+    },
+    updateLastFetched(state) {
+      state.lastFetched = new Date().getTime();
     },
     removeNotification: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
@@ -247,9 +299,15 @@ export const notificationsSlice = createSlice({
     },
     updateProfileState: (
       state,
-      action: PayloadAction<AuraNodeBrightIdConnection>,
+      action: PayloadAction<{
+        connection: Pick<AuraNodeBrightIdConnection, 'id' | 'verifications'>;
+        myRatings: AuraRating[];
+      }>,
     ) => {
-      const { id, verifications } = action.payload;
+      const {
+        connection: { id, verifications },
+        myRatings,
+      } = action.payload;
       const oldState = state.trackedProfiles[id];
       const categories: EvaluationCategory[] = [
         EvaluationCategory.SUBJECT,
@@ -257,7 +315,6 @@ export const notificationsSlice = createSlice({
         EvaluationCategory.TRAINER,
         EvaluationCategory.MANAGER,
       ];
-      // Initialize newCategories with all categories
       const newCategories: Record<EvaluationCategory, TrackedCategoryState> = {
         [EvaluationCategory.SUBJECT]: {
           score: 0,
@@ -291,7 +348,7 @@ export const notificationsSlice = createSlice({
         const level = data?.level || 0;
         const evaluators: Evaluator[] = (data?.impacts || []).map((impact) => ({
           id: impact.evaluator,
-          timestamp: Date.now(), // No timestamp in impact, use now
+          timestamp: Date.now(),
           value: impact.score || 0,
         }));
         const uniqueEvaluators = new Set(evaluators.map((e) => e.id)).size;
@@ -302,12 +359,10 @@ export const notificationsSlice = createSlice({
         newCategories[cat] = { score, level, evaluators, explorivity };
       });
 
-      // For each category, compare with old state and generate notifications
       categories.forEach((cat) => {
         const newCat = newCategories[cat];
         const oldCat = oldState?.categories?.[cat];
         if (oldCat) {
-          // Level change
           if (
             newCat.level !== oldCat.level &&
             shouldNotifyOnChange('level', oldCat.level, newCat.level)
@@ -355,6 +410,23 @@ export const notificationsSlice = createSlice({
               );
             }
           });
+        } else if (state.lastFetched) {
+          const userEval = myRatings.find(
+            (rating) => rating.toBrightId === id && cat === rating.category,
+          );
+
+          if (userEval) {
+            state.items.push(
+              generateNotification(
+                id,
+                'evaluation',
+                0,
+                Number(userEval.rating),
+                newCat.explorivity,
+                cat,
+              ),
+            );
+          }
         }
       });
 
