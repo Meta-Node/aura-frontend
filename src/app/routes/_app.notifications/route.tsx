@@ -15,11 +15,14 @@ import {
   Notification,
   notificationsSelector,
   notificationsSlice,
+  triggerNotificationFetch,
 } from '@/store/notifications';
+import { useStore } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import DefaultHeader from '@/components/Header/DefaultHeader';
 import { useDispatch, useSelector } from '@/store/hooks';
+import { useMyEvaluations } from '@/hooks/useMyEvaluations';
 
 const iconMap = {
   level: {
@@ -71,8 +74,12 @@ export default function NotificationsPage() {
     (state: RootState) => state.notifications.loading,
   );
 
+  const { getState } = useStore();
+
+  const { myRatings } = useMyEvaluations();
+
   useEffect(() => {
-    dispatch(fetchNotificationsThunk());
+    triggerNotificationFetch(getState, dispatch, myRatings ?? []);
   }, [dispatch]);
 
   return (
@@ -82,11 +89,13 @@ export default function NotificationsPage() {
         <section className="mt-8 flex w-full flex-col gap-4">
           {loading && <div className="text-center">Loading...</div>}
           {notifications.length === 0 && !loading && (
-            <Card className="p-6 text-center">No notifications yet.</Card>
+            <Card data-testid="no-notifications" className="p-6 text-center">
+              No notifications yet.
+            </Card>
           )}
-          {notifications.map((n) => (
+          {notifications.map((n, index) => (
             <Card
-              key={n.id}
+              key={index}
               className={cn(
                 'flex items-center gap-4 rounded-lg p-4',
                 !n.read && 'bg-muted',

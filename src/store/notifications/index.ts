@@ -12,6 +12,7 @@ import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { EvaluationCategory } from '@/types/dashboard';
 import { connectionsApi } from '../api/connections';
 import { AuraNodeBrightIdConnection, AuraRating } from '@/types';
+import { compactFormat } from '@/utils/number';
 
 export const NOTIFICATION_THRESHOLDS = {
   LEVEL_CHANGE: 1, // Notify on any level change
@@ -47,6 +48,7 @@ export interface Notification {
   createdAt: number;
   read: boolean;
   profileId: string;
+  to?: string;
   changeType: 'level' | 'score' | 'evaluation';
   evaluationCategory: EvaluationCategory;
   viewed?: boolean;
@@ -82,8 +84,6 @@ export const triggerNotificationFetch = async (
   if (lastFetched && Date.now() - lastFetched < 2.5 * 60 * 1000) {
     return;
   }
-
-  const trackedProfiles = state.notifications.trackedProfiles;
 
   const response =
     await connectionsApi.endpoints.getInboundConnections.initiate({
@@ -168,42 +168,38 @@ const shouldNotifyOnChange = (
   }
 };
 
-// Helper function to generate notification from state change
 const generateNotification = (
   profileId: string,
   changeType: 'level' | 'score' | 'evaluation',
   oldValue: number,
-  newValue: number,
+  newValue: number | string,
   explorivity: number,
   evaluationCategory: EvaluationCategory,
 ): Notification => {
   const changeDescription =
     changeType === 'level'
-      ? `Level ${newValue > oldValue ? 'increased' : 'decreased'} by ${Math.abs(newValue - oldValue)}`
+      ? `Level ${Number(newValue) > oldValue ? 'increased' : 'decreased'} by ${Math.abs(Number(newValue) - oldValue)}`
       : changeType === 'score'
-        ? `Score ${newValue > oldValue ? 'increased' : 'decreased'} by ${Math.abs(newValue - oldValue)} points`
-        : `Evaluation changed from ${oldValue} to ${newValue}`;
-
-  const explorivyInfo = explorivity
-    ? ` (Profile explorivity: ${explorivity.toFixed(1)}%)`
-    : '';
+        ? `Score ${Number(newValue) > oldValue ? 'increased' : 'decreased'} by ${compactFormat(Math.abs(Number(newValue) - oldValue))} points`
+        : `${newValue} evaluated ${profileId}`;
 
   return {
     id: `${profileId}-${changeType}-${Date.now()}`,
     profileId,
     changeType,
-    title: `Profile ${changeType} changed`,
-    description: `${changeDescription}${explorivyInfo}`,
+    title: `New Evaluation`,
+    description: changeDescription,
     createdAt: Date.now(),
     read: false,
-    link: `/profile/${profileId}`,
+    link: `/subject/${profileId}`,
+    to: changeType === 'evaluation' ? newValue.toString() : undefined,
     icon:
       changeType === 'level'
-        ? newValue > oldValue
+        ? Number(newValue) > oldValue
           ? 'level-up'
           : 'level-down'
         : changeType === 'score'
-          ? newValue > oldValue
+          ? Number(newValue) > oldValue
             ? 'trending-up'
             : 'trending-down'
           : 'evaluation',
@@ -367,6 +363,7 @@ export const notificationsSlice = createSlice({
             newCat.level !== oldCat.level &&
             shouldNotifyOnChange('level', oldCat.level, newCat.level)
           ) {
+            console.log({ oldCat: oldCat.level, newCat: newCat.level, cat });
             state.items.push(
               generateNotification(
                 id,
@@ -396,6 +393,7 @@ export const notificationsSlice = createSlice({
           }
           // New evaluations (by evaluator id)
           const oldEvalIds = new Set(oldCat.evaluators.map((e) => e.id));
+
           newCat.evaluators.forEach((ev) => {
             if (!oldEvalIds.has(ev.id)) {
               state.items.push(
@@ -403,7 +401,7 @@ export const notificationsSlice = createSlice({
                   id,
                   'evaluation',
                   0,
-                  ev.value,
+                  ev.id,
                   newCat.explorivity,
                   cat,
                 ),

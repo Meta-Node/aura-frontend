@@ -201,10 +201,10 @@ export const mockedBrightIdProfileData = {
           {
             name: 'BrightID',
             categories: [
-              generateRoleData('manager'),
-              generateRoleData('trainer'),
-              generateRoleData('player'),
               generateRoleData('subject'),
+              generateRoleData('player'),
+              generateRoleData('trainer'),
+              generateRoleData('manager'),
             ],
           },
         ],

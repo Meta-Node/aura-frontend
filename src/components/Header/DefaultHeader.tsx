@@ -2,11 +2,13 @@ import { toggleSearchModal } from '@/BrightID/actions';
 import { useDispatch } from '@/store/hooks';
 import { selectAuthData } from '@/store/profile/selectors';
 import { RoutePath } from '@/types/router';
-import { SearchIcon, SettingsIcon } from 'lucide-react';
+import { BellIcon, SearchIcon, SettingsIcon } from 'lucide-react';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import { FaHome } from 'react-icons/fa';
+import { notificationsSelector } from '@/store/notifications';
+import { Badge } from '@/components/ui/badge';
 
 export const HeaderBody: FC<
   PropsWithChildren & { title?: string; beforeTitle?: ReactNode }
@@ -41,9 +43,10 @@ export default function DefaultHeader({
   breadcrumbs?: ReactNode;
 } & PropsWithChildren) {
   const dispatch = useDispatch();
+  const notificationsCount = useSelector(notificationsSelector).length;
 
   return (
-    <div className="flex flex-col gap-2.5 px-1 pt-3 md:px-6 md:pt-9">
+    <div className="flex flex-col gap-2.5 px-1 pt-3 md:px-4 md:pt-9">
       {breadcrumbs}
       <header className="header flex flex-wrap items-end gap-y-2 pb-4">
         <div className="header-left flex flex-wrap items-center">
@@ -54,10 +57,22 @@ export default function DefaultHeader({
           <button
             data-testid="global-search-btn"
             onClick={() => dispatch(toggleSearchModal())}
-            className="header-icon mr-4 dark:text-white"
+            className="header-icon mr-2 dark:text-white"
           >
             <SearchIcon size={20} />
           </button>
+          <Link
+            data-testid={`notifications-count-${notificationsCount}`}
+            className="relative"
+            to="/notifications"
+          >
+            {notificationsCount > 0 && (
+              <Badge className="absolute -right-0 -top-3 grid h-5 min-w-5 place-items-center rounded-full bg-dark-bright px-1 font-mono">
+                {notificationsCount}
+              </Badge>
+            )}
+            <BellIcon className="mr-2 h-6 w-6" />
+          </Link>
           <Link to={RoutePath.SETTINGS}>
             <SettingsIcon className="h-6 w-6" />
           </Link>
