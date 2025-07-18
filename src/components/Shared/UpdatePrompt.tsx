@@ -18,7 +18,7 @@ const UpdatePrompt = () => {
 
       if (r && 'periodicSync' in r) {
         (r.periodicSync as any)?.register('periodic-task', {
-          minInterval: 5 * 60 * 1000,
+          minInterval: 15 * 60 * 1000,
         });
 
         Notification.requestPermission().then(() =>
