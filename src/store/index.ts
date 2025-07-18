@@ -75,7 +75,7 @@ const persistIgnoredActions = [
 
 const persistConfig = {
   key: 'root',
-  version: 4,
+  version: 5,
   storage: localforage,
   blacklist: ['recoveryData'],
   migrate: async (state: PersistedState, currentVersion: number) => {
