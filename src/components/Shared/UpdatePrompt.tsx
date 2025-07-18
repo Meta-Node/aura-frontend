@@ -15,6 +15,16 @@ const UpdatePrompt = () => {
           console.log('Checking for sw update');
           r.update();
         }, 60000);
+
+      if (r && 'periodicSync' in r) {
+        (r.periodicSync as any)?.register('periodic-task', {
+          minInterval: 24 * 60 * 60 * 1000,
+        });
+
+        Notification.requestPermission().then(() =>
+          console.log('user allowed notifications'),
+        );
+      }
     },
     onRegisterError(error) {
       console.log('SW registration error', error);

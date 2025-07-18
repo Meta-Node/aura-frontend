@@ -127,14 +127,6 @@ export default function NotificationsPage() {
 
   const { resolve } = useBrightIdBackupConnectionResolver();
 
-  const { getState } = useStore();
-
-  const { myRatings } = useMyEvaluations();
-
-  useEffect(() => {
-    triggerNotificationFetch(getState, dispatch, myRatings ?? []);
-  }, [dispatch]);
-
   return (
     <>
       <DefaultHeader title="Notifications" />

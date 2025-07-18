@@ -175,6 +175,7 @@ const generateNotification = (
   newValue: number | string,
   explorivity: number,
   evaluationCategory: EvaluationCategory,
+  dateTime?: number,
 ): Notification => {
   const changeDescription =
     changeType === 'level'
@@ -189,7 +190,7 @@ const generateNotification = (
     changeType,
     title: `New Evaluation`,
     description: changeDescription,
-    createdAt: Date.now(),
+    createdAt: dateTime ?? Date.now(),
     read: false,
     link: `/subject/${profileId}`,
     to: changeType === 'evaluation' ? newValue.toString() : undefined,
@@ -403,6 +404,7 @@ export const notificationsSlice = createSlice({
                   ev.id,
                   newCat.explorivity,
                   cat,
+                  ev.timestamp,
                 ),
               );
             }
@@ -421,6 +423,7 @@ export const notificationsSlice = createSlice({
                 Number(userEval.rating),
                 newCat.explorivity,
                 cat,
+                userEval.timestamp,
               ),
             );
           }
