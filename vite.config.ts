@@ -4,6 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import glsl from 'vite-plugin-glsl';
 import { ReactRouterVitePWA } from './plugins/sw';
 import { reactRouter } from '@react-router/dev/vite';
+import path from 'path';
 
 const replaceOptions = { __DATE__: new Date().toISOString() };
 
@@ -11,6 +12,11 @@ const { ReactRouterVitePWAPlugin } = ReactRouterVitePWA();
 
 export default defineConfig(() => {
   return {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
     build: {
       outDir: 'build',
     },

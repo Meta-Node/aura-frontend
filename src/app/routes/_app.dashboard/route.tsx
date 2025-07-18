@@ -1,12 +1,12 @@
-import { resetStore } from 'BrightID/actions';
-import { preferredViewIcon } from 'constants/index';
+import { resetStore } from '@/BrightID/actions';
+import { preferredViewIcon } from '@/constants/index';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useDispatch, useSelector } from 'store/hooks';
 import { selectPreferredView } from 'store/profile/selectors';
 import { PreferredView } from 'types/dashboard';
 import { RoutePath } from 'types/router';
-import { __DEV__ } from 'utils/env';
+import { __DEV__ } from '@/utils/env';
 
 import { Modal } from 'components/Shared/Modal';
 import RoleSelectModal from './components/RoleSelectModal';

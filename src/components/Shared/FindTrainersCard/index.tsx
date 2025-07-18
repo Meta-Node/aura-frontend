@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { compactFormat } from 'utils/number';
+import { compactFormat } from '@/utils/number';
 
 import {
   viewModeToEvaluatorViewMode,
@@ -22,7 +22,7 @@ import LinkCard from '@/app/routes/_app.home/components/LinkCard';
 const FindTrainersCard = ({ subjectId }: { subjectId: string }) => {
   return (
     <div className="card !bg-[#ECECEC] dark:!bg-[#1f1f1f]">
-      <div className="mb-4.5 font-bold text-lg">Find Trainers</div>
+      <div className="mb-4.5 text-lg font-bold">Find Trainers</div>
       <div className="flex flex-col gap-2.5">
         <PotentialEvaluatorsListBrief
           subjectId={subjectId}
@@ -77,21 +77,23 @@ const PotentialEvaluatorsListBrief = ({
   //TODO: Animation must be implemented
   return (
     <div className="flex flex-col gap-2.5">
-      <div className="text-black2 dark:text-gray-300 font-medium">
+      <div className="font-medium text-black2 dark:text-gray-300">
         {description}
       </div>
-      <div className="flex flex-col gap-2 dark:bg-card bg-white rounded-[8px] p-3">
+      <div className="flex flex-col gap-2 rounded-[8px] bg-white p-3 dark:bg-card">
         <div className="flex flex-row justify-between">
           <div className="flex flex-row gap-2.5">
             {!isExpanded && (
               <div className="flex flex-row gap-0.5">
-                {potentialEvaluators?.slice(0, 3).map((p) => (
-                  <BrightIdProfilePicture
-                    key={p.fromSubjectId}
-                    subjectId={p.fromSubjectId}
-                    className="w-6 h-6 rounded border-pastel-green border-[1px]"
-                  />
-                ))}
+                {potentialEvaluators
+                  ?.slice(0, 3)
+                  .map((p) => (
+                    <BrightIdProfilePicture
+                      key={p.fromSubjectId}
+                      subjectId={p.fromSubjectId}
+                      className="h-6 w-6 rounded border-[1px] border-pastel-green"
+                    />
+                  ))}
               </div>
             )}
             <div className="flex flex-row gap-1">
@@ -107,12 +109,12 @@ const PotentialEvaluatorsListBrief = ({
             <img
               src="/assets/images/Shared/minus-purple-icon.svg"
               alt=""
-              className="cursor-pointer -mt-2"
+              className="-mt-2 cursor-pointer"
               onClick={() => setIsExpanded(false)}
             />
           ) : (
             <div
-              className="font-medium cursor-pointer"
+              className="cursor-pointer font-medium"
               onClick={() => setIsExpanded(true)}
             >
               Show All
@@ -183,26 +185,27 @@ const PotentialEvaluatorBrief = ({
     toSubjectId: subjectId,
   });
   return (
-    <div className="flex justify-between items-center w-full">
-      <div className="flex gap-1.5 items-center">
+    <div className="flex w-full items-center justify-between">
+      <div className="flex items-center gap-1.5">
         <BrightIdProfilePicture
           subjectId={evaluatorSubjectId}
-          className="w-[26px] h-[26px] rounded border-pastel-green border-[1px]"
+          className="h-[26px] w-[26px] rounded border-[1px] border-pastel-green"
         />
         <div className="flex flex-col leading-3">
-          <div className="font-bold text-sm leading-4">{subjectName}</div>
+          <div className="text-sm font-bold leading-4">{subjectName}</div>
           <div className="">
             {connectionInfo ? (
               <div className="flex items-center gap-1">
                 <img
-                  src={`/assets/images/Shared/${connectionLevelIcons[connectionInfo.level]
-                    }.svg`}
+                  src={`/assets/images/Shared/${
+                    connectionLevelIcons[connectionInfo.level]
+                  }.svg`}
                   alt=""
-                  className="inline mr-0.5"
+                  className="mr-0.5 inline"
                   width={20}
                   height={20}
                 />
-                <span className="font-medium text-sm leading-3">
+                <span className="text-sm font-medium leading-3">
                   {connectionInfo.level}
                 </span>
               </div>
@@ -212,10 +215,10 @@ const PotentialEvaluatorBrief = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col leading-3 text-right">
+      <div className="flex flex-col text-right leading-3">
         <span>
           {evaluatorViewMode === PreferredView.TRAINER && (
-            <span className="font-medium text-xs">
+            <span className="text-xs font-medium">
               (
               <EvaluationsCount
                 evaluatorSubjectId={evaluatorSubjectId}
@@ -225,7 +228,7 @@ const PotentialEvaluatorBrief = ({
             </span>
           )}{' '}
           {evaluatorViewMode === PreferredView.TRAINER && (
-            <span className="font-medium text-xs">
+            <span className="text-xs font-medium">
               (
               <EvaluatorsCount
                 evaluatorSubjectId={evaluatorSubjectId}
@@ -234,11 +237,11 @@ const PotentialEvaluatorBrief = ({
               Trainers)
             </span>
           )}{' '}
-          <span className="font-bold text-xs">
+          <span className="text-xs font-bold">
             Level {loading ? '...' : auraLevel !== null ? auraLevel : '-'}
           </span>{' '}
         </span>
-        <p className="text-gray10 dark:text-gray-300 text-xs mb-2">
+        <p className="mb-2 text-xs text-gray10 dark:text-gray-300">
           Score:{' '}
           <span className="font-medium text-black dark:text-white">
             {auraScore ? compactFormat(auraScore) : '-'}

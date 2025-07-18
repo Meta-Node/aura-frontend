@@ -8,8 +8,8 @@ import {
   subjectViewAsIconColored,
   viewModeToSubjectViewMode,
   viewModeToViewAs,
-} from 'constants/index';
-import { compactFormat } from 'utils/number';
+} from '@/constants/index';
+import { compactFormat } from '@/utils/number';
 import Tooltip from '../Tooltip';
 import { EvaluationCategory, EvidenceViewMode } from '@/types/dashboard';
 import { Verifications } from '@/api/auranode.service';

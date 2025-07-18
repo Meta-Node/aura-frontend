@@ -4,16 +4,16 @@ import {
   EntityState as _EntityState,
   ThunkAction,
 } from '@reduxjs/toolkit';
-import ChannelAPI from 'BrightID/api/channelService';
+import ChannelAPI from '@/BrightID/api/channelService';
 import {
   SocialMediaShareActionType,
   SocialMediaShareType,
   SocialMediaShareTypeDisplay,
   SocialMediaType,
   SocialMediaVariationIds,
-} from 'BrightID/components/EditProfile/socialMediaVariations';
-import { RecoveryErrorType } from 'BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
-import { pendingConnection_states } from 'BrightID/components/PendingConnections/pendingConnectionSlice';
+} from '@/BrightID/components/EditProfile/socialMediaVariations';
+import { RecoveryErrorType } from '@/BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
+import { pendingConnection_states } from '@/BrightID/components/PendingConnections/pendingConnectionSlice';
 import {
   app_linking_steps,
   channel_states,
@@ -22,7 +22,7 @@ import {
   group_states,
   qrCodeURL_types,
   report_reasons,
-} from 'BrightID/utils/constants';
+} from '@/BrightID/utils/constants';
 import { BigInteger } from 'jsbn';
 import { CountryCode } from 'react-native-country-picker-modal';
 import { AppDispatch, AppStore, RootState } from 'store';

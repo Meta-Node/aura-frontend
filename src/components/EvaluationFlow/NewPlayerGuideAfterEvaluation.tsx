@@ -1,4 +1,4 @@
-import { PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING } from 'constants/index';
+import { PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING } from '@/constants/index';
 import { useBrowserHistoryContext } from 'contexts/BrowserHistoryContext';
 import { useNavigate } from 'react-router';
 import { RoutePath } from 'types/router';

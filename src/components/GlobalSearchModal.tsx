@@ -1,4 +1,4 @@
-import { selectIsSearchModalOpen, toggleSearchModal } from 'BrightID/actions';
+import { selectIsSearchModalOpen, toggleSearchModal } from '@/BrightID/actions';
 import Modal from 'components/Shared/Modal';
 import { Search } from 'lucide-react';
 import { FC, useState } from 'react';

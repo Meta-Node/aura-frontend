@@ -1,4 +1,4 @@
-import { b64ToUint8Array, UInt8ArrayEqual } from 'BrightID/utils/encoding';
+import { b64ToUint8Array, UInt8ArrayEqual } from '@/BrightID/utils/encoding';
 import CryptoJS from 'crypto-js';
 import nacl from 'tweetnacl';
 

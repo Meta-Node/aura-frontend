@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions/resetStore';
+import { RESET_STORE } from '@/BrightID/actions/resetStore';
 import { RootState } from 'store';
 
 const initialState: UserState = {
@@ -90,10 +90,10 @@ const userSlice = createSlice({
       state.localServerUrl = action.payload;
     },
   },
-extraReducers: (builder) => {
+  extraReducers: (builder) => {
     builder.addMatcher(
       (action) => action.type === RESET_STORE,
-      () => initialState
+      () => initialState,
     );
   },
 });

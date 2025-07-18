@@ -1,18 +1,18 @@
-import ChannelAPI from 'BrightID/api/channelService';
+import ChannelAPI from '@/BrightID/api/channelService';
 import {
   setRecoveryId,
   setUploadCompletedBy,
-} from 'BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
+} from '@/BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
 import {
   setBackupCompleted,
   setIsSponsored,
   setIsSponsoredv6,
   setName,
   setPassword,
-} from 'BrightID/reducer/userSlice';
-import { IMPORT_PREFIX } from 'BrightID/utils/constants';
-import { decryptData } from 'BrightID/utils/cryptoHelper';
-import { b64ToUrlSafeB64 } from 'BrightID/utils/encoding';
+} from '@/BrightID/reducer/userSlice';
+import { IMPORT_PREFIX } from '@/BrightID/utils/constants';
+import { decryptData } from '@/BrightID/utils/cryptoHelper';
+import { b64ToUrlSafeB64 } from '@/BrightID/utils/encoding';
 import { AppDispatch, GetState } from 'store';
 
 export const downloadUserInfo =

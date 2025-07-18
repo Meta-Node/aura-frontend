@@ -1,6 +1,6 @@
-import { recoveryApi } from 'api/index';
+import { recoveryApi } from '@/api/index';
 import localforage from 'localforage';
-import { decryptData } from 'utils/crypto';
+import { decryptData } from '@/utils/crypto';
 
 export const setProfilePhotoInCache = async (
   brightId: string,

@@ -1,9 +1,9 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions/resetStore';
+import { RESET_STORE } from '@/BrightID/actions/resetStore';
 import {
   LOCAL_OPERATION_KEEP_THRESHOLD,
   operation_states,
-} from 'BrightID/utils/constants';
+} from '@/BrightID/utils/constants';
 import { AppDispatch, GetState, RootState } from 'store';
 
 import { EvaluateOp, SubmittedOp } from '../api/operation_types';

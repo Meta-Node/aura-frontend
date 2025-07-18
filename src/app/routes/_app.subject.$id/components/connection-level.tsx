@@ -1,10 +1,10 @@
-import { NodeApiContext } from 'BrightID/components/NodeApiGate';
+import { NodeApiContext } from '@/BrightID/components/NodeApiGate';
 import {
   addOperation,
   Operation,
   selectOperationByHash,
-} from 'BrightID/reducer/operationsSlice';
-import { operation_states } from 'BrightID/utils/constants';
+} from '@/BrightID/reducer/operationsSlice';
+import { operation_states } from '@/BrightID/utils/constants';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'store/hooks';

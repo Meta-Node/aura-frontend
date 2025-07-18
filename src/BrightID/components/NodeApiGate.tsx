@@ -1,6 +1,6 @@
 import { ApiResponse } from 'apisauce';
-import { NodeApi } from 'BrightID/api/brightId';
-import { pollOperations } from 'BrightID/utils/operations';
+import { NodeApi } from '@/BrightID/api/brightId';
+import { pollOperations } from '@/BrightID/utils/operations';
 import React, { useEffect, useState } from 'react';
 import { RootState } from 'store';
 import { useDispatch, useSelector } from 'store/hooks';

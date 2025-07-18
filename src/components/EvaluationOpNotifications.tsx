@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   EvaluateSubmittedOperation,
   selectEvaluateOperations,
-} from 'BrightID/reducer/operationsSlice';
+} from '@/BrightID/reducer/operationsSlice';
 import { operation_states } from '../BrightID/utils/constants';
 import {
   getBgClassNameOfAuraRatingNumber,

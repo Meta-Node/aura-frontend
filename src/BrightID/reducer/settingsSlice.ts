@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions/resetStore';
-import { AURA_NODE_URL_PROXY } from 'constants/urls';
+import { RESET_STORE } from '@/BrightID/actions/resetStore';
+import { AURA_NODE_URL_PROXY } from '@/constants/urls';
 import { RootState } from 'store';
-import { __DEV__ } from 'utils/env';
+import { __DEV__ } from '@/utils/env';
 
 const ProdCandidates = [AURA_NODE_URL_PROXY];
 const TestCandidates = [AURA_NODE_URL_PROXY];
@@ -120,7 +120,7 @@ export const settingsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       (action) => action.type === RESET_STORE,
-      () => initialState
+      () => initialState,
     );
   },
 });

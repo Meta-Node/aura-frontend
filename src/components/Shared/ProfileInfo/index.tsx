@@ -1,4 +1,4 @@
-import { getViewModeSubjectBorderColorClass } from 'constants/index';
+import { getViewModeSubjectBorderColorClass } from '@/constants/index';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectInboundConnectionsContext } from 'contexts/SubjectInboundConnectionsContext';
 import { SubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
@@ -13,9 +13,9 @@ import { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory, ProfileTab } from 'types/dashboard';
-import { connectionLevelIcons } from 'utils/connection';
-import { compactFormat } from 'utils/number';
-import { calculateUserScorePercentage } from 'utils/score';
+import { connectionLevelIcons } from '@/utils/connection';
+import { compactFormat } from '@/utils/number';
+import { calculateUserScorePercentage } from '@/utils/score';
 
 import BrightIdProfilePicture from '../../BrightIdProfilePicture';
 import { YourEvaluationInfo } from '../EvaluationInfo/YourEvaluationInfo';

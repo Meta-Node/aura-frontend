@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions';
-import { PreferredView } from 'types/dashboard';
+import { RESET_STORE } from '@/BrightID/actions';
+import { PreferredView } from '@/types/dashboard';
 
 import { AuthData } from '../../types';
 import { getBrightIdBackupThunk, loginThunk } from './actions';

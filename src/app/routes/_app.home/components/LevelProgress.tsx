@@ -2,17 +2,17 @@ import {
   getViewModeBackgroundColorClass,
   getViewModeUpArrowIcon,
   PLAYER_EVALUATION_MINIMUM_COUNT_BEFORE_TRAINING,
-} from 'constants/index';
+} from '@/constants/index';
 import { useMyEvaluationsContext } from 'contexts/MyEvaluationsContext';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import { FC, useMemo, useState } from 'react';
 import { EvaluationCategory, PreferredView } from 'types/dashboard';
-import { compactFormat } from 'utils/number';
+import { compactFormat } from '@/utils/number';
 import {
   calculateRemainingScoreToNextLevel,
   calculateUserScorePercentage,
-} from 'utils/score';
+} from '@/utils/score';
 
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { playerLevelPoints } from '@/constants/levels';

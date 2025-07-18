@@ -1,4 +1,4 @@
-import { decryptUserData } from 'utils/crypto';
+import { decryptUserData } from '@/utils/crypto';
 
 import { recoveryApi } from './index';
 

@@ -1,4 +1,4 @@
-import recoveryData from 'BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
+import recoveryData from '@/BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
 
 import { apiSlice } from '@/store/api/slice';
 

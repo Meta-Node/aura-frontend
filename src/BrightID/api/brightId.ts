@@ -1,12 +1,12 @@
 import { ApiOkResponse, ApiResponse, ApisauceInstance, create } from 'apisauce';
-import BrightidError from 'BrightID/api/brightidError';
-import { operation_states } from 'BrightID/utils/constants';
+import BrightidError from '@/BrightID/api/brightidError';
+import { operation_states } from '@/BrightID/utils/constants';
 import {
   b64ToUint8Array,
   hash,
   strToUint8Array,
   uInt8ArrayToB64,
-} from 'BrightID/utils/encoding';
+} from '@/BrightID/utils/encoding';
 import stringify from 'fast-json-stable-stringify';
 import nacl from 'tweetnacl';
 

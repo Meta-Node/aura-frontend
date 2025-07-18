@@ -4,8 +4,8 @@ import Login from '@/app/routes/_landing._index/route';
 import RecoveryCodeScreen from '@/BrightID/components/Onboarding/RecoveryFlow/RecoveryCodeScreen';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import * as channelThunks from 'BrightID/components/Onboarding/ImportFlow/thunks/channelThunks';
-import * as channelDownloadThunk from 'BrightID/components/Onboarding/ImportFlow/thunks/channelDownloadThunks';
+import * as channelThunks from '@/BrightID/components/Onboarding/ImportFlow/thunks/channelThunks';
+import * as channelDownloadThunk from '@/BrightID/components/Onboarding/ImportFlow/thunks/channelDownloadThunks';
 import { TEST_BRIGHT_ID } from '../../utils/api/profile';
 
 describe('Should render the login component', () => {

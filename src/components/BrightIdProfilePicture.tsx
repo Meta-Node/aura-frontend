@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { hash } from 'utils/crypto';
+import { hash } from '@/utils/crypto';
 
 import { createBlockiesImage } from '@/utils/image';
 

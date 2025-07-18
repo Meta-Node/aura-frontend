@@ -2,7 +2,7 @@ import {
   RoleStatus,
   selectManagerRoleState,
   selectTrainerRoleState,
-} from 'BrightID/actions';
+} from '@/BrightID/actions';
 import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import { useEffect, useMemo } from 'react';
@@ -81,14 +81,14 @@ export const HeaderPreferedView = {
           ? views.map((_, key) => (
               <div
                 key={key}
-                className={`p-1 rounded animate-pulse bg-gray100 ml-2 cursor-pointer`}
+                className={`ml-2 animate-pulse cursor-pointer rounded bg-gray100 p-1`}
               >
-                <div className="w-4 h-4"></div>
+                <div className="h-4 w-4"></div>
               </div>
             ))
           : authorizedTabs.map((subjectViewMode) => (
               <Tooltip
-                className={`p-1 rounded ${
+                className={`rounded p-1 ${
                   currentEvaluationCategory === subjectViewMode
                     ? viewModeSubjectBackgroundColorClass[currentViewMode]
                     : 'bg-gray100'
@@ -99,7 +99,7 @@ export const HeaderPreferedView = {
                 onClick={() => updateViewAs(subjectViewMode)}
               >
                 <img
-                  className="w-4 h-4"
+                  className="h-4 w-4"
                   src={subjectViewAsIcon[subjectViewMode]}
                   alt=""
                 />
@@ -220,14 +220,14 @@ const ViewTooltip = ({
   return (
     <Tooltip
       content={content}
-      className={`p-1 rounded ${
+      className={`rounded p-1 ${
         currentViewMode === view
           ? getViewModeBackgroundColorClass(currentViewMode)
           : 'bg-gray100'
       } ml-2 cursor-pointer`}
       onClick={() => setPreferredView(view)}
     >
-      <img className="w-4 h-4" src={preferredViewIcon[view]} alt="" />
+      <img className="h-4 w-4" src={preferredViewIcon[view]} alt="" />
     </Tooltip>
   );
 };

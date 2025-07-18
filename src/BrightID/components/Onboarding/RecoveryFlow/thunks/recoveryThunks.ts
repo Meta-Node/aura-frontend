@@ -1,6 +1,6 @@
-import { setKeypair } from 'BrightID/actions';
-import { verifyKeypair } from 'BrightID/utils/cryptoHelper';
-import { urlSafeRandomKey } from 'BrightID/utils/encoding';
+import { setKeypair } from '@/BrightID/actions';
+import { verifyKeypair } from '@/BrightID/utils/cryptoHelper';
+import { urlSafeRandomKey } from '@/BrightID/utils/encoding';
 import { AppDispatch, GetState } from 'store';
 import nacl from 'tweetnacl';
 

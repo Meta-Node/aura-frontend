@@ -8,7 +8,7 @@ import { configureAppStore } from '@/store';
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
-import NodeApiGateContextProvider from 'BrightID/components/NodeApiGate';
+import NodeApiGateContextProvider from '@/BrightID/components/NodeApiGate';
 
 const { persistor, store } = configureAppStore();
 

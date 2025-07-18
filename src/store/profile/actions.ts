@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { clearAllProfilePhotoCache } from 'api/profilePhoto.service';
+import { clearAllProfilePhotoCache } from '@/api/profilePhoto.service';
 import { AuthData } from 'types';
 
 import { pullEncryptedUserData } from '../../api/login.service';

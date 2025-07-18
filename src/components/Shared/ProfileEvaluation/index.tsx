@@ -2,7 +2,7 @@ import {
   INBOUND_EVIDENCE_VIEW_MODES,
   viewModeToSubjectViewMode,
   viewModeToViewAs,
-} from 'constants/index';
+} from '@/constants/index';
 import { useSubjectEvaluationFromContext } from 'hooks/useSubjectEvaluation';
 import useViewMode from 'hooks/useViewMode';
 import { EvidenceViewMode } from 'types/dashboard';

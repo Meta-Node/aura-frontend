@@ -3,7 +3,7 @@ import {
   viewModeSubjectString,
   viewModeToEvaluatorViewMode,
   viewModeToViewAs,
-} from 'constants/index';
+} from '@/constants/index';
 import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { useDispatch, useSelector } from 'store/hooks';

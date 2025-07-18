@@ -11,8 +11,8 @@ import { Link, useNavigate } from 'react-router';
 import { useSelector } from 'store/hooks';
 import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory } from 'types/dashboard';
-import { compactFormat } from 'utils/number';
-import { calculateUserScorePercentage } from 'utils/score';
+import { compactFormat } from '@/utils/number';
+import { calculateUserScorePercentage } from '@/utils/score';
 
 import { SubjectInboundEvaluationsContextProvider } from '@/contexts/SubjectInboundEvaluationsContext';
 

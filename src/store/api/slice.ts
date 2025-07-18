@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AURA_NODE_URL_PROXY } from 'constants/urls';
+import { AURA_NODE_URL_PROXY } from '@/constants/urls';
 import { Action } from 'redux';
 import { REHYDRATE } from 'redux-persist';
 

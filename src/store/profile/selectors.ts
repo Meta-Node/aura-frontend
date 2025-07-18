@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { decryptUserData } from 'utils/crypto';
+import { decryptUserData } from '@/utils/crypto';
 
 import { BrightIdBackup } from '../../types';
 import { RootState } from '..';

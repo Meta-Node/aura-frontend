@@ -2,7 +2,7 @@ import EvaluationInfo from 'components/Shared/EvaluationInfo/EvaluationInfo';
 import { useSubjectName } from 'hooks/useSubjectName';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import { MdRateReview, MdStar } from 'react-icons/md';
-import { compactFormat } from 'utils/number';
+import { compactFormat } from '@/utils/number';
 
 import {
   viewModeToSubjectViewMode,
@@ -32,27 +32,27 @@ const ProfileEvaluationMini = ({
   );
   return (
     <div
-      className={`card !bg-opacity-100 gap-2 ${
+      className={`card gap-2 !bg-opacity-100 ${
         onClick ? 'cursor-pointer' : ''
       }`}
       onClick={onClick}
     >
       <div className="flex w-full items-center">
         <BrightIdProfilePicture
-          className={`card--header__left__avatar rounded border border-pastel-purple h-10 w-10`}
+          className={`card--header__left__avatar h-10 w-10 rounded border border-pastel-purple`}
           subjectId={toSubjectId}
         />
-        <p className="font-bold ml-1.5">{name}</p>
-        <div className="ml-auto px-2 py-1.5 rounded bg-gray00">
-          <p className="font-bold text-sm text-light-orange">
+        <p className="ml-1.5 font-bold">{name}</p>
+        <div className="ml-auto rounded bg-gray00 px-2 py-1.5">
+          <p className="text-sm font-bold text-light-orange">
             <Tooltip content={'level'} className="mr-10">
-              <div className="flex gap-1 items-center">
+              <div className="flex items-center gap-1">
                 <MdStar />
                 {auraLevel}
               </div>
             </Tooltip>
             <Tooltip content="score">
-              <div className="flex gap-1 items-center">
+              <div className="flex items-center gap-1">
                 <MdRateReview />
                 {auraScore ? compactFormat(auraScore) : '-'}
               </div>

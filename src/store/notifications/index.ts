@@ -4,10 +4,9 @@ import {
   PayloadAction,
   createSelector,
 } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions';
+import { RESET_STORE } from '@/BrightID/actions';
 import { profileApi } from '../api/profile';
 import { AppDispatch, RootState } from '..';
-import { Verifications } from '@/api/auranode.service';
 import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { EvaluationCategory } from '@/types/dashboard';
 import { connectionsApi } from '../api/connections';

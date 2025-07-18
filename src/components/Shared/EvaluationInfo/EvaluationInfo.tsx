@@ -2,7 +2,7 @@ import EvaluationThumb from 'components/Shared/EvaluationThumb';
 import {
   getBgClassNameOfAuraRatingObject,
   getTextClassNameOfAuraRatingObject,
-} from 'constants/index';
+} from '@/constants/index';
 import { useSubjectEvaluationFromContext } from 'hooks/useSubjectEvaluation';
 import { useMemo } from 'react';
 

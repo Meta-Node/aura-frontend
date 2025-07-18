@@ -1,4 +1,4 @@
-import RecoveryCodeScreen from 'BrightID/components/Onboarding/RecoveryFlow/RecoveryCodeScreen';
+import RecoveryCodeScreen from '@/BrightID/components/Onboarding/RecoveryFlow/RecoveryCodeScreen';
 import useRedirectAfterLogin from 'hooks/useRedirectAfterLogin';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'store/hooks';

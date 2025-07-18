@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AURA_NODE_URL_PROXY } from 'constants/urls';
+import { AURA_NODE_URL_PROXY } from '@/constants/urls';
 
 export const recoveryApi = axios.create({
   baseURL: '/brightid',

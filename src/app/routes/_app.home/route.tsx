@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from '@/store/hooks';
 import { useNavigate, useSearchParams } from 'react-router';
 import { RoutePath } from 'types/router';
-import { useLevelupProgress } from 'utils/score';
+import { useLevelupProgress } from '@/utils/score';
 
 import ProfileHeaderCard from './components/ProfileHeaderCard';
 import ProfileInfoPerformance from './components/ProfileInfoPerformance';

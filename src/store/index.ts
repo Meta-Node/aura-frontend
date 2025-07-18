@@ -14,8 +14,8 @@ import {
   REGISTER,
 } from 'redux-persist';
 
-import reducers from 'BrightID/reducer';
-import { __DEV__ } from 'utils/env';
+import reducers from '@/BrightID/reducer';
+import { __DEV__ } from '@/utils/env';
 import { apiSlice } from './api/slice';
 import { migrations } from './migrations';
 import { profileSlice } from './profile';

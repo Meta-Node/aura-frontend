@@ -17,7 +17,7 @@ import { ApiResponse, ApisauceInstance, create } from 'apisauce';
 import {
   CHANNEL_UPLOAD_RETRY_COUNT,
   CHANNEL_UPLOAD_RETRY_INTERVAL,
-} from 'BrightID/utils/constants';
+} from '@/BrightID/utils/constants';
 
 type UploadParams = {
   channelId: string;

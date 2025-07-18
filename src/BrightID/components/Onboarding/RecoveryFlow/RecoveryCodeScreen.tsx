@@ -3,35 +3,35 @@ import {
   createSyncChannel,
   pollImportChannel,
   setupSync,
-} from 'BrightID/components/Onboarding/ImportFlow/thunks/channelThunks';
+} from '@/BrightID/components/Onboarding/ImportFlow/thunks/channelThunks';
 import {
   resetRecoveryData,
   selectRecoveryStep,
   setRecoverStep,
   uploadCompletedByOtherSide,
-} from 'BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
-import { RecoveryErrorType } from 'BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
-import { createRecoveryChannel } from 'BrightID/components/Onboarding/RecoveryFlow/thunks/channelThunks';
+} from '@/BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
+import { RecoveryErrorType } from '@/BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
+import { createRecoveryChannel } from '@/BrightID/components/Onboarding/RecoveryFlow/thunks/channelThunks';
 import {
   setRecoveryKeys,
   setupRecovery,
-} from 'BrightID/components/Onboarding/RecoveryFlow/thunks/recoveryThunks';
-import { setUserId, userSelector } from 'BrightID/reducer/userSlice';
+} from '@/BrightID/components/Onboarding/RecoveryFlow/thunks/recoveryThunks';
+import { setUserId, userSelector } from '@/BrightID/reducer/userSlice';
 import {
   recover_steps,
   RecoveryCodeScreenAction,
   urlTypesOfActions,
-} from 'BrightID/utils/constants';
-import { buildRecoveryChannelQrUrl } from 'BrightID/utils/recovery';
-import { AURA_NODE_URL, AURA_NODE_URL_PROXY } from 'constants/urls';
+} from '@/BrightID/utils/constants';
+import { buildRecoveryChannelQrUrl } from '@/BrightID/utils/recovery';
+import { AURA_NODE_URL, AURA_NODE_URL_PROXY } from '@/constants/urls';
 import useRedirectAfterLogin from 'hooks/useRedirectAfterLogin';
 import { useEffect, useMemo, useState } from 'react';
 import { QRCode } from 'react-qrcode-logo';
 import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'store/hooks';
 import { loginThunk } from 'store/profile/actions';
-import { copyToClipboard } from 'utils/copyToClipboard';
-import { __DEV__ } from 'utils/env';
+import { copyToClipboard } from '@/utils/copyToClipboard';
+import { __DEV__ } from '@/utils/env';
 import platform from 'platform';
 import { FadeIn } from '../../../../components/animations';
 import CustomTrans from '../../../../components/CustomTrans';

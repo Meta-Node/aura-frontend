@@ -4,7 +4,7 @@ import { useOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluatio
 import { useEffect, useMemo, useState } from 'react';
 
 import Dropdown from 'components/Shared/Dropdown';
-import { viewModeToSubjectViewMode, viewModeToViewAs } from 'constants/index';
+import { viewModeToSubjectViewMode, viewModeToViewAs } from '@/constants/index';
 import { AuraFilterId } from 'hooks/useFilters';
 import { AuraSelectedSort, AuraSortId } from 'hooks/useSorts';
 import useViewMode from 'hooks/useViewMode';

@@ -1,4 +1,4 @@
-import { AuraImpact, Verifications } from 'api/auranode.service';
+import { AuraImpact, Verifications } from '@/api/auranode.service';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 

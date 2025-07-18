@@ -1,4 +1,4 @@
-import { getConfidenceValueOfAuraRatingObject } from 'constants/index';
+import { getConfidenceValueOfAuraRatingObject } from '@/constants/index';
 import { SubjectInboundEvaluationsContext } from 'contexts/SubjectInboundEvaluationsContext';
 import { SubjectOutboundEvaluationsContext } from 'contexts/SubjectOutboundEvaluationsContext';
 import { useContext, useMemo } from 'react';

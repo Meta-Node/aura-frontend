@@ -30,7 +30,7 @@ import { EmptySubjectList } from 'components/Shared/EmptyAndLoadingStates/EmptyS
 import { LoadingList } from 'components/Shared/EmptyAndLoadingStates/LoadingList';
 import { ProfileInfo } from 'components/Shared/ProfileInfo';
 import ProfileOverview from 'components/Shared/ProfileOverview';
-import { viewModeToSubjectViewMode, viewModeToViewAs } from 'constants/index';
+import { viewModeToSubjectViewMode, viewModeToViewAs } from '@/constants/index';
 import {
   SubjectInboundConnectionsContextProvider,
   useSubjectInboundConnectionsContext,

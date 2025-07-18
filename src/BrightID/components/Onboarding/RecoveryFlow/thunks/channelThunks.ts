@@ -1,7 +1,7 @@
-import ChannelAPI from 'BrightID/api/channelService';
-import { setRecoveryChannel } from 'BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
-import { hash } from 'BrightID/utils/encoding';
-import { uploadRecoveryData } from 'BrightID/utils/recovery';
+import ChannelAPI from '@/BrightID/api/channelService';
+import { setRecoveryChannel } from '@/BrightID/components/Onboarding/RecoveryFlow/recoveryDataSlice';
+import { hash } from '@/BrightID/utils/encoding';
+import { uploadRecoveryData } from '@/BrightID/utils/recovery';
 import { AppDispatch, GetState } from 'store';
 
 import { AURA_NODE_URL_PROXY } from '@/constants/urls';

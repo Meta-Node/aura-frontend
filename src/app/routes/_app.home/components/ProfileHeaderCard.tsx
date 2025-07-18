@@ -3,13 +3,13 @@ import { HorizontalProgressBar } from 'components/Shared/HorizontalProgressBar';
 import {
   getViewModeSubjectBorderColorClass,
   viewModeToString,
-} from 'constants/index';
+} from '@/constants/index';
 import { useSubjectName } from 'hooks/useSubjectName';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import { FC } from 'react';
-import { compactFormat } from 'utils/number';
-import { calculateUserScorePercentage } from 'utils/score';
+import { compactFormat } from '@/utils/number';
+import { calculateUserScorePercentage } from '@/utils/score';
 
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router';

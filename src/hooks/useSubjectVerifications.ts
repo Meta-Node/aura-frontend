@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { useGetBrightIDProfileQuery } from 'store/api/profile';
 import { selectAuthData, selectBrightIdBackup } from 'store/profile/selectors';
-import { hash } from 'utils/crypto';
+import { hash } from '@/utils/crypto';
 import { createBlockiesImage, renderImageCover } from '@/utils/image';
 import { AuraImpact, AuraImpactRaw } from '../api/auranode.service';
 import { EvaluationCategory } from '../types/dashboard';

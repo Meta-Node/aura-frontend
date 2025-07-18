@@ -2,12 +2,12 @@ import {
   Operation,
   selectPendingOperations,
   updateOperation,
-} from 'BrightID/actions';
-import { NodeApi } from 'BrightID/api/brightId';
+} from '@/BrightID/actions';
+import { NodeApi } from '@/BrightID/api/brightId';
 import {
   operation_states,
   OPERATION_TRACE_TIME,
-} from 'BrightID/utils/constants';
+} from '@/BrightID/utils/constants';
 import { AppDispatch, GetState } from 'store';
 
 const handleOpUpdate = (
@@ -75,7 +75,8 @@ const handleOpUpdate = (
 };
 
 export const pollOperations =
-  (api: NodeApi, secretKey: any) => async (dispatch: AppDispatch, getState: GetState) => {
+  (api: NodeApi, secretKey: any) =>
+  async (dispatch: AppDispatch, getState: GetState) => {
     const operations = selectPendingOperations(getState());
     const { id } = getState().user;
     // const shouldUpdateTasks = false;

@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions';
-import { RecoveryErrorType } from 'BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
-import { recover_steps, RECOVERY_CHANNEL_TTL } from 'BrightID/utils/constants';
-import { uInt8ArrayToB64 } from 'BrightID/utils/encoding';
+import { RESET_STORE } from '@/BrightID/actions';
+import { RecoveryErrorType } from '@/BrightID/components/Onboarding/RecoveryFlow/RecoveryError';
+import {
+  recover_steps,
+  RECOVERY_CHANNEL_TTL,
+} from '@/BrightID/utils/constants';
+import { uInt8ArrayToB64 } from '@/BrightID/utils/encoding';
 import { original } from 'immer';
 import { RootState } from 'store';
 
@@ -152,7 +155,7 @@ const recoveryData = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       (action) => action.type === RESET_STORE,
-      () => initialState
+      () => initialState,
     );
   },
 });

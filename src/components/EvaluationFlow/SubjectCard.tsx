@@ -1,12 +1,12 @@
 import BrightIdProfilePicture from 'components/BrightIdProfilePicture';
 import { ConnectionAndEvaluationStatus } from 'components/ConnectionAndEvaluationStatus';
-import { getViewModeSubjectBorderColorClass } from 'constants/index';
+import { getViewModeSubjectBorderColorClass } from '@/constants/index';
 import ReactECharts from 'echarts-for-react';
 import { useSubjectName } from 'hooks/useSubjectName';
 import useViewMode from 'hooks/useViewMode';
 import { Link } from 'react-router';
-import { compactFormat } from 'utils/number';
-import { calculateUserScorePercentage } from 'utils/score';
+import { compactFormat } from '@/utils/number';
+import { calculateUserScorePercentage } from '@/utils/score';
 
 import { useImpactEChartOption } from '../../hooks/useSubjectVerifications';
 import { HorizontalProgressBar } from '../Shared/HorizontalProgressBar';

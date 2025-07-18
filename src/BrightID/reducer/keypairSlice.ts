@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RESET_STORE } from 'BrightID/actions/resetStore';
+import { RESET_STORE } from '@/BrightID/actions/resetStore';
 import { RootState } from 'store';
 
 const initialState: { publicKey: string; secretKey: string } = {
@@ -31,23 +31,24 @@ export const { setKeypair } = keypairSlice.actions;
 export const selectKeypair = createSelector(
   (state: RootState) => state.keypair,
   (keypair) => ({
-  publicKey: keypair.publicKey,
-  secretKey: (() => {
-    try {
-      return keypair.secretKey
-        ? new Uint8Array(
-            atob(keypair.secretKey)
-              .split('')
-              .map((char) => char.charCodeAt(0)),
-          )
-        : null;
-    } catch {
-      return new Uint8Array(
-        keypair.secretKey.split('').map((char) => char.charCodeAt(0)),
-      );
-    }
-  })(),
-}));
+    publicKey: keypair.publicKey,
+    secretKey: (() => {
+      try {
+        return keypair.secretKey
+          ? new Uint8Array(
+              atob(keypair.secretKey)
+                .split('')
+                .map((char) => char.charCodeAt(0)),
+            )
+          : null;
+      } catch {
+        return new Uint8Array(
+          keypair.secretKey.split('').map((char) => char.charCodeAt(0)),
+        );
+      }
+    })(),
+  }),
+);
 
 // Export reducer
 export default keypairSlice.reducer;
