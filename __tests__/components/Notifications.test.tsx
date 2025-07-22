@@ -142,7 +142,7 @@ describe('Notification Utils', () => {
       const notificaitonsCount = 5 + evaluationsCount;
 
       expect(
-        screen.queryByTestId(`notifications-count-${notificaitonsCount}`),
+        screen.getByTestId(`notifications-count-${notificaitonsCount}`),
       ).toBeInTheDocument();
       expect(
         screen.queryByTestId('notifications-count-0'),

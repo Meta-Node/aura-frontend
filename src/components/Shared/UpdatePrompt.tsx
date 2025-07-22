@@ -21,9 +21,11 @@ const UpdatePrompt = () => {
           minInterval: 15 * 60 * 1000,
         });
 
-        Notification.requestPermission().then(() =>
-          console.log('user allowed notifications'),
-        );
+        if (Notification.permission === 'default') {
+          Notification.requestPermission().then(() =>
+            console.log('user allowed notifications'),
+          );
+        }
       }
     },
     onRegisterError(error) {

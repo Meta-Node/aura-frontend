@@ -23,6 +23,7 @@ export interface Evaluator {
   id: string;
   timestamp: number;
   value: number;
+  confidence: number;
 }
 
 export interface TrackedCategoryState {
@@ -224,6 +225,9 @@ export const notificationsSlice = createSlice({
         notification.read = true;
       });
     },
+    toggleLoading(state, payload: PayloadAction<boolean>) {
+      state.loading = payload.payload;
+    },
     updateLastFetched(state) {
       state.lastFetched = new Date().getTime();
     },
@@ -232,66 +236,6 @@ export const notificationsSlice = createSlice({
     },
     clearAllNotifications: (state) => {
       state.items = [];
-    },
-    trackProfile: (
-      state,
-      action: PayloadAction<{
-        id: string;
-        categories: Record<
-          EvaluationCategory,
-          { score: number; level: number; evaluators?: Evaluator[] }
-        >;
-      }>,
-    ) => {
-      const { id, categories } = action.payload;
-      const catState: Record<EvaluationCategory, TrackedCategoryState> =
-        {} as any;
-      Object.entries(categories).forEach(([cat, data]) => {
-        const evaluators = data.evaluators || [];
-        const uniqueEvaluators = new Set(evaluators.map((e) => e.id)).size;
-        const explorivity =
-          evaluators.length > 0
-            ? (uniqueEvaluators / evaluators.length) * 100
-            : 0;
-        catState[cat as EvaluationCategory] = {
-          score: data.score,
-          level: data.level,
-          evaluators,
-          explorivity,
-        };
-      });
-      state.trackedProfiles[id] = {
-        id,
-        categories: catState,
-        lastUpdated: Date.now(),
-      };
-    },
-    untrackProfile: (state, action: PayloadAction<string>) => {
-      delete state.trackedProfiles[action.payload];
-    },
-    addEvaluation: (
-      state,
-      action: PayloadAction<{
-        profileId: string;
-        evaluationCategory: EvaluationCategory;
-        evaluatorId: string;
-        value: number;
-      }>,
-    ) => {
-      const profile = state.trackedProfiles[action.payload.profileId];
-      if (profile) {
-        const cat = profile.categories[action.payload.evaluationCategory];
-        if (cat) {
-          cat.evaluators.push({
-            id: action.payload.evaluatorId,
-            value: action.payload.value,
-            timestamp: Date.now(),
-          });
-          const uniqueEvaluators = new Set(cat.evaluators.map((e) => e.id))
-            .size;
-          cat.explorivity = (uniqueEvaluators / cat.evaluators.length) * 100;
-        }
-      }
     },
     updateProfileState: (
       state,
@@ -346,6 +290,7 @@ export const notificationsSlice = createSlice({
           id: impact.evaluator,
           timestamp: Date.now(),
           value: impact.score || 0,
+          confidence: impact.confidence,
         }));
         const uniqueEvaluators = new Set(evaluators.map((e) => e.id)).size;
         const explorivity =
@@ -390,11 +335,24 @@ export const notificationsSlice = createSlice({
               ),
             );
           }
-          // New evaluations (by evaluator id)
-          const oldEvalIds = new Set(oldCat.evaluators.map((e) => e.id));
+          const oldEvalMap = new Map(
+            oldCat.evaluators.map((e) => [e.id, e.confidence]),
+          );
 
           newCat.evaluators.forEach((ev) => {
-            if (!oldEvalIds.has(ev.id)) {
+            if (!oldEvalMap.has(ev.id)) {
+              state.items.push(
+                generateNotification(
+                  id,
+                  'evaluation',
+                  0,
+                  ev.id,
+                  newCat.explorivity,
+                  cat,
+                  ev.timestamp,
+                ),
+              );
+            } else if (oldEvalMap.get(ev.id) !== ev.confidence) {
               state.items.push(
                 generateNotification(
                   id,
@@ -469,8 +427,5 @@ export const {
   markAllAsRead,
   removeNotification,
   clearAllNotifications,
-  trackProfile,
-  untrackProfile,
-  addEvaluation,
   updateProfileState,
 } = notificationsSlice.actions;
