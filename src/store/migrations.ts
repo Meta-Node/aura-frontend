@@ -65,4 +65,13 @@ export const migrations: MigrationManifest = {
       },
     };
   },
+  6: (oldState: any) => {
+    return {
+      ...oldState,
+      notifications: {
+        ...oldState.notifications,
+        items: [],
+      },
+    };
+  },
 };

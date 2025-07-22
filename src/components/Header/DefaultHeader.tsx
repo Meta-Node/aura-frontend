@@ -43,7 +43,9 @@ export default function DefaultHeader({
   breadcrumbs?: ReactNode;
 } & PropsWithChildren) {
   const dispatch = useDispatch();
-  const notificationsCount = useSelector(notificationsSelector).length;
+  const notificationsCount = useSelector(notificationsSelector).filter(
+    (item) => !item.viewed,
+  ).length;
 
   return (
     <div className="flex flex-col gap-2.5 px-1 pt-3 md:px-4 md:pt-9">
