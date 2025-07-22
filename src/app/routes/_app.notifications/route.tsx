@@ -304,9 +304,10 @@ function NotificationCard({
           <Button
             size="sm"
             variant="outline"
-            onClick={() =>
-              dispatch(notificationsSlice.actions.markAsRead(notification.id))
-            }
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch(notificationsSlice.actions.markAsRead(notification.id));
+            }}
           >
             Mark as read
           </Button>
