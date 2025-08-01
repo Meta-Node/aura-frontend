@@ -18,6 +18,8 @@ export interface InboundProfile {
   confidence: number;
   category: EvaluationCategory;
   lastUpdated: number;
+  level?: number;
+  score?: number;
 }
 
 export interface OutboundProfile extends InboundProfile {
@@ -72,7 +74,8 @@ export async function updateInboundData(
     }),
   );
 
-  const inbounds = state.alerts.inboundTrackedProfiles.profiles.size
+  const inbounds: Map<string, InboundProfile> = state.alerts
+    .inboundTrackedProfiles.profiles.size
     ? new Map(state.alerts.inboundTrackedProfiles.profiles)
     : new Map();
 
@@ -98,10 +101,57 @@ export async function updateInboundData(
   for (const category of categoriesToExplore) {
     let historyScore = 0;
 
+    const previousState = inbounds.get(`${brightId}-${category}`);
+
     const userVerification = getAuraVerification(
       profileFetch.data?.verifications,
       category,
     );
+
+    if (previousState) {
+      if (
+        userVerification?.level &&
+        previousState.level &&
+        Math.abs(previousState.level! - userVerification.level) >=
+          ALERT_THRESHOLDS.LEVEL_CHANGE
+      ) {
+        newNotifications.push(
+          createUserLevelChangeNotification(
+            category,
+            userVerification?.level,
+            previousState.level,
+            brightId,
+            'inbound',
+          ),
+        );
+      }
+
+      if (
+        userVerification?.score &&
+        previousState.score &&
+        Math.abs(userVerification.score - previousState.score!) >=
+          ALERT_THRESHOLDS.MIN_SCORE_CHANGE_PERCENT
+      ) {
+        newNotifications.push(
+          createUserScoreChangeNotification(
+            category,
+            userVerification.score,
+            previousState.score,
+            brightId,
+            'inbound',
+          ),
+        );
+      }
+    }
+
+    inbounds.set(`${brightId}-${category}`, {
+      category,
+      confidence: 0,
+      id: brightId,
+      lastUpdated: Date.now(),
+      level: userVerification?.level,
+      score: userVerification?.score,
+    });
 
     const verificationsMap =
       userVerification?.impacts.reduce(
@@ -312,6 +362,7 @@ export function createUserScoreChangeNotification(
   newScore: number,
   previousScore: number,
   subjectId: string,
+  triggeredFrom: 'inbound' | 'outbound' = 'outbound',
 ): NotificationObject {
   return {
     id: `${subjectId}-score-${Date.now()}`,
@@ -322,7 +373,7 @@ export function createUserScoreChangeNotification(
     previousState: previousScore,
     timestamp: Date.now(),
     to: null,
-    triggeredFrom: 'outbound',
+    triggeredFrom,
     type:
       newScore > previousScore
         ? NotificationType.ScoreIncrease
@@ -336,6 +387,7 @@ export function createUserLevelChangeNotification(
   newLevel: number,
   previousLevel: number,
   subjectId: string,
+  triggeredFrom: 'inbound' | 'outbound' = 'outbound',
 ): NotificationObject {
   return {
     id: `${subjectId}-level-${Date.now()}`,
@@ -346,7 +398,7 @@ export function createUserLevelChangeNotification(
     previousState: previousLevel,
     timestamp: Date.now(),
     to: null,
-    triggeredFrom: 'outbound',
+    triggeredFrom,
     type:
       newLevel > previousLevel
         ? NotificationType.LevelIncrease

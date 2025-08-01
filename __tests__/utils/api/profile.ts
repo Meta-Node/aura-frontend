@@ -120,6 +120,7 @@ export const generateEvaluationImpact = (
     confidence: confidence ?? Math.round(Math.random() * 4),
     impact: impact ?? Math.abs(Math.random() * 100),
     level: 1,
+    modified: Date.now(),
   };
 };
 
