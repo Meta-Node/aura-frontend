@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { apiSlice } from './slice';
 
 export const profileApi = apiSlice.injectEndpoints({
@@ -19,10 +20,8 @@ export const profileApi = apiSlice.injectEndpoints({
       },
       string
     >({
-      query: (hashedEmail) => ({
-        url: `https://api.gravatar.com/v3/profiles/${hashedEmail}`,
-        method: 'GET',
-      }),
+      queryFn: (hashedEmail) =>
+        axios.get(`https://api.gravatar.com/v3/profiles/${hashedEmail}`),
     }),
     getConnections: build.query<
       ConnectionInfo[],

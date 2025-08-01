@@ -28,6 +28,7 @@ export const generateOutboundEvaluationConnection = (
     impact,
     score,
     level: 1,
+    modified: Date.now(),
   });
 
   return {
