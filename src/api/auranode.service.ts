@@ -6,6 +6,7 @@ export interface AuraImpactRaw {
   score: number | null;
   confidence: number;
   impact: number;
+  modified: number;
 }
 
 export interface AuraImpact extends AuraImpactRaw {

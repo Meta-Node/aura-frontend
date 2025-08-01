@@ -12,6 +12,7 @@ export const connectionsApi = apiSlice.injectEndpoints({
         url: `/brightid/v6/users/${id}/connections/outbound?withVerifications=true`,
       }),
       keepUnusedDataFor: 30,
+      extraOptions: { maxRetries: 0, refetchOnMountOrArgChange: 30 },
       transformResponse: (res: AuraNodeConnectionsResponse) =>
         res.data.connections,
       providesTags: (response) =>
@@ -27,6 +28,7 @@ export const connectionsApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (res: AuraNodeConnectionsResponse) =>
         res.data.connections,
+      extraOptions: { maxRetries: 0, refetchOnMountOrArgChange: 30 },
       keepUnusedDataFor: 30,
       providesTags: (response) =>
         response?.map((item) => ({ id: item.id, type: 'BrightID' as const })) ??

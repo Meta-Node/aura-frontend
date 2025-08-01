@@ -9,6 +9,7 @@ import { Link } from 'react-router';
 import { FaHome } from 'react-icons/fa';
 import { notificationsSelector } from '@/store/notifications';
 import { Badge } from '@/components/ui/badge';
+import { alertsSelector } from '@/store/notifications/slice';
 
 export const HeaderBody: FC<
   PropsWithChildren & { title?: string; beforeTitle?: ReactNode }
@@ -43,7 +44,7 @@ export default function DefaultHeader({
   breadcrumbs?: ReactNode;
 } & PropsWithChildren) {
   const dispatch = useDispatch();
-  const notificationsCount = useSelector(notificationsSelector).filter(
+  const notificationsCount = useSelector(alertsSelector).filter(
     (item) => !item.viewed,
   ).length;
 

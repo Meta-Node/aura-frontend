@@ -29,6 +29,7 @@ import { operationsSlice } from '@/BrightID/actions';
 import { cacheSlice } from './cache';
 import localforage from 'localforage';
 import { notificationsSlice } from './notifications';
+import { alertsSlice } from './notifications/slice';
 
 const migrationManifest = createMigrate(migrations, { debug: __DEV__ });
 
@@ -99,6 +100,7 @@ const rootReducer = withReduxStateSync(
     ...reducers,
     profile: profileSlice.reducer,
     [notificationsSlice.reducerPath]: notificationsSlice.reducer,
+    [alertsSlice.reducerPath]: alertsSlice.reducer,
     [cacheSlice.reducerPath]: cacheSlice.reducer,
   }),
 );
