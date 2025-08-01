@@ -43,6 +43,8 @@ import { ActivityListSearch } from './components/activity-list-search';
 import { EvidenceListSearch } from './components/evidence-list-search';
 import SubjectProfileHeader from './components/header';
 import ProfileTabs from './components/profile-tabs';
+import { useGetGravatarProfileByHashedEmailQuery } from '@/store/api/profile';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 const connectionLevelPriority: {
   [key in ConnectionLevel | 'aura only']: number;
@@ -71,6 +73,12 @@ export const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
   const [showEvaluateOverlayCard, setShowEvaluateOverlayCard] = useState(false);
   const [credibilityDetailsProps, setCredibilityDetailsProps] =
     useState<CredibilityDetailsProps | null>(null);
+
+  const name = useMemo(() => query.get('name'), [query]);
+
+  const profilePhotoFetch = useGetGravatarProfileByHashedEmailQuery(
+    query.has('gravatar') ? query.get('gravatar')! : skipToken,
+  );
 
   const {
     currentViewMode,
@@ -217,6 +225,8 @@ export const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
         subjectId={subjectId}
         setShowEvaluationFlow={setShowEvaluationFlow}
         setSelectedTab={setSelectedTab}
+        injectedProfileImage={profilePhotoFetch.data?.avatar_url}
+        injectedProfileName={name}
       />
 
       <Modal

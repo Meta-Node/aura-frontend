@@ -11,7 +11,19 @@ export const profileApi = apiSlice.injectEndpoints({
       providesTags: (res) =>
         res?.id ? [{ type: 'BrightID' as const, id: res.id }] : [],
     }),
-
+    getGravatarProfileByHashedEmail: build.query<
+      {
+        display_name: string;
+        profile_url: string;
+        avatar_url: string;
+      },
+      string
+    >({
+      query: (hashedEmail) => ({
+        url: `https://api.gravatar.com/v3/profiles/${hashedEmail}`,
+        method: 'GET',
+      }),
+    }),
     getConnections: build.query<
       ConnectionInfo[],
       { id: string; direction: 'inbound' | 'outbound' }
@@ -29,4 +41,5 @@ export const {
   useGetConnectionsQuery,
   useGetBrightIDProfileQuery,
   useLazyGetBrightIDProfileQuery,
+  useGetGravatarProfileByHashedEmailQuery,
 } = profileApi;

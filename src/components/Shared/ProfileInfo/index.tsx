@@ -9,7 +9,7 @@ import { useSubjectName } from 'hooks/useSubjectName';
 import { useSubjectVerifications } from 'hooks/useSubjectVerifications';
 import useViewMode from 'hooks/useViewMode';
 import moment from 'moment';
-import { useContext, useMemo } from 'react';
+import { FC, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuthData } from 'store/profile/selectors';
 import { EvaluationCategory, ProfileTab } from 'types/dashboard';
@@ -21,17 +21,24 @@ import BrightIdProfilePicture from '../../BrightIdProfilePicture';
 import { YourEvaluationInfo } from '../EvaluationInfo/YourEvaluationInfo';
 import { HorizontalProgressBar } from '../HorizontalProgressBar';
 import NewEvaluationCard from '@/app/routes/_app.subject.$id/components/new-evaluation-card';
+import GravatarProfilePicture from '@/components/GravatarPoriflePicture';
 
-export const ProfileInfo = ({
-  isPerformance = false,
-  subjectId,
-  setShowEvaluationFlow,
-  setSelectedTab,
-}: {
+export interface ProfileInfoProps {
+  injectedProfileImage?: string;
   isPerformance?: boolean;
   subjectId: string;
   setShowEvaluationFlow: (value: boolean) => void;
   setSelectedTab?: (value: ProfileTab) => void;
+  injectedProfileName?: string | null;
+}
+
+export const ProfileInfo: FC<ProfileInfoProps> = ({
+  isPerformance = false,
+  subjectId,
+  setShowEvaluationFlow,
+  setSelectedTab,
+  injectedProfileImage,
+  injectedProfileName,
 }) => {
   const { currentViewMode, currentEvaluationCategory, updateViewAs } =
     useViewMode();
@@ -87,15 +94,33 @@ export const ProfileInfo = ({
     <div className="card flex flex-col gap-3 border dark:bg-dark-primary">
       <div className="card--header flex w-full items-center justify-between">
         <div className="card--header__left flex gap-4">
-          <BrightIdProfilePicture
-            key={subjectId}
-            className={`card--header__left__avatar rounded-full border-[3px] ${getViewModeSubjectBorderColorClass(
-              currentViewMode,
-            )} h-[51px] w-[51px]`}
-            subjectId={subjectId}
-          />
+          {injectedProfileImage ? (
+            <GravatarProfilePicture
+              key={injectedProfileImage}
+              image={injectedProfileImage}
+              className={`card--header__left__avatar rounded-full border-[3px] ${getViewModeSubjectBorderColorClass(
+                currentViewMode,
+              )} h-[51px] w-[51px]`}
+            />
+          ) : (
+            <BrightIdProfilePicture
+              key={subjectId}
+              className={`card--header__left__avatar rounded-full border-[3px] ${getViewModeSubjectBorderColorClass(
+                currentViewMode,
+              )} h-[51px] w-[51px]`}
+              subjectId={subjectId}
+            />
+          )}
           <div className="card--header__left__info flex flex-col justify-center">
-            <h3 className="truncate text-lg font-medium leading-5">{name}</h3>
+            <h3 className="truncate text-lg font-medium leading-5">
+              {injectedProfileName ? (
+                <span>
+                  {injectedProfileName} <small>({name})</small>
+                </span>
+              ) : (
+                name
+              )}
+            </h3>
             <div className="flex gap-1">
               <span className="text-sm">
                 Level: <strong>{auraLevel}</strong>
