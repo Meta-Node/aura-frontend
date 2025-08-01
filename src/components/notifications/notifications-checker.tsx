@@ -1,26 +1,11 @@
-import { AppDispatch } from '@/store';
 import {
   alertsLastFetchSelector,
   resetOnMountStates,
-  updateInboundData,
-  updateLastFetch,
-  updateOutboundData,
+  triggerNotificationFetch,
 } from '@/store/notifications/slice';
 import { selectAuthData } from '@/store/profile/selectors';
 import { useEffect } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
-
-export async function triggerNotificationFetch(
-  getState: () => unknown,
-  dispatch: AppDispatch,
-  brightId: string,
-) {
-  await Promise.all([
-    updateInboundData(getState, dispatch, brightId),
-    updateOutboundData(getState, dispatch, brightId),
-  ]);
-  dispatch(updateLastFetch());
-}
 
 export default function NotificationsChecker() {
   const dispatch = useDispatch();

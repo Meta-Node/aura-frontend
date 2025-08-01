@@ -30,7 +30,6 @@ import {
   NotificationObject,
   NotificationType,
 } from '@/store/notifications/slice';
-import { triggerNotificationFetch } from '@/components/notifications/notifications-checker';
 import { useStore } from 'react-redux';
 
 // Define icons for evaluation categories

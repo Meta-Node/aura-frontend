@@ -43,6 +43,18 @@ export const categoriesToExplore = [
   EvaluationCategory.MANAGER,
 ];
 
+export async function triggerNotificationFetch(
+  getState: () => unknown,
+  dispatch: AppDispatch,
+  brightId: string,
+) {
+  await Promise.all([
+    updateInboundData(getState, dispatch, brightId),
+    updateOutboundData(getState, dispatch, brightId),
+  ]);
+  dispatch(updateLastFetch());
+}
+
 export async function updateInboundData(
   getState: () => unknown,
   dispatch: AppDispatch,
