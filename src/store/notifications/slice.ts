@@ -10,7 +10,7 @@ import { AuraImpactRaw } from '@/api/auranode.service';
 export const ALERT_THRESHOLDS = {
   LEVEL_CHANGE: 1,
   SCORE_CHANGE_PERCENTAGE: 10,
-  MIN_SCORE_CHANGE_PERCENT: 20,
+  MIN_SCORE_CHANGE_PERCENT: 35,
 };
 
 export interface InboundProfile {
@@ -129,7 +129,7 @@ export async function updateInboundData(
       if (
         userVerification?.score &&
         previousState.score &&
-        Math.abs(userVerification.score - previousState.score!) >=
+        Math.abs((userVerification.score / previousState.score!) * 100 - 100) >=
           ALERT_THRESHOLDS.MIN_SCORE_CHANGE_PERCENT
       ) {
         newNotifications.push(
@@ -227,9 +227,9 @@ export async function updateOutboundData(
   //   profileApi.endpoints.getBrightIDProfile.initiate(brightId),
   // );
 
-  const previousFetchTime = new Date(
-    state.alerts.outboundTrackedProfiles.previousFetch,
-  );
+  // const previousFetchTime = new Date(
+  //   state.alerts.outboundTrackedProfiles.previousFetch,
+  // );
 
   const newNotifications: NotificationObject[] = [];
 
@@ -263,7 +263,7 @@ export async function updateOutboundData(
                   category,
                   confidence: curr.confidence,
                   id: curr.evaluator,
-                  lastUpdated: new Date().getTime(),
+                  lastUpdated: curr.modified,
                 };
 
                 return prev;
@@ -291,7 +291,7 @@ export async function updateOutboundData(
 
       if (
         verification?.score &&
-        Math.abs(verification.score - previousState.score) >=
+        Math.abs((verification.score / previousState.score) * 100 - 100) >=
           ALERT_THRESHOLDS.MIN_SCORE_CHANGE_PERCENT
       ) {
         newNotifications.push(

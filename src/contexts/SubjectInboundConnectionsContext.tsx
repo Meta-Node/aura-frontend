@@ -79,7 +79,7 @@ export const SubjectInboundConnectionsContextProvider: React.FC<
         inboundConnection: inboundConnections.find(
           (c) => c.id === r.fromBrightId,
         ),
-        verificartions: r.verifications,
+        verifications: r.verifications!,
       }),
     );
     inboundConnections.forEach((c) => {
@@ -90,6 +90,7 @@ export const SubjectInboundConnectionsContextProvider: React.FC<
           name: brightIdBackup.connections.find((conn) => conn.id === c.id)
             ?.name,
           inboundConnection: c,
+          verifications: c.verifications!,
         });
       }
     });
