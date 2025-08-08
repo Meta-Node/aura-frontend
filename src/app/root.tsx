@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
 } from 'react-router';
 import Providers, { AppProviders } from './providers';
-import { Route } from '../../.react-router/types/src/app/+types/root';
+import { Route } from '@/../.react-router/types/src/app/+types/root';
 
 import GlobalSearchModal from '@/components/GlobalSearchModal';
 import DebugToolbar from '@/components/ux/debug-toolbar';

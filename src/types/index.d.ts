@@ -128,7 +128,7 @@ export type AuraOutboundConnectionAndRatingData = {
   name?: string;
   rating?: AuraRating;
   outboundConnection?: AuraNodeBrightIdConnection;
-  verifications: Verifications;
+  verifications?: Verifications;
 };
 
 export type AuraRatingRetrieveResponse = {

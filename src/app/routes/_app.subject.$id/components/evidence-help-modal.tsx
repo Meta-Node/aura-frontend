@@ -8,18 +8,17 @@ import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 import AnimatedNodeCircles from '@/components/AnimatedNodeCircles';
 import StepsPagination from '@/components/Pagination';
 
-
 export const gitBookLinks = [
   'https://brightid.gitbook.io/aura/how-to-play/connections',
   'https://brightid.gitbook.io/aura/evidence/expected-connections',
   'https://brightid.gitbook.io/aura/evidence/participant-cards#connection-cards',
-  'https://brightid.gitbook.io/aura/evidence/participant-cards#evaluation-cards'
-]
+  'https://brightid.gitbook.io/aura/evidence/participant-cards#evaluation-cards',
+];
 
 export function ConnectionsHelpContent() {
   return (
     <>
-      <h3 className="font-semibold my-4">Connections</h3>
+      <h3 className="my-4 font-semibold">Connections</h3>
       <AnimatedNodeCircles />
 
       <p className="text-sm leading-loose">
@@ -31,9 +30,9 @@ export function ConnectionsHelpContent() {
 export function ActitvityHelpContent() {
   return (
     <>
-      <h3 className="font-semibold my-4">Activity</h3>
+      <h3 className="my-4 font-semibold">Activity</h3>
       <img
-        className="min-w-[250px] cursor-pointer mx-auto my-3 transition-all duration-300 opacity-100 h-[134px] !w-full"
+        className="mx-auto my-3 h-[134px] !w-full min-w-[250px] cursor-pointer opacity-100 transition-all duration-300"
         src="/assets/images/onboarding/connected-to-card.svg"
         alt="step2"
       />
@@ -47,9 +46,9 @@ export function ActitvityHelpContent() {
 export function EvaluationsHelpContent() {
   return (
     <>
-      <h3 className="font-semibold my-4">Evaluations</h3>
+      <h3 className="my-4 font-semibold">Evaluations</h3>
       <img
-        className="min-w-[250px] my-4 cursor-pointer mx-auto transition-all duration-300 opacity-100 h-[134px] !translate-x-0"
+        className="mx-auto my-4 h-[134px] min-w-[250px] !translate-x-0 cursor-pointer opacity-100 transition-all duration-300"
         src="/assets/images/onboarding/evaluated-card.svg"
         alt="subject-card"
       />
@@ -63,7 +62,7 @@ export function EvaluationsHelpContent() {
 export function OverviewHelpContent() {
   return (
     <>
-      <h3 className="font-semibold my-4">Overview</h3>
+      <h3 className="my-4 font-semibold">Overview</h3>
       <ReactECharts
         style={{ height: '110px' }}
         option={{
@@ -199,7 +198,7 @@ export function OverviewHelpContent() {
               barGap: '0',
               barMaxWidth: 30,
             },
-          ],
+          ] as any[],
         }}
       />
       <p className="text-sm leading-loose">
@@ -240,9 +239,9 @@ export default function EvidenceHelpModal() {
   }, []);
 
   return (
-    <div className="leading-loose no-scrollbar text-base overflow-y-auto">
+    <div className="no-scrollbar overflow-y-auto text-base leading-loose">
       <Link
-        className="text-sm flex items-center gap-4"
+        className="flex items-center gap-4 text-sm"
         target="_blank"
         to={gitBookLinks[activePage]}
       >

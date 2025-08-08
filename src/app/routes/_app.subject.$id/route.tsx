@@ -45,6 +45,7 @@ import SubjectProfileHeader from './components/header';
 import ProfileTabs from './components/profile-tabs';
 import { useGetGravatarProfileByHashedEmailQuery } from '@/store/api/profile';
 import { skipToken } from '@reduxjs/toolkit/query';
+import { Verifications } from '@/api/auranode.service';
 
 const connectionLevelPriority: {
   [key in ConnectionLevel | 'aura only']: number;
@@ -270,7 +271,7 @@ export const SubjectProfileBody = ({ subjectId }: { subjectId: string }) => {
               renderItem={(evaluated) => {
                 return (
                   <ProfileEvaluation
-                    connection={evaluated}
+                    connection={evaluated as { verifications: Verifications }}
                     evidenceViewMode={
                       selectedTab === ProfileTab.ACTIVITY
                         ? EvidenceViewMode.OUTBOUND_ACTIVITY

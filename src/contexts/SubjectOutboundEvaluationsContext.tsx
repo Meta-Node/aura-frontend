@@ -98,6 +98,7 @@ export const SubjectOutboundEvaluationsContextProvider: React.FC<
             name: brightIdBackup.connections.find((conn) => conn.id === c.id)
               ?.name,
             outboundConnection: c,
+            verifications: c.verifications,
           });
         }
       });

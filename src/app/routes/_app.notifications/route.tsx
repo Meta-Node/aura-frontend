@@ -39,6 +39,7 @@ import {
 } from '@/constants';
 import { useMemo } from 'react';
 import Tooltip from '@/components/Shared/Tooltip';
+import { ratingToText } from '@/constants/chart';
 
 // Define icons for evaluation categories
 export const subjectViewAsIconColored: {
@@ -461,38 +462,15 @@ function EvaluationInfo({
     <>
       <div className={`flex flex-col gap-0.5 ${bgColor} rounded-md py-1.5`}>
         <div className="flex items-center justify-center gap-0.5">
-          {inboundConnectionInfo &&
-            connectionLevelIcons[inboundConnectionInfo.level] && (
-              <Tooltip
-                content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
-                position="right"
-                tooltipClassName="!whitespace-normal !w-40"
-              >
-                <img
-                  src={`/assets/images/Shared/${
-                    connectionLevelIcons[inboundConnectionInfo.level]
-                  }.svg`}
-                  className="h-[18px] w-[18px]"
-                  alt=""
-                />
-              </Tooltip>
-            )}
-          {!!rating && Number(rating?.rating) !== 0 && (
-            <Tooltip
-              position="right"
-              content={`You evaluated ${name} ${
-                Number(rating.rating) > 0 ? `+${rating.rating}` : rating.rating
-              } (${ratingToText[rating.rating]})`}
+          {rating !== 0 && (
+            <p
+              className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
+                { rating: rating.toString() },
+              )}`}
             >
-              <p
-                className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
-                  rating,
-                )}`}
-              >
-                {Number(rating.rating) < 0 ? '-' : '+'}
-                {Math.abs(Number(rating.rating))}
-              </p>
-            </Tooltip>
+              {Number(rating) < 0 ? '-' : '+'}
+              {Math.abs(Number(rating))}
+            </p>
           )}
         </div>
         <p
