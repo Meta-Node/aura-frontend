@@ -26,11 +26,19 @@ import { Fragment } from 'react/jsx-runtime';
 import {
   alertLoadingSelector,
   alertsSelector,
+  markAllAsRead,
   markAsRead,
   NotificationObject,
   NotificationType,
 } from '@/store/notifications/slice';
 import { useStore } from 'react-redux';
+import { compactFormat } from '@/utils/number';
+import {
+  getBgClassNameOfAuraRatingObject,
+  getTextClassNameOfAuraRatingObject,
+} from '@/constants';
+import { useMemo } from 'react';
+import Tooltip from '@/components/Shared/Tooltip';
 
 // Define icons for evaluation categories
 export const subjectViewAsIconColored: {
@@ -92,6 +100,7 @@ export function parseTitleAndDescription(
   resolve: (key: string) => BrightIdBackupConnection,
   brightId: string | undefined,
   to?: string | null,
+  newState?: any,
 ) {
   switch (type) {
     case NotificationType.Evaluation:
@@ -108,39 +117,38 @@ export function parseTitleAndDescription(
       );
     case NotificationType.LevelIncrease:
       if (profileId === brightId) {
-        return 'Your ' + description;
+        return 'Your Level increased';
       }
       return (
         (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
         ' ' +
-        description
+        'Leveled up'
       );
     case NotificationType.LevelDecrease:
       if (profileId === brightId) {
-        return 'Your ' + description;
+        return 'Your Level decreased';
       }
       return (
         (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
-        ' ' +
-        description
+        ' Level Decreased'
       );
     case NotificationType.ScoreDecrease:
       if (profileId === brightId) {
-        return 'Your ' + description;
+        return 'Your Score dropped to ' + compactFormat(newState);
       }
       return (
         (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
-        ' ' +
-        description
+        ' Score dropped to ' +
+        compactFormat(newState)
       );
     case NotificationType.ScoreIncrease:
       if (profileId === brightId) {
-        return 'Your ' + description;
+        return 'Your Score increased to ' + compactFormat(newState);
       }
       return (
         (resolve(profileId)?.name ?? shortenBrightIdName(profileId)) +
-        ' ' +
-        description
+        ' Score increased to ' +
+        compactFormat(newState)
       );
   }
 
@@ -206,6 +214,17 @@ export default function NotificationsPage() {
         >
           <RefreshCcwIcon className={isLoading ? 'animate-spin' : ''} />
         </Button> */}
+        {notifications.filter((item) => !item.viewed).length > 0 && (
+          <div className="flex justify-end">
+            <Button
+              size="sm"
+              className=""
+              onClick={() => dispatch(markAllAsRead())}
+            >
+              Mark all as read
+            </Button>
+          </div>
+        )}
         <section className="mt-8 flex w-full flex-col gap-4">
           <Tabs defaultValue={categories[0]}>
             <TabsList className="w-full">
@@ -291,7 +310,7 @@ function NotificationCard({
     <Link to={`/subject/${notification.from}?viewas=${notification.category}`}>
       <Card
         className={cn(
-          'my-2 flex items-center gap-4 rounded-lg p-4',
+          'my-2 flex gap-4 rounded-lg p-4',
           !notification.viewed && 'bg-muted',
           notification.viewed && 'opacity-50',
         )}
@@ -311,25 +330,179 @@ function NotificationCard({
               resolve,
               brightId,
               notification.to,
+              notification.newState,
             )}
           </div>
           <div className="mt-1 text-xs text-muted-foreground">
             {new Date(notification.timestamp).toLocaleString()}
           </div>
         </div>
-        {!notification.viewed && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(markAsRead(notification.id));
-            }}
-          >
-            Mark as read
-          </Button>
-        )}
+        <div className="flex flex-col justify-end">
+          <div className="mb-5">
+            {notification.type === NotificationType.Evaluation &&
+            notification.extraPayloads ? (
+              <EvaluationInfo
+                impact={notification.newState! as number}
+                rating={Number(notification.extraPayloads?.rating)}
+              />
+            ) : [
+                NotificationType.LevelDecrease,
+                NotificationType.LevelIncrease,
+              ].includes(notification.type) ? (
+              <LevelInfo
+                previousLevel={Number(notification.previousState)}
+                newLevel={Number(notification.newState)}
+              />
+            ) : [
+                NotificationType.ScoreDecrease,
+                NotificationType.ScoreIncrease,
+              ].includes(notification.type) ? (
+              <ScoreInfo
+                previousScore={Number(notification.previousState)}
+                newScore={Number(notification.newState)}
+              />
+            ) : null}
+          </div>
+          {!notification.viewed && (
+            <div className="">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  dispatch(markAsRead(notification.id));
+                }}
+              >
+                Mark as read
+              </Button>
+            </div>
+          )}
+        </div>
       </Card>
     </Link>
+  );
+}
+
+function LevelInfo({
+  previousLevel,
+  newLevel,
+}: {
+  previousLevel: number;
+  newLevel: number;
+}) {
+  const diff = useMemo(
+    () => newLevel - previousLevel,
+    [previousLevel, newLevel],
+  );
+
+  const bgColor = getBgClassNameOfAuraRatingObject({
+    rating: (newLevel - previousLevel).toString(),
+  });
+
+  return (
+    <div
+      className={`${bgColor} ml-auto block w-fit rounded-md p-1 text-center text-sm font-semibold`}
+    >
+      {diff >= 0 ? '+' : ''} {diff}
+    </div>
+  );
+}
+
+function ScoreInfo({
+  previousScore,
+  newScore,
+}: {
+  previousScore: number;
+  newScore: number;
+}) {
+  const diff = newScore - previousScore;
+  const scoreScaledChange = useMemo(() => {
+    const percentChange =
+      previousScore !== 0 ? (newScore / previousScore) * 100 : 0;
+    const scaled = (percentChange / 100) * 4;
+    return (previousScore < newScore ? 1 : -1) * scaled;
+  }, [newScore, previousScore]);
+
+  const bgColor = getBgClassNameOfAuraRatingObject({
+    rating: Math.floor(scoreScaledChange).toString(),
+  });
+
+  return (
+    <span
+      className={`${bgColor} ml-auto block w-fit rounded-md p-1 text-center text-sm font-semibold`}
+    >
+      {diff >= 0 ? '+' : ''} {compactFormat(diff)}
+    </span>
+  );
+}
+
+function EvaluationInfo({
+  rating,
+  impact,
+}: {
+  rating: number;
+  impact: number;
+}) {
+  const bgColor = useMemo(() => {
+    if (rating && Number(rating) !== 0) {
+      return getBgClassNameOfAuraRatingObject({ rating: rating.toString() });
+    }
+    if (rating >= 2) {
+      return 'bg-pl4';
+    }
+    if (rating <= 0) {
+      return 'bg-nl4';
+    }
+    return 'bg-pl1';
+  }, [rating]);
+
+  return (
+    <>
+      <div className={`flex flex-col gap-0.5 ${bgColor} rounded-md py-1.5`}>
+        <div className="flex items-center justify-center gap-0.5">
+          {inboundConnectionInfo &&
+            connectionLevelIcons[inboundConnectionInfo.level] && (
+              <Tooltip
+                content={`You connected with "${inboundConnectionInfo?.level}" to ${name}`}
+                position="right"
+                tooltipClassName="!whitespace-normal !w-40"
+              >
+                <img
+                  src={`/assets/images/Shared/${
+                    connectionLevelIcons[inboundConnectionInfo.level]
+                  }.svg`}
+                  className="h-[18px] w-[18px]"
+                  alt=""
+                />
+              </Tooltip>
+            )}
+          {!!rating && Number(rating?.rating) !== 0 && (
+            <Tooltip
+              position="right"
+              content={`You evaluated ${name} ${
+                Number(rating.rating) > 0 ? `+${rating.rating}` : rating.rating
+              } (${ratingToText[rating.rating]})`}
+            >
+              <p
+                className={`text-sm font-bold ${getTextClassNameOfAuraRatingObject(
+                  rating,
+                )}`}
+              >
+                {Number(rating.rating) < 0 ? '-' : '+'}
+                {Math.abs(Number(rating.rating))}
+              </p>
+            </Tooltip>
+          )}
+        </div>
+        <p
+          className={`impact-percentage ${getTextClassNameOfAuraRatingObject({
+            rating: rating.toString(),
+          })} w-full text-center text-[11px] font-bold`}
+        >
+          {impact > 0 ? '+' : '-'} {compactFormat(impact)}
+        </p>
+      </div>
+    </>
   );
 }

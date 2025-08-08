@@ -418,12 +418,15 @@ export function createUserOutboundEvaluationNotification(
     from: impact.evaluator,
     to: subjectId,
     description: '',
-    newState: null,
+    newState: impact.impact,
     previousState: null,
     timestamp,
     triggeredFrom: 'outbound',
     type: NotificationType.Evaluation,
     viewed: false,
+    extraPayloads: {
+      rating: impact.confidence,
+    },
   };
 }
 

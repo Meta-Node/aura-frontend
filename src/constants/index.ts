@@ -32,7 +32,7 @@ export function getTextClassNameOfAuraRatingNumber(
 }
 
 export function getTextClassNameOfAuraRatingObject(
-  auraRating: AuraRating | null | undefined,
+  auraRating: Pick<AuraRating, 'rating'> | null | undefined,
 ) {
   if (!auraRating) return auraRating;
   return getTextClassNameOfAuraRatingNumber(Number(auraRating.rating));
@@ -69,7 +69,7 @@ export function getRawTextClassNameOfAuraRatingNumber(
 }
 
 export function getBgClassNameOfAuraRatingObject(
-  auraRating: AuraRating | null | undefined,
+  auraRating: Pick<AuraRating, 'rating'> | null | undefined,
 ) {
   if (!auraRating) return auraRating;
   return getBgClassNameOfAuraRatingNumber(Number(auraRating.rating));
