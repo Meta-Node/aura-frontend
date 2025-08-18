@@ -12,8 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Plus } from 'lucide-react';
+import { PhoneCall, Plus } from 'lucide-react';
 import DefaultHeader from '@/components/Header/DefaultHeader';
+import { MdEmail } from 'react-icons/md';
+import { useSelector } from 'react-redux';
+import { addContactInfo, selectContacts } from '@/store/contacts';
+import { useDispatch } from '@/store/hooks';
+import { useStoreNewContactMutation } from '@/store/api/get-verified';
 
 const isValidEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -26,12 +31,16 @@ type Contact = {
 };
 
 export default function ContactPage() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
   const [type, setType] = useState<'email' | 'phone'>('email');
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleAdd = () => {
+  const contacts = useSelector(selectContacts);
+  const dispatch = useDispatch();
+
+  const [mutate, { isLoading }] = useStoreNewContactMutation();
+
+  const handleAdd = async () => {
     if (type === 'email' && !isValidEmail(value)) {
       setError('Invalid email address');
       return;
@@ -41,9 +50,18 @@ export default function ContactPage() {
       return;
     }
 
-    setContacts([...contacts, { type, value }]);
-    setValue('');
-    setError('');
+    mutate(value).then((res) => {
+      if (res.error) {
+        setError((res.error as { message: string })?.message?.toString());
+
+        return;
+      }
+
+      dispatch(addContactInfo({ type, value }));
+
+      setValue('');
+      setError('');
+    });
   };
 
   return (
@@ -63,19 +81,15 @@ export default function ContactPage() {
               className="flex items-center justify-between p-4 text-sm"
             >
               <span className="capitalize">{c.type}:</span>
-              <span>{c.value}</span>
+              <span>******************</span>
             </Card>
           ))}
         </div>
       </div>
 
-      {/* Floating Action Button and Dialog */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            className="h-12 bg-primary/60 p-0 text-black hover:bg-primary/90"
-            variant="default"
-          >
+          <Button className="h-12 p-0 text-black" variant="default">
             <Plus size={24} />
           </Button>
         </DialogTrigger>
@@ -93,6 +107,7 @@ export default function ContactPage() {
                   setError('');
                 }}
               >
+                <MdEmail />
                 Email
               </Button>
               <Button
@@ -102,6 +117,7 @@ export default function ContactPage() {
                   setError('');
                 }}
               >
+                <PhoneCall />
                 Phone
               </Button>
             </div>
@@ -124,7 +140,7 @@ export default function ContactPage() {
               {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
             </div>
 
-            <Button onClick={handleAdd} className="w-full">
+            <Button disabled={isLoading} onClick={handleAdd} className="w-full">
               Save Contact
             </Button>
           </div>

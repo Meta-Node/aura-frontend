@@ -42,6 +42,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "apisauce": "2.0.1",
     "axios": "^1.5.0",
+    "bcryptjs": "^3.0.2",
     "buffer": "^6.0.3",
     "caniuse-lite": "^1.0.30001731",
     "chartjs-plugin-zoom": "^2.2.0",

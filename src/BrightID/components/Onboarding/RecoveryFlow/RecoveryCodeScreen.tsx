@@ -138,6 +138,7 @@ const RecoveryCodeScreen = () => {
         changePrimaryDevice: false,
         name: `Aura ${deviceInfo}`,
       });
+
       setQrUrl(newQrUrl);
     }
   }, [action, recoveryData.aesKey, recoveryData.channel.url]);
