@@ -15,9 +15,11 @@ import {
 } from '../constants';
 import { useRefreshEvaluationsContext } from '../contexts/RefreshEvaluationsContext';
 import { useSubjectName } from '../hooks/useSubjectName';
-import { useSelector } from '../store/hooks';
+import { useDispatch, useSelector } from '../store/hooks';
 import BrightIdProfilePicture from './BrightIdProfilePicture';
 import EvaluationThumb from './Shared/EvaluationThumb';
+import { connectionsApi } from '@/store/api/connections';
+import { profileApi } from '@/store/api/profile';
 
 type EvaluateOpNotificationData = {
   text: string;
@@ -106,6 +108,7 @@ export default function EvaluationOpNotifications() {
   const operations = useSelector(selectEvaluateOperations);
 
   const prevOperationsRef = useRef<EvaluateSubmittedOperation[] | null>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const storedOperations = localStorage.getItem('prevOperations');
@@ -166,6 +169,10 @@ export default function EvaluationOpNotifications() {
           prevOperation.state !== operation_states.APPLIED &&
           operation.state === operation_states.APPLIED
         ) {
+          dispatch(connectionsApi.util.invalidateTags([{ type: 'BrightID' }]));
+
+          dispatch(profileApi.util.invalidateTags([{ type: 'BrightID' }]));
+
           addNotification({
             operation,
             text: `Applied!`,
@@ -186,7 +193,7 @@ export default function EvaluationOpNotifications() {
     // Update ref and localStorage with the latest operations
     prevOperationsRef.current = operations;
     localStorage.setItem('prevOperations', JSON.stringify(operations));
-  }, [addNotification, operations, refreshEvaluations]);
+  }, [addNotification, operations, refreshEvaluations, dispatch]);
 
   return (
     <div className="w-full">

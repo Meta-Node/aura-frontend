@@ -115,6 +115,7 @@ export const ConnectionAndEvaluationStatus = ({
     myConnectionToSubject: inboundConnectionInfo,
     myConfidenceValueInThisSubjectRating: confidenceValue,
   } = useMyEvaluationsContext({ subjectId });
+
   const authData = useSelector(selectAuthData);
 
   const impactPercentage = useImpactPercentage(auraImpacts, authData?.brightId);
