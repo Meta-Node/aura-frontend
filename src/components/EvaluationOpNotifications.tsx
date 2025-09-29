@@ -169,17 +169,9 @@ export default function EvaluationOpNotifications() {
           prevOperation.state !== operation_states.APPLIED &&
           operation.state === operation_states.APPLIED
         ) {
-          dispatch(
-            connectionsApi.util.invalidateTags([
-              { type: 'BrightID', id: operation.evaluated },
-            ]),
-          );
+          dispatch(connectionsApi.util.invalidateTags([{ type: 'BrightID' }]));
 
-          dispatch(
-            profileApi.util.invalidateTags([
-              { type: 'BrightID', id: operation.evaluated },
-            ]),
-          );
+          dispatch(profileApi.util.invalidateTags([{ type: 'BrightID' }]));
 
           addNotification({
             operation,
