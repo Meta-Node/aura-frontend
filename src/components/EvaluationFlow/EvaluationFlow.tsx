@@ -8,6 +8,9 @@ import { useCallback, useEffect, useState } from 'react';
 import useViewMode from '../../hooks/useViewMode';
 import { EvaluationCategory, PreferredView } from '../../types/dashboard';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { useDispatch } from '@/store/hooks';
+import { connectionsApi } from '@/store/api/connections';
+import { profileApi } from '@/store/api/profile';
 
 const EvaluationFlow = ({
   showEvaluationFlow,
@@ -40,6 +43,7 @@ const EvaluationFlow = ({
   const onSubmitted = useCallback(
     async (newRating: number | null | undefined) => {
       const myRatingsCount = myRatings?.filter((r) => Number(r.rating)).length;
+
       refreshInboundRatings();
       refreshOutboundRatings();
       if (!newRating) {
