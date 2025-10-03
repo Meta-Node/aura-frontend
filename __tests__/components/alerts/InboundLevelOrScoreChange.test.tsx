@@ -3,21 +3,15 @@ import {
   InboundProfile,
   NotificationType,
   updateInboundData,
-} from '@/store/notifications/slice';
+} from '@/store/notifications';
 import {
-  createSubjectCategory,
   findProfileCategory,
-  generateEvaluationImpact,
   generateRandomBrightIdConnectionBackup,
   mockedBrightIdProfileData,
   TEST_BRIGHT_ID,
   TEST_BRIGHT_PASSWORD,
 } from '../../utils/api/profile';
-import {
-  EvaluationCategory,
-  EvaluationValue,
-  PreferredView,
-} from '@/types/dashboard';
+import { EvaluationCategory, PreferredView } from '@/types/dashboard';
 import { setupServer } from 'msw/node';
 import { BrightIdBackupConnection } from '@/types';
 import { http, HttpResponse } from 'msw';

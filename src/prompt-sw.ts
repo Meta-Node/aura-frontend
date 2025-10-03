@@ -1,7 +1,7 @@
 import { cleanupOutdatedCaches } from 'workbox-precaching';
 import { setupPwa } from '@vite-pwa/remix/sw';
 import { setupRoutes } from './shared-sw';
-import { triggerNotificationFetch } from './store/notifications/slice';
+import { triggerNotificationFetch } from './store/notifications';
 import { configureAppStore } from './store';
 
 declare const self: ServiceWorkerGlobalScope;
@@ -35,15 +35,13 @@ self.addEventListener('periodicsync', (event: any) => {
           subjectId,
         );
 
-        const { notifications } = store.getState();
+        const { alerts } = store.getState();
 
         if (Notification.permission !== 'granted') {
           return;
         }
 
-        const newNotifications = notifications.items.filter(
-          (item) => !item.viewed,
-        );
+        const newNotifications = alerts.alerts.filter((item) => !item.viewed);
 
         if (!newNotifications.length) return;
 

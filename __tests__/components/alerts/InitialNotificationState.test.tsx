@@ -17,7 +17,7 @@ import {
   makeMockInboundInterceptor,
   makeMockOutboundInterceptor,
 } from '../../utils/api/server';
-import { triggerNotificationFetch } from '@/store/notifications/slice';
+import { triggerNotificationFetch } from '@/store/notifications';
 
 const createMockStore = (): EnhancedStore => {
   return configureAppStore().store;

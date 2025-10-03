@@ -1,10 +1,21 @@
 import '@testing-library/jest-dom';
 import 'vitest-canvas-mock';
-import { setGlobalOrigin } from 'undici';
+import { setGlobalOrigin, fetch, Headers, Request, Response } from 'undici';
 
 beforeEach(() => {
   setGlobalOrigin(window.location.href);
 });
+
+// @ts-ignore
+globalThis.fetch = fetch;
+// @ts-ignore
+globalThis.Headers = Headers;
+
+// @ts-ignore
+globalThis.Request = Request;
+
+// @ts-ignore
+globalThis.Response = Response;
 
 beforeAll(() => {
   window.PointerEvent = class PointerEvent extends Event {} as any;

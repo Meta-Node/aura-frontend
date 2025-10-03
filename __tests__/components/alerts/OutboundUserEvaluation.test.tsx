@@ -3,10 +3,9 @@ import {
   OutboundProfile,
   updateInboundData,
   updateOutboundData,
-} from '@/store/notifications/slice';
+} from '@/store/notifications';
 import {
   createSubjectCategory,
-  generateEvaluationImpact,
   generateRandomBrightId,
   generateRandomBrightIdConnectionBackup,
   TEST_BRIGHT_ID,
@@ -19,11 +18,7 @@ import {
 } from '@/types/dashboard';
 import { setupServer } from 'msw/node';
 import { BrightIdBackupConnection } from '@/types';
-import { http, HttpResponse } from 'msw';
-import {
-  makeMockInboundInterceptor,
-  makeMockOutboundInterceptor,
-} from '../../utils/api/server';
+import { makeMockOutboundInterceptor } from '../../utils/api/server';
 import { EnhancedStore } from '@reduxjs/toolkit';
 
 const createMockedData = () => {
@@ -59,7 +54,7 @@ const createMockedData = () => {
           evaluatorName: '',
           impact: -40000,
           modified: Date.now(),
-          score: -10000,
+          score: -40000,
           level: 2,
         },
       ],
@@ -114,7 +109,7 @@ outboundTrackedProfiles.set(`${customUser.id}-${EvaluationCategory.SUBJECT}`, {
   evaluators: {},
   id: customUser.id,
   lastUpdated: Date.now() - 5 * 60000,
-  level: 1,
+  level: -1,
   score: -40000,
 });
 
@@ -168,6 +163,7 @@ describe('outbound notification generations', () => {
     await updateOutboundData(getState, dispatch, TEST_BRIGHT_ID);
 
     const { outboundTrackedProfiles, alerts } = getState().alerts;
+    console.log(alerts);
 
     expect(alerts.length).toBe(1);
   });

@@ -31,6 +31,7 @@ export type AuraEvaluation = {
   domain: 'BrightID';
   category: EvaluationCategory;
   modified: number;
+  timestamp: number;
 };
 
 export type AuraNodeBrightIdConnection = BrightIdConnection & {
