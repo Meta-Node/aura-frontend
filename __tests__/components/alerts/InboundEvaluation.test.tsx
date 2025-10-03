@@ -1,5 +1,5 @@
 import { AppDispatch, configureAppStore, RootState } from '@/store';
-import { updateInboundData } from '@/store/notifications/slice';
+import { updateInboundData } from '@/store/notifications';
 import {
   createSubjectCategory,
   generateEvaluationImpact,

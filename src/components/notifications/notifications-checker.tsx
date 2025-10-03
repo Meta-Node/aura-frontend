@@ -2,7 +2,7 @@ import {
   alertsLastFetchSelector,
   resetOnMountStates,
   triggerNotificationFetch,
-} from '@/store/notifications/slice';
+} from '@/store/notifications';
 import { selectAuthData } from '@/store/profile/selectors';
 import { useEffect } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';

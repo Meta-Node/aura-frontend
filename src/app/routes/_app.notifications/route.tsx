@@ -1,14 +1,12 @@
 import {
-  LucideBell,
   LucideTrendingUp,
   LucideTrendingDown,
   LucideArrowUp,
   LucideArrowDown,
   LucideUserCheck,
-  RefreshCcwIcon,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Notification } from '@/store/notifications';
+import { NotificationObject } from '@/store/notifications';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import DefaultHeader from '@/components/Header/DefaultHeader';
@@ -24,13 +22,11 @@ import BrightIdProfilePicture from '@/components/BrightIdProfilePicture';
 import { Link } from 'react-router';
 import { Fragment } from 'react/jsx-runtime';
 import {
-  alertLoadingSelector,
   alertsSelector,
   markAllAsRead,
   markAsRead,
-  NotificationObject,
   NotificationType,
-} from '@/store/notifications/slice';
+} from '@/store/notifications';
 import { useStore } from 'react-redux';
 import { compactFormat } from '@/utils/number';
 import {
@@ -38,8 +34,6 @@ import {
   getTextClassNameOfAuraRatingObject,
 } from '@/constants';
 import { useMemo } from 'react';
-import Tooltip from '@/components/Shared/Tooltip';
-import { ratingToText } from '@/constants/chart';
 
 // Define icons for evaluation categories
 export const subjectViewAsIconColored: {
@@ -62,37 +56,6 @@ const iconMap = {
   },
   evaluation: <LucideUserCheck className="text-blue-500" />,
 };
-
-function getIcon(notification: Notification) {
-  if (
-    notification.changeType === 'level' ||
-    notification.changeType === 'score'
-  ) {
-    if (
-      typeof (notification as any).newValue === 'number' &&
-      typeof (notification as any).oldValue === 'number'
-    ) {
-      if (notification.changeType === 'level') {
-        return (notification as any).newValue > (notification as any).oldValue
-          ? iconMap.level.up
-          : iconMap.level.down;
-      }
-      if (notification.changeType === 'score') {
-        return (notification as any).newValue > (notification as any).oldValue
-          ? iconMap.score.up
-          : iconMap.score.down;
-      }
-    } else {
-      return notification.changeType === 'level'
-        ? iconMap.level.up
-        : iconMap.score.up;
-    }
-  }
-  if (notification.changeType === 'evaluation') {
-    return iconMap.evaluation;
-  }
-  return <LucideBell />;
-}
 
 export function parseTitleAndDescription(
   description: string,

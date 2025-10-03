@@ -1,431 +1,588 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-  createSelector,
-} from '@reduxjs/toolkit';
-import { RESET_STORE } from '@/BrightID/actions';
-import { profileApi } from '../api/profile';
-import { AppDispatch, RootState } from '..';
-import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
 import { EvaluationCategory } from '@/types/dashboard';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppDispatch, RootState } from '..';
 import { connectionsApi } from '../api/connections';
-import { AuraNodeBrightIdConnection, AuraRating } from '@/types';
-import { compactFormat } from '@/utils/number';
+import { AuraNodeBrightIdConnection } from '@/types';
+import { getAuraVerification } from '@/hooks/useParseBrightIdVerificationData';
+import { profileApi } from '../api/profile';
+import { AuraImpactRaw } from '@/api/auranode.service';
 
-export const NOTIFICATION_THRESHOLDS = {
-  LEVEL_CHANGE: 1, // Notify on any level change
-  SCORE_CHANGE_PERCENTAGE: 10, // Notify on 10% score change
-  MIN_SCORE_CHANGE: 50, // Minimum absolute score change to trigger notification
+export const ALERT_THRESHOLDS = {
+  LEVEL_CHANGE: 1,
+  SCORE_CHANGE_PERCENTAGE: 10,
+  MIN_SCORE_CHANGE_PERCENT: 35,
 };
 
-export interface Evaluator {
+export interface InboundProfile {
   id: string;
-  timestamp: number;
-  value: number;
   confidence: number;
+  category: EvaluationCategory;
+  lastUpdated: number;
+  level?: number;
+  score?: number;
 }
 
-export interface TrackedCategoryState {
+export interface OutboundProfile extends InboundProfile {
+  evaluators: Record<string, InboundProfile>;
   score: number;
   level: number;
-  evaluators: Evaluator[];
-  explorivity: number;
 }
 
-export interface TrackedProfileState {
-  id: string;
-  categories: Record<EvaluationCategory, TrackedCategoryState>;
-  lastUpdated: number;
+export interface InboundTrackedProfiles {
+  isLoading: boolean;
+  profiles: Map<string, InboundProfile>;
+  previousFetch: number;
 }
 
-export interface Notification {
-  id: string;
-  title: string;
-  description: string;
-  link?: string;
-  icon?: string;
-  createdAt: number;
-  read: boolean;
-  profileId: string;
-  to?: string;
-  changeType: 'level' | 'score' | 'evaluation';
-  evaluationCategory: EvaluationCategory;
-  viewed?: boolean;
+export interface OutboundTrackedProfiles extends InboundTrackedProfiles {
+  profiles: Map<string, OutboundProfile>;
 }
 
-export type NotificationsState = {
-  items: Notification[];
-  trackedProfiles: Record<string, TrackedProfileState>;
-  lastFetched: number | null;
-  loading: boolean;
-  error: string | null;
-};
+export const categoriesToExplore = [
+  EvaluationCategory.SUBJECT,
+  EvaluationCategory.PLAYER,
+  EvaluationCategory.TRAINER,
+  EvaluationCategory.MANAGER,
+];
 
-const initialNotificationsState: NotificationsState = {
-  items: [],
-  trackedProfiles: {},
-  lastFetched: null,
-  loading: false,
-  error: null,
-};
-
-export const triggerNotificationFetch = async (
+export async function triggerNotificationFetch(
   getState: () => unknown,
   dispatch: AppDispatch,
-  myRatings: AuraRating[],
-) => {
+  brightId: string,
+) {
+  await Promise.all([
+    updateInboundData(getState, dispatch, brightId),
+    updateOutboundData(getState, dispatch, brightId),
+  ]);
+  dispatch(updateLastFetch());
+}
+
+export async function updateInboundData(
+  getState: () => unknown,
+  dispatch: AppDispatch,
+  brightId: string,
+) {
   const state = getState() as RootState;
 
-  if (!state.profile.authData) return;
+  if (state.alerts.inboundTrackedProfiles.isLoading) return;
 
-  const lastFetched = state.notifications.lastFetched;
+  dispatch(toggleInboundFetchings(true));
 
-  if (lastFetched && Date.now() - lastFetched < 2.5 * 60 * 1000) {
-    return;
-  }
-
-  const response =
-    await connectionsApi.endpoints.getInboundConnections.initiate({
-      id: state.profile.authData.brightId,
-    })(dispatch, getState, {});
-
-  response.data?.forEach((item) => {
-    dispatch(
-      notificationsSlice.actions.updateProfileState({
-        connection: item,
-        myRatings,
-      }),
-    );
-  });
-
-  const user = await profileApi.endpoints.getBrightIDProfile.initiate(
-    state.profile.authData.brightId!,
-  )(dispatch, getState, {});
-
-  dispatch(
-    notificationsSlice.actions.updateProfileState({
-      connection: user.data!,
-      myRatings,
+  const { data } = await dispatch(
+    connectionsApi.endpoints.getInboundConnections.initiate({
+      id: brightId,
     }),
   );
 
-  return;
-};
+  console.log({ data });
 
-export const fetchNotificationsThunk = createAsyncThunk(
-  'notifications/fetch',
-  async (_, { getState, dispatch }) => {
-    const state = getState() as RootState;
-    if (!state.profile.authData) return;
+  const inbounds: Map<string, InboundProfile> = state.alerts
+    .inboundTrackedProfiles.profiles.size
+    ? new Map(state.alerts.inboundTrackedProfiles.profiles)
+    : new Map();
 
-    const lastFetched = state.notifications.lastFetched;
-    if (lastFetched && Date.now() - lastFetched < 2.5 * 60 * 1000) {
-      return state.notifications.items;
+  const profileFetch = await dispatch(
+    profileApi.endpoints.getBrightIDProfile.initiate(brightId),
+  );
+
+  const previousFetchTime = new Date(
+    state.alerts.inboundTrackedProfiles.previousFetch,
+  );
+
+  const newNotifications: NotificationObject[] = [];
+
+  const brightIdConnectionsMap =
+    data?.reduce(
+      (prev, item) => {
+        prev[item.id] = item;
+        return prev;
+      },
+      {} as Record<string, AuraNodeBrightIdConnection>,
+    ) ?? {};
+
+  for (const category of categoriesToExplore) {
+    let historyScore = 0;
+
+    const previousState = inbounds.get(`${brightId}-${category}`);
+
+    const userVerification = getAuraVerification(
+      profileFetch.data?.verifications,
+      category,
+    );
+
+    if (previousState) {
+      if (
+        userVerification?.level &&
+        previousState.level &&
+        Math.abs(previousState.level! - userVerification.level) >=
+          ALERT_THRESHOLDS.LEVEL_CHANGE
+      ) {
+        newNotifications.push(
+          createUserLevelChangeNotification(
+            category,
+            userVerification?.level,
+            previousState.level,
+            brightId,
+            'inbound',
+          ),
+        );
+      }
+
+      if (
+        userVerification?.score &&
+        previousState.score &&
+        Math.abs((userVerification.score / previousState.score!) * 100 - 100) >=
+          ALERT_THRESHOLDS.MIN_SCORE_CHANGE_PERCENT
+      ) {
+        newNotifications.push(
+          createUserScoreChangeNotification(
+            category,
+            userVerification.score,
+            previousState.score,
+            brightId,
+            'inbound',
+          ),
+        );
+      }
     }
 
-    const trackedProfiles = state.notifications.trackedProfiles;
-
-    const response =
-      await connectionsApi.endpoints.getInboundConnections.initiate({
-        id: state.profile.authData.brightId,
-      })(dispatch, getState, {});
-
-    response.data?.forEach((item) => {
-      dispatch(
-        notificationsSlice.actions.updateProfileState({
-          connection: item,
-          myRatings: [],
-        }),
-      );
+    inbounds.set(`${brightId}-${category}`, {
+      category,
+      confidence: 0,
+      id: brightId,
+      lastUpdated: Date.now(),
+      level: userVerification?.level,
+      score: userVerification?.score,
     });
 
-    dispatch(notificationsSlice.actions.updateLastFetched());
+    const verificationsMap =
+      userVerification?.impacts.reduce(
+        (prev, curr) => {
+          prev[curr.evaluator] = curr;
 
-    return;
-  },
-);
+          return prev;
+        },
+        {} as Record<string, AuraImpactRaw>,
+      ) ?? {};
 
-const shouldNotifyOnChange = (
-  changeType: 'level' | 'score' | 'evaluation',
-  oldValue: number,
-  newValue: number,
-): boolean => {
-  switch (changeType) {
-    case 'level':
-      return (
-        Math.abs(newValue - oldValue) >= NOTIFICATION_THRESHOLDS.LEVEL_CHANGE
-      );
-    case 'score':
-      const percentageChange = Math.abs((newValue - oldValue) / oldValue) * 100;
-      const absoluteChange = Math.abs(newValue - oldValue);
-      return (
-        percentageChange >= NOTIFICATION_THRESHOLDS.SCORE_CHANGE_PERCENTAGE &&
-        absoluteChange >= NOTIFICATION_THRESHOLDS.MIN_SCORE_CHANGE
-      );
-    case 'evaluation':
-      return true;
+    const evaluations = (
+      data
+        ?.filter((item) => item.auraEvaluations?.length)
+        .map((item) =>
+          item
+            .auraEvaluations!.filter((item) => item.category === category)
+            .map((evaluation) => ({ ...evaluation, id: item.id })),
+        ) ?? []
+    ).flat();
+
+    for (const evaluation of evaluations) {
+      if (previousFetchTime.getTime() < evaluation.modified) {
+        newNotifications.push(
+          createUserInboudNotification(
+            brightId,
+            category,
+            brightIdConnectionsMap[evaluation.id],
+            historyScore,
+            historyScore + (verificationsMap[evaluation.id].impact ?? 0),
+            evaluation.modified,
+          ),
+        );
+      }
+      inbounds.set(`${evaluation.id}-${category}`, {
+        category,
+        confidence: evaluation.confidence,
+        id: evaluation.id,
+        lastUpdated: evaluation.modified,
+      });
+
+      historyScore += verificationsMap[evaluation.id].impact ?? 0;
+    }
   }
-};
 
-const generateNotification = (
-  profileId: string,
-  changeType: 'level' | 'score' | 'evaluation',
-  oldValue: number,
-  newValue: number | string,
-  explorivity: number,
-  evaluationCategory: EvaluationCategory,
-  dateTime?: number,
-): Notification => {
-  const changeDescription =
-    changeType === 'level'
-      ? `Level ${Number(newValue) > oldValue ? 'increased' : 'decreased'} by ${Math.abs(Number(newValue) - oldValue)}`
-      : changeType === 'score'
-        ? `Score ${Number(newValue) > oldValue ? 'increased' : 'decreased'} by ${compactFormat(Math.abs(Number(newValue) - oldValue))} points`
-        : `${newValue} evaluated ${profileId}`;
+  if (newNotifications.length) {
+    dispatch(updateNewNotifications({ notifications: newNotifications }));
+  }
 
+  dispatch(updateInboundTrackedState({ inbounds }));
+  dispatch(toggleOutboundFetchings(false));
+}
+
+export async function updateOutboundData(
+  getState: () => unknown,
+  dispatch: AppDispatch,
+  brightId: string,
+) {
+  const state = getState() as RootState;
+  if (state.alerts.outboundTrackedProfiles.isLoading) return;
+
+  const { data } = await dispatch(
+    connectionsApi.endpoints.getOutboundConnections.initiate({
+      id: brightId,
+    }),
+  );
+
+  const outbounds = state.alerts.outboundTrackedProfiles.profiles.size
+    ? new Map(state.alerts.outboundTrackedProfiles.profiles)
+    : new Map();
+
+  const newNotifications: NotificationObject[] = [];
+
+  for (const outbound of data ?? []) {
+    const categoriesToExplore = new Set(
+      outbound.auraEvaluations?.map((item) => item.category),
+    );
+
+    for (const category of categoriesToExplore) {
+      const verification = getAuraVerification(
+        outbound.verifications,
+        category,
+      );
+
+      const queryKey = `${outbound.id}-${category}`;
+
+      const previousState = outbounds.get(queryKey);
+
+      if (!previousState) {
+        outbounds.set(queryKey, {
+          category,
+          confidence: 0,
+          id: outbound.id,
+          lastUpdated: new Date().getTime(),
+          level: verification?.level ?? 0,
+          score: verification?.score ?? 0,
+          evaluators:
+            verification?.impacts.reduce(
+              (prev, curr) => {
+                prev[curr.evaluator] = {
+                  category,
+                  confidence: curr.confidence,
+                  id: curr.evaluator,
+                  lastUpdated: curr.modified,
+                };
+
+                return prev;
+              },
+              {} as Record<string, InboundProfile>,
+            ) ?? {},
+        });
+        continue;
+      }
+
+      if (
+        verification?.level &&
+        Math.abs(previousState.level - verification.level) >=
+          ALERT_THRESHOLDS.LEVEL_CHANGE
+      ) {
+        newNotifications.push(
+          createUserLevelChangeNotification(
+            category,
+            verification?.level,
+            previousState.level,
+            outbound.id,
+          ),
+        );
+      }
+
+      if (
+        verification?.score &&
+        Math.abs((verification.score / previousState.score) * 100 - 100) >=
+          ALERT_THRESHOLDS.MIN_SCORE_CHANGE_PERCENT
+      ) {
+        newNotifications.push(
+          createUserScoreChangeNotification(
+            category,
+            verification.score,
+            previousState.score,
+            outbound.id,
+          ),
+        );
+      }
+
+      for (const impact of verification?.impacts ?? []) {
+        if (impact.evaluator === brightId) continue;
+
+        if (
+          previousState.evaluators[impact.evaluator]?.id &&
+          previousState.evaluators[impact.evaluator].confidence ===
+            impact.confidence
+        ) {
+        } else {
+          newNotifications.push(
+            createUserOutboundEvaluationNotification(
+              impact,
+              outbound.id,
+              category,
+              impact.modified,
+            ),
+          );
+        }
+      }
+
+      outbounds.set(queryKey, {
+        category,
+        confidence: 0,
+        id: outbound.id,
+        lastUpdated: new Date().getTime(),
+        level: verification?.level ?? 0,
+        score: verification?.score ?? 0,
+        evaluators:
+          verification?.impacts.reduce(
+            (prev, curr) => {
+              prev[curr.evaluator] = {
+                category,
+                confidence: curr.confidence,
+                id: curr.evaluator,
+                lastUpdated: new Date().getTime(),
+              };
+
+              return prev;
+            },
+            {} as Record<string, InboundProfile>,
+          ) ?? {},
+      });
+    }
+  }
+
+  if (newNotifications.length) {
+    dispatch(updateNewNotifications({ notifications: newNotifications }));
+  }
+
+  dispatch(updateOutboundTrackedState({ outbounds }));
+  dispatch(toggleInboundFetchings(false));
+}
+
+export function createUserScoreChangeNotification(
+  category: EvaluationCategory,
+  newScore: number,
+  previousScore: number,
+  subjectId: string,
+  triggeredFrom: 'inbound' | 'outbound' = 'outbound',
+): NotificationObject {
   return {
-    id: `${profileId}-${changeType}-${Date.now()}`,
-    profileId,
-    changeType,
-    title: `New Evaluation`,
-    description: changeDescription,
-    createdAt: dateTime ?? Date.now(),
-    read: false,
-    link: `/subject/${profileId}`,
-    to: changeType === 'evaluation' ? newValue.toString() : undefined,
-    icon:
-      changeType === 'level'
-        ? Number(newValue) > oldValue
-          ? 'level-up'
-          : 'level-down'
-        : changeType === 'score'
-          ? Number(newValue) > oldValue
-            ? 'trending-up'
-            : 'trending-down'
-          : 'evaluation',
-    evaluationCategory,
+    id: `${subjectId}-score-${Date.now()}`,
+    category,
+    description: '',
+    from: subjectId,
+    newState: newScore,
+    previousState: previousScore,
+    timestamp: Date.now(),
+    to: null,
+    triggeredFrom,
+    type:
+      newScore > previousScore
+        ? NotificationType.ScoreIncrease
+        : NotificationType.ScoreDecrease,
+    viewed: false,
   };
-};
+}
+
+export function createUserLevelChangeNotification(
+  category: EvaluationCategory,
+  newLevel: number,
+  previousLevel: number,
+  subjectId: string,
+  triggeredFrom: 'inbound' | 'outbound' = 'outbound',
+): NotificationObject {
+  return {
+    id: `${subjectId}-level-${Date.now()}`,
+    category,
+    description: '',
+    from: subjectId,
+    newState: newLevel,
+    previousState: previousLevel,
+    timestamp: Date.now(),
+    to: null,
+    triggeredFrom,
+    type:
+      newLevel > previousLevel
+        ? NotificationType.LevelIncrease
+        : NotificationType.LevelDecrease,
+  };
+}
+
+export function createUserOutboundEvaluationNotification(
+  impact: AuraImpactRaw,
+  subjectId: string,
+  category: EvaluationCategory,
+  timestamp: number,
+): NotificationObject {
+  return {
+    id: `${subjectId}-outbound-evaluation-${Date.now()}`,
+    category,
+    from: impact.evaluator,
+    to: subjectId,
+    description: '',
+    newState: impact.impact,
+    previousState: null,
+    timestamp,
+    triggeredFrom: 'outbound',
+    type: NotificationType.Evaluation,
+    viewed: false,
+    extraPayloads: {
+      rating: impact.confidence,
+    },
+  };
+}
+
+export function createUserInboudNotification(
+  fromBrightId: string,
+  category: EvaluationCategory,
+  connection: AuraNodeBrightIdConnection,
+  previousScore: number,
+  newScore: number,
+  timestamp: number,
+) {
+  return {
+    id: `${fromBrightId}-inbound-evaluation-${Date.now()}`,
+    category,
+    description: '',
+    from: connection.id,
+    to: fromBrightId,
+    triggeredFrom: 'inbound',
+    previousState: previousScore,
+    newState: newScore,
+    type:
+      newScore < previousScore
+        ? NotificationType.ScoreDecrease
+        : NotificationType.ScoreIncrease,
+    timestamp,
+  } as NotificationObject;
+}
+
+export enum NotificationType {
+  Evaluation,
+  ChangeEvaluation,
+  ScoreIncrease,
+  ScoreDecrease,
+  LevelIncrease,
+  LevelDecrease,
+}
+
+export interface NotificationObject {
+  id: string;
+  type: NotificationType;
+  category: EvaluationCategory;
+  from: string;
+  to: string | null;
+  description: string;
+  triggeredFrom: 'inbound' | 'outbound';
+  previousState: unknown;
+  newState: unknown;
+  timestamp: number;
+  extraPayloads?: Record<string, unknown>;
+  viewed?: boolean;
+}
 
 export const notificationsSlice = createSlice({
-  name: 'notifications',
-  initialState: initialNotificationsState,
+  reducerPath: 'alerts',
+  initialState: {
+    inboundTrackedProfiles: {
+      isLoading: false,
+      profiles: new Map(),
+    } as InboundTrackedProfiles,
+    outboundTrackedProfiles: {
+      isLoading: false,
+      profiles: new Map(),
+    } as OutboundTrackedProfiles,
+    activityLogs: [] as NotificationObject[],
+    alerts: [] as NotificationObject[],
+    isInitialized: false,
+    lastFetch: null as number | null,
+  },
+  name: 'alertsSlice',
   reducers: {
+    toggleInboundFetchings(state, isLoading: PayloadAction<boolean>) {
+      state.inboundTrackedProfiles.isLoading = isLoading.payload;
+    },
+    toggleOutboundFetchings(state, isLoading: PayloadAction<boolean>) {
+      state.outboundTrackedProfiles.isLoading = isLoading.payload;
+    },
+    resetOnMountStates(state) {
+      state.inboundTrackedProfiles.isLoading = false;
+
+      state.outboundTrackedProfiles.isLoading = false;
+    },
     markAsRead: (state, action: PayloadAction<string>) => {
-      const notification = state.items.find(
+      const notification = state.alerts.find(
         (item) => item.id === action.payload,
       );
       if (notification) {
-        notification.read = true;
+        notification.viewed = true;
       }
     },
     markAllAsRead: (state) => {
-      state.items.forEach((notification) => {
-        notification.read = true;
+      state.alerts.forEach((notification) => {
+        notification.viewed = true;
       });
     },
-    toggleLoading(state, payload: PayloadAction<boolean>) {
-      state.loading = payload.payload;
-    },
-    updateLastFetched(state) {
-      state.lastFetched = new Date().getTime();
-    },
-    removeNotification: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
-    },
-    clearAllNotifications: (state) => {
-      state.items = [];
-    },
-    updateProfileState: (
+    initializeBaseTrackedStates(
       state,
-      action: PayloadAction<{
-        connection: Pick<AuraNodeBrightIdConnection, 'id' | 'verifications'>;
-        myRatings: AuraRating[];
+      payload: PayloadAction<{
+        inbounds: Map<string, InboundProfile>;
+        outbounds: OutboundTrackedProfiles;
       }>,
-    ) => {
-      const {
-        connection: { id, verifications },
-        myRatings,
-      } = action.payload;
-      const oldState = state.trackedProfiles[id];
-      const categories: EvaluationCategory[] = [
-        EvaluationCategory.SUBJECT,
-        EvaluationCategory.PLAYER,
-        EvaluationCategory.TRAINER,
-        EvaluationCategory.MANAGER,
-      ];
-      const newCategories: Record<EvaluationCategory, TrackedCategoryState> = {
-        [EvaluationCategory.SUBJECT]: {
-          score: 0,
-          level: 0,
-          evaluators: [],
-          explorivity: 0,
-        },
-        [EvaluationCategory.PLAYER]: {
-          score: 0,
-          level: 0,
-          evaluators: [],
-          explorivity: 0,
-        },
-        [EvaluationCategory.TRAINER]: {
-          score: 0,
-          level: 0,
-          evaluators: [],
-          explorivity: 0,
-        },
-        [EvaluationCategory.MANAGER]: {
-          score: 0,
-          level: 0,
-          evaluators: [],
-          explorivity: 0,
-        },
-      };
+    ) {
+      state.inboundTrackedProfiles.profiles = payload.payload.inbounds;
 
-      categories.forEach((cat) => {
-        const data = getAuraVerification(verifications, cat);
-        const score = data?.score || 0;
-        const level = data?.level || 0;
-        const evaluators: Evaluator[] = (data?.impacts || []).map((impact) => ({
-          id: impact.evaluator,
-          timestamp: Date.now(),
-          value: impact.score || 0,
-          confidence: impact.confidence,
-        }));
-        const uniqueEvaluators = new Set(evaluators.map((e) => e.id)).size;
-        const explorivity =
-          evaluators.length > 0
-            ? (uniqueEvaluators / evaluators.length) * 100
-            : 0;
-        newCategories[cat] = { score, level, evaluators, explorivity };
-      });
-
-      categories.forEach((cat) => {
-        const newCat = newCategories[cat];
-        const oldCat = oldState?.categories?.[cat];
-        if (oldCat) {
-          if (
-            newCat.level !== oldCat.level &&
-            shouldNotifyOnChange('level', oldCat.level, newCat.level)
-          ) {
-            state.items.push(
-              generateNotification(
-                id,
-                'level',
-                oldCat.level,
-                newCat.level,
-                newCat.explorivity,
-                cat,
-              ),
-            );
-          }
-          // Score change
-          if (
-            newCat.score !== oldCat.score &&
-            shouldNotifyOnChange('score', oldCat.score, newCat.score)
-          ) {
-            state.items.push(
-              generateNotification(
-                id,
-                'score',
-                oldCat.score,
-                newCat.score,
-                newCat.explorivity,
-                cat,
-              ),
-            );
-          }
-          const oldEvalMap = new Map(
-            oldCat.evaluators.map((e) => [e.id, e.confidence]),
-          );
-
-          newCat.evaluators.forEach((ev) => {
-            if (!oldEvalMap.has(ev.id)) {
-              state.items.push(
-                generateNotification(
-                  id,
-                  'evaluation',
-                  0,
-                  ev.id,
-                  newCat.explorivity,
-                  cat,
-                  ev.timestamp,
-                ),
-              );
-            } else if (oldEvalMap.get(ev.id) !== ev.confidence) {
-              state.items.push(
-                generateNotification(
-                  id,
-                  'evaluation',
-                  0,
-                  ev.id,
-                  newCat.explorivity,
-                  cat,
-                  ev.timestamp,
-                ),
-              );
-            }
-          });
-        } else if (state.lastFetched) {
-          const userEval = myRatings.find(
-            (rating) => rating.toBrightId === id && cat === rating.category,
-          );
-
-          if (userEval) {
-            state.items.push(
-              generateNotification(
-                id,
-                'evaluation',
-                0,
-                Number(userEval.rating),
-                newCat.explorivity,
-                cat,
-                userEval.timestamp,
-              ),
-            );
-          }
-        }
-      });
-
-      // Update the stored state
-      state.trackedProfiles[id] = {
-        id,
-        categories: newCategories,
-        lastUpdated: Date.now(),
-      };
+      state.outboundTrackedProfiles = payload.payload.outbounds;
+      state.isInitialized = true;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchNotificationsThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchNotificationsThunk.fulfilled, (state) => {
-        state.loading = false;
-        // Do not overwrite state.items here
-        state.lastFetched = Date.now();
-      })
-      .addCase(fetchNotificationsThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'Failed to fetch notifications';
-      })
-      .addMatcher(
-        (action) => action.type === RESET_STORE,
-        () => initialNotificationsState,
-      );
+    updateNewNotifications(
+      state,
+      payload: PayloadAction<{
+        notifications: NotificationObject[];
+      }>,
+    ) {
+      state.alerts.push(...payload.payload.notifications);
+    },
+    updateInboundTrackedState(
+      state,
+      payload: PayloadAction<{
+        inbounds: Map<string, InboundProfile>;
+      }>,
+    ) {
+      state.inboundTrackedProfiles.profiles = payload.payload.inbounds;
+    },
+    updateLastFetch(state) {
+      state.lastFetch = Date.now();
+    },
+    updateOutboundTrackedState(
+      state,
+      payload: PayloadAction<{
+        outbounds: Map<string, OutboundProfile>;
+      }>,
+    ) {
+      state.outboundTrackedProfiles.profiles = payload.payload.outbounds;
+    },
   },
 });
 
-export const notificationsSelector = createSelector(
-  (state: RootState) => state.notifications,
-  (notifications) => notifications.items,
+export const {
+  initializeBaseTrackedStates,
+  resetOnMountStates,
+  toggleInboundFetchings,
+  toggleOutboundFetchings,
+  updateNewNotifications,
+  updateInboundTrackedState,
+  updateOutboundTrackedState,
+  markAllAsRead,
+  markAsRead,
+  updateLastFetch,
+} = notificationsSlice.actions;
+
+export const alertsSelector = createSelector(
+  (state: RootState) => state.alerts,
+  (notifications) => notifications.alerts,
 );
 
-export const {
-  markAsRead,
-  markAllAsRead,
-  removeNotification,
-  clearAllNotifications,
-  updateProfileState,
-} = notificationsSlice.actions;
+export const alertLoadingSelector = createSelector(
+  (state: RootState) => state.alerts,
+  (state) =>
+    state.inboundTrackedProfiles.isLoading ||
+    state.outboundTrackedProfiles.isLoading,
+);
+
+export const alertsLastFetchSelector = createSelector(
+  (state: RootState) => state.alerts,
+  (state) => state.lastFetch,
+);
