@@ -36,6 +36,7 @@ connection1.auraEvaluations?.push({
   confidence: 4,
   evaluation: EvaluationValue.POSITIVE,
   modified: new Date().getTime() / 1000,
+  timestamp: new Date().getTime() / 1000,
 });
 
 const domains = connection1.verifications![0].domains!;
@@ -123,6 +124,7 @@ connection5.auraEvaluations?.push({
   confidence: 4,
   evaluation: EvaluationValue.NEGATIVE,
   modified: new Date().getTime() / 1000,
+  timestamp: new Date().getTime() / 1000 - -2000,
 });
 
 addPlayerRuleWithCategoryToConnection(
