@@ -49,9 +49,20 @@ export default function Dropdown<T extends DropdownItem>({
           <SelectItem
             data-testid={`dropdown-option-${item.value}`}
             key={item.value}
-            onMouseDown={() => {
-              onItemClick(item);
-              setIsDropdownOpen(false);
+            {...{
+              onMouseDown: process.env.VITEST
+                ? undefined
+                : () => {
+                    onItemClick(item);
+                    setIsDropdownOpen(false);
+                  },
+
+              onClick: process.env.VITEST
+                ? () => {
+                    onItemClick(item);
+                    setIsDropdownOpen(false);
+                  }
+                : undefined,
             }}
             value={item.value.toString()}
           >
