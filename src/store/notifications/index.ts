@@ -69,9 +69,12 @@ export async function updateInboundData(
   dispatch(toggleInboundFetchings(true));
 
   const { data } = await dispatch(
-    connectionsApi.endpoints.getInboundConnections.initiate({
-      id: brightId,
-    }),
+    connectionsApi.endpoints.getInboundConnections.initiate(
+      {
+        id: brightId,
+      },
+      { forceRefetch: true },
+    ),
   );
 
   console.log({ data });
@@ -216,9 +219,12 @@ export async function updateOutboundData(
   if (state.alerts.outboundTrackedProfiles.isLoading) return;
 
   const { data } = await dispatch(
-    connectionsApi.endpoints.getOutboundConnections.initiate({
-      id: brightId,
-    }),
+    connectionsApi.endpoints.getOutboundConnections.initiate(
+      {
+        id: brightId,
+      },
+      { forceRefetch: true },
+    ),
   );
 
   const outbounds = state.alerts.outboundTrackedProfiles.profiles.size
