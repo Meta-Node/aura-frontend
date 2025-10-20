@@ -18,6 +18,9 @@ import { connectionLevelIcons } from '@/utils/connection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Tooltip from '../Tooltip';
+import { Pencil } from 'lucide-react';
+import { Link } from 'react-router';
+import { Button } from '@/components/ui/button';
 
 const ConnectionInfo = ({
   subjectId,
@@ -81,6 +84,30 @@ const ConnectionInfo = ({
     }
     return '';
   }, [inboundConnectionInfo?.level, rating]);
+
+  if (
+    !inboundConnectionInfo ||
+    !connectionLevelIcons[inboundConnectionInfo.level] ||
+    !rating
+  ) {
+    return (
+      <Tooltip
+        content={`Evaluate ${name}`}
+        position="right"
+        className="mt-auto"
+        tooltipClassName="!w-40 !whitespace-normal"
+      >
+        <Link
+          to={`/subject/${subjectId}?viewas=${evaluationCategory}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Button variant={'outline'} size={'icon'}>
+            <Pencil className="h-4 w-4 text-white" />
+          </Button>
+        </Link>
+      </Tooltip>
+    );
+  }
   return (
     <div className="z-10" content={``}>
       <div className={`flex flex-col gap-0.5 ${bgColor} rounded-md py-1.5`}>
