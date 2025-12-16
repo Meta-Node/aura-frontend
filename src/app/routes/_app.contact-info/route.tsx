@@ -66,10 +66,10 @@ export default function ContactPage() {
 
   return (
     <>
-      <DefaultHeader title="Trusted Contacts" />
+      <DefaultHeader title="Your Contact" />
       <div className="space-y-4 p-4 text-sm dark:text-white">
         <p>
-          Add trusted contacts (email or phone). These are stored securely using
+          This is how your friends and family find you and ask for verification. These are stored securely using
           hashed values, so your contacts remain private. This helps relatives
           find you safely in the app.
         </p>
