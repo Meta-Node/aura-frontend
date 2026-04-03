@@ -11,6 +11,10 @@ setupPwa({
   manifest: self.__WB_MANIFEST,
 });
 
+self.addEventListener('message', (event: any) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 setupRoutes().then(console.log);
 
 self.addEventListener('message', (event) => {

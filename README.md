@@ -1,4 +1,4 @@
-# Aura: Decentralized Expert Evaluation Platform
+# Aura: Decentralized Expert Evaluation Platform 
 
 [![Tests](https://github.com/Meta-Node/aura-frontend/actions/workflows/test.yml/badge.svg)](https://github.com/Meta-Node/aura-frontend/actions/workflows/test.yml)
 
